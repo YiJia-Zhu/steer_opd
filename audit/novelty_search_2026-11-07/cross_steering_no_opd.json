@@ -1,0 +1,59 @@
+{
+  "key": "cross_steering_no_opd",
+  "query": "all:distillation AND (all:\"steering\" OR all:\"activation intervention\") AND (all:\"cross-family\" OR all:\"cross-architecture\" OR all:\"cross-model\")",
+  "requested_max": 100,
+  "retrieved_at": "2026-11-07T15:49:16.118208+00:00",
+  "status": 200,
+  "url": "https://export.arxiv.org/api/query?search_query=all%3Adistillation+AND+%28all%3A%22steering%22+OR+all%3A%22activation+intervention%22%29+AND+%28all%3A%22cross-family%22+OR+all%3A%22cross-architecture%22+OR+all%3A%22cross-model%22%29&max_results=100&sortBy=submittedDate&sortOrder=descending",
+  "total_results": 3,
+  "records": [
+    {
+      "id": "http://arxiv.org/abs/2610.40998v1",
+      "title": "Steering Vectors as a Training Signal in LLM Post-Training",
+      "summary": "Steering vectors (SVs) are residual-stream directions that shift the behavior of LLMs when added to hidden states at inference time. While prior work has mainly used SVs as post-hoc controls, we ask whether the same directions can also guide parameter updates during post-training. We study this question across supervised learning, including SFT and distillation, and reinforcement learning with verifiable rewards (RLVR). Our framework considers two intervention regimes: a hidden-state hook during teacher-forced supervised training, and an advantage-repair mechanism on wrong rollouts in GRPO. For each regime, we analyze three design axes, which are the steering direction, its placement, and the operation used to combine it with training. In supervised settings, SV injection improves over plain SFT and distillation, with gains scaling with the off-policy gap and reaching up to a $12\\%$ improvement when distilling from thinking-mode teachers. These gains hold across three random seeds. In RL settings, applying a correctness-contrast direction as advantage repair on wrong rollouts, including otherwise zero-gradient all-wrong groups, recovers a learning signal that transfers to held-out math benchmarks and acts as a composable auxiliary signal that adds to existing zero-variance remedies such as entropy-aware advantage shaping. We further identify three failure boundaries. In detail, code generation can break the direction, cross-family layer transfer can break the placement, and inference-time application on an SV-trained checkpoint can break the intervention regime. Together, these results establish steering vectors as a conditional but effective training signal for LLM post-training. Our code is available here.",
+      "published": "2026-10-29T21:28:51Z",
+      "updated": "2026-10-29T21:28:51Z",
+      "authors": [
+        "Tiejin Chen",
+        "Maunil Vyas",
+        "Huaiyuan Yao",
+        "Hua Wei"
+      ],
+      "version": "2610.40998v1",
+      "arxiv_id": "2610.40998"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.31603v2",
+      "title": "User Model Extraction via Belief Self-Distillation",
+      "summary": "Large language models (LLMs) implicitly infer attributes of their users and adapt their behavior accordingly, yet these beliefs remain difficult to inspect and causally manipulate. We introduce Belief Self-Distillation (BSD), a unified read-write framework that bridges linear and causal probing by learning a compact user representation that can be both decoded and written back into the model. The frozen LLM acts as its own teacher, distilling beliefs from natural conversations without external annotations. Unlike conventional probing, BSD isolates not only information present in activations, but a state whose causal role can be directly tested. Across multiple model families, BSD faithfully recovers user beliefs and enables substantially stronger interventions than matched hidden-state steering. Crucially, we find that refusal depends not only on the request, but on the model's inferred user intent: changing this belief alters refusal while holding the request fixed. We further uncover a striking cross-model regularity: independently trained LLMs converge on a shared geometry for representing their users. Together, these results reveal implicit user models as readable and causally writable internal states with direct implications for AI safety, shaping how models condition safety decisions on whom they believe they are interacting with.",
+      "published": "2026-09-25T17:54:32Z",
+      "updated": "2026-10-19T14:32:03Z",
+      "authors": [
+        "Ali Holmov",
+        "Yiran Huang",
+        "Kirill Bykov",
+        "Zeynep Akata"
+      ],
+      "version": "2609.31603v2",
+      "arxiv_id": "2609.31603"
+    },
+    {
+      "id": "http://arxiv.org/abs/2510.17421v2",
+      "title": "Diffusion Models as Dataset Distillation Priors",
+      "summary": "Dataset distillation aims to synthesize compact yet informative datasets from large ones. A significant challenge in this field is achieving a trifecta of diversity, generalization, and representativeness in a single distilled dataset. Although recent generative dataset distillation methods adopt powerful diffusion models as their foundation models, the inherent representativeness prior in diffusion models is overlooked. Consequently, these approaches often necessitate the integration of external constraints to enhance data quality. To address this, we propose Diffusion As Priors (DAP), which formalizes representativeness by quantifying the similarity between synthetic and real data in feature space using a Mercer kernel. We then introduce this prior as guidance to steer the reverse diffusion process, enhancing the representativeness of distilled samples without any retraining. Extensive experiments on large-scale datasets, such as ImageNet-1K and its subsets, demonstrate that DAP outperforms state-of-the-art methods in generating high-fidelity datasets while achieving superior cross-architecture generalization. Our work not only establishes a theoretical connection between diffusion priors and the objectives of dataset distillation but also provides a practical, training-free framework for improving the quality of the distilled dataset.",
+      "published": "2025-10-20T11:04:09Z",
+      "updated": "2026-04-03T07:59:32Z",
+      "authors": [
+        "Duo Su",
+        "Huyu Wu",
+        "Huanran Chen",
+        "Yiming Shi",
+        "Yuzhu Wang",
+        "Xi Ye",
+        "Jun Zhu"
+      ],
+      "version": "2510.17421v2",
+      "arxiv_id": "2510.17421"
+    }
+  ]
+}

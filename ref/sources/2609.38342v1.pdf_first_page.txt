@@ -1,0 +1,55 @@
+Under review
+
+ACTIVATION -C ONDITIONED S ELF -D ISTILLATION
+Zhexi Lu1 , Subhajit Chaudhury2 , Tejaswini Pedapati2 , Keerthiram Murugesan2 ,
+Lei Yu1
+1
+2
+Rensselaer Polytechnic Institute
+IBM Research
+
+arXiv:2609.38342v1 [cs.LG] 29 Sep 2026
+
+A BSTRACT
+On-policy self-distillation uses a model as its own teacher to provide dense supervision for reasoning, often through reference-solution conditioning. Providing privileged information does not by itself ensure effective token-level supervision throughout long responses. We introduce Activation-Conditioned SelfDistillation (ACSD), which extracts a steering vector by contrasting activations of
+self-generated trajectories that reach verified correct answers within a generation
+budget with those of all remaining trajectories. A frozen copy of the base model
+applies this vector at each prediction position, and the student learns from its nexttoken distributions on student-generated prefixes. Outcome verification is used
+for direction construction and calibration; distillation requires neither problemspecific reference text nor teacher parameter updates. The distilled student is used
+alone at inference. On each of five models, ACSD achieves the highest mean
+accuracy over four mathematical benchmarks among the evaluated methods. On
+DeepSeek-R1-0528-Qwen3-8B, mean mathematical accuracy reaches 71.9% and
+LiveCodeBench v6 pass@12 reaches 70.9%, compared with 69.0% and 66.3% for
+the reference-conditioned OPSD baseline. Contrasts among correct trajectories
+also support distillation, and extracted directions can be reused across mathematical training datasets. On fixed student trajectories, ACSD maintains more stable
+late-position logit-update magnitudes than OPSD.
+
+1
+
+I NTRODUCTION
+
+Post-training has substantially advanced the reasoning capabilities of language models, particularly
+in mathematics and coding. Supervised fine-tuning (SFT) exposes models to high-quality solution
+demonstrations, while reinforcement learning with verifiable rewards (RLVR) trains on the model’s
+own responses using correctness signals. Group Relative Policy Optimization (GRPO; Shao et al.,
+2024), for instance, samples multiple responses to the same problem and assigns each an outcome
+reward based on final-answer correctness. However, this reward lacks fine-grained feedback on
+intermediate reasoning steps, and sampling multiple long responses significantly increases training
+cost. On-policy distillation (OPD) addresses this by employing a strong teacher model to provide
+dense, token-level supervision over the student’s own responses: the student first attempts a problem,
+and the teacher then computes a next-token distribution at every position, conditioned on the problem
+and the student’s preceding tokens. The student learns by matching these distributions along its own
+reasoning trajectory (Agarwal et al., 2024).
+However, OPD commonly relies on a stronger external teacher. Recent self-distillation methods
+instead derive a teacher from the model itself, giving it additional context that the student does
+not receive. OPSD conditions a frozen copy of the initial model on a correct answer or reference
+solution, while SDFT conditions the teacher on expert demonstrations. Both use the model’s incontext learning ability to turn this privileged context into next-token targets along the student’s own
+responses (Zhao et al., 2026; Shenfeld et al., 2026). Other methods obtain conditioning information
+from the model’s attempts and external feedback. SDPO conditions its teacher on feedback, such
+as execution errors, or successful attempts at the same problem (Hübotter et al., 2026). SD-Zero
+trains a reviser using binary correctness feedback and then distills its next-token predictions into
+a generator (He et al., 2026). RLCSD contrasts teacher predictions conditioned on correct and
+incorrect solutions and uses this contrast to shape reward-based GRPO updates (Pan et al., 2026).
+1
+
+

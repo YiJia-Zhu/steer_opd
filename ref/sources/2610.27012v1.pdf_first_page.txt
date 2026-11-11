@@ -1,0 +1,55 @@
+E XPLORATION VIA ACTIVATION -S PACE S TEERING
+FOR R EINFORCEMENT L EARNING WITH V ERIFIABLE
+R EWARDS
+Yunan Zeng1 Jinhao Jing2 Xi Cheng3 Yuwang Wang4∗
+1
+Fudan University
+2
+The Chinese University of Hong Kong, Shenzhen
+3
+Kunlun Inc. 4 Tsinghua University
+
+arXiv:2610.27012v1 [cs.LG] 19 Oct 2026
+
+ynzeng24@m.fudan.edu.cn
+
+A BSTRACT
+Reinforcement learning with verifiable rewards (RLVR) trains a language model
+by sampling responses, scoring them with an automatic verifier, and updating the
+policy from the resulting rewards. The policy therefore receives direct learning
+signals only from trajectories that appear in its rollouts. Yet repeated sampling
+from the same policy can concentrate on similar reasoning paths, leaving useful
+alternatives unexplored under a fixed rollout budget. We introduce ActivationSpace Exploration (ASE), an online method for diversifying training rollouts. By
+clustering activation differences between correct and incorrect responses to the
+same problem, ASE builds a structured bank of latent exploration vectors. Different vectors are then applied to subsequent rollouts to explore alternative reasoning
+paths. On Qwen3-1.7B-Base and Qwen3-8B-Base trained on DAPO-Math-17k,
+ASE improves average Mean@8 across six mathematical reasoning benchmarks
+over GRPO by 4.87 and 1.87 percentage points, respectively, under the same rollout budget.
+
+1
+
+I NTRODUCTION
+
+Reinforcement learning improves a model by repeatedly sampling behaviors, evaluating their outcomes with rewards, and increasing the probability of behaviors that receive higher rewards (Sutton
+& Barto, 2018). Reinforcement learning with verifiable rewards (RLVR) makes this process scalable
+by using automated verifiers to assign outcome-based rewards to generated responses, such as mathematical solutions and programs (Le et al., 2022; Shao et al., 2024; Yu et al., 2025). A fundamental
+constraint, however, is that the policy can only learn from behaviors that appear in its sampled rollouts (Shao et al., 2024; Yue et al., 2025). Consequently, policy optimization is shaped by which
+trajectories the rollout procedure makes available for learning, a dependence that creates an exploration bottleneck under a finite rollout budget. Standard GRPO independently samples multiple
+trajectories from the same current policy (Shao et al., 2024). Increasing the number of rollouts provides more Monte Carlo samples, but leaves the underlying proposal distribution unchanged. As the
+policy concentrates probability mass on a limited set of reasoning patterns, multiple samples may
+repeatedly visit similar solution modes, reproduce the same intermediate steps, or make correlated
+errors. Useful alternatives that occupy low-probability regions of the policy can therefore remain
+rarely observed and receive little direct reward feedback. The bottleneck is thus not merely how
+many trajectories are sampled, but how a fixed rollout budget is distributed across the policy’s
+reasoning space.
+Several approaches seek to use a finite RLVR rollout budget more effectively. Adaptive sampling
+allocates more rollouts to difficult problems (Liao et al., 2025), while data filtering and curricula
+prioritize more informative training problems (Yu et al., 2025; Chen et al., 2025b). These methods change where sampling effort is spent, rather than how trajectories for the same problem are
+generated. Adjusting decoding temperature increases token-level variation (Dang et al., 2026), but
+∗
+
+Corresponding author: wang-yuwang@tsinghua.edu.cn.
+
+1
+
+

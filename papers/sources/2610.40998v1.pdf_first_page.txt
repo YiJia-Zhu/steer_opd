@@ -1,0 +1,59 @@
+Steering Vectors as a Training Signal in LLM
+Post-Training
+
+Tiejin Chen1
+
+arXiv:2610.40998v1 [cs.LG] 29 Oct 2026
+
+1
+
+Maunil Vyas2∗ Huaiyuan Yao1
+Arizona State University 2 Amazon
+
+Hua Wei1
+
+Abstract
+Steering vectors (SVs) are residual-stream directions that shift the behavior of
+LLMs when added to hidden states at inference time. While prior work has mainly
+used SVs as post-hoc controls, we ask whether the same directions can also guide
+parameter updates during post-training. We study this question across supervised
+learning, including SFT and distillation, and reinforcement learning with verifiable
+rewards (RLVR). Our framework considers two intervention regimes: a hiddenstate hook during teacher-forced supervised training, and an advantage-repair
+mechanism on wrong rollouts in GRPO. For each regime, we analyze three design
+axes, which are the steering direction, its placement, and the operation used to
+combine it with training. In supervised settings, SV injection improves over plain
+SFT and distillation, with gains scaling with the off-policy gap and reaching up to a
+12% improvement when distilling from thinking-mode teachers. These gains hold
+across three random seeds. In RL settings, applying a correctness-contrast direction
+as advantage repair on wrong rollouts, including otherwise zero-gradient all-wrong
+groups, recovers a learning signal that transfers to held-out math benchmarks,
+and acts as a composable auxiliary signal that adds to existing zero-variance
+remedies such as entropy-aware advantage shaping. We further identify three
+failure boundaries. In detail, code generation can break the direction, cross-family
+layer transfer can break the placement, and inference-time application on an SVtrained checkpoint can break the intervention regime. Together, these results
+establish steering vectors as a conditional but effective training signal for LLM
+post-training. Our code is available here.
+
+1
+
+Introduction
+
+A steering vector (SV) is a direction in an LLM’s residual stream that can shift the model’s behavior
+when added to the hidden state at inference time [1–3]. Prior work has mainly used steering vectors
+as post-hoc controls for frozen models: the model parameters remain unchanged, and the vector
+is injected only during generation. This raises a natural question: if a steering vector captures a
+reusable behavioral direction, can it also be used to guide parameter updates during post-training?
+This question is important because post-training often relies on fixed reference data or sparse
+reward signals. In supervised fine-tuning and distillation [4, 5], the model is optimized on reference
+trajectories rather than the trajectories induced by its own current policy, which creates a mismatch
+between training-time and inference-time behavior [6]. In reinforcement learning with verifiable
+rewards, the reward signal may be sparse, especially when all sampled responses in a group are
+incorrect. Steering vectors offer a representation-level intervention: instead of changing only the
+final output distribution at inference time, they can modify the hidden states used during training
+and thereby influence the gradients used to update the model. This turns steering from a temporary
+control mechanism into a possible training signal.
+∗ This work was conducted independently by the author and was not undertaken as part of their role at Amazon.
+
+40th Conference on Neural Information Processing Systems (NeurIPS 2026).
+
+

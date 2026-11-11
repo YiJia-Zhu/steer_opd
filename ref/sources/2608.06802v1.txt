@@ -1,0 +1,1072 @@
+Simple-OPD: Demystifying Warm-up for On-policy Distillation
+Skip to main content
+Report GitHub Issue
+ ×
+ Title:
+Content selection saved. Describe the issue below:
+ Description:
+ Submit without GitHub
+ Submit in GitHub
+ Why HTML?
+ Report Issue
+ Back to Abstract
+ Download PDF
+ Contents
+ Reading mode
+ Colour theme
+Abstract
+1 Introduction
+2 Preliminaries
+Supervised Fine-Tuning(SFT).
+On-Policy Distillation(OPD).
+Low-Rank Adaptation (LoRA).
+3 Data for Warm-up
+Experimental Setup.
+3.1 CoT is Essential for Warm-up
+3.2 Teacher’s CoT Works Better
+3.3 Wrong Rollout Also Works
+4 Training Recipe for Warm-up
+Experimental Setup.
+4.1 LoRA Warm-up Balances Adaptation and Generalization
+4.2 A Moderate Warm-up Step is Preferred
+4.3 Proposed Simple-OPD
+5 Extensive Analysis
+5.1 Compatibility with OPD Variants
+5.2 Applied to Thinking Models
+5.3 OPD for a Student-Trained Teacher
+5.4 Training Dynamics
+5.5 Case Study
+6 Related Work
+On-Policy Distillation.
+Warm-up for OPD.
+7 Conclusion
+References
+A Implementation Details
+SFT data construction.
+SFT warm-up.
+OPD.
+Inference and evaluation.
+Overlap ratio.
+B Detailed Results for Warm-up Data
+B.1 Presence of CoT
+B.2 Source of CoT
+B.3 Response Correctness
+C Detailed Results for Warm-up Training
+Effect of LoRA rank and warm-up steps.
+ License: arXiv.org perpetual non-exclusive license
+arXiv:2608.06802v1 [cs.CL] 07 Aug 2026
+Simple-OPD: Demystifying Warm-up for On-policy Distillation
+Tao Liu
+Affiliation: Tsinghua University
+Taiqiang Wu
+Affiliation: The University of Hong Kong
+Mao Zheng
+Affiliation: LLM Department, Tencent
+*Equal contribution †Project Leader ‡Corresponding authors
+ https://github.com/Utaotao/Simple-OPD
+Xuan Luo
+Affiliation: LLM Department, Tencent
+*Equal contribution †Project Leader ‡Corresponding authors
+ https://github.com/Utaotao/Simple-OPD
+Runming Yang
+Affiliation: The University of Hong Kong
+Xuewei Yang
+Affiliation: Tsinghua University
+Junjie Wang
+Affiliation: Tsinghua University
+Yujiu Yang
+Affiliation: Tsinghua University
+Abstract
+On-policy distillation (OPD) trains a student on its own rollouts with token-level supervision from teacher models, but its effectiveness can depend strongly on the warm-up stage before OPD.
+In this paper, we demystify warm-up for OPD from both data and training perspectives. For data, we find that effective warm-up relies on teacher-compatible chain-of-thought supervision, and that even incorrect teacher rollouts can provide comparable benefits to correct ones.
+This suggests that warm-up primarily transfers a teacher-compatible thinking pattern rather than merely correct answers.
+For training, we show that low-rank adaptation (LoRA) with a near-saturation training duration better balances in-domain adaptation and out-of-distribution generalization than full-parameter SFT.
+Based on these findings, we propose Simple-OPD, a plug-and-play initialization method that warms up the student on teacher-generated CoT with LoRA before OPD.
+Experiments across diverse settings demonstrate the effectiveness and robustness of Simple-OPD.
+1 Introduction
+On-policy distillation (OPD) has emerged as an effective paradigm for transferring capabilities from one or several teacher models into a student model (Lu and Lab, 2025; Xiao et al., 2026).
+Specifically, OPD follows an on-policy paradigm that trains the student on its own sampled rollouts and employs the teacher to provide token-level dense supervision (Gu et al., 2024; Agarwal et al., 2024).
+While achieving success in transferring knowledge, it also faces the challenge that supervision from the teacher model may be biased or even harmful, especially when the student rollouts are rarely defined in the teacher’s generation space.
+Figure 1: 
+Overview of vanilla OPD and Simple-OPD.
+Simple-OPD first warms up the student with teacher-generated CoT using LoRA, followed by standard OPD.
+To tackle this issue, one common practice is to conduct a warm-up for the student before OPD (Xu et al., 2026a; Li et al., 2026).
+This stage is treated mainly as an initialization heuristic, where the student is fine-tuned on teacher responses.
+In this way, the overlap between student and teacher is higher, leading to better OPD performance (Li et al., 2026).
+However, the role of warm-up remains underexplored, especially the data and training recipe.
+In this paper, we aim to demystify the warm-up stage for OPD and summarize practical takeaways.
+For warm-up data, we find that chain-of-thought (CoT) supervision is essential for building a strong initialization.
+For the CoT source, the OPD teacher works better than a stronger external model (i.e., GPT-5.5 (OpenAI, 2026)), suggesting that compatibility with the downstream teacher matters more than the standalone strength of the CoT generator.
+Moreover, we further observe that incorrect teacher rollouts can provide nearly the same benefit as correct ones, indicating that warm-up transfers teacher-compatible reasoning behavior rather than simply answer correctness.
+Beyond data construction, another challenge is the training recipe.
+For the training method, we find that full-parameter SFT accelerates in-domain adaptation, but degrades out-of-distribution (OOD) generalization.
+Meanwhile, low-rank adaptation, LoRA (Hu et al., 2022), provides a better balance.
+It learns the teacher-aligned reasoning pattern while limiting unnecessary changes to the student model.
+We also find that warm-up duration should be approach saturation rather than be simply maximized, as overly strong warm-up may favor in-domain performance at the cost of generalization.
+Based on these findings, we propose Simple-OPD, a simple-yet-effective and plug-and-play OPD initialization method.
+As illustrated in Figure 1, we warm up the student with CoT rollouts generated by the OPD teacher using a sufficiently trained low-rank LoRA adapter.
+Across different OPD objectives, thinking and non-thinking model settings, and same-size teacher-student consolidation, Simple-OPD consistently improves in-domain reasoning performance while preserving overall out-of-domain generalization.
+Our contributions are summarized as follows:
+• 
+We systematically investigate the warm-up stage for OPD and summarize practical takeaways regarding data and training recipe.
+• 
+We propose a simple-yet-effective Simple-OPD method, employing LoRA on the teacher’s rollouts for warm-up.
+• 
+We conduct experiments across various settings to demonstrate the effectiveness and robustness of the proposed Simple-OPD.
+2 Preliminaries
+Supervised Fine-Tuning(SFT).
+Let $\pi_{\theta}$ denote the student policy with parameters
+ $\theta$ . Let $\mathcal{D}_{\mathrm{SFT}}$ consist of pairs
+ $(x,y^{*})$ , where $x$ is a prompt and
+ $y^{*}=(y^{*}_{1},\ldots,y^{*}_{T})$ is a reference response
+of length $T$ . We use $y^{*}_{<t}$ to denote the response
+prefix before position $t$ , and define the token loss as
+ $\ell^{\mathrm{SFT}}_{t}(\theta)=-\log\pi_{\theta}(y^{*}_{t}\mid x,y^{*}_{<t})$ .
+The SFT objective is
+ $\mathcal{L}_{\mathrm{SFT}}(\theta)=\mathbb{E}_{(x,y^{*})\sim\mathcal{D}_{\mathrm{SFT}}}\left[\frac{1}{T}\sum_{t=1}^{T}\ell^{\mathrm{SFT}}_{t}(\theta)\right].$ 
+(1)
+We use SFT to initialize the student before OPD and refer to
+this stage as warm-up.
+On-Policy Distillation(OPD).
+Let $\pi_{\mathrm{T}}$ denote the fixed teacher policy and
+ $\mathcal{D}_{x}$ the prompt distribution. Given a prompt
+ $x\sim\mathcal{D}_{x}$ , the student samples a response
+ $\hat{y}=(\hat{y}_{1},\ldots,\hat{y}_{L})$ from
+ $\pi_{\theta}(\cdot\mid x)$ , where $L=|\hat{y}|$ .
+At position $t$ , the context is
+ $c_{t}=(x,\hat{y}_{<t})$ . We define the token reverse KL as
+ $\ell^{\mathrm{RKL}}_{t}(\theta)=D_{\mathrm{KL}}\left(\pi_{\theta}(\cdot\mid c_{t})\|\pi_{\mathrm{T}}(\cdot\mid c_{t})\right).$ 
+OPD minimizes its average over student rollouts:
+ $\mathcal{L}_{\mathrm{OPD}}(\theta)=\mathbb{E}_{\begin{subarray}{c}x\sim\mathcal{D}_{x}\\
+\hat{y}\sim\pi_{\theta}(\cdot\mid x)\end{subarray}}\left[\frac{1}{L}\sum_{t=1}^{L}\ell^{\mathrm{RKL}}_{t}(\theta)\right].$ 
+(2)
+Since $\hat{y}$ is sampled from $\pi_{\theta}$ , the contexts
+in the objective are induced by the current student policy.
+Low-Rank Adaptation (LoRA).
+Let $W_{0}\in\mathbb{R}^{d\times k}$ denote a frozen weight matrix with input dimension $k$ and output dimension $d$ .
+LoRA introduces trainable matrices $A\in\mathbb{R}^{r\times k}$ and $B\in\mathbb{R}^{d\times r}$ , where $r\ll\min(d,k)$ is the adaptation rank(Hu et al., 2022; Wu et al., 2024).
+Given a scaling coefficient $\alpha$ , the adapted weight matrix is
+ $W=W_{0}+\frac{\alpha}{r}BA.$ 
+(3)
+During adaptation, $W_{0}$ remains frozen while $A$ and $B$ 
+are optimized.
+Figure 2: 
+Effect of CoT supervision during warm-up.
+The blue and orange bars denote SFT with and without CoT, respectively.
+The green and red segments denote the gain and drop after OPD.
+CoT provides a stronger and more stable initialization for OPD.
+3 Data for Warm-up
+Warm-up provides the initialization for subsequent OPD, making the construction of its training data particularly important.
+In this section, we study three properties of warm-up data: whether they contain CoT, whether the CoT is generated by the OPD teacher, and whether the rollouts are correct.
+Experimental Setup.
+We use Qwen3-1.7B-Base as the student, and Qwen3-8B-Base trained on DAPO-Math-17K (Yu et al., 2026) as the teacher (Yang et al., 2026b).
+DAPO-Math-17K is also used for subsequent OPD, and the prompts for SFT warm-up are selected from this dataset.
+Each warm-up checkpoint is followed by 75 steps of OPD.
+Unless otherwise specified, we report the average performance on MATH-500 (Hendrycks et al., 2021), AIME24 (AI-MO, 2024a), and AIME25 (OpenCompass, 2025).
+We use $\mathrm{avg@4}$ for MATH-500 and $\mathrm{avg@16}$ for AIME24 and AIME25.
+We employ verl (Sheng et al., 2024) as the primary training framework and leverage
+vllm (Kwon et al., 2023) to speed up the sampling process.
+All experiments are conducted on eight GPUs.
+Detailed data construction, training hyperparameters, and evaluation inference settings are provided in Appendix A.
+3.1 CoT is Essential for Warm-up
+We compare SFT warm-up using rollouts with CoT and rollouts containing only final answers.
+As shown in Figure 2, step 0 corresponds to direct OPD from the base student without SFT warm-up.
+CoT provides a sustained learning signal during warm-up.
+At the same training step, checkpoints trained with CoT consistently outperform those trained without CoT, and the gap generally widens as warm-up proceeds.
+This indicates that exposing the reasoning process provides more effective supervision than learning from final answers alone.
+The advantage of CoT warm-up persists after subsequent OPD.
+Although OPD can substantially improve several no-CoT checkpoints, it does not compensate for their weaker initialization.
+Across all matched steps, CoT warm-up followed by OPD consistently achieves stronger final performance.
+Sufficient CoT warm-up makes subsequent OPD more stable and less dependent on checkpoint selection.
+As more reasoning capability is acquired during warm-up, the additional benefit from OPD generally becomes smaller.
+Meanwhile, CoT checkpoints converge to similar final results, whereas no-CoT checkpoints exhibit much larger fluctuations.
+These findings show that CoT is essential for building a strong and reliable initialization for OPD.
+Detailed results on each benchmark are reported in Appendix B.1.
+Figure 3: 
+Performance comparison of CoT source, i.e., OPD teacher and GPT-5.5.
+OPD teacher consistently outperforms GPT-5.5 for SFT and subsequent OPD.
+This suggests that effective warm-up depends on alignment with the downstream teacher rather than reasoning quality alone.
+3.2 Teacher’s CoT Works Better
+We next examine whether CoT from a stronger external model can also provide an effective warm-up for OPD.
+Using the same prompts, we construct warm-up rollouts with either the OPD teacher or GPT-5.5.
+Although GPT-5.5 is substantially stronger than the OPD teacher, its CoT produces a much weaker initialization.
+Only CoT generated by the OPD teacher consistently improves warm-up performance.
+As shown in Figure 3, teacher-generated CoT steadily improves the student as warm-up proceeds.
+In contrast, GPT-5.5 CoT leaves the student close to its initial performance despite being generated by a stronger model.
+This difference persists after subsequent OPD.
+Across all warm-up durations, checkpoints trained on the teacher’s CoT outperform both GPT-5.5 warm-up and direct OPD.
+Although OPD partially recovers the weak performance following GPT-5.5 warm-up, the final results remain close to the direct OPD baseline and deteriorate with longer warm-up.
+These results show that the effectiveness of warm-up is determined not simply by the strength of the CoT generator.
+Instead, warm-up requires CoT that is compatible with the teacher used during subsequent OPD.
+A benchmark-level comparison across the two CoT sources is provided in Appendix B.2.
+3.3 Wrong Rollout Also Works
+Having established that warm-up requires CoT aligned with the OPD teacher, we next examine whether these rollouts must also be correct.
+We construct paired correct and wrong rollouts from the OPD teacher for the same prompts, so that both settings contain CoT from the same teacher.
+For this ablation, we additionally include AMC23 (AI-MO, 2024b) and report the average over four benchmarks.
+As shown in Figure 4, the two settings produce similar SFT trajectories and differ by less than one point at most checkpoints.
+The same pattern remains after OPD.
+The final scores of both settings stay within a narrow range of 35.2 to 36.5, and neither condition shows a consistent advantage.
+Their relative performance after SFT also does not consistently carry over to OPD, showing that a stronger SFT checkpoint does not necessarily provide a better initialization.
+These results suggest that once CoT from the OPD teacher is available, rollout correctness has only a limited effect on subsequent OPD.
+Detailed benchmark-level results and an example pair of correct and incorrect rollouts are provided in Appendix B.3.
+Takeaway on Warm-up Data.
+Together, the three ablations show that effective warm-up requires CoT aligned with the OPD teacher, while rollout correctness plays only a secondary role.
+This suggests that warm-up primarily transfers a teacher-compatible thinking pattern rather than merely correct answers.
+Figure 4: 
+Effect of correctness for teacher’s rollouts.
+Correct and wrong rollouts produce similar performance after both SFT and subsequent OPD.
+The key is to expose the teacher’s thinking patterns rather than answers.
+Figure 5: 
+Comparison of full SFT and LoRA warm-up during OPD.
+Full SFT accelerates in-domain convergence but causes persistent OOD degradation.
+LoRA reaches comparable in-domain performance while retaining substantially stronger generalization.
+4 Training Recipe for Warm-up
+Having identified the key properties of warm-up data, we next study how warm-up should be trained.
+Since effective warm-up should facilitate in-domain adaptation without sacrificing general capabilities, we evaluate both ID performance and OOD generalization when examining its parameterization and training strength.
+Experimental Setup.
+We follow the student and teacher setup described in Section 3.
+We report the average performance over AMC23, MATH-500, AIME24, and AIME25 as the in-domain result.
+For out-of-domain evaluation, we use IFEval (Zhou et al., 2023), GPQA-Diamond (Rein et al., 2024), HumanEval (Chen et al., 2021), and the Chemistry, Physics, and History subsets of MMLU-Pro (Wang et al., 2024).
+For the out-of-domain evaluation pipeline, we utilized OpenCompass (Contributors, 2023b) as the primary inference framework, integrated with LMDeploy (Contributors, 2023a) as the acceleration backend.
+We report the average performance over the six out-of-domain benchmarks as the overall OOD result.
+4.1 LoRA Warm-up Balances Adaptation and Generalization
+We compare direct OPD with full-parameter SFT warm-up and LoRA warm-up at ranks 16, 32, and 64.
+Figure 5 reports their ID and OOD trajectories during subsequent OPD.
+Direct OPD and full SFT warm-up exhibit different limitations.
+Direct OPD gradually improves ID performance, but its OOD performance peaks early and then declines as training continues.
+Full SFT warm-up substantially raises the initial ID performance and accelerates convergence.
+However, it severely reduces OOD performance before OPD, and subsequent training fails to recover the lost generalization.
+LoRA warm-up provides a better balance between ID adaptation and OOD generalization.
+Although LoRA checkpoints initially underperform full SFT on ID benchmarks, they improve rapidly and eventually reach comparable performance.
+On OOD benchmarks, all LoRA variants start above both the base student and the full SFT checkpoint.
+This advantage is maintained or further enlarged during OPD.
+Therefore, LoRA preserves the ID benefit of warm-up while avoiding the severe OOD degradation caused by full-parameter adaptation.
+A relatively small LoRA rank is already sufficient for effective warm-up.
+Ranks 16, 32, and 64 achieve similar final ID performance, indicating that increasing the adaptation capacity provides little additional ID benefit.
+In contrast, rank 16 produces the strongest OOD trajectory, while ranks 32 and 64 show slightly weaker generalization.
+This pattern suggests that a more constrained update can learn the target reasoning behavior while introducing less interference with the pretrained capabilities.
+Overall, LoRA acts as both a parameter-efficient adaptation method and a constraint on warm-up updates.
+A low-rank update is sufficient to acquire the teacher-aligned thinking pattern while limiting unnecessary changes to the pretrained model.
+It therefore offers a more favorable balance between adaptation and generalization than full-parameter warm-up.
+4.2 A Moderate Warm-up Step is Preferred
+We study the effect of warm-up steps while fixing the LoRA rank to 32.
+Figure 6 compares warm-up checkpoints obtained after 40, 100, 150, and 175 steps.
+Insufficient LoRA warm-up provides only limited benefits.
+With 40 warm-up steps, the ID trajectory remains close to direct OPD, while the OOD performance shows no clear advantage as training proceeds.
+Increasing the duration to 100 steps yields a modest ID improvement and a more substantial gain in OOD generalization.
+Sufficiently trained LoRA warm-up improves both ID and OOD performance, but the gains are not monotonic with training duration.
+The 150-step and 175-step settings consistently outperform shorter warm-up configurations in both domains.
+The 175-step setting performs slightly better on ID benchmarks, whereas the 150-step setting achieves the strongest OOD performance.
+Therefore, the preferred checkpoint lies near saturation rather than simply at the maximum training duration.
+LoRA warm-up also accelerates subsequent OPD.
+The sufficiently trained warm-up variants approach their stable ID performance after roughly 100 OPD steps, whereas direct OPD continues improving until around 200 steps.
+This is consistent with the training dynamics in Figure 8, where warm-up leads to faster and more stable optimization.
+Warm-up therefore reduces the number of OPD updates required to reach competitive performance.
+Additional comparisons across LoRA ranks and warm-up steps are provided in Appendix C.
+Takeaway on Warm-up Training.
+For warm-up training, we recommend a relatively low-rank LoRA trained to near saturation.
+This configuration provides a Pareto-efficient balance between ID performance and OOD generalization while accelerating subsequent OPD.
+Figure 6: 
+Effect of warm-up duration with the LoRA rank fixed to 32.
+A short warm-up remains close to direct OPD, while longer warm-up improves both performance and convergence speed.
+The 150-step setting provides the best ID–OOD balance, whereas 175 steps slightly favor ID performance.
+4.3 Proposed Simple-OPD
+Based on the findings in Sections 3 and 4, we propose Simple-OPD.
+It uses CoT rollouts generated by the OPD teacher to warm up the student with a sufficiently trained low-rank LoRA adapter, followed by standard OPD.
+This simple recipe provides a stronger initialization, accelerates subsequent training, and better preserves OOD generalization without modifying the OPD objective.
+5 Extensive Analysis
+Method
+ID
+OOD
+AIME24
+AIME25
+Avg.
+IFEval
+GPQA
+Phys.
+Chem.
+Hist.
+Avg.
+Teacher
+63.75
+56.25
+60.00
+80.96
+43.43
+78.21
+77.47
+48.29
+65.67
+Student
+13.75
+11.87
+12.81
+65.80
+28.79
+42.03
+40.46
+25.46
+40.51
+OPD
+40.21
+36.46
+38.34
+64.88
+20.71
+57.89
+60.60
+33.07
+47.43
+Simple-OPD
+42.50
+36.88
+39.69
+63.96
+26.77
+60.51
+60.51
+33.07
+48.96
+G-OPD
+44.79
+38.33
+41.56
+64.51
+13.64
+54.04
+55.65
+35.70
+44.71
+Simple-OPD
+46.88
+39.37
+43.13
+63.96
+13.13
+55.74
+57.69
+32.55
+44.61
+PowerOPD
+43.54
+34.58
+39.06
+62.66
+21.72
+59.74
+59.98
+29.92
+46.80
+Simple-OPD
+43.13
+36.88
+40.01
+65.80
+20.20
+57.97
+59.01
+35.17
+47.63
+Table 1: 
+Compatibility of Simple-OPD with different OPD variants.
+We use Qwen3-1.7B (non-thinking) and a GRPO-trained Qwen3-4B (non-thinking) as the student and teacher, respectively.
+Simple-OPD consistently improves ID performance while preserving overall OOD performance across three OPD objectives.
+Within each OPD setting, the better result is shown in bold.
+5.1 Compatibility with OPD Variants
+We examine whether Simple-OPD can complement different OPD objectives rather than being tied to vanilla OPD.
+We consider standard OPD, G-OPD (Yang et al., 2026a), and PowerOPD (Zhao et al., 2026).
+We use Qwen3-1.7B in non-thinking mode as the student and Qwen3-4B in non-thinking mode as the teacher (Yang et al., 2025).
+The teacher is trained with GRPO (Shao et al., 2024) on DAPO-Math-17K (Yu et al., 2026).
+For each objective, we compare direct training from the base student with its Simple-OPD counterpart initialized by teacher-CoT LoRA warm-up.
+The ID score is averaged over AIME24 and AIME25.
+The OOD score is averaged over IFEval, GPQA-Diamond, and the Physics, Chemistry, and History subsets of MMLU-Pro.
+Simple-OPD consistently improves ID performance across different OPD objectives.
+As shown in Table 1, it improves the ID average by 1.35 points for vanilla OPD, 1.57 points for G-OPD, and 0.95 points for PowerOPD.
+Its benefit therefore persists when the underlying distillation objective changes.
+Simple-OPD preserves overall OOD performance while producing method-dependent changes on individual benchmarks.
+The average OOD score improves for vanilla OPD and PowerOPD and remains nearly unchanged for G-OPD.
+The gains appear on different benchmarks under different objectives, indicating that the effect depends partly on the subsequent OPD method.
+Overall, Simple-OPD strengthens ID performance without introducing systematic OOD degradation.
+These results show that Simple-OPD is complementary to the choice of OPD objective and can serve as a general initialization recipe for different OPD variants.
+Method
+ID
+OOD
+AIME
+24
+AIME
+25
+AMC
+23
+MATH
+500
+Avg.
+IFEval
+GPQA
+Phys.
+Chem.
+Hist.
+Avg.
+Teacher
+76.25
+75.00
+99.69
+97.70
+87.16
+30.50
+66.67
+83.91
+84.72
+58.79
+64.92
+Student
+9.17
+18.75
+49.69
+74.15
+37.94
+33.09
+22.22
+43.42
+45.49
+17.85
+32.41
+OPD
+14.17
+22.08
+54.37
+78.80
+42.36
+29.76
+24.24
+50.73
+52.21
+20.21
+35.43
+Simple-OPD
+12.92
+23.33
+57.19
+81.80
+43.81
+30.87
+26.77
+50.65
+50.80
+22.31
+36.28
+Table 2: 
+Results in the Qwen3 thinking setting.
+We use Qwen3-0.6B with thinking enabled as the student and Qwen3-4B-Thinking-2507 as the teacher.
+Simple-OPD improves both the ID and OOD averages over direct OPD.
+The Simple-OPD row is shaded, and the better result within each OPD comparison is shown in bold.
+5.2 Applied to Thinking Models
+We further evaluate Simple-OPD on thinking models.
+We use Qwen3-0.6B with thinking enabled as the student and Qwen3-4B-Thinking-2507 as the teacher (Yang et al., 2025).
+We compare direct OPD with Simple-OPD under the same training configuration.
+Simple-OPD consistently improves mathematical reasoning in the thinking setting.
+As shown in Table 2, direct OPD raises the ID average from 37.94 to 42.36, while Simple-OPD further improves it to 43.81.
+The gains mainly come from AMC23, MATH-500, and AIME25, with only a slight decrease on AIME24.
+Simple-OPD also improves overall OOD generalization.
+The OOD average increases from 35.43 to 36.28, with improvements on IFEval, GPQA-Diamond, and MMLU-Pro History.
+Physics remains nearly unchanged, while Chemistry decreases moderately.
+Overall, these results show that Simple-OPD remains effective when both the student and teacher operate in thinking mode.
+5.3 OPD for a Student-Trained Teacher
+We further evaluate Simple-OPD for same-size model consolidation.
+We use DeepSeek-R1-Distill-Qwen-1.5B as the student and the RL-trained JustRL-DeepSeek-1.5B as the teacher (Guo et al., 2025; He et al., 2025).
+This setting reflects a practical scenario in which capabilities acquired by a stronger post-trained model are consolidated into a deployment model of the same size.
+Figure 7: 
+Performance with a same-size student-trained teacher.
+Simple-OPD further improves the ID performance of direct OPD while keeping the overall OOD performance nearly unchanged.
+Simple-OPD substantially improves ID performance while largely preserving OOD generalization.
+As shown in Figure 7, direct OPD raises the ID average from 49.59 to 62.72, and Simple-OPD further improves it to 64.34.
+Meanwhile, the OOD average changes only slightly from 32.35 to 31.93.
+This result shows that Simple-OPD effectively consolidates the capabilities of a same-size post-trained teacher with only a marginal OOD trade-off.
+Together with the preceding Qwen3 experiments, these results further demonstrate the effectiveness of Simple-OPD across different model architectures.
+Detailed benchmark-level results are provided in Table 6.
+5.4 Training Dynamics
+Figure 8 compares the OPD training dynamics with and without SFT warm-up.
+The warm-up models start with higher training rewards and reach a stable response-length regime substantially earlier than the no-warm-up model.
+Warm-up also reduces the large early-stage fluctuations in the overlap ratio(defined in Appendix A).
+After sufficient OPD training, the different configurations gradually approach similar regimes.
+These results suggest that SFT warm-up primarily accelerates and stabilizes the convergence of subsequent OPD training.
+Figure 8: 
+OPD training dynamics with and without SFT warm-up.
+From left to right, we report training reward, response length, and overlap ratio over OPD steps.
+Compared with training from the base model directly, both full-parameter and LoRA warm-up lead to faster and more stable convergence during the early stage of OPD.
+5.5 Case Study
+To better understand how warm-up affects the student’s reasoning behavior, we examine representative MATH-500 cases at OPD step $300$ .
+As shown in Table 8 in the Appendix, the warm-up model exhibits a reasoning pattern closer to that of the teacher.
+Both the teacher and the warm-up model explicitly verify intermediate results or independently recompute the solution before producing the final answer.
+In contrast, the no-warm-up model follows a plausible solution path but terminates without verification, allowing local counting or arithmetic errors to remain undetected.
+These examples suggest that warm-up transfers teacher-like verification behavior, thereby improving the reliability of subsequent rollouts.
+6 Related Work
+On-Policy Distillation.
+OPD trains a student on its own rollouts using token-level supervision from a teacher (Lu and Lab, 2025). MiniLLM applies reverse KL to this setting, while GKD extends the framework to multiple divergence objectives and mixtures of student and teacher trajectories (Gu et al., 2024; Agarwal et al., 2024).
+Recent work has improved OPD through generalized reward and reference formulations (Yang et al., 2026a; Feng et al., 2026), uncertainty aware and asymmetric objectives (Jin et al., 2026; Jia et al., 2026; Ko et al., 2026), and more efficient rollout construction (Zhang et al., 2026; Yang et al., 2026c; Wu et al., 2026; Ziheng et al., 2026).
+Other studies reduce gradient variance and improve training stability (Oh et al., 2026; Luo et al., 2026; Jang et al., 2026), or analyze the failure modes and effective conditions of OPD (Fu et al., 2026; Li et al., 2026; Kim et al., 2026; Kaur et al., 2026).
+These studies mainly focus on the distillation objective and rollout process, while the supervised warm-up before OPD remains less explored.
+Warm-up for OPD.
+Qwen3 adopts a two-stage strong-to-weak distillation pipeline, performing off-policy response distillation before OPD (Yang et al., 2025). Li et al. (2026) introduce an off-policy cold start to align student and teacher reasoning patterns.
+Xu et al. (2026c) apply forward KL warm-up, while Wu et al. (2026) emphasize teacher consistency across SFT and OPD.
+Other methods improve early rollouts through behavior blending or phased teacher sampling (Plyusov et al., 2026; Xu et al., 2026b; Luo et al., 2026).
+These studies mainly use warm-up as a fixed initialization or stabilization stage.
+In this work, we systematically study its data construction, training strength, and parameterization, and evaluate how these choices affect both ID performance and OOD generalization.
+7 Conclusion
+In this work, we systematically investigated the warm-up stage for on-policy distillation from both data and training perspectives.
+For data construction, the OPD teacher’s CoT works better than CoT from a stronger external model, while incorrect teacher rollouts can still provide comparable benefits.
+For training, a near-saturation low-rank LoRA warm-up offers a better balance between ID and OOD domains.
+Based on these findings, we propose Simple-OPD, a plug-and-play initialization recipe that warms up the student with teacher-generated CoT before OPD.
+Experiments across different OPD objectives, model settings, and teacher-student configurations show that Simple-OPD consistently improves in-domain reasoning while preserving overall generalization.
+Limitation
+This work focuses on understanding and improving the warm-up stage for OPD through controlled experiments under representative model and benchmark settings.
+While our experiments cover multiple OPD objectives, thinking and non-thinking models, and same-size teacher-student consolidation, broader validation on additional model families, domains, and larger-scale training settings would further strengthen the empirical conclusions.
+In addition, Simple-OPD is intentionally designed as a simple initialization recipe without modifying the OPD objective.
+Future work may explore how warm-up design interacts with more advanced objectives, data selection strategies, and adaptive training schedules.
+References
+Agarwal et al. (2024)
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela Ramos Garea, Matthieu Geist, and Olivier Bachem. 2024.
+On-policy distillation of language models: Learning from self-generated mistakes.
+In International Conference on Learning Representations, volume 2024, pages 21246–21263.
+AI-MO (2024a)
+AI-MO. 2024a.
+Aime 2024.
+https://huggingface.co/datasets/AI-MO/aimo-validation-aime.
+AI-MO (2024b)
+AI-MO. 2024b.
+Amc 2023.
+https://huggingface.co/datasets/AI-MO/aimo-validation-amc.
+Chen et al. (2021)
+Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde De Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, and 1 others. 2021.
+Evaluating large language models trained on code.
+arXiv preprint arXiv:2107.03374.
+Contributors (2023a)
+LMDeploy Contributors. 2023a.
+Lmdeploy: A toolkit for compressing, deploying, and serving llm.
+https://github.com/InternLM/lmdeploy.
+Contributors (2023b)
+OpenCompass Contributors. 2023b.
+Opencompass: A universal evaluation platform for foundation models.
+https://github.com/open-compass/opencompass.
+Feng et al. (2026)
+Shiyuan Feng, Huan-ang Gao, Haohan Chi, Hanlin Wu, Zhilong Zhang, Zheng Jiang, Bingxiang He, Wei-Ying Ma, Ya-Qin Zhang, and Hao Zhou. 2026.
+Weak-to-strong generalization via direct on-policy distillation.
+arXiv preprint arXiv:2607.05394.
+Fu et al. (2026)
+Yuqian Fu, Haohuan Huang, Kaiwen Jiang, Jiacai Liu, Zhuo Jiang, Yuanheng Zhu, and Dongbin Zhao. 2026.
+Revisiting on-policy distillation: Empirical failure modes and simple fixes.
+arXiv preprint arXiv:2603.25562.
+Gu et al. (2024)
+Yuxian Gu, Li Dong, Furu Wei, and Minlie Huang. 2024.
+Minillm: Knowledge distillation of large language models.
+In Proceedings of ICLR.
+Guo et al. (2025)
+Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Qihao Zhu, Runxin Xu, Ruoyu Zhang, Shirong Ma, Xiao Bi, and 1 others. 2025.
+Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning.
+arXiv preprint arXiv:2501.12948.
+He et al. (2025)
+Bingxiang He, Zekai Qu, Zeyuan Liu, Yinghao Chen, Yuxin Zuo, Cheng Qian, Kaiyan Zhang, Weize Chen, Chaojun Xiao, Ganqu Cui, and 1 others. 2025.
+Justrl: Scaling a 1.5 b llm with a simple rl recipe.
+arXiv preprint arXiv:2512.16649.
+Hendrycks et al. (2021)
+Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric Tang, Dawn Song, and Jacob Steinhardt. 2021.
+Measuring mathematical problem solving with the math dataset.
+NeurIPS.
+Hu et al. (2022)
+Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen, and 1 others. 2022.
+Lora: Low-rank adaptation of large language models.
+ICLR, 1(2):3.
+Jang et al. (2026)
+Ijun Jang, Jewon Yeom, Juan Yeo, Hyunggyu Lim, and Taesup Kim. 2026.
+Stable on-policy distillation through adaptive target reformulation.
+In Findings of the Association for Computational Linguistics: ACL 2026, pages 42217–42227.
+Jia et al. (2026)
+Nan Jia, Haojin Yang, Xing Ma, Jiesong Lian, Shuailiang Zhang, Weipeng Zhang, Ke Zeng, Xunliang Cai, and Zequn Sun. 2026.
+Asymmetric on-policy distillation: Bridging exploitation and imitation at the token level.
+arXiv preprint arXiv:2605.06387.
+Jin et al. (2026)
+Woogyeol Jin, Taywon Min, Yongjin Yang, Swanand Ravindra Kadhe, Yi Zhou, Dennis Wei, Nathalie Baracaldo, and Kimin Lee. 2026.
+Entropy-aware on-policy distillation of language models.
+arXiv preprint arXiv:2603.07079.
+Kaur et al. (2026)
+Simran Kaur, Narutatsu Ri, Yinghui He, Liam Fowl, and Sanjeev Arora. 2026.
+Rethinking on-policy self-distillation for thinking models.
+arXiv preprint arXiv:2607.05184.
+Kim et al. (2026)
+Jeonghye Kim, Xufang Luo, Minbeom Kim, Sangmook Lee, Dohyung Kim, Jiwon Jeon, Dongsheng Li, and Yuqing Yang. 2026.
+Why does self-distillation (sometimes) degrade the reasoning capability of llms?
+arXiv preprint arXiv:2603.24472.
+Ko et al. (2026)
+Jongwoo Ko, Sara Abdali, Young Jin Kim, Tianyi Chen, and Pashmina Cameron. 2026.
+Scaling reasoning efficiently via relaxed on-policy distillation.
+arXiv preprint arXiv:2603.11137.
+Kwon et al. (2023)
+Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang, and Ion Stoica. 2023.
+Efficient memory management for large language model serving with pagedattention.
+In Proceedings of the ACM SIGOPS 29th Symposium on Operating Systems Principles.
+Li et al. (2026)
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian, Tianyu Yu, Huan-ang Gao, Wenkai Yang, Zhiyuan Liu, and 1 others. 2026.
+Rethinking on-policy distillation of large language models: Phenomenology, mechanism, and recipe.
+arXiv preprint arXiv:2604.13016.
+Lu and Lab (2025)
+Kevin Lu and Thinking Machines Lab. 2025.
+On-policy distillation.
+Thinking Machines Lab: Connectionism.
+Https://thinkingmachines.ai/blog/on-policy-distillation.
+Luo et al. (2026)
+Feng Luo, Yu-Neng Chuang, Guanchu Wang, Zicheng Xu, Xiaotian Han, Tianyi Zhang, and Vladimir Braverman. 2026.
+Demystifying opd: Length inflation and stabilization strategies for large language models.
+arXiv preprint arXiv:2604.08527.
+Oh et al. (2026)
+Minjae Oh, Sangjun Song, Gyubin Choi, Yunho Choi, and Yohan Jo. 2026.
+Kl for a kl: On-policy distillation with control variate baseline.
+arXiv preprint arXiv:2605.07865.
+OpenAI (2026)
+OpenAI. 2026.
+GPT-5.5 System Card.
+Technical report, OpenAI.
+OpenCompass (2025)
+OpenCompass. 2025.
+Aime 2025.
+https://huggingface.co/datasets/opencompass/AIME2025.
+Plyusov et al. (2026)
+Daniil Plyusov, Alexey Gorbatovski, Alexey Malakhov, Nikita Balagansky, Boris Shaposhnikov, Daria Korotyshova, and Daniil Gavrilov. 2026.
+Trust-region behavior blending for on-policy distillation.
+arXiv preprint arXiv:2605.31159.
+Rein et al. (2024)
+David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel R Bowman. 2024.
+Gpqa: A graduate-level google-proof q&a benchmark.
+In First Conference on Language Modeling.
+Shao et al. (2024)
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, Y. K. Li, Y. Wu, and Daya Guo. 2024.
+DeepSeekMath: Pushing the limits of mathematical reasoning in open language models.
+arXiv preprint arXiv:2402.03300.
+Sheng et al. (2024)
+Guangming Sheng, Chi Zhang, Zilingfeng Ye, Xibin Wu, Wang Zhang, Ru Zhang, Yanghua Peng, Haibin Lin, and Chuan Wu. 2024.
+Hybridflow: A flexible and efficient rlhf framework.
+arXiv preprint arXiv: 2409.19256.
+Wang et al. (2024)
+Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, and 1 others. 2024.
+Mmlu-pro: A more robust and challenging multi-task language understanding benchmark.
+arXiv preprint arXiv:2406.01574.
+Wu et al. (2024)
+Taiqiang Wu, Jiahao Wang, Zhe Zhao, and Ngai Wong. 2024.
+Mixture-of-subspaces in low-rank adaptation.
+In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing, pages 7880–7899, Miami, Florida, USA. Association for Computational Linguistics.
+Wu et al. (2026)
+Yecheng Wu, Song Han, and Hai Cai. 2026.
+Lightning opd: Efficient post-training for large reasoning models with offline on-policy distillation.
+arXiv preprint arXiv:2604.13010.
+Xiao et al. (2026)
+Bangjun Xiao, Bingquan Xia, Bo Yang, Bofei Gao, Bowen Shen, Chen Zhang, Chenhong He, Chiheng Lou, Fuli Luo, Gang Wang, and 1 others. 2026.
+Mimo-v2-flash technical report.
+arXiv preprint arXiv:2601.02780.
+Xu et al. (2026a)
+Anyi Xu, Bangcai Lin, Bing Xue, Bingxuan Wang, Bingzheng Xu, Bochao Wu, Bowei Zhang, Chaofan Lin, Chen Dong, Chenchen Ling, and 1 others. 2026a.
+Deepseek-v4: Towards highly efficient million-token context intelligence.
+arXiv preprint arXiv:2606.19348.
+Xu et al. (2026b)
+Haoran Xu, Hongyu Wang, Yifei Gao, Jiaze Li, Xiaofeng Zhang, and Xiaosong Yuan. 2026b.
+Sg-opd: Sign-gated on-policy distillation via sign-consistency gating and phased teacher sampling.
+arXiv preprint arXiv:2606.09304.
+Xu et al. (2026c)
+Yuanda Xu, Hejian Sang, Zhengze Zhou, Ran He, Zhipeng Wang, and Alborz Geramifard. 2026c.
+Beyond grpo and on-policy distillation: An empirical sparse-to-dense reward principle for language-model post-training.
+arXiv preprint arXiv:2605.12483.
+Yang et al. (2025)
+An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, and 1 others. 2025.
+Qwen3 technical report.
+arXiv preprint arXiv:2505.09388.
+Yang et al. (2026a)
+Wenkai Yang, Weijie Liu, Ruobing Xie, Kai Yang, Saiyong Yang, and Yankai Lin. 2026a.
+Learning beyond teacher: Generalized on-policy distillation with reward extrapolation.
+arXiv preprint arXiv:2602.12125.
+Yang et al. (2026b)
+Xuewei Yang, Jiachen Yu, Jie Wu, Shaoning Sun, Junjie Wang, and Yujiu Yang. 2026b.
+Internalize the temperature: On-policy self-distillation as policy reheater for reinforcement learning.
+arXiv preprint arXiv:2606.00755.
+Yang et al. (2026c)
+Zhicheng Yang, Zhijiang Guo, Yifan Song, Minrui Xu, Yongxin Wang, Yiwei Wang, Xiaodan Liang, and Jing Tang. 2026c.
+Prune-opd: Efficient and reliable on-policy distillation for long-horizon reasoning.
+arXiv preprint arXiv:2605.07804.
+Yu et al. (2026)
+Qiying Yu, Zheng Zhang, Ruofei Zhu, Yufeng Yuan, Xiaochen Zuo, Yu Yue, Weinan Dai, Tiantian Fan, Gaohong Liu, Lingjun Liu, and 1 others. 2026.
+Dapo: An open-source llm reinforcement learning system at scale.
+Advances in Neural Information Processing Systems, 38:113222–113244.
+Zhang et al. (2026)
+Dongxu Zhang, Zhichao Yang, Sepehr Janghorbani, Jun Han, Andrew Ressler II, Qian Qian, Gregory D Lyng, Sanjit Singh Batra, and Robert E Tillman. 2026.
+Fast and effective on-policy distillation from reasoning prefixes.
+In Findings of the Association for Computational Linguistics: ACL 2026, pages 25553–25569.
+Zhao et al. (2026)
+Anhao Zhao, Junlong Tong, Yingqi Fan, Ping Nie, Wenjie Li, and Xiaoyu Shen. 2026.
+Poweropd: Stabilizing on-policy distillation with bounded power transformation.
+arXiv preprint arXiv:2606.17199.
+Zhou et al. (2023)
+Jeffrey Zhou, Tianjian Lu, Swaroop Mishra, Siddhartha Brahma, Sujoy Basu, Yi Luan, Denny Zhou, and Le Hou. 2023.
+Instruction-following evaluation for large language models.
+arXiv preprint arXiv:2311.07911.
+Ziheng et al. (2026)
+Zhou Ziheng, Jiaqi Li, Huacong Tang, Ying Nian Wu, and Demetri Terzopoulos. 2026.
+Less is more: Early stopping rollout for on-policy distillation.
+arXiv preprint arXiv:2605.27028.
+Appendix
+Appendix A Implementation Details
+This section summarizes the data construction procedure and the main hyperparameters used in the SFT warm-up and OPD stages.
+Unless otherwise specified, we use the same configurationsacross all experiments.
+SFT data construction.
+To construct the SFT dataset, we randomly sample prompts from the OPD training set and use the teacher model to generate a response for each sampled prompt.
+The decoding configuration used for teacher inference follows the base-model setting reported in Table 5.
+The sampled prompts and their corresponding teacher-generated responses are then paired to form the SFT training data.
+SFT warm-up.
+We consider both full-parameter fine-tuning and parameter-efficient fine-tuning with LoRA.
+The two settings use the same batch size and maximum sequence length, while different learning rates are adopted due to their different numbers of trainable parameters.
+The detailed hyperparameters are reported in Table 3.
+Hyperparameter
+Value
+Batch Size
+16
+Learning Rate (Full Fine-tuning)
+ $5\times 10^{-6}$ 
+Learning Rate (LoRA)
+ $5\times 10^{-5}$ 
+Table 3: Hyperparameters used for SFT warm-up.
+OPD.
+After the SFT warm-up stage, we further optimize the student model using OPD.
+During training, the student generates one response for each prompt, while the teacher model provides token-level supervision for policy optimization.
+We use a maximum prompt length of 2,048 tokens and allow responses of up to 8,192 tokens. The main OPD hyperparameters are summarized in Table 4.
+Hyperparameter
+Value
+Global batch Size
+128
+Mini batch size
+128
+Rollout $n$ 
+1
+Maximum Prompt Length
+2,048
+Maximum Response Length
+8,192
+Temperature
+1.0
+Top- $p$ 
+1.0
+Learning Rate
+ $1\times 10^{-6}$ 
+KL Coefficient
+0.0
+Table 4: Hyperparameters used for OPD.
+Inference and evaluation.
+We use different decoding configurations for base and instruction-tuned models during evaluation.
+The detailed inference hyperparameters are summarized in Table 5.
+Hyperparameter
+Base
+Instruct
+Thinking
+do sample
+True
+True
+True
+Max. Response Length
+16,384
+24,576
+32768
+Temperature
+0.7
+0.6
+0.6
+Top- $p$ 
+0.8
+0.95
+0.95
+Top- $k$ 
+20
+20
+20
+Table 5: Inference hyperparameters used for model evaluation.
+Overlap ratio.
+For each student-generated context $c_{t}$ , we obtain the top- $k$ token
+sets $\mathcal{V}^{S}_{t}$ and $\mathcal{V}^{T}_{t}$ from the student and
+teacher distributions, respectively. The overlap ratio is defined as
+ $\mathrm{Overlap}=\frac{1}{|\mathcal{I}|}\sum_{t\in\mathcal{I}}\frac{|\mathcal{V}^{S}_{t}\cap\mathcal{V}^{T}_{t}|}{k},$ 
+(4)
+where $\mathcal{I}$ denotes all valid response positions. We use
+ $k=\textbf{32}$ and average the ratio over the training batch.
+Appendix B Detailed Results for Warm-up Data
+B.1 Presence of CoT
+Figure 9: 
+Detailed performance of SFT with and without CoT supervision across different SFT checkpoints.
+Figure 10: 
+Performance comparison between SFT models trained with CoT responses generated by the OPD teacher and by an external teacher across different SFT checkpoints.
+Figure 9 compares SFT with and without CoT supervision across different SFT checkpoints.
+Across the three benchmarks, SFT with CoT generally achieves substantially better performance than SFT without CoT.
+This advantage is largely preserved after the subsequent OPD stage, especially at later SFT checkpoints.
+For example, at SFT step 100, the CoT models achieve final OPD performances of 12.7, 8.5, and 73.7 on AIME24, AIME25, and MATH500, respectively, compared with 5.8, 3.5, and 61.4 for their non-CoT counterparts.
+Moreover, OPD cannot consistently compensate for the absence of CoT supervision and occasionally even decreases performance on the AIME benchmarks.
+These results demonstrate that CoT supervision is necessary for obtaining a strong and reliable initialization before OPD training.
+B.2 Source of CoT
+Figure 10 compares SFT data generated by the OPD teacher with data generated by an external teacher.
+Using CoT responses from the OPD teacher consistently yields a stronger SFT model across all three benchmarks.
+This advantage is largely retained after OPD training, whereas OPD cannot fully compensate for the weaker initialization produced by the external teacher.
+These results suggest that aligning the source of CoT supervision with the OPD teacher is important for effective policy distillation.
+Figure 11: 
+Performance comparison between SFT models trained with correct and incorrect CoT responses across different SFT checkpoints.
+Figure 12: 
+ID and OOD performance during OPD training under different SFT warm-up configurations.
+We compare full-parameter warm-up and LoRA warm-up with ranks $r=16$ and $r=64$ , using either 40 or 175 SFT steps.
+Solid and dashed lines denote configurations with 175 and 40 warm-up steps, respectively.
+Method
+ID
+OOD
+AIME
+24
+AIME
+25
+AMC
+23
+MATH
+500
+Avg.
+IFEval
+GPQA
+Phys.
+Chem.
+Hist.
+Avg.
+Teacher
+52.50
+39.58
+91.25
+91.60
+68.73
+29.94
+31.31
+50.73
+47.00
+14.44
+34.68
+Student
+25.83
+22.08
+66.56
+83.90
+49.59
+29.02
+13.64
+40.95
+37.72
+13.39
+26.94
+OPD
+43.33
+33.75
+84.69
+89.10
+62.72
+29.76
+26.26
+48.34
+43.99
+13.39
+32.35
+Simple-OPD
+45.42
+36.67
+86.56
+88.70
+64.34
+29.02
+25.25
+44.42
+45.49
+15.49
+31.93
+Table 6: 
+Detailed benchmark-level results with a same-size student-trained teacher.
+The Simple-OPD row is shaded, and the better result between OPD and Simple-OPD is shown in bold.
+Question. 
+How many positive integers less than $4000$ are not divisible by
+ $2$ , $3$ , $5$ , or $7$ ? Gold: $913$ .
+Correct response. Predicts $\boxed{913}$ ✓
+“To find the number of integers not divisible by $2$ , $3$ ,
+ $5$ , or $7$ , it might be easier to use the principle of
+inclusion–exclusion.”
+Step 1: Find the total number of positive integers less
+than $4000$ .
+The range is $1,\ldots,3999$ , so the total is $3999$ .
+Step 2: Find the number of integers less than $4000$ 
+that are divisible by $2$ , $3$ , $5$ , or $7$ .
+Define $A,B,C,D$ as the sets of multiples of $2,3,5,7$ and
+apply inclusion–exclusion.
+Single-set counts:
+ $|A|=1999$ , $|B|=1333$ , $|C|=799$ , and $|D|=571$ ;
+their sum is $4702$ .
+Pairwise counts:
+ $|A\cap B|=666$ , $|A\cap C|=399$ , $|A\cap D|=285$ ,
+ $|B\cap C|=266$ , $|B\cap D|=190$ , and $|C\cap D|=114$ ;
+their sum is $\mathbf{1920}$ .
+Triple counts:
+ $133,95,57,38$ , whose sum is $323$ ; the four-way
+intersection has size $19$ .
+Hence
+ $|A\cup B\cup C\cup D|=4702-1920+323-19=3086$ .
+Step 3: Find the number of integers less than $4000$ 
+that are not divisible by $2$ , $3$ , $5$ , or $7$ .
+ $3999-3086=\mathbf{913}$ .
+“Wait, let’s verify the calculations to ensure accuracy.”
+The response repeats the four inclusion–exclusion totals and
+checks $3999-3086=913$ .
+Answer: $\boxed{913}$ .
+Incorrect response. Predicts ${\color[rgb]{1,0,0}\boxed{1013}}$ ${\color[rgb]{1,0,0}\times}$ 
+“To find the number of positive integers less than $4000$ 
+that are not divisible by $2$ , $3$ , $5$ , or $7$ , it might be easier
+to use the principle of inclusion–exclusion.”
+Step 1: Find the total number of positive integers less
+than $4000$ .
+The range is again $1,\ldots,3999$ , giving $3999$ .
+Step 2: Find the number of positive integers less than
+ $4000$ that are divisible by $2$ , $3$ , $5$ , or $7$ .
+The response defines the same four sets and writes the same
+inclusion–exclusion formula.
+It obtains the same single-set counts
+ $1999,1333,799,571$ (sum $4702$ ), the same pairwise counts
+ $666,399,285,266,190,114$ , the same triple counts
+ $133,95,57,38$ (sum $323$ ), and the same four-way count $19$ .
+It then computes
+ $4702-(666+399+285+266+190+114)=4702-{\color[rgb]{1,0,0}\mathbf{2020}}=2682$ .
+[Arithmetic slip:
+the six displayed pairwise counts sum to
+ $1920$ , not $2020$ .]
+Following the same remaining steps, it obtains
+ $2682+323-19=2986$ and then
+ $3999-2986={\color[rgb]{1,0,0}\mathbf{1013}}$ .
+“Wait, let’s double-check the calculations to ensure
+accuracy.”
+The check repeats the same incorrect subtotal $2020$ rather
+than independently re-adding its six terms. The response even notes
+that an alternative cross-check would help, but proceeds without one.
+Answer: ${\color[rgb]{1,0,0}\boxed{1013}}$ .
+Table 7: 
+Correct and incorrect responses with similar reasoning patterns.
+Both responses follow the same inclusion–exclusion procedure and self-checking structure, while the incorrect response makes a local error when summing the pairwise intersections and propagates it to the final answer.
+B.3 Response Correctness
+Figure 11 compares models trained with correct and incorrect CoT responses.
+Across the four benchmarks, incorrect CoT supervision achieves performance comparable to correct CoT supervision after both SFT and OPD.
+As illustrated in Table 7, an incorrect response can preserve nearly the same thinking pattern as a correct response, including the same problem decomposition, intermediate computations, and self-checking structure.
+The incorrect trajectory differs only in a local arithmetic error, which is subsequently propagated through the remaining steps.
+These results suggest that preserving an effective reasoning pattern may be more important than ensuring that every SFT trajectory is fully correct.
+Appendix C Detailed Results for Warm-up Training
+Effect of LoRA rank and warm-up steps.
+Figure 12 studies the effects of the LoRA rank and the number of SFT warm-up steps.
+Increasing the LoRA rank provides only limited improvements on the in-domain benchmarks.
+On the out-of-domain benchmarks, a smaller LoRA rank can even achieve better performance, indicating that a larger rank does not necessarily improve generalization.
+In contrast, increasing the number of SFT warm-up steps leads to a clear and consistent improvement, particularly on the out-of-domain benchmarks.
+These results suggest that the warm-up duration is more important than the LoRA rank for obtaining a strong initialization for OPD.
+Prompt. 
+What is the sum of all of the multiples of $7$ between $100$ and $200$ ? Gold: $2107$ .
+Teacher response. Predicts $\boxed{2107}$ ✓
+Alright, I have this problem to solve. […]
+Step 1: Identify the smallest multiple of $7$ greater than $100$ .
+ $100/7\approx 14.29$ , round up to $15$ , so
+ $7\times 15=105$ .
+Verification:
+Is $105>100$ ? Yes. Is $105$ a multiple of $7$ ? Yes.
+Step 2: Identify the largest multiple of $7$ less than $200$ .
+ $200/7\approx 28.57$ , round down to $28$ , so
+ $7\times 28=196$ .
+Verification:
+Is $196<200$ ? Yes. Is $196$ a multiple of $7$ ? Yes.
+Step 3: List all multiples of $7$ from $105$ to $196$ .
+Arithmetic sequence with $a_{1}{=}105$ , $d{=}7$ , $a_{n}{=}196$ .
+Step 4: Determine the number of terms.
+ $196=105+(n-1)\cdot 7\Rightarrow n=14$ .
+Step 5: Calculate the sum.
+ $S_{14}=\tfrac{14}{2}\times(105+196)=7\times 301=\mathbf{2107}$ .
+Verification: Let’s verify the calculations to ensure accuracy.
+(a) List all $14$ terms $105,112,119,\ldots,189,196$ and
+count: $14$ terms, correct. (b) Pair them:
+ $105{+}196=301$ , $112{+}189=301$ , $119{+}182=301$ , $\ldots$ ; each
+pair sums to $301$ ; $7$ pairs. Total
+ $=7\times 301=\mathbf{2107}$ . Correct.
+Final Answer: $\boxed{2107}$ .
+Warm-up response. Predicts $\boxed{2107}$ ✓
+Alright, I have this problem to solve. Alright, let’s break
+this down. […Understanding the Problem …]
+Step 1: Identify the First Multiple of $7$ Greater Than $100$ .
+ $100/7\approx 14.29$ , round up to $15$ , so
+ $7\times 15=105$ .
+Step 2: Identify the Last Multiple of $7$ Less Than $200$ .
+ $200/7\approx 28.57$ , round down to $28$ , so
+ $7\times 28=196$ .
+Step 3: List All Multiples of $7$ Between $100$ and $200$ .
+ $105,112,\ldots,196$ . “Wait, let’s verify the range”
+— re-lists to confirm.
+Step 4: Calculate the Number of Terms in the Sequence.
+ $196=105+(n-1)\cdot 7\Rightarrow n=14$ .
+Step 5: Calculate the Sum of the Arithmetic Sequence.
+ $S_{14}=\tfrac{14}{2}\times(105+196)=7\times 301=\mathbf{2107}$ .
+Verification.
+“Let’s verify the sum by adding all the multiples of $7$ 
+from $105$ to $196$ .” Manual running sum:
+ $105{+}112=217$ ; $217{+}119=336$ ; $336{+}126=462$ ; 
+ $462{+}133=595$ ; $\ldots$ ; $1722{+}189=1911$ ; 
+ $1911{+}196=\mathbf{2107}$ . “The sum is indeed
+ $2107$ .”
+Conclusion: $\boxed{2107}$ .
+No-warm-up response. Predicts ${\color[rgb]{0.7852,0.1172,0.1172}\boxed{1407}}$ ${\color[rgb]{0.7852,0.1172,0.1172}\times}$ 
+To solve the problem, we follow these steps: [numbered
+list …]
+### Step 1: Identify the smallest multiple of $7\geq 100$ .
+ $100/7\approx 14.29$ , round up to $15$ , so
+ $7\times 15=105$ .
+### Step 2: Identify the largest multiple of $7\leq 200$ .
+ $200/7\approx 28.57$ , round down to $28$ , so
+ $7\times 28=196$ .
+### Step 3: Determine the number of terms in this sequence.
+ $196=105+(n-1)\cdot 7\Rightarrow n=14$ .
+### Step 4: Calculate the sum of the arithmetic sequence.
+ $S_{14}=\tfrac{14}{2}\times(105+196)=7\times{\color[rgb]{0.7852,0.1172,0.1172}201}={\color[rgb]{0.7852,0.1172,0.1172}1407}$ .
+ [Arithmetic slip: $105+196=301$ , not ${\color[rgb]{0.7852,0.1172,0.1172}201}$ .]
+[No Verification step.]
+The response ends here—no re-check of $a_{1}+a_{n}$ , no
+manual re-sum of the $14$ terms, no sanity check that the sum
+of $14$ three-digit numbers must exceed $14\times 105=1470$ .
+Final Answer: ${\color[rgb]{0.7852,0.1172,0.1172}\boxed{1407}}$ .
+Table 8: 
+Response skeletons for MATH500 problem at
+OPD step $300$ .
+The teacher and warm-up responses independently verify the
+arithmetic-sequence sum, whereas the no-warm-up response makes the
+error $105+196=201$ and terminates without checking it.
+Step headings and quoted phrases are verbatim, while the accompanying
+descriptions are condensed.
+ Experimental support, please
+ view the build logs
+ for errors. Generated by
+ L
+ A
+ T
+ E
+ xml
+ .
+Instructions for reporting errors
+We are continuing to improve HTML versions of papers, and your feedback helps enhance accessibility and mobile
+ support. To report errors in the HTML that will help us improve conversion and rendering, choose any of the
+ methods listed below:
+Click the "Report Issue" (
+ ) button, located in the page header.
+Tip: You can select the relevant text first, to include it in your report.
+Our team has already identified the following issues. We appreciate your time reviewing and reporting rendering errors we
+ may not have found yet. Your efforts will help us improve the HTML versions for all readers, because disability
+ should not be a barrier to accessing research. Thank you for your continued support in championing open access for
+ all.
+Have a free development cycle? Help support accessibility at arXiv! Our collaborators at LaTeXML maintain a list of packages that need conversion, and welcome developer contributions.
+ We gratefully acknowledge support from our major funders,
+ member institutions, ,
+ and all contributors.
+ About ·
+ Help ·
+ Contact ·
+ Subscribe ·
+ Copyright ·
+ Privacy ·
+ Accessibility ·
+ Operational Status (opens in new tab)

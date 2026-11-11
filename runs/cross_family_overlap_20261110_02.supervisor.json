@@ -1,0 +1,13 @@
+{
+  "pid": 4057047,
+  "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_cross_family_diagnosis.py",
+    "--output-dir",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/cross_family_overlap_20261110_02",
+    "--config",
+    "experiments/cross_family_overlap_20261110_v2.json"
+  ],
+  "started_at": "2026-11-10T12:43:16.571057+00:00"
+}

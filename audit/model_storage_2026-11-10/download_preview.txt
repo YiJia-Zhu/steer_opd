@@ -1,0 +1,13 @@
+Mode: PREVIEW (no files downloaded)
+Profiles: cross-family-open; assets: 2
+Selected model safetensors: 15.69 GB (excludes dataset/metadata/cache)
+
+[teacher_qwen3_thinking4] access=False
+hf download Qwen/Qwen3-4B-Thinking-2507 --repo-type model --revision 768f209d9ea81521153ed38c47d515654e938aea --local-dir /home/zhenning/data/huggingface_models/Qwen3-4B-Thinking-2507 --include '*.json' '*.safetensors' '*.model' '*.tiktoken' '*.txt' '*.jinja' '*.py' '*.md'
+Project link: /local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Qwen3-4B-Thinking-2507 -> /home/zhenning/data/huggingface_models/Qwen3-4B-Thinking-2507
+
+[student_phi3p5] access=False
+hf download microsoft/Phi-3.5-mini-instruct --repo-type model --revision 2fe192450127e6a83f7441aef6e3ca586c338b77 --local-dir /home/zhenning/data/huggingface_models/Phi-3.5-mini-instruct --include '*.json' '*.safetensors' '*.model' '*.tiktoken' '*.txt' '*.jinja' '*.py' '*.md'
+Project link: /local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Phi-3.5-mini-instruct -> /home/zhenning/data/huggingface_models/Phi-3.5-mini-instruct
+
+Add --execute to download. Dataset filtering and splits are separate steps.

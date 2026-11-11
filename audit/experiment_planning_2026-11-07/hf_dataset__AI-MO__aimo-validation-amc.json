@@ -1,0 +1,86 @@
+{
+  "url": "https://huggingface.co/api/datasets/AI-MO/aimo-validation-amc",
+  "retrieved_at": "2026-11-07T15:19:26.742076+00:00",
+  "status": 200,
+  "data": {
+    "_id": "668d1c1d726328deea3ea0a0",
+    "id": "project-numina/aimo-validation-amc",
+    "author": "project-numina",
+    "sha": "69d78a4a2c840e82d69af6bc742bda09005f6316",
+    "lastModified": "2025-05-07T06:40:39.000Z",
+    "private": false,
+    "gated": false,
+    "disabled": false,
+    "tags": [
+      "license:apache-2.0",
+      "size_categories:n<1K",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tDataset Card for AIMO Validation AMC\n\t\n\nAll 83 come from AMC12 2022, AMC12 2023, and have been extracted from the AOPS wiki page https://artofproblemsolving.com/wiki/index.php/AMC_12_Problems_and_Solutions\nThis dataset serves as an internal validation set during our participation in the AIMO progress prize competition. Using data after 2021 is to avoid potential overlap with the MATH training set.\nHere are the different columns in the dataset:\nproblem: the modified problem… See the full description on the dataset page: https://huggingface.co/datasets/project-numina/aimo-validation-amc.",
+    "downloads": 4784,
+    "likes": 19,
+    "cardData": {
+      "dataset_info": {
+        "features": [
+          {
+            "name": "id",
+            "dtype": "int64"
+          },
+          {
+            "name": "problem",
+            "dtype": "string"
+          },
+          {
+            "name": "answer",
+            "dtype": "float64"
+          },
+          {
+            "name": "url",
+            "dtype": "string"
+          }
+        ],
+        "splits": [
+          {
+            "name": "train",
+            "num_bytes": 32699,
+            "num_examples": 83
+          }
+        ],
+        "download_size": 19141,
+        "dataset_size": 32699
+      },
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/train-*"
+            }
+          ]
+        }
+      ],
+      "license": "apache-2.0"
+    },
+    "siblings": [
+      {
+        "rfilename": ".gitattributes"
+      },
+      {
+        "rfilename": "README.md"
+      },
+      {
+        "rfilename": "data/train-00000-of-00001.parquet"
+      }
+    ],
+    "createdAt": "2024-07-09T11:16:45.000Z",
+    "usedStorage": 91283
+  }
+}

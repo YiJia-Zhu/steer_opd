@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-11-10T10:42:19.139862+00:00",
+  "results": {
+    "student": {
+      "correct_samples": 1706,
+      "samples": 2000,
+      "questions": 500,
+      "avg_accuracy": 0.853,
+      "truncated_samples": 29,
+      "truncation_rate": 0.0145,
+      "mean_response_tokens": 5409.527,
+      "output_sha256_verified": true,
+      "summary": "runs/pilot_20261108_01/initial_math500/student.summary.json"
+    },
+    "teacher": {
+      "correct_samples": 1850,
+      "samples": 2000,
+      "questions": 500,
+      "avg_accuracy": 0.925,
+      "truncated_samples": 4,
+      "truncation_rate": 0.002,
+      "mean_response_tokens": 4200.3405,
+      "output_sha256_verified": true,
+      "summary": "runs/pilot_20261108_01/initial_math500/teacher.summary.json"
+    }
+  },
+  "teacher_minus_student_pp": 7.2,
+  "paired_question_bootstrap_95ci_pp": [
+    5.65,
+    8.799999999999999
+  ],
+  "bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "unit": "question, keeping all four samples together"
+  },
+  "training_result_available": false,
+  "failed_stage": "initial_dev",
+  "stopped_at_local": "2026-11-08 02:56:59 Asia/Shanghai",
+  "interpretation": "Teacher advantage before training; no evidence yet for OPD or steering gains."
+}

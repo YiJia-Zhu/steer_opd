@@ -1,0 +1,24 @@
+{
+  "token_lengths": {
+    "math500": {
+      "max_prompt_tokens": 811,
+      "overlong_ids": []
+    },
+    "calibration_candidates": {
+      "max_prompt_tokens": 1312,
+      "overlong_ids": [
+        "0bbe8472-6c33-44ea-8afe-fabea7edcf92"
+      ]
+    },
+    "dev_pilot": {
+      "max_prompt_tokens": 571,
+      "overlong_ids": []
+    },
+    "train_pilot": {
+      "max_prompt_tokens": 982,
+      "overlong_ids": []
+    }
+  },
+  "math500_reference_solution_failures": [],
+  "reference_solutions_checked": 500
+}

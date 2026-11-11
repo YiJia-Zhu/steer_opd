@@ -1,0 +1,11 @@
+{
+  "pid": 1683582,
+  "command": [
+    "/home/zhenning/data/miniconda3/envs/verl/bin/python",
+    "scripts/run_pilot_campaign.py",
+    "--output-dir",
+    "runs/pilot_20261108_01"
+  ],
+  "started_at": "2026-11-07T17:04:38.675927+00:00",
+  "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01.wrapper.log"
+}

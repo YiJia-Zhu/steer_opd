@@ -1,0 +1,100 @@
+{
+  "created_at": "2026-11-10T15:11:22.550294+00:00",
+  "activity": "Read-only local tokenizer/config inspection; no model weights loaded, no network or GPU jobs",
+  "models": {
+    "DeepSeek-R1-Distill-Qwen-1.5B": {
+      "path": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "tokenizer_json_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "tokenizer_mapping_sha256": "1f32b5a8dfe7bc06838497c43e712ef68e9dd638a7727e9e6c9b0d8e053b72e9",
+      "tokenizer_model_algorithm_sha256": "6095237c5ae168a760b052b2c62092fcd239b083e73cb23f0c23426550c884cd",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151665,
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "head_vocab_size": 151936
+    },
+    "DeepSeek-R1-Distill-Qwen-7B": {
+      "path": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-7B",
+      "tokenizer_json_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "tokenizer_mapping_sha256": "1f32b5a8dfe7bc06838497c43e712ef68e9dd638a7727e9e6c9b0d8e053b72e9",
+      "tokenizer_model_algorithm_sha256": "6095237c5ae168a760b052b2c62092fcd239b083e73cb23f0c23426550c884cd",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151665,
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "head_vocab_size": 152064
+    },
+    "DeepSeek-R1-Distill-Qwen-14B": {
+      "path": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-14B",
+      "tokenizer_json_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "tokenizer_mapping_sha256": "1f32b5a8dfe7bc06838497c43e712ef68e9dd638a7727e9e6c9b0d8e053b72e9",
+      "tokenizer_model_algorithm_sha256": "6095237c5ae168a760b052b2c62092fcd239b083e73cb23f0c23426550c884cd",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151665,
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "head_vocab_size": 152064
+    },
+    "Qwen3-0.6B": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-0.6B",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_mapping_sha256": "c605f1c0a80a9501fca9782b942a7f01474e3f37b1c59e3efea82da0e2f20376",
+      "tokenizer_model_algorithm_sha256": "0d23cdeaf68c5811bb940a78aa178916aedb76f270926b4677e9991af5fff357",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151669,
+      "architecture": [
+        "Qwen3ForCausalLM"
+      ],
+      "head_vocab_size": 151936
+    },
+    "Qwen3-1.7B": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-1.7B",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_mapping_sha256": "c605f1c0a80a9501fca9782b942a7f01474e3f37b1c59e3efea82da0e2f20376",
+      "tokenizer_model_algorithm_sha256": "0d23cdeaf68c5811bb940a78aa178916aedb76f270926b4677e9991af5fff357",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151669,
+      "architecture": [
+        "Qwen3ForCausalLM"
+      ],
+      "head_vocab_size": 151936
+    },
+    "Qwen3-4B": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-4B",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_mapping_sha256": "c605f1c0a80a9501fca9782b942a7f01474e3f37b1c59e3efea82da0e2f20376",
+      "tokenizer_model_algorithm_sha256": "0d23cdeaf68c5811bb940a78aa178916aedb76f270926b4677e9991af5fff357",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151669,
+      "architecture": [
+        "Qwen3ForCausalLM"
+      ],
+      "head_vocab_size": 151936
+    },
+    "JustRL-DeepSeek-1.5B": {
+      "path": "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+      "tokenizer_json_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "tokenizer_mapping_sha256": "1f32b5a8dfe7bc06838497c43e712ef68e9dd638a7727e9e6c9b0d8e053b72e9",
+      "tokenizer_model_algorithm_sha256": "6095237c5ae168a760b052b2c62092fcd239b083e73cb23f0c23426550c884cd",
+      "tokenizer_text_pipeline_sha256": "6109385c421e495553a87ec0cb2b9c9a5128354624836a198589bb83d39bcec3",
+      "mapped_tokens": 151665,
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "head_vocab_size": 151936
+    }
+  },
+  "paper_scope": {
+    "rethinking_2604.13016v2": "Reported OPD pairs stay within Qwen3 or within R1-Distill-Qwen and its RL descendants; 2.1 assumes a common vocabulary. Comparisons across families are separate within-family experiments.",
+    "simple_2608.06802v1": "Reported OPD pairs are Qwen3-to-Qwen3 or JustRL-to-R1-Distill-Qwen. Section 3.2 includes GPT-5.5 text for cross-family offline SFT only; downstream OPD teacher remains the same Qwen3 teacher.",
+    "compass_2609.10154v1": "2 and A.4 align native token sequences by shared text spans, average token log-likelihoods within spans, and mask unalignable positions. This is not exact full-text or full-vocabulary KL."
+  },
+  "limits": [
+    "Local tokenizer audit does not establish bitwise equivalence to every paper checkpoint.",
+    "Common family names alone do not prove tokenizer compatibility.",
+    "Different output-head dimensions alone do not prove different lexical tokenization."
+  ]
+}

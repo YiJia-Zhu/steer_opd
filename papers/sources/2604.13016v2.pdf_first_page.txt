@@ -1,0 +1,108 @@
+Rethinking On-Policy Distillation
+
+2026-04-15
+
+Rethinking On-Policy Distillation of Large Language
+Models: Phenomenology, Mechanism, and Recipe
+Yaxuan Li∗1,2 , Yuxin Zuo∗†1 , Bingxiang He∗†1 , Jinqian Zhang1 , Chaojun Xiao‡1 , Cheng Qian3 , Tianyu Yu1 ,
+Huan-ang Gao1 , Wenkai Yang4 , Zhiyuan Liu‡1 , Ning Ding‡1
+1 Tsinghua University
+
+2 ShanghaiTech University
+
+∗ Equal Contribution.
+
+† Project Lead.
+
+3 University of Illinois Urbana-Champaign
+
+4 Renmin University of China
+
+‡ Corresponding Authors.
+
+§ Code: https://github.com/thunlp/OPD.
+
+arXiv:2604.13016v2 [cs.LG] 15 Apr 2026
+
+# hebx24@mails.tsinghua.edu.cn, {xcj,liuzy,dingning}@tsinghua.edu.cn
+
+Student-Teacher-Gap Recovery
+Student: DS-1.5B
+
+Student: Qwen3-1.7B
+
+DS-7B→DS-1.5B: Strong ≠ Learnability.
+Comparisons of teachers w/o and w/ RL.
+58.6%
+Teacher After RL
+
+5.3%
+DS-7B
+
+Teacher: DS-7B & DS-1.5B
+Student: JustRL-1.5B
+
+DS-7B: 0.55
+
+Acc: DS-7B > JustRL-1.5B >> DS-1.5B
+But yield similar distilled performance?
+DS-1.5B and 7B have consistent patterns.
+
+Teacher After RL
+
+16.9%
+SW-7B
+
+Reverse Distillation (Weak->Strong)
+
+15.6%
+
+DS-1.5B: 0.28
+
+Overlap Token Ratio
+Teacher: JustRL-1.5B & DS-7B
+Student: DS-1.5B
+
+Successful Run: JustRL-1.5B→DS-1.5B
+Overlap token contributes the main
+gradients and advantages!
+Failed Run: DS-7B→DS-1.5B
+
+Qwen3-4B Qwen3-4B
+-Math
+
+Teacher
+
+Models with high score may not provide
+additional information gain for OPD.
+
+OPD primarily learns thinking patterns.
+Performance does not matter much.
+
+OPD leads to progressive alignment on
+high-probability overlap tokens.
+
+Figure 1 | Overview of our paper. JustRL-1.5B is obtained by applying RL to DeepSeek-Distill-1.5B (DS1.5B), and Skywork-OR1-Math-7B (SW-7B) by applying RL to DeepSeek-Distill-7B (DS-7B).
+Abstract | On-policy distillation (OPD) has become a core technique in the post-training of large language
+models, yet its training dynamics remain poorly understood. This paper provides a systematic investigation
+of OPD dynamics and mechanisms. We first identify that two conditions govern whether OPD succeeds or
+fails: (i) the student and teacher should share compatible thinking patterns; and (ii) even with consistent
+thinking patterns and higher scores, the teacher must offer genuinely new capabilities beyond what the student
+has seen during training. We validate these findings through weak-to-strong reverse distillation, showing
+that same-family 1.5B and 7B teachers are distributionally indistinguishable from the student’s perspective.
+Probing into the token-level mechanism, we show that successful OPD is characterized by progressive alignment
+on high-probability tokens at student-visited states, a small shared token set that concentrates most of the
+probability mass (97%–99%). We further propose two practical strategies to recover failing OPD: off-policy
+cold start and teacher-aligned prompt selection. Finally, we show that OPD’s apparent free lunch of dense
+token-level reward comes at a cost, raising the question of whether OPD can scale to long-horizon distillation.
+
+1. Introduction
+On-policy distillation (OPD) has rapidly emerged as a core technique for large language model (LLM)
+post-training. Recent industry efforts, including Qwen3 [Yang et al., 2025], MiMo [Xiao et al., 2026]
+and GLM-5 [Zeng et al., 2026], all adopt OPD in their post-training pipelines and report substantial
+gains, establishing it as a competitive complement to conventional supervised fine-tuning (SFT) and
+outcome-reward reinforcement learning (RL). Thinking Machines Lab [Lu and Lab, 2025] replicates
+the Qwen3 OPD recipe at a fraction of the RL compute cost, independently confirming that on-policy,
+dense supervision is a practically efficient alternative.
+
+

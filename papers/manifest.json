@@ -1,0 +1,119 @@
+{
+  "assembled_at": "2026-11-07T14:36:01.714269+00:00",
+  "scope": "Exactly the two papers requested by the user. Documents are an experiment-oriented rewrite; original discussion remains in its source directory.",
+  "papers": [
+    {
+      "version": "2610.40998v1",
+      "title": "Steering Vectors as a Training Signal in LLM Post-Training",
+      "authors": [
+        "Tiejin Chen",
+        "Maunil Vyas",
+        "Huaiyuan Yao",
+        "Hua Wei"
+      ],
+      "published": "2026-10-29T21:28:51Z",
+      "updated": "2026-10-29T21:28:51Z",
+      "pdf_url": "https://arxiv.org/pdf/2610.40998v1",
+      "abstract_url": "https://arxiv.org/abs/2610.40998v1",
+      "pdf_file": "papers/2610.40998v1_steering_vectors_as_training_signal.pdf",
+      "pdf_sha256": "018efb8f14f8d78770dba2e1297e7f28a1031a4d3c975cfef07b2550aff39319",
+      "pdf_bytes": 3616984,
+      "pdf_pages": 32,
+      "source_html": "papers/sources/2610.40998v1.html",
+      "source_text": "papers/sources/2610.40998v1.txt",
+      "source_html_sha256": "d488fe0c495aaed2c8dfa6606054699b15d0255abac43fa1c8f8332d5376cb70",
+      "source_text_sha256": "59c72406ca33d5534664b3e187a59bed965ff90d675feb0d756b0c69a8945242",
+      "source_url": "https://arxiv.org/html/2610.40998v1",
+      "source_retrieved_at": "2026-11-06T08:49:20.837552+00:00",
+      "reading_scope": "§3；§4.1、§4.3；§5.1；部分实验与失败边界讨论",
+      "evidence_locators": [
+        {
+          "marker": "4.1 Method",
+          "matching_lines": [
+            27,
+            154
+          ]
+        },
+        {
+          "marker": "4.3 Distillation",
+          "matching_lines": [
+            32,
+            303
+          ]
+        },
+        {
+          "marker": "5.1 Method",
+          "matching_lines": [
+            38,
+            532
+          ]
+        }
+      ],
+      "original_source_index": "/home/zhenning/data/working_tmp/idea/opd/sources/steering_opd_2026-11-06/evidence.json"
+    },
+    {
+      "version": "2604.13016v2",
+      "title": "Rethinking On-Policy Distillation of Large Language Models: Phenomenology, Mechanism, and Recipe",
+      "authors": [
+        "Li, Yaxuan",
+        "Zuo, Yuxin",
+        "He, Bingxiang",
+        "Zhang, Jinqian",
+        "Xiao, Chaojun",
+        "Qian, Cheng",
+        "Yu, Tianyu",
+        "Gao, Huan-ang",
+        "Yang, Wenkai",
+        "Liu, Zhiyuan",
+        "Ding, Ning"
+      ],
+      "published": "2026-04-14T17:54:28Z",
+      "updated": "2026-04-15T17:48:51Z",
+      "pdf_url": "https://arxiv.org/pdf/2604.13016v2",
+      "abstract_url": "https://arxiv.org/abs/2604.13016v2",
+      "pdf_file": "papers/2604.13016v2_rethinking_on_policy_distillation.pdf",
+      "pdf_sha256": "7b43c679b5179aade605a2d9636c6a03e49234e0561bb5245e4de4ca6fcee53a",
+      "pdf_bytes": 1528155,
+      "pdf_pages": 30,
+      "source_html": "papers/sources/2604.13016v2.html",
+      "source_text": "papers/sources/2604.13016v2.txt",
+      "source_html_sha256": "9a1fa72fa24c3bba8bcf71ad1fa624f2975014c5d29aa7160ccd77c81b5fec02",
+      "source_text_sha256": "4392671ebafc9418190a0cb7efdfe78f645ce94ca8e53adab702d7da27f986f3",
+      "source_url": "https://arxiv.org/html/2604.13016v2",
+      "source_retrieved_at": "2026-11-06T09:24:34.218626+00:00",
+      "reading_scope": "§2.3；§3–§6；§8范围与开放问题",
+      "evidence_locators": [
+        {
+          "marker": "3.1 Thinking-Pattern Consistency",
+          "matching_lines": [
+            30,
+            289
+          ]
+        },
+        {
+          "marker": "3.2 New Knowledge, Not Just Scale",
+          "matching_lines": [
+            33,
+            303
+          ]
+        },
+        {
+          "marker": "the cumulative student probability mass on the overlap tokens is substantially higher",
+          "matching_lines": [
+            439
+          ]
+        },
+        {
+          "marker": "We have not directly verified this anisotropy hypothesis",
+          "matching_lines": [
+            478
+          ]
+        }
+      ],
+      "original_source_index": "/home/zhenning/data/working_tmp/idea/opd/sources/steering_opd_problem_analysis_2026-11-06/evidence.json"
+    }
+  ],
+  "original_workspace": "/home/zhenning/data/working_tmp/idea/opd",
+  "experiments_run": false,
+  "training_implementation_included": false
+}

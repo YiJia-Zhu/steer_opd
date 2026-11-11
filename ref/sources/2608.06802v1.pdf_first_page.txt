@@ -1,0 +1,112 @@
+Simple-OPD: Demystifying Warm-up for On-policy Distillation
+Tao Liu1,∗ Taiqiang Wu2,∗,† Mao Zheng3 Xuan Luo3
+Runming Yang2 Xuewei Yang1 Junjie Wang1,‡ Yujiu Yang1,‡
+1
+Tsinghua University 2 The University of Hong Kong 3 LLM Department, Tencent
+∗
+
+Equal contribution
+
+†
+
+Project Leader
+
+‡
+
+Corresponding authors
+
+§ https://github.com/Utaotao/Simple-OPD
+
+arXiv:2608.06802v1 [cs.CL] 7 Aug 2026
+
+Abstract
+On-policy distillation (OPD) trains a student
+on its own rollouts with token-level supervision from teacher models, but its effectiveness
+can depend strongly on the warm-up stage before OPD. In this paper, we demystify warm-up
+for OPD from both data and training perspectives. For data, we find that effective warm-up
+relies on teacher-compatible chain-of-thought
+supervision, and that even incorrect teacher rollouts can provide comparable benefits to correct
+ones. This suggests that warm-up primarily
+transfers a teacher-compatible thinking pattern
+rather than merely correct answers. For training, we show that low-rank adaptation (LoRA)
+with a near-saturation training duration better balances in-domain adaptation and out-ofdistribution generalization than full-parameter
+SFT. Based on these findings, we propose
+Simple-OPD, a plug-and-play initialization
+method that warms up the student on teachergenerated CoT with LoRA before OPD. Experiments across diverse settings demonstrate the
+effectiveness and robustness of Simple-OPD.
+
+1
+
+Introduction
+
+On-policy distillation (OPD) has emerged as an
+effective paradigm for transferring capabilities
+from one or several teacher models into a student model (Lu and Lab, 2025; Xiao et al., 2026).
+Specifically, OPD follows an on-policy paradigm
+that trains the student on its own sampled rollouts
+and employs the teacher to provide token-level
+dense supervision (Gu et al., 2024; Agarwal et al.,
+2024). While achieving success in transferring
+knowledge, it also faces the challenge that supervision from the teacher model may be biased or even
+harmful, especially when the student rollouts are
+rarely defined in the teacher’s generation space.
+To tackle this issue, one common practice is to
+conduct a warm-up for the student before OPD (Xu
+et al., 2026a; Li et al., 2026). This stage is treated
+
+Distillation signal
+
+Vanilla OPD
+Prompt
+
+Student
+
+Simple-OPD
+
+Student
+
+Rollout
+
+LoRA
+
+Teacher
+
+CoT from
+teacher
+
+Step1
+Prompt
+Step2
+
+Student
+
+Rollout
+
+Teacher
+
+Distillation signal
+
+Figure 1: Overview of vanilla OPD and Simple-OPD.
+Simple-OPD first warms up the student with teachergenerated CoT using LoRA, followed by standard OPD.
+
+mainly as an initialization heuristic, where the student is fine-tuned on teacher responses. In this way,
+the overlap between student and teacher is higher,
+leading to better OPD performance (Li et al., 2026).
+However, the role of warm-up remains underexplored, especially the data and training recipe.
+In this paper, we aim to demystify the warmup stage for OPD and summarize practical takeaways. For warm-up data, we find that chain-ofthought (CoT) supervision is essential for building
+a strong initialization. For the CoT source, the
+OPD teacher works better than a stronger external model (i.e., GPT-5.5 (OpenAI, 2026)), suggesting that compatibility with the downstream teacher
+matters more than the standalone strength of the
+CoT generator. Moreover, we further observe that
+incorrect teacher rollouts can provide nearly the
+same benefit as correct ones, indicating that warmup transfers teacher-compatible reasoning behavior
+rather than simply answer correctness.
+Beyond data construction, another challenge is
+the training recipe. For the training method, we
+find that full-parameter SFT accelerates in-domain
+adaptation, but degrades out-of-distribution (OOD)
+generalization. Meanwhile, low-rank adaptation,
+LoRA (Hu et al., 2022), provides a better balance.
+It learns the teacher-aligned reasoning pattern while
+
+

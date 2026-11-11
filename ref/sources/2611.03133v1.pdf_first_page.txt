@@ -1,0 +1,62 @@
+M EET S TUDENTS W HERE T HEY A RE :
+S TUDENT-P REFIX T EACHER A DAPTATION FOR
+O N -P OLICY D ISTILLATION
+
+arXiv:2611.03133v1 [cs.CL] 2 Nov 2026
+
+Xue Zhang1,2∗, Songming Zhang3 , Yunlong Liang3 , Fandong Meng3 ,
+Yufeng Chen1,2†, Jinan Xu1,2
+1
+Key Laboratory of Big Data & Artificial Intelligence in Transportation, Beijing Jiaotong University
+2
+School of Computer Science and Technology, Beijing Jiaotong University, Beijing, China
+3
+Weixin AI, Tencent, China
+{zhang xue}@bjtu.edu.cn
+
+A BSTRACT
+On-policy distillation (OPD) mitigates the student’s exposure bias by optimizing on student-generated trajectories. However, student-generated prefixes may
+contain reasoning errors or follow patterns unfamiliar to the teacher, undermining the reliability of its token-level supervision. This degradation becomes more
+pronounced as prefixes grow longer. To address this teacher-side distribution mismatch, we propose Student-Prefix Teacher Adaptation (SPTA), which adapts
+the teacher to student-generated prefixes before distillation to improve the reliability of its token-level supervision. Specifically, before OPD starts, we collect
+student rollout prefixes with random lengths and continually train the teacher to
+continue from the prefixes using reinforcement learning with verifiable rewards
+(RLVR). By treating each prefix as context and rewarding correct final answers,
+the teacher learns to recover from student-induced states rather than imitate the
+student’s reasoning. Then, the adapted teacher is used for standard OPD, with
+no changes to the distillation objective. Experiments on mathematical reasoning benchmarks show that our SPTA improves average student performance over
+standard OPD and OPD with task-level RLVR-adapted teachers. These results
+highlight the importance of adapting teachers not only to solve problems independently, but also to provide reliable guidance on the states their students actually
+visit.
+
+1
+
+I NTRODUCTION
+
+Knowledge distillation aims to transfer the predictive behavior of a larger teacher model to a smaller
+student model (Hinton et al., 2015). For autoregressive language models, however, training on
+teacher-generated sequences (Kim & Rush, 2016) creates a distributional mismatch between the prefixes observed during training and those produced by the student at inference time, a phenomenon
+known as exposure bias (Bengio et al., 2015; Ranzato et al., 2015). On-policy distillation (OPD)
+closes this mismatch by sampling trajectories from the student itself and collecting token-level
+teacher supervision over these on-policy samples (Agarwal et al., 2024; Gu et al., 2024).
+However, the reliability of this token-level supervision depends critically on the teacher’s conditional
+S
+S
+distribution πT (· | x, y<t
+), which is conditioned on student-generated prefixes y<t
+. These prefixes
+may contain flawed reasoning paths, unfamiliar phrasing, or partial intermediate states unseen during
+the teacher’s task-oriented training, which introduces a teacher-side distribution mismatch. The
+resulting distribution mismatch degrades the teacher’s supervision quality, and the issue becomes
+more pronounced as prefixes grow longer (Fu et al., 2026; Yang et al., 2026; Xie et al., 2026). As
+shown in Figure 2, Qwen3-4B’s accuracy drops from 60.99% when solving problems from scratch
+to 28.91% when given prefixes covering 50% of student rollouts, and further to 22.36% at a prefix
+∗
+†
+
+This work was done during the internship at Weixin AI, Tencent Inc, China.
+Yufeng Chen is the corresponding author.
+
+1
+
+

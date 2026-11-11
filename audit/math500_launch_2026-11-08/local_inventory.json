@@ -1,0 +1,517 @@
+{
+  "checked_at": "2026-11-07T16:23:15.725808+00:00",
+  "scope": "Read-only metadata, file presence and JSON question audit; no model inference/training or dependency changes.",
+  "models": {
+    "student_r1_1p5b": {
+      "path": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "resolved_path": "/local_nvme/data/zhenning/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "config": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "model_type": "qwen2",
+        "num_hidden_layers": 28,
+        "hidden_size": 1536,
+        "vocab_size": 151936,
+        "max_position_embeddings": 131072,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "e7801c2a28b7cd98e5afda9304858d92d46558165e7a2aacb9b607d95a4b544a",
+      "config_sha256": "37bd455e9679d2959536270fed49d25cc7c290a64f6e52abb97c71345a9cee41",
+      "tokenizer_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "weights": [
+        {
+          "file": "model.safetensors",
+          "exists": true,
+          "bytes": 3554214621
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 3554214621,
+      "download_revisions": [],
+      "revision_evidence": [],
+      "weight_hashes_verified": false,
+      "mapped_token_count": 151665,
+      "max_mapped_token_id": 151664
+    },
+    "teacher_justrl_1p5b": {
+      "path": "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+      "resolved_path": "/local_nvme/data/zhenning/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+      "config": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "model_type": "qwen2",
+        "num_hidden_layers": 28,
+        "hidden_size": 1536,
+        "vocab_size": 151936,
+        "max_position_embeddings": 131072,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "e7801c2a28b7cd98e5afda9304858d92d46558165e7a2aacb9b607d95a4b544a",
+      "config_sha256": "f62729adb55c028ee1a59a27279b4c35510211aebf5f987e7080c2312ce71755",
+      "tokenizer_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "weights": [
+        {
+          "file": "model.safetensors",
+          "exists": true,
+          "bytes": 3554214752
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 3554214752,
+      "download_revisions": [
+        "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+      ],
+      "revision_evidence": [
+        {
+          "file": ".gitattributes.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "README.md.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "config.json.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "generation_config.json.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "model.safetensors.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "tokenizer.json.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        },
+        {
+          "file": "tokenizer_config.json.metadata",
+          "revision": "0637e4096c789c67f9eecbe8355e0bdeddede1c2"
+        }
+      ],
+      "weight_hashes_verified": false,
+      "mapped_token_count": 151665,
+      "max_mapped_token_id": 151664
+    },
+    "teacher_r1_7b": {
+      "path": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-7B",
+      "resolved_path": "/local_nvme/data/zhenning/huggingface_models/DeepSeek-R1-Distill-Qwen-7B",
+      "config": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "model_type": "qwen2",
+        "num_hidden_layers": 28,
+        "hidden_size": 3584,
+        "vocab_size": 152064,
+        "max_position_embeddings": 131072,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "e7801c2a28b7cd98e5afda9304858d92d46558165e7a2aacb9b607d95a4b544a",
+      "config_sha256": "8290d3c1e385e2616572eb6926f7e2745f901d1c13da95970326a8a73f6c379c",
+      "tokenizer_sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773",
+      "weights": [
+        {
+          "file": "model-00001-of-000002.safetensors",
+          "exists": true,
+          "bytes": 8606596466
+        },
+        {
+          "file": "model-00002-of-000002.safetensors",
+          "exists": true,
+          "bytes": 6624675384
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 15231271850,
+      "download_revisions": [],
+      "revision_evidence": [],
+      "weight_hashes_verified": false,
+      "mapped_token_count": 151665,
+      "max_mapped_token_id": 151664
+    },
+    "qwen3_1p7b": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-1.7B",
+      "resolved_path": "/local_nvme/data/zhenning/model_weights/Qwen3-1.7B",
+      "config": {
+        "architectures": [
+          "Qwen3ForCausalLM"
+        ],
+        "model_type": "qwen3",
+        "num_hidden_layers": 28,
+        "hidden_size": 2048,
+        "vocab_size": 151936,
+        "max_position_embeddings": 40960,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "f488fa45d324a8bc64c84f0e27b47223872d550f2a6900564f77dfa67ca5ff4d",
+      "config_sha256": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+      "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "weights": [
+        {
+          "file": "model-00001-of-00002.safetensors",
+          "exists": true,
+          "bytes": 3441185608
+        },
+        {
+          "file": "model-00002-of-00002.safetensors",
+          "exists": true,
+          "bytes": 622329984
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 4063515592,
+      "download_revisions": [
+        "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+      ],
+      "revision_evidence": [
+        {
+          "file": ".gitattributes.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "LICENSE.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "README.md.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "config.json.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "generation_config.json.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "merges.txt.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "model.safetensors.index.json.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "tokenizer_config.json.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        },
+        {
+          "file": "vocab.json.metadata",
+          "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+        }
+      ],
+      "weight_hashes_verified": false
+    },
+    "qwen3_4b": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-4B",
+      "resolved_path": "/local_nvme/data/zhenning/model_weights/Qwen3-4B",
+      "config": {
+        "architectures": [
+          "Qwen3ForCausalLM"
+        ],
+        "model_type": "qwen3",
+        "num_hidden_layers": 36,
+        "hidden_size": 2560,
+        "vocab_size": 151936,
+        "max_position_embeddings": 40960,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "f488fa45d324a8bc64c84f0e27b47223872d550f2a6900564f77dfa67ca5ff4d",
+      "config_sha256": "8ba006f74fecfaaeb392872a60f4a480e7ec9860153d2e1b769ec81f9a147f8a",
+      "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "weights": [
+        {
+          "file": "model-00001-of-00003.safetensors",
+          "exists": true,
+          "bytes": 3957900840
+        },
+        {
+          "file": "model-00002-of-00003.safetensors",
+          "exists": true,
+          "bytes": 3987450520
+        },
+        {
+          "file": "model-00003-of-00003.safetensors",
+          "exists": true,
+          "bytes": 99630640
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 8044982000,
+      "download_revisions": [
+        "1cfa9a7208912126459214e8b04321603b3df60c"
+      ],
+      "revision_evidence": [
+        {
+          "file": ".gitattributes.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "LICENSE.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "README.md.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "config.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "generation_config.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "merges.txt.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "model-00001-of-00003.safetensors.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "model-00002-of-00003.safetensors.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "model-00003-of-00003.safetensors.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "model.safetensors.index.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "tokenizer.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "tokenizer_config.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        {
+          "file": "vocab.json.metadata",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        }
+      ],
+      "weight_hashes_verified": false
+    },
+    "qwen3_0p6b": {
+      "path": "/home/zhenning/data/huggingface_models/Qwen3-0.6B",
+      "resolved_path": "/local_nvme/data/zhenning/model_weights/Qwen3-0.6B",
+      "config": {
+        "architectures": [
+          "Qwen3ForCausalLM"
+        ],
+        "model_type": "qwen3",
+        "num_hidden_layers": 28,
+        "hidden_size": 1024,
+        "vocab_size": 151936,
+        "max_position_embeddings": 40960,
+        "torch_dtype": "bfloat16",
+        "dtype": null
+      },
+      "token_id_map_sha256": "f488fa45d324a8bc64c84f0e27b47223872d550f2a6900564f77dfa67ca5ff4d",
+      "config_sha256": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "weights": [
+        {
+          "file": "model.safetensors",
+          "exists": true,
+          "bytes": 1503300328
+        }
+      ],
+      "all_weight_files_present": true,
+      "weight_bytes": 1503300328,
+      "download_revisions": [],
+      "revision_evidence": [],
+      "weight_hashes_verified": false
+    }
+  },
+  "datasets": {
+    "math500": {
+      "path": "/home/zhenning/data/hugggingface_datasets/MATH-500/test.jsonl",
+      "rows": 500,
+      "unique_ids": 500,
+      "sha256": "35dc41080a3680858b27fa7e0533d2d547825316fc5dafe5d316f4ccc5a06132",
+      "matches_rethinking_ids_problems_answers": true
+    },
+    "dapo_json_snapshot": {
+      "path": "ref/ref_rep/Rethinking-OPD/datasets/test_data/DAPO/train.json",
+      "rows": 17398,
+      "unique_raw_questions": 17398,
+      "unique_normalized_questions": 17187,
+      "normalization": "Unicode NFKC + collapse whitespace + strip",
+      "math500_exact_normalized_overlap_ids": [
+        "dapo/6264",
+        "dapo/9074",
+        "dapo/11108",
+        "dapo/13144"
+      ],
+      "sha256": "4412fbb57792ad667eb5dfbf6f79b092b67735bdb39216db8ab4f85711ee7e67",
+      "semantic_or_near_duplicate_audit_completed": false,
+      "equivalence_to_training_parquet_verified": false,
+      "git_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+      "math500_overlap_pairs": [
+        {
+          "dapo_id": "dapo/6264",
+          "math500_id": "test/intermediate_algebra/1411.json",
+          "answer_equal": true
+        },
+        {
+          "dapo_id": "dapo/9074",
+          "math500_id": "test/intermediate_algebra/2146.json",
+          "answer_equal": true
+        },
+        {
+          "dapo_id": "dapo/11108",
+          "math500_id": "test/intermediate_algebra/1849.json",
+          "answer_equal": true
+        },
+        {
+          "dapo_id": "dapo/13144",
+          "math500_id": "test/algebra/1282.json",
+          "answer_equal": true
+        }
+      ],
+      "normalized_duplicate_groups_with_different_answers": [
+        {
+          "ids": [
+            "dapo/242",
+            "dapo/546"
+          ],
+          "answers": [
+            "-1",
+            "683"
+          ]
+        },
+        {
+          "ids": [
+            "dapo/1246",
+            "dapo/12783"
+          ],
+          "answers": [
+            "-1",
+            "913"
+          ]
+        },
+        {
+          "ids": [
+            "dapo/2402",
+            "dapo/4236"
+          ],
+          "answers": [
+            "-1",
+            "230"
+          ]
+        },
+        {
+          "ids": [
+            "dapo/6775",
+            "dapo/15139"
+          ],
+          "answers": [
+            "-1",
+            "554"
+          ]
+        },
+        {
+          "ids": [
+            "dapo/10483",
+            "dapo/12311"
+          ],
+          "answers": [
+            "12",
+            "30"
+          ]
+        }
+      ],
+      "unique_questions_after_exact_test_exclusion": 17183
+    }
+  },
+  "environments": {
+    "verl": {
+      "python_site_paths": [
+        "/home/zhenning/data/miniconda3/envs/verl/lib/python3.12/site-packages",
+        "/home/zhenning/data/miniconda3/envs/verl/lib/python3.1/site-packages"
+      ],
+      "packages": {
+        "accelerate": null,
+        "datasets": null,
+        "easysteer": null,
+        "flash-attn": null,
+        "llamafactory": null,
+        "math-verify": null,
+        "peft": null,
+        "pyarrow": null,
+        "ray": null,
+        "safetensors": null,
+        "torch": null,
+        "transformers": null,
+        "verl": null,
+        "vllm": null
+      },
+      "import_or_gpu_validation": false
+    },
+    "llamafactory": {
+      "python_site_paths": [
+        "/home/zhenning/data/miniconda3/envs/llamafactory/lib/python3.1/site-packages",
+        "/home/zhenning/data/miniconda3/envs/llamafactory/lib/python3.11/site-packages"
+      ],
+      "packages": {
+        "accelerate": null,
+        "datasets": null,
+        "easysteer": null,
+        "flash-attn": null,
+        "llamafactory": null,
+        "math-verify": null,
+        "peft": null,
+        "pyarrow": null,
+        "ray": "2.58.0",
+        "safetensors": "0.8.0",
+        "torch": "2.8.0",
+        "transformers": "5.17.0",
+        "verl": null,
+        "vllm": "0.11.0"
+      },
+      "import_or_gpu_validation": false
+    },
+    "easysteer": {
+      "python_site_paths": [
+        "/home/zhenning/data/miniconda3/envs/easysteer/lib/python3.1/site-packages",
+        "/home/zhenning/data/miniconda3/envs/easysteer/lib/python3.10/site-packages"
+      ],
+      "packages": {
+        "accelerate": "1.14.0",
+        "datasets": "5.0.0",
+        "easysteer": "0.1.0",
+        "flash-attn": null,
+        "llamafactory": null,
+        "math-verify": null,
+        "peft": null,
+        "pyarrow": "25.0.0",
+        "ray": "2.56.0",
+        "safetensors": "0.8.0",
+        "torch": "2.10.0",
+        "transformers": "4.57.6",
+        "verl": null,
+        "vllm": "0.1.dev14461+g21d7a9f61.precompiled"
+      },
+      "import_or_gpu_validation": false
+    }
+  },
+  "gpu_snapshot": "index, name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]\n0, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 5809 MiB, 97 %\n1, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 15099 MiB, 91 %\n2, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 54421 MiB, 0 %\n3, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 3575 MiB, 70 %\n4, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 0 MiB, 0 %\n5, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 54005 MiB, 0 %\n6, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 1448 MiB, 0 %\n7, NVIDIA RTX PRO 5000 72GB Blackwell, 73415 MiB, 0 MiB, 0 %\n",
+  "reserved_gpus": []
+}

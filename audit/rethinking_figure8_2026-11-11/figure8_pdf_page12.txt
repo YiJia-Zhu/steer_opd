@@ -1,0 +1,72 @@
+    Rethinking On-Policy Distillation of Large Language Models: Phenomenology, Mechanism, and Recipe
+
+
+                       Qwen3-1.7B-SFT as Student (SFT+OPD)                                            Qwen3-1.7B-Base as Student (Only OPD)
+
+            AIME 2024 Accuracy (avg@16)                                 AIME 2025 Accuracy (avg@16)                               AMC 2023 Accuracy (avg@16)
+                                                                                                                       0.42
+0.125
+                                                            0.075                                                      0.36
+0.100
+                                                            0.060                                                      0.30
+0.075
+                                                            0.045                                                      0.24
+0.050
+                                                            0.030                                                      0.18
+0.025
+                                                            0.015                                                      0.12
+        0    20   40   60     80 100 120 140 160 180 200            0    20   40   60     80 100 120 140 160 180 200          0   20   40    60     80 100 120 140 160 180 200
+                            Training Step                                               Training Step                                             Training Step
+
+                       Overlap Ratio                                      Overlap-Token Advantage                                           Abs Entropy Gap
+ 0.75                                                       0.000
+ 0.70                                                                                                                   0.4
+                                                           −0.004
+ 0.65                                                                                                                   0.3
+                                                           −0.008
+ 0.60                                                                                                                   0.2
+                                                           −0.012
+ 0.55                                                                                                                   0.1
+ 0.50                                                      −0.016                                                       0.0
+        0    20   40   60     80 100 120 140 160 180 200            0    20   40   60     80 100 120 140 160 180 200          0   20   40    60     80 100 120 140 160 180 200
+                            Training Step                                               Training Step                                             Training Step
+
+
+Figure 8 | Effect of off-policy cold start before OPD, using fixed teacher Qwen3-4B (Non-thinking).
+The two curves correspond to OPD from Qwen3-1.7B-SFT and Qwen3-1.7B-Base.
+
+
+Qwen3-1.7B-Base. Moreover, the performance gap persists throughout training, indicating that the
+off-policy cold start improves not only early optimization, but also the final performance ceiling of
+subsequent OPD.
+The overlap dynamics support the same conclusion. The SFT-initialized student begins with a much
+higher overlap ratio and maintains a smooth, stable trajectory, whereas the base-initialized student
+starts lower and exhibits pronounced instability before gradually recovering. The entropy gap is
+also substantially smaller for the SFT-initialized student, indicating a closer match to the teacher’s
+confidence profile from the outset. These observations confirm that off-policy distillation reduces the
+initial pattern mismatch, making the teacher’s token-level supervision immediately exploitable once
+OPD begins. A more detailed analysis of the overlap mass dynamics is provided in Appendix C.2.
+
+
+5.2. Leveraging Teacher Post-Training Prompts
+
+The previous section narrows the thinking-pattern gap by moving the student closer to the teacher
+through SFT. Another way to improve alignment is from the data side. Since the teacher’s policy is
+shaped by the prompts seen during post-training, we find that using teacher-aligned prompts during
+OPD yields more effective supervision.
+Setup. We conduct experiments at two granularities: whether matching the prompt template matters,
+and whether matching the prompt content matters.
+• Prompt template: The teacher is JustRL-1.5B and the student is R1-Distill-1.5B. The prompt set is
+  DAPO-Math-17K, with only the prompt template differing. The original template is the standard
+  DAPO format used in all previous experiments unless otherwise specified, while the teacher-aligned
+  template matches the format used during JustRL post-training:
+
+             Original DAPO Template
+
+             Solve the following math problem step by step. The last line of your response should be of the
+             form Answer: $Answer (without quotes) where $Answer is the answer to the problem. {Question}
+             Remember to put your answer on its own line after “Answer:”.
+
+
+
+                                                                                                                                                                           12

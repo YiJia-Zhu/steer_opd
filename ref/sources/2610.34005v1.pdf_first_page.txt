@@ -1,0 +1,52 @@
+Steering the Teacher: Improving On-Policy
+Self-Distillation for Thinking Models
+Tiejin Chen*1
+1 Arizona State University
+
+Xiaoou Liu*1
+
+Hanyang Chen1
+
+Hua Wei1
+
+{tchen169, xiaoouli, hchen478, hua.wei}@asu.edu
+
+arXiv:2610.34005v1 [cs.LG] 25 Oct 2026
+
+* Equal Contribution
+
+On-policy self-distillation (OPSD) trains a student on its own reasoning trajectories using token-level supervision from a reference-conditioned teacher initialized from the same model. However, access to the
+reference can induce teacher behaviors that undermine independent reasoning in thinking models, leading
+to reference hallucinations, where the student cites an unavailable reference to justify reasoning steps, and
+reconsideration suppression, where the teacher discourages verification and revision at uncertain steps. We
+introduce Steered-Teacher OPSD (ST-OPSD) to jointly address these failure modes through activation steering. ST-OPSD extracts two directions from model-generated reasoning trajectories and applies them to the
+teacher’s hidden states during distillation target computation, suppressing reference-invoking behavior and
+encouraging reconsideration with marker-family calibration. The student learns from the resulting teacher
+distributions without being steered. Experiments on AIME and HMMT show that ST-OPSD improves accuracy
+over vanilla OPSD and other interventions while restoring reconsideration and reference-hallucination rates
+to base-model levels.
+
+1. Introduction
+As illustrated in Figure 1, a student tutors a classmate through a difficult math problem with access to the
+reference answer. When the classmate pauses to check a step or hesitates about what to do next, the tutor
+dismisses these efforts as unnecessary and tells them to follow the provided solution, pointing to the reference
+answer to prescribe the next step without explaining why it works. The classmate may learn to reproduce
+the solution without understanding the reasoning behind it or how to apply it to new problems. During an
+exam without the reference answer, they may lack an independent reasoning strategy, skip necessary checks,
+and ultimately resort to guessing.
+Language models face a similar challenge in on-policy self-distillation (OPSD). A student generates
+reasoning from the question alone, while a teacher initialized from the same model additionally receives a
+reference solution and provides token-level supervision along the student’s trajectory [1]. This trains the
+student on contexts encountered during its own generation [2, 3], but reference-conditioned supervision
+may also transfer behaviors that undermine independent reasoning.
+Specifically, there are two teacher behaviors that contribute to performance degradation in thinking
+models under OPSD. First, the teacher invokes privileged information through phrases such as “The example
+solution uses...”. The student learns to imitate these citations despite lacking access to the reference,
+producing reference hallucinations: reasoning steps justified by an unseen solution rather than independent
+derivation. These hallucinations manifest reference-induced shortcuts [4, 5]. Second, knowing the answer
+leads the teacher to assign low probabilities to reconsideration markers at uncertain branching points [6,
+7]. The resulting reconsideration suppression encourages the student to continue confidently [6, 8],
+shortening reasoning without corresponding accuracy gains and degrading performance under longer
+reasoning budgets [6].
+
+

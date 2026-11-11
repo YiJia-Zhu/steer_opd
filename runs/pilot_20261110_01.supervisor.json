@@ -1,0 +1,24 @@
+{
+  "pid": 3713602,
+  "started_at": "2026-11-10T10:50:05.223320+00:00",
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_pilot_campaign.py",
+    "--output-dir",
+    "runs/pilot_20261110_01",
+    "--reuse-initial-math500",
+    "runs/pilot_20261108_01/initial_math500"
+  ],
+  "runtime": {
+    "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+    "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+    "packages": {
+      "torch": "2.13.0+cu130",
+      "transformers": "5.16.1",
+      "vllm": "0.32.0",
+      "math-verify": "0.9.0",
+      "verl": "0.10.0.dev0"
+    }
+  },
+  "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01.wrapper.log"
+}

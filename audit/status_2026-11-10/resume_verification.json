@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-11-10T10:53:01.024667+00:00",
+  "campaign": "runs/pilot_20261110_01/campaign.json",
+  "status": "running",
+  "current_stage": "initial_dev",
+  "pid": 3713602,
+  "gpus": [
+    {
+      "index": 1,
+      "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 0,
+      "has_compute_process": false
+    },
+    {
+      "index": 6,
+      "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 0,
+      "has_compute_process": false
+    }
+  ],
+  "progress": {
+    "student": {
+      "completed_questions": 48,
+      "samples": 48,
+      "accuracy": 0.4583333333333333,
+      "correct_complete_questions": 21,
+      "elapsed_seconds": 142.85129210096784
+    },
+    "teacher": {
+      "completed_questions": 48,
+      "samples": 48,
+      "accuracy": 0.6875,
+      "correct_complete_questions": 29,
+      "elapsed_seconds": 141.42551309079863
+    }
+  },
+  "completed_maths_baseline_reused": true,
+  "semantic_tests_passed": 5
+}

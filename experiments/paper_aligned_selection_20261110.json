@@ -1,0 +1,160 @@
+{
+  "state": "planning_only_paused",
+  "executable_launch_config": false,
+  "gpu_execution_authorized": false,
+  "asset_download_authorized": false,
+  "authority": "docs/01_research_plan.md",
+  "paper_evidence": "docs/02_paper_settings.md",
+  "execution_acceptance": "docs/03_execution_plan.md",
+  "panels": [
+    {
+      "id": "C1",
+      "teacher": "Qwen3-30B-A3B-Instruct-2507",
+      "reference": "Qwen3-0.6B",
+      "student": "Granite4.1-3B",
+      "paper_pair": "Compass Table 2 / A.1",
+      "data": "DeepScaleR-Preview",
+      "family_scope": "independent_heterogeneous_family",
+      "missing": [
+        "student_pinned_release",
+        "common_teacher_sft_corpus_or_checkpoint",
+        "processed_data_equivalence"
+      ],
+      "role": "cross_family_primary_try"
+    },
+    {
+      "id": "C2",
+      "teacher": "Qwen3-30B-A3B-Instruct",
+      "reference": "Qwen3-0.6B",
+      "student": "Qwen3-4B",
+      "paper_pair": "Compass 3.1",
+      "data": "DAPO-Math",
+      "family_scope": "same_family_control",
+      "note": "Original initialization is not automatically the same as Granite SFT panel",
+      "role": "optional_after_main_effect_supported"
+    },
+    {
+      "id": "C3",
+      "teacher": "Qwen3.5-4B",
+      "reference": "Qwen3.5-0.8B",
+      "student": "Qwen3-4B",
+      "paper_pair": "Compass 3.1 Figure 1(b)",
+      "data": "DAPO-Math",
+      "family_scope": "nominal_4b_to_4b_same_broad_lineage_different_generation",
+      "note": "Compass and steering groups on this pair are project extensions; verify actual parameter counts",
+      "missing": [
+        "teacher_pinned_weights",
+        "original_initialization_mapping"
+      ],
+      "role": "optional_after_main_effect_supported"
+    },
+    {
+      "id": "R1",
+      "teacher": [
+        "JustRL-1.5B",
+        "R1-Distill-Qwen-7B"
+      ],
+      "student": "R1-Distill-Qwen-1.5B",
+      "paper_pair": "Rethinking 4.1; JustRL also Simple 5.3",
+      "data": "DAPO-Math-17K",
+      "family_scope": "shared_backbone_mechanism_control",
+      "role": "rethinking_fallback_or_mechanism_check"
+    },
+    {
+      "id": "F1",
+      "teacher": "Qwen3-4B non-thinking",
+      "student": "Qwen3-1.7B-Base",
+      "paper_pair": "Rethinking 5.1/C.1",
+      "data": "OpenThoughts3 math teacher-SFT prompts and approximately 30K OPD prompts; small-budget variants must be labeled adapted",
+      "family_scope": "shared_vocabulary_rethinking_fallback",
+      "activation": "Only after a reviewed fallback decision; no automatic start",
+      "missing": [
+        "pinned_base_student",
+        "paper_original_200k_teacher_sft_corpus_if_claiming_full_reproduction"
+      ]
+    }
+  ],
+  "methods": {
+    "scheme_1": "Frozen S0 teacher-text minus student-text pooled direction",
+    "scheme_2": "Frozen S0 teacher-text minus teacher-family-reference-text; matched triplet pooling; offset control",
+    "selection": "Actual short updates followed by no-hook dev gains; not max hooked overlap"
+  },
+  "objectives": {
+    "vanilla_method_panel": "Explicit finite-candidate reverse KL",
+    "compass_method_panel": "Explicit finite-candidate reverse KL to p0 * exp((ell_T-ell_R)/beta), adapted from Compass Eq.11",
+    "paper_reference": "Native no-hook span sampled baselines; not conflated with candidate objective",
+    "rollout_policy": "ordinary_student_no_hook",
+    "teacher_span_score": "mean main, sum robustness",
+    "full_vocab_kl_claim": false
+  },
+  "required_groups": [
+    "E0",
+    "E1_FULL",
+    "E1_LORA",
+    "E2",
+    "E3",
+    "E4"
+  ],
+  "optional_strict_equal_size_pair": {
+    "teacher": "Ministral-3-3B-Instruct-2512",
+    "student": "Granite4.1-3B",
+    "status": "new_pair_not_selected_no_download",
+    "note": "Both model roles appear in Compass but not this teacher-student line; teacher advantage and weaker reference unverified"
+  },
+  "removed_from_primary_selection": [
+    "microsoft/Phi-3.5-mini-instruct",
+    "HuggingFaceTB/SmolLM3-3B"
+  ],
+  "next_step": "Review cross-family small experiment and fallback budget; keep GPU jobs and downloads paused",
+  "shared_teacher_calibration_panel": {
+    "panels": [
+      "C1",
+      "C2"
+    ],
+    "questions": 128,
+    "candidate_sources": {
+      "clean_dapo": 64,
+      "clean_deepscaler": 64
+    },
+    "rule": "Global deduplication; reserve outside both train/dev; identical T/R text cache across students; project control rather than paper-original setting",
+    "status": "optional_followup_not_required_for_initial_test"
+  },
+  "research_question": "Can student-space steering from a small teacher demonstration set improve cross-family teacher-student OPD adaptation, with gains retained after removing steering?",
+  "scope_policy": {
+    "primary": "Try cross-family OPD adaptation first; do not assume steering works",
+    "fallback": "After checking implementation/tokenization/length and bounded dev experiments, use Rethinking shared-vocabulary settings if cross-family gains are not reliable",
+    "fixed_teacher_multiple_students": "Optional follow-up control, not the main question or a prerequisite",
+    "claim_rule": "If only the fallback works, report shared-vocabulary scope only; preserve cross-family negative results; if neither works, report no benefit",
+    "route_selection_data": "dev only; not MATH-500"
+  },
+  "branch_required_groups": {
+    "cross_family_full_comparison": [
+      "E0",
+      "E1_FULL",
+      "E1_LORA",
+      "E2",
+      "E3",
+      "E4",
+      "C0",
+      "N0_SPAN",
+      "N1_COMPASS"
+    ],
+    "rethinking_fallback": [
+      "E0",
+      "E1_FULL",
+      "E1_LORA",
+      "E2",
+      "E3",
+      "E4"
+    ],
+    "initial_small_screen": [
+      "E0",
+      "E3",
+      "E4"
+    ]
+  },
+  "branch_objectives": {
+    "cross_family": "Candidate method ablations and separately labeled native span references",
+    "rethinking_fallback": "Reproduce original no-hook Rethinking reference; use a shared-vocabulary explicit top-K objective for matched steering ablations, label deviations; no cross-tokenizer or weak-reference requirement"
+  }
+}

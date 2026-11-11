@@ -1,0 +1,176 @@
+{
+  "url": "https://huggingface.co/api/models/Skywork/Skywork-OR1-Math-7B?blobs=true",
+  "retrieved_at": "2026-11-07T15:19:25.589963+00:00",
+  "status": 200,
+  "data": {
+    "_id": "67fa2baba0d7c10e41b034c2",
+    "id": "Skywork/Skywork-OR1-Math-7B",
+    "private": false,
+    "tags": [
+      "safetensors",
+      "qwen2",
+      "dataset:Skywork/Skywork-OR1-RL-Data",
+      "arxiv:2505.22312",
+      "base_model:deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "base_model:finetune:deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "region:us"
+    ],
+    "downloads": 2934,
+    "likes": 19,
+    "modelId": "Skywork/Skywork-OR1-Math-7B",
+    "author": "Skywork",
+    "sha": "fcef970f1d10682f13c182b280146a194ed57d1e",
+    "lastModified": "2025-05-29T02:26:36.000Z",
+    "gated": false,
+    "disabled": false,
+    "model-index": null,
+    "config": {
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "model_type": "qwen2",
+      "tokenizer_config": {
+        "use_default_system_prompt": false,
+        "bos_token": "<｜begin▁of▁sentence｜>",
+        "eos_token": "<｜end▁of▁sentence｜>",
+        "unk_token": null,
+        "pad_token": "<｜end▁of▁sentence｜>",
+        "chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='') %}{%- for message in messages %}{%- if message['role'] == 'system' %}{% set ns.system_prompt = message['content'] %}{%- endif %}{%- endfor %}{{bos_token}}{{ns.system_prompt}}{%- for message in messages %}{%- if message['role'] == 'user' %}{%- set ns.is_tool = false -%}{{'<｜User｜>' + message['content']}}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is none %}{%- set ns.is_tool = false -%}{%- for tool in message['tool_calls']%}{%- if not ns.is_first %}{{'<｜Assistant｜><｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{%- set ns.is_first = true -%}{%- else %}{{'\\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}{%- endif %}{%- endfor %}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is not none %}{%- if ns.is_tool %}{{'<｜tool▁outputs▁end｜>' + message['content'] + '<｜end▁of▁sentence｜>'}}{%- set ns.is_tool = false -%}{%- else %}{% set content = message['content'] %}{% if '</think>' in content %}{% set content = content.split('</think>')[-1] %}{% endif %}{{'<｜Assistant｜>' + content + '<｜end▁of▁sentence｜>'}}{%- endif %}{%- endif %}{%- if message['role'] == 'tool' %}{%- set ns.is_tool = true -%}{%- if ns.is_output_first %}{{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- set ns.is_output_first = false %}{%- else %}{{'\\n<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- endif %}{%- endif %}{%- endfor -%}{% if ns.is_tool %}{{'<｜tool▁outputs▁end｜>'}}{% endif %}{% if add_generation_prompt and not ns.is_tool %}{{'<｜Assistant｜><think>\\n'}}{% endif %}"
+      }
+    },
+    "cardData": {
+      "base_model": [
+        "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+      ],
+      "datasets": [
+        "Skywork/Skywork-OR1-RL-Data"
+      ]
+    },
+    "siblings": [
+      {
+        "rfilename": ".gitattributes",
+        "blobId": "b38696df2d3cba55d7e3e52b088e68252ecfbbcf",
+        "size": 1760
+      },
+      {
+        "rfilename": "README.md",
+        "blobId": "28756bcc395981d1d553c7171b0b572cbe940358",
+        "size": 7376
+      },
+      {
+        "rfilename": "assets/32b_perf.png",
+        "blobId": "ce4dcfe0408d4c4743b96820b108a4d239f5db99",
+        "size": 134915,
+        "lfs": {
+          "sha256": "dda634cc383faa0dcdb5f591b1041ce61b8ae3cb7a83e18abac1a00351040958",
+          "size": 134915,
+          "pointerSize": 131
+        }
+      },
+      {
+        "rfilename": "assets/7b_perf.png",
+        "blobId": "6308f80ad972642fc2408e30488fe86da3f6c62c",
+        "size": 129458,
+        "lfs": {
+          "sha256": "6a4d69da4b84782899dcc46d26f18a8259492d420d7af0e2c19e8f00587efd0a",
+          "size": 129458,
+          "pointerSize": 131
+        }
+      },
+      {
+        "rfilename": "assets/skywork-or1-math-7b-multi-stage.png",
+        "blobId": "f197042c8cbde42657b362606d1ade6d46a90378",
+        "size": 156907,
+        "lfs": {
+          "sha256": "7acb487d213549015259bd5553544b09047d7ab9bfd603dd2bb068ffe67ab6db",
+          "size": 156907,
+          "pointerSize": 131
+        }
+      },
+      {
+        "rfilename": "config.json",
+        "blobId": "50032c383862f23c48c952c7b376d9ecf9bcb722",
+        "size": 754
+      },
+      {
+        "rfilename": "generation_config.json",
+        "blobId": "d60d60d728d8de53981188acaacd607b219192c8",
+        "size": 121
+      },
+      {
+        "rfilename": "model-00001-of-00004.safetensors",
+        "blobId": "09a8ca3e6b6bb87545a001fda97f359c2de5c2c7",
+        "size": 4877660776,
+        "lfs": {
+          "sha256": "29be1eedb93e5f5cab0a433833000b5aa2b9239b085c23351407a14d3c8d56d4",
+          "size": 4877660776,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model-00002-of-00004.safetensors",
+        "blobId": "c5c50b4fe915f5a8c1424480ea6afec7a54c6e81",
+        "size": 4932751008,
+        "lfs": {
+          "sha256": "c5c81b2feef4471df6a5595f2bf44c5d20f7678c3b6e3066a6f3635950eb6256",
+          "size": 4932751008,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model-00003-of-00004.safetensors",
+        "blobId": "da23154a72bae43c4392306f0eaffd479fcb31f8",
+        "size": 4330865200,
+        "lfs": {
+          "sha256": "aa490cc1bf44665fed3b7cdd94ad5eb10ddeec8c8cbc51afc79d2007d208c5e3",
+          "size": 4330865200,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model-00004-of-00004.safetensors",
+        "blobId": "1655c23de595b0b3c463b4bcdecddc08ef7548ca",
+        "size": 1089994880,
+        "lfs": {
+          "sha256": "df3e65b63761b0d889674d3a8ebf9582cd8d1857dfbdcbc7edff03bf8a764114",
+          "size": 1089994880,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model.safetensors.index.json",
+        "blobId": "6ca5084b88f1a95fef37f1b94c6e87ff69422bb7",
+        "size": 27752
+      },
+      {
+        "rfilename": "special_tokens_map.json",
+        "blobId": "1d385d62cf08bca35254547902b792c243656ec1",
+        "size": 485
+      },
+      {
+        "rfilename": "tokenizer.json",
+        "blobId": "1a2db243e47cbc113f6b2ddcc388aeeb8fe1a94c",
+        "size": 11422778,
+        "lfs": {
+          "sha256": "e20ddafc659ba90242154b55275402edeca0715e5dbb30f56815a4ce081f4893",
+          "size": 11422778,
+          "pointerSize": 133
+        }
+      },
+      {
+        "rfilename": "tokenizer_config.json",
+        "blobId": "8095baa150cba7889d4b1d0f1b6564f886ac4618",
+        "size": 6734
+      }
+    ],
+    "spaces": [],
+    "createdAt": "2025-04-12T09:00:27.000Z",
+    "safetensors": {
+      "parameters": {
+        "BF16": 7615616512
+      },
+      "total": 7615616512
+    },
+    "usedStorage": 15243115922
+  }
+}

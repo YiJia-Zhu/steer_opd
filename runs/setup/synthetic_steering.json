@@ -1,0 +1,9 @@
+{
+  "group": "E3",
+  "purpose": "Synthetic integration test only, not a learned-vector experiment",
+  "vector_path": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/setup/synthetic_vectors.pt",
+  "vector_key": "direction",
+  "layer": 14,
+  "alpha": 1.0,
+  "auxiliary_updates": 1
+}

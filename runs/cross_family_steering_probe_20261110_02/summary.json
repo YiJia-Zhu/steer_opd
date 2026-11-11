@@ -1,0 +1,269 @@
+{
+  "parameter_updates": 0,
+  "selected_for_training": null,
+  "students": {
+    "phi35": {
+      "dev": {
+        "questions": 16,
+        "correct": 2,
+        "correct_complete": 2,
+        "accuracy": 0.125,
+        "truncation_rate": 0.0,
+        "mean_response_tokens": 679.1875,
+        "file_sha256": "d8de73b8f69ffac016c7de08ef6be6c6a27e25113c53738cddbc2ef2f6c4e18e"
+      },
+      "probe_pairs": 24,
+      "teacher_minus_student_dev_accuracy": 0.4375,
+      "probe_summary": "runs/cross_family_steering_probe_20261110_02/phi35_probe/summary.json",
+      "true_minus_random": {
+        "0.01": {
+          "literal_continuation_overlap_at_16": {
+            "mean": -0.00390625,
+            "question_bootstrap_95pct": [
+              -0.009114583333333332,
+              0.0013020833333333333
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": -0.0026982413575139235,
+            "question_bootstrap_95pct": [
+              -0.006692024274241169,
+              0.0003184369210519503
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": -0.0026901026715083006,
+            "question_bootstrap_95pct": [
+              -0.006691000266714125,
+              0.00032898210795028273
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": 0.0007410055247409424,
+            "question_bootstrap_95pct": [
+              -0.00125589775334236,
+              0.0031262864326315203
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 8.183042370856394e-06,
+            "question_bootstrap_95pct": [
+              2.9189088738649604e-09,
+              2.4184679667874076e-05
+            ]
+          }
+        },
+        "0.03": {
+          "literal_continuation_overlap_at_16": {
+            "mean": -0.0013020833333333333,
+            "question_bootstrap_95pct": [
+              -0.0078125,
+              0.006510416666666666
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": 0.0016440975972500987,
+            "question_bootstrap_95pct": [
+              -0.0005748081311203037,
+              0.005380955175622893
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": 0.001664686852955011,
+            "question_bootstrap_95pct": [
+              -0.000574784704059339,
+              0.005441532361938187
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": -0.0010994248562979205,
+            "question_bootstrap_95pct": [
+              -0.0033105493589960797,
+              0.00014862307009079516
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 2.0837629382641314e-05,
+            "question_bootstrap_95pct": [
+              1.2430329124346606e-07,
+              6.139564839754742e-05
+            ]
+          }
+        },
+        "0.1": {
+          "literal_continuation_overlap_at_16": {
+            "mean": -0.010416666666666666,
+            "question_bootstrap_95pct": [
+              -0.01953125,
+              -0.0013020833333333333
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": 0.0038192592867788188,
+            "question_bootstrap_95pct": [
+              -0.0075073639740513955,
+              0.019450792197550672
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": 0.003941193737900213,
+            "question_bootstrap_95pct": [
+              -0.00750372040269557,
+              0.019803810928609226
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": -0.003912222535804552,
+            "question_bootstrap_95pct": [
+              -0.01474846492563345,
+              0.0029430731211284875
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 0.00012307163546139652,
+            "question_bootstrap_95pct": [
+              1.393843540741883e-06,
+              0.00035995101580272443
+            ]
+          }
+        }
+      }
+    },
+    "smollm3": {
+      "dev": {
+        "questions": 16,
+        "correct": 9,
+        "correct_complete": 9,
+        "accuracy": 0.5625,
+        "truncation_rate": 0.0,
+        "mean_response_tokens": 761.3125,
+        "file_sha256": "2d5e2d34bf14a5bef1c7b6bcf956c6e5e6baf2dcd549f69cbc8de5608f6b989d"
+      },
+      "probe_pairs": 24,
+      "teacher_minus_student_dev_accuracy": 0.0,
+      "probe_summary": "runs/cross_family_steering_probe_20261110_02/smollm3_probe/summary.json",
+      "true_minus_random": {
+        "0.01": {
+          "literal_continuation_overlap_at_16": {
+            "mean": 0.00390625,
+            "question_bootstrap_95pct": [
+              0.0,
+              0.0078125
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": -0.00031526486167529665,
+            "question_bootstrap_95pct": [
+              -0.0010829521868513732,
+              0.00034856580015670983
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": -0.0003136808402110044,
+            "question_bootstrap_95pct": [
+              -0.0010806766332479361,
+              0.0003498115156597641
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": 0.000422133452108481,
+            "question_bootstrap_95pct": [
+              -0.0003709190780368431,
+              0.0012830479185748902
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 1.5840214642922254e-06,
+            "question_bootstrap_95pct": [
+              -3.260006289362849e-07,
+              4.305171626156161e-06
+            ]
+          }
+        },
+        "0.03": {
+          "literal_continuation_overlap_at_16": {
+            "mean": 0.0013020833333333333,
+            "question_bootstrap_95pct": [
+              -0.005208333333333333,
+              0.006510416666666666
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": 0.0024567141629525417,
+            "question_bootstrap_95pct": [
+              0.0008419583835442781,
+              0.004334874318113031
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": 0.0024713757478453,
+            "question_bootstrap_95pct": [
+              0.0008494775644687056,
+              0.0043526299358769395
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": -0.0025193396097930726,
+            "question_bootstrap_95pct": [
+              -0.004216088846092093,
+              -0.0010042674974971388
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 1.4661584892758373e-05,
+            "question_bootstrap_95pct": [
+              2.890611094735762e-06,
+              2.8511671409490087e-05
+            ]
+          }
+        },
+        "0.1": {
+          "literal_continuation_overlap_at_16": {
+            "mean": 0.010416666666666666,
+            "question_bootstrap_95pct": [
+              0.0013020833333333333,
+              0.020833333333333332
+            ]
+          },
+          "first_byte_overlap_lower_bound": {
+            "mean": 0.005659275153034902,
+            "question_bootstrap_95pct": [
+              0.0011942624477265726,
+              0.010495021906350025
+            ]
+          },
+          "first_byte_overlap_upper_bound": {
+            "mean": 0.005689370644155513,
+            "question_bootstrap_95pct": [
+              0.0012175763231162494,
+              0.0105321581391918
+            ]
+          },
+          "first_byte_jsd_with_residual_bucket_nats": {
+            "mean": -0.006741059832812341,
+            "question_bootstrap_95pct": [
+              -0.010929383083386137,
+              -0.0029808557527986846
+            ]
+          },
+          "student_unresolved_probability_mass": {
+            "mean": 3.0095491120610274e-05,
+            "question_bootstrap_95pct": [
+              8.921619353244314e-06,
+              5.518822842350927e-05
+            ]
+          }
+        }
+      }
+    }
+  },
+  "teacher_dev": {
+    "questions": 16,
+    "correct": 9,
+    "correct_complete": 9,
+    "accuracy": 0.5625,
+    "truncation_rate": 0.4375,
+    "mean_response_tokens": 2081.0625,
+    "file_sha256": "2f77b307df6a28399b80d40fa375df2081c6d421e1b4e33b3022c6980a9f72e8"
+  }
+}

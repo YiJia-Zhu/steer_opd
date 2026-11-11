@@ -1,0 +1,115 @@
+# 保留代码、PDF、Markdown、配置、来源清单和小型结果汇总（JSON/CSV/TXT）。
+# 不按文件大小自动忽略；新增大型文件时仍需检查。
+
+# 本地环境、缓存和运行时目录
+.venv*/
+venv/
+env/
+.conda/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+/.runtime/
+/.r/
+/tmp/
+/logs/
+/outputs/
+
+# Python 构建产物及下载的安装包
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+*.so
+*.o
+*.a
+.coverage
+.coverage.*
+htmlcov/
+
+# 共享模型/数据的本地链接或下载目录；来源清单仍保留
+/assets/models/
+/assets/datasets/
+/assets/cache/
+
+# 第三方嵌套 Git checkout，避免被误加为不完整的子模块。
+# 固定版本和来源见 docs/03_execution_plan.md 及 audit 中的源码清单。
+# 保留 ref/、papers/ 中的论文和文本，以及 audit 中的小型源码快照。
+/vendor/
+/ref/ref_rep/
+
+# 权重、checkpoint、优化器状态及激活数组
+checkpoints/
+checkpoint-*/
+global_step_*/
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.gguf
+*.ggml
+*.onnx
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# 原始/处理数据、逐题生成和评分轨迹；不屏蔽整个 data/ 或 runs/，
+# 因此 split_manifest.json、summary.json、campaign.json 等仍可上传。
+*.jsonl
+*.parquet
+*.arrow
+*.feather
+*.h5
+*.hdf5
+
+# 压缩包和安装归档（PDF 不受影响）
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+
+# 日志、进程文件和实验跟踪缓存
+*.log
+*.pid
+*.pid.lock
+*.sock
+events.out.tfevents.*
+wandb/
+tensorboard/
+mlruns/
+ray_results/
+lightning_logs/
+
+# 本地凭据；允许提交不含密钥的环境变量模板
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.netrc
+.pypirc
+credentials.json
+*.pem
+*.key
+
+# 编辑器及操作系统临时文件
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

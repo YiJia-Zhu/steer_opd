@@ -1,0 +1,370 @@
+{
+  "key": "cross_tokenizer",
+  "query": "(all:\"on-policy distillation\" OR all:\"on-policy self-distillation\" OR all:\"on policy distillation\") AND (all:\"cross-tokenizer\" OR all:\"tokenizer alignment\" OR all:\"vocabulary alignment\")",
+  "requested_max": 150,
+  "retrieved_at": "2026-11-07T15:47:20.737674+00:00",
+  "status": 200,
+  "url": "https://export.arxiv.org/api/query?search_query=%28all%3A%22on-policy+distillation%22+OR+all%3A%22on-policy+self-distillation%22+OR+all%3A%22on+policy+distillation%22%29+AND+%28all%3A%22cross-tokenizer%22+OR+all%3A%22tokenizer+alignment%22+OR+all%3A%22vocabulary+alignment%22%29&max_results=150&sortBy=submittedDate&sortOrder=descending",
+  "total_results": 17,
+  "records": [
+    {
+      "id": "http://arxiv.org/abs/2611.07731v1",
+      "title": "O$^2$PD: Overlap-Gated On-Policy Distillation on Reliable Prefix",
+      "summary": "On-policy distillation (OPD) supplies dense token-level supervision by aligning a student to the teacher's next-token distribution on its own generated rollouts. Existing works mostly implement top-$k$ OPD, applying reverse Kullback-Leibler ($\\RKL$) divergence between the teacher's and the student's renormalized distributions over teacher top-$k$ support. However, the teacher scores student-generated rollouts that are inherently off-policy for itself, leaving the reliability of its next-token guidance unclear. Restricting the divergence to the teacher top-$k$ support also discards the remaining mass outside that support. These gaps leave two questions implicit: 1) which tokens to align, and 2) how to align those tokens. To answer these questions, we propose Overlap-gated On-Policy Distillation (O$^{2}$PD). As for 1), we quantitatively analyze the reliability of teacher supervision and find that alignment on the student's trajectory prefix is more reliable than alignment on the full context. Therefore, our O$^{2}$PD is applied only to the 20\\% prefix tokens of each student rollout. As for 2), we theoretically characterize two problems of top-$k$ OPD: the \\emph{Teacher-support Uncovering} and the \\emph{Dominant-Mode Mismatch}. Based on these analyses, we propose two support strategies: the \\emph{Reset Support} strategy attaches a reset atom to every token, pooling mass outside the teacher top-$k$, and the \\emph{Support Convergence} strategy converges the support to the already aligned intersection. Our O$^{2}$PD employs the designed overlap-gated $α$-divergence to interpolate between mode-covering and mode-seeking for per-token alignment, where the overlap is used as a gate to switch the support and adaptively modulate $α$.",
+      "published": "2026-11-05T09:43:03Z",
+      "updated": "2026-11-05T09:43:03Z",
+      "authors": [
+        "Shuaishuai Zu",
+        "Jihao Zhao",
+        "Pengfei Li",
+        "Guanghuan Fang",
+        "Ben Feng",
+        "Yuhan Liu",
+        "Biao Qin",
+        "Baochuan Yang"
+      ],
+      "version": "2611.07731v1",
+      "arxiv_id": "2611.07731"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.36973v1",
+      "title": "KL-MOPD: Discrepancy-Aware Multi-Objective On-Policy Distillation for Generative Recommendation",
+      "summary": "Coordinating multiple recommendation objectives (e.g., click and conversion) is critical for real-world generative recommendation (GR). However, since a positive item in GR can be retrieved only when its tokens are successively selected at every decoding step, traditional item-wise methods lack fine-grained token-wise supervision to guide intermediate steps. Motivated by its success in foundation models, we consider introducing multi-objective on-policy distillation (MOPD) into GR to distill two single-objective teachers into a student at each token. Yet, we find that in vanilla MOPD, (i) teachers exhibit unequal distillation difficulty at each token (i.e., token-level imbalance), and (ii) the harder-to-distill teacher varies across tokens (i.e., cross-token inconsistency), leaving each objective poorly learned at certain steps and hindering positive item retrieval for both objectives, leading to suboptimal performance. To address this challenge, we propose KL-MOPD (KL-Weighted Multi-Objective On-Policy Distillation), a simple yet effective distillation method that allocates token-wise teacher weights proportional to the initial student-teacher token-wise KL divergences, thereby strengthening supervision for the harder-to-distill teacher at every decoding step. Despite its simplicity, we theoretically prove that KL-MOPD strictly outperforms vanilla MOPD in the additive joint recommendation objective under mild conditions. Moreover, KL-MOPD is plug-and-play and computationally efficient, requiring only a one-time pre-training weight calibration with negligible training overhead. Extensive experiments on three public benchmarks, a billion-scale industrial dataset, and online A/B tests on our e-commerce advertising platform demonstrate that KL-MOPD significantly improves both individual and joint recommendation performance. The anonymous code is provided for peer review.",
+      "published": "2026-10-27T10:28:05Z",
+      "updated": "2026-10-27T10:28:05Z",
+      "authors": [
+        "Weiqin Yang",
+        "Yandong Wang",
+        "Yuan Gao",
+        "Hao Deng",
+        "Jinxin Hu",
+        "Jing Cao",
+        "Jiawei Chen"
+      ],
+      "version": "2610.36973v1",
+      "arxiv_id": "2610.36973"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.27555v1",
+      "title": "Can Native Safety Travel? Reusing Safety Pretraining Across Models via On-Policy Distillation",
+      "summary": "Safety pretraining has emerged as a promising paradigm for embedding safety deeply into a model during pretraining, yielding robustness to subsequent fine-tuning that conventional safety post-training often lacks. We refer to this safety acquired during model pretraining as native safety. Yet native safety is expensive to acquire, confined to the model in which it was pretrained, and often accompanied by lower general utility. In this work, we rethink the practical value of safety-pretrained models and introduce, for the first time, the native safety reuse problem: Can native safety be transferred from a specialized, potentially smaller, safety-pretrained \"teacher\" to standard-pretrained \"students,\" enabling them to inherit its robustness while preserving their general utility? We show that native safety can \"travel\" through on-policy distillation. A standard-pretrained student generates responses to safety-pretraining prompts, while a small safety-pretrained teacher supervises the student's token-level predictions along its own generated trajectories; cross-tokenizer alignment further enables transfer across model families. The resulting students exhibit substantially greater safety robustness than their safety-post-trained counterparts while retaining higher general utility than the teacher: subsequent fine-tuning raises the average attack success rate (ASR) of the 1.7B student by only 5.00%, compared with 11.58% for safety post-training, and its average utility of 48.20% far exceeds the aligned teacher's 27.42%. Unlike conventional large-to-small knowledge distillation, our framework enables selective, small-to-large safety transfer: it reuses the robust safety expertise of a smaller pretrained teacher without inheriting its utility limitations. These findings establish native safety as a reusable model property rather than one permanently tied to the originally pretrained model.",
+      "published": "2026-10-20T03:13:04Z",
+      "updated": "2026-10-20T03:13:04Z",
+      "authors": [
+        "Bingqi Shang",
+        "Yang Zhang",
+        "Yiwei Chen",
+        "Changsheng Wang",
+        "Shiyu Chang",
+        "Bingquan Shen",
+        "Sijia Liu"
+      ],
+      "version": "2610.27555v1",
+      "arxiv_id": "2610.27555"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.26397v2",
+      "title": "Bridged Self-Distillation for On-Policy Learning",
+      "summary": "On-policy distillation can transfer the reasoning capabilities of a strong teacher to a smaller student. However, distillation from a stronger teacher model faces two mismatches: its solutions may be difficult for a smaller student to imitate, and its token-level probabilities may be incompatible with, or even unavailable to, the student. Existing methods handle these settings through different forms of supervision. To this end, we propose Bridged Self-Distillation (BSD), a unified framework for distilling from any teacher that provides reasoning traces. The model to be distilled from, termed the external teacher, first provides a reasoning trace as privileged context, which can be generated in an offline fashion. The student generates rollouts without this context, while a copy of the student conditioned on it, serving as the self-teacher, scores the same rollouts in the student's own token space. BSD uses the resulting token-level guidance to adjust updates on unsuccessful rollouts, with a verifier providing the outcome signal. As the external teacher is queried only to produce text, the same training procedure applies to all teacher scenarios: shared-tokenizer, cross-tokenizer, and closed API teachers. Across these scenarios, BSD improves over the base model and outperforms baselines tailored to each scenario, offering a novel and unified pathway for distillation. Code is available: https://github.com/TUMLegalTech/Bridged-Self-Distillation",
+      "published": "2026-10-19T13:40:50Z",
+      "updated": "2026-10-27T09:48:42Z",
+      "authors": [
+        "Runsheng Chen",
+        "Yihong Liu",
+        "Raoyuan Zhao",
+        "Michael A. Hedderich",
+        "Hinrich Schütze",
+        "Matthias Grabmair"
+      ],
+      "version": "2610.26397v2",
+      "arxiv_id": "2610.26397"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.13257v1",
+      "title": "CAST: Credit Alignment for Cross-Tokenizer On-Policy Distillation",
+      "summary": "Cross-tokenizer on-policy distillation (OPD) requires aligning teacher and student sequences before their scores can be compared. Decoded-text alignment provides such correspondence at the chunk level, but leaves a distinct problem unresolved: credit alignment. A chunk-level signal specifies how much a span should change, but not how that signal should be distributed across student tokens, while tokens without teacher correspondence remain unconstrained. We propose CAST (Chunk-aware credit Assignment with Selective Token Anchoring), a shift-or-stay framework that addresses both issues. For aligned chunks, CAST redistributes each chunk's advantage across student tokens using predictive uncertainty and local teacher-signal smoothness, emphasizing learning opportunities supported by locally consistent teacher feedback while preserving the chunk's total advantage. The resulting weights exactly solve a KL-regularized credit-allocation problem. For unaligned positions, CAST selectively anchors the student to its initial policy through a KL penalty, limiting drift where teacher supervision is unavailable. Because credit assignment is separated from chunk construction, CAST also applies to punctuation-defined or fixed-length chunks under shared tokenization. Across six mathematics, science, and code benchmarks, CAST improves the average over the strongest evaluated baseline by $2.45$ and $1.32$ points for cross-tokenizer transfer from Qwen3-8B to Mistral-7B and Llama-3.1-8B, respectively, and by $2.10$ points for shared-tokenizer transfer to Qwen3-1.7B.",
+      "published": "2026-10-09T09:03:37Z",
+      "updated": "2026-10-09T09:03:37Z",
+      "authors": [
+        "Jingru Yang",
+        "Jinhang Wu",
+        "Minjing Shi",
+        "Shengfeng He",
+        "Xuyan Li",
+        "Man Tan",
+        "Biye Li"
+      ],
+      "version": "2610.13257v1",
+      "arxiv_id": "2610.13257"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.08448v1",
+      "title": "Rethinking Cross-Tokenizer On-Policy Distillation: From Alignment Coverage to Supervision Reliability",
+      "summary": "On-Policy Distillation (OPD) trains a student on its own generations using teacher feedback. With different tokenizers, comparing teacher and student predictions requires alignment at both sequence and vocabulary levels. In this paper, we examine whether expanding this alignment coverage improves learning. Across three heterogeneous teacher--student pairs on mathematical reasoning and code generation, strict 1:1 groups already cover most student-generated tokens despite substantial vocabulary mismatch. On responses sampled from the students before distillation, the shared vocabulary retains nearly all teacher and student probability mass at strictly aligned positions on average. Restricting reverse KL to a student-selected top-16 subset of the shared vocabulary at each strict position achieves accuracy comparable to full shared-vocabulary OPD, outperforming the evaluated cross-tokenizer baselines. Adding mean squared error supervision on span log-probabilities in mismatch groups gives complete supervision coverage, yet reduces accuracy. At checkpoints from training with only the strict loss, the span gradients show weak or negative directional agreement with the strict gradients and grow in magnitude relative to them. These diagnostics may help explain the accuracy drop from adding span supervision. Our findings motivate a shift from maximizing alignment coverage to prioritizing supervision reliability: compact supervision at strict positions can be more effective than broader coverage that introduces weakly aligned or conflicting training signals.",
+      "published": "2026-10-06T14:37:22Z",
+      "updated": "2026-10-06T14:37:22Z",
+      "authors": [
+        "Bingxi Hou",
+        "Guochao Jiang",
+        "Guofeng Quan",
+        "Weiqing Li",
+        "Wenfeng Feng",
+        "Guohua Liu",
+        "Yuewei Zhang"
+      ],
+      "version": "2610.08448v1",
+      "arxiv_id": "2610.08448"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.34738v1",
+      "title": "Beyond Token Alignment: Event Completion for Cross-Tokenizer On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) transfers knowledge between language models through teacher supervision on student-generated trajectories. With different tokenizers, a single teacher token may require multiple student tokens to generate, creating intermediate states where the event is entered but not yet completed. Existing cross-tokenizer methods align tokens or text spans to construct comparable prediction targets. We study a complementary problem after partial generation: once the student produces a prefix of a teacher token, multiple next tokens may complete the same remaining bytes, but the teacher only specifies the required completion rather than how probability should be divided among these valid continuations. We introduce Event-Set Completion Distillation (ESCD), which complements cross-tokenizer probability alignment with completion-set supervision. ESCD aggregates prefix-related teacher events and supervises the total probability of byte-compatible one-step student completions, avoiding tokenizer-dependent probability splits among individual tokens. The method reuses student trajectories and predictions, requiring neither additional rollouts nor changes to the student vocabulary. Experiments demonstrate consistent gains in mathematics, code, and scientific reasoning across model families and tokenizers, extending to large-scale MoE distillation from a 1T teacher to a 35B student. Local analyses show that retaining completion sets better matches the reference supervision, while one-step completion covers over 99% of observed compatible teacher mass after partial event entry in the studied tokenizer pairs. These findings support event entry and event completion as complementary supervision targets for cross-tokenizer knowledge transfer. Code will be released on GitHub.",
+      "published": "2026-09-28T09:33:26Z",
+      "updated": "2026-09-28T09:33:26Z",
+      "authors": [
+        "Jiacheng Liu",
+        "Jingwei Song",
+        "Qituan Zhang",
+        "Siheng Chen",
+        "Linfeng Zhang"
+      ],
+      "version": "2609.34738v1",
+      "arxiv_id": "2609.34738"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.33816v1",
+      "title": "Dual-Vocabulary Language Model for Cross-Tokenizer Distillation",
+      "summary": "On-policy distillation (OPD) bridges teacher supervision and student behavior, but different teacher-student tokenizers introduce misalignment in both input tokenization (#1) and output logits (#2). Existing approaches address the former by matching same-text spans or converting tokens to bytes, often losing fine-grained token information or disrupting the native-token paradigm, while for the latter, strategies such as ranking, padding, or key-token selection retain only shared logit dimensions, resulting in much distribution loss. In this paper, we propose Dual-Vocabulary Language Model (DVLM), which replaces the teacher's LM head with a new student-vocabulary projection head and obtains full-dimensional student logits (for #2). To support student tokens (for #1), it takes a Parallel-Tokenized Sequence (PTS) as input, which concatenates the original teacher-tokenized sequence and a re-tokenized sequence formed by independently converting each student token into a teacher-token group. To avoid inference inconsistency with the original teacher tokens, the Hybrid-Prefix Attention (HPA) further restricts re-tokenized groups to their corresponding teacher prefix and uses its last state as the aggregation of the original student-token representation for projection into the student vocabulary space. Similarly, via the combined use of PTS and HPA, the DVLM teacher can provide distribution-aligned supervision with the student's input-tokenization and output-logit during OPD. Experimental results demonstrate that our DVLM teacher has a similar converged loss as the original teacher model and enables student models to improve performance across six reasoning tasks.",
+      "published": "2026-09-27T18:13:21Z",
+      "updated": "2026-09-27T18:13:21Z",
+      "authors": [
+        "Kedi Chen",
+        "Chen Lin",
+        "Yutao Sun",
+        "Wei Zhang"
+      ],
+      "version": "2609.33816v1",
+      "arxiv_id": "2609.33816"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.10154v1",
+      "title": "CompassOPD: Cross-Family On-Policy Distillation via Within-Family Likelihood Shifts",
+      "summary": "On-policy distillation (OPD) provides dense token-level supervision on student-generated trajectories. Although OPD performs strongly when teacher and student belong to the same model family, we find that its effectiveness degrades in cross-family settings even after tokenizer alignment, with substantially stronger external teachers offering little additional improvement. To understand this disconnect, we decompose the cross-family OPD signal into two components: an offset between a low-capability teacher-family reference and the student, and the within-family log-likelihood shift from that reference to the strong teacher. Standard OPD transfers both components together, allowing the offset to dominate the update direction and obscure the changes associated with teacher capability improvements. We propose CompassOPD, which removes this offset and transfers the within-family shift, while a frozen student reference anchors updates to the student's initial policy. Thus, both teacher-side and student-side changes are measured within their respective model families. Experiments across three student families and multiple teacher families show that CompassOPD consistently outperforms standard cross-family OPD, improving average reasoning accuracy by up to 5.50 points. For an MoE teacher, we further construct the reference directly from the teacher checkpoint by reducing expert activation, eliminating the need for a separate reference checkpoint while retaining a 3.43-point gain over OPD.",
+      "published": "2026-09-09T13:31:57Z",
+      "updated": "2026-09-09T13:31:57Z",
+      "authors": [
+        "Naibin Gu",
+        "Qingyi Si",
+        "Chenxu Yang",
+        "Chuanyu Qin",
+        "Junhao Zhou",
+        "Peng Fu",
+        "Zheng Lin",
+        "Weiping Wang"
+      ],
+      "version": "2609.10154v1",
+      "arxiv_id": "2609.10154"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.06490v1",
+      "title": "InsertFuse: A Unified Framework for Multi-Category Reference-Guided Image Insertion",
+      "summary": "We present InsertFuse, a unified framework for multi-category reference-guided image insertion. Its key idea is to decouple category-specific expertise learning from cross-category capability consolidation. InsertFuse first trains specialized experts for different insertion categories and then introduces Insertion On-Policy Distillation (IOPD) to consolidate their capabilities into a single student. By querying the matched expert at states visited by the student, IOPD preserves category-specific insertion behavior while mitigating the cross-category interference caused by direct joint training. To improve spatial control, we propose Token-Aligned Geometry Conditioning (TAGC), which maps mask-derived geometric cues to the visual token grid, and Region-Balanced Flow Matching, which separately normalizes prediction errors inside and outside the insertion region to prevent background-dominated and scale-dependent supervision. We further introduce Reference CFG to isolate and strengthen the guidance induced by the visual reference under fixed scene and geometry conditions, with IOPD transferring this enhanced supervision into the unified student. Extensive experiments on the public AnyInsertion benchmark and our multi-category test set demonstrate state-of-the-art performance on most metrics, showing strong reference fidelity and generation quality across diverse insertion categories.",
+      "published": "2026-08-06T18:30:41Z",
+      "updated": "2026-08-06T18:30:41Z",
+      "authors": [
+        "Guangzhao Li",
+        "Qingyan Wei",
+        "Huayu Zheng",
+        "Yige Zheng",
+        "Chaoyang Zhang",
+        "Jie Yang",
+        "Yunan Ding",
+        "Yan Tai",
+        "Siqi Luo",
+        "Xiaohong Liu"
+      ],
+      "version": "2608.06490v1",
+      "arxiv_id": "2608.06490"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.22334v1",
+      "title": "Cross-Tokenizer On-Policy Distillation via Byte-Prefix Marginalization",
+      "summary": "Open-weight language models from different families exhibit complementary capabilities, motivating their consolidation into a compact student through on-policy distillation (OPD). However, full-vocabulary OPD typically assumes a shared tokenizer, while existing cross-tokenizer methods may discard teacher probability mass or assign it to student tokens with unrelated content. We introduce Byte-Prefix Marginalization (BPM), which re-expresses the teacher's next-token distribution over the student vocabulary in a shared byte space. Specifically, BPM assigns each teacher token's probability to the longest student token whose byte representation is a prefix of the teacher token's bytes, aggregates mass mapped to the same student token, and places otherwise unmatched mass in an explicit residual category. This produces a vocabulary-complete, byte-aligned, and mass-preserving target for dense OPD. The target exactly recovers the teacher-induced byte-prefix marginal when the relevant prefix does not span multiple teacher tokens (a condition satisfied at more than 99% of training positions) and uses a mass-preserving, chain-factorized lower bound otherwise. Across Qwen3-32B, GLM-Z1-9B-0414, and MiniMax-M2.7 as teachers, BPM consistently outperforms current cross-tokenizer methods on six mathematics and programming benchmarks, improving six-benchmark avg@8 by 3.7-6.6 points over the strongest baselines.",
+      "published": "2026-07-24T14:12:54Z",
+      "updated": "2026-07-24T14:12:54Z",
+      "authors": [
+        "Hao Wang",
+        "Kun Yuan",
+        "Wenlin Zhong",
+        "Minglei Zhang",
+        "Han Xiao",
+        "Ming Sun",
+        "Honggang Qi"
+      ],
+      "version": "2607.22334v1",
+      "arxiv_id": "2607.22334"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.11012v1",
+      "title": "EasyOPD: An Easy-to-use On-Policy Distillation Framework for Large Language Models",
+      "summary": "Conventional language-model distillation often relies on fixed teacher-generated data, which may not cover the states encountered by an evolving student policy. On-policy distillation (OPD) instead collects teacher or evaluator supervision on student-generated rollouts. However, existing OPD methods differ substantially in supervision form, tokenizer compatibility, teacher access, and supervision granularity, leading to fragmented implementations that are difficult to reproduce and extend. We present \\textsc{EasyOPD}, an on-policy distillation framework built on verl, a distributed reinforcement-learning framework for large language models. \\textsc{EasyOPD} separates user-side configuration, method-specific supervision logic, and verl-based execution. Its method modules connect to the shared backend through extension boundaries for loss construction, rollout metadata, reward processing, tokenizer alignment, and teacher-side computation. We instantiate representative methods for three OPD settings -- cross-tokenizer OPD, on-policy self-distillation, and step-wise OPD. Experiments on reasoning, code-generation, scientific-knowledge, and tool-use benchmarks show that these implementations can be executed through the same verl-based backend while retaining their method-specific objectives and task-dependent performance profiles. We release \\textsc{EasyOPD} with runnable YAML configurations, documentation, and an installable demonstration package and video.",
+      "published": "2026-07-13T02:27:50Z",
+      "updated": "2026-07-13T02:27:50Z",
+      "authors": [
+        "Jie Sun",
+        "Mao Zheng",
+        "Mingyang Song",
+        "Qiyong Zhong",
+        "Gengsheng Li",
+        "Zhepei Hong",
+        "Chang Wu",
+        "Pengfei Liu",
+        "Junfeng Fang",
+        "Xiang Wang"
+      ],
+      "version": "2607.11012v1",
+      "arxiv_id": "2607.11012"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.30616v2",
+      "title": "Scaling the Horizon, Not the Parameters: Reaching Trillion-Parameter Performance with a 35B Agent",
+      "summary": "We introduce Agents-A1, a 35B Mixture-of-Experts Agentic Model that reaches trillion-parameter-level performance by scaling the agent horizon. We investigate agent-horizon scaling from two perspectives: scaling long-horizon trajectories and scaling heterogeneous agent abilities. To support this goal, we build a long-horizon knowledge-action infrastructure that connects external knowledge, actions, observations, and verifier outcomes, producing agentic trajectories with an average length of 45K tokens. Based on this, we train Agents-A1 with a three-stage recipe. First, we perform full-domain supervised fine-tuning to align the base model with broad agentic behaviors. Second, we train domain-level teacher models to capture specialized expertise in each domain. Third, we propose a multi-teacher domain-routed on-policy distillation with salient vocabulary alignment to improve knowledge transfer efficiency across different domains, unifying six heterogeneous domains into one deployable student model. Agents-A1 achieves strong and broad performance for long-horizon agent benchmarks. Compared with 1T-parameter model such as Kimi-K2.6 and DeepSeek-V4-pro, Agents-A1 achieves leading results on SEAL-0 (56.4), IFBench (80.6), HiPhO (46.4), FrontierScience-Olympiad (79.0), and MolBench-Bind (56.8), and remains highly competitive on SciCode (44.3), HLE (47.6) and BrowseComp (75.5). We hope this work provides the community with a practical path for scaling the horizon using a 35B agent that can reach or match the performance of 1T models on long-horizon tasks.",
+      "published": "2026-06-29T17:50:54Z",
+      "updated": "2026-07-13T13:01:42Z",
+      "authors": [
+        "Lei Bai",
+        "Zongsheng Cao",
+        "Yang Chen",
+        "Zhiyao Cui",
+        "Shangheng Du",
+        "Yue Fan",
+        "Shiyang Feng",
+        "Zijie Guo",
+        "Haonan He",
+        "Liang He",
+        "Xiaohan He",
+        "Shuyue Hu",
+        "Yusong Hu",
+        "Songtao Huang",
+        "Yichen Jiang",
+        "Hao Li",
+        "Xin Li",
+        "Dahua Lin",
+        "Weihao Lin",
+        "Fenghua Ling",
+        "Dongrui Liu",
+        "Zhuo Liu",
+        "Wenjie Lou",
+        "Runmin Ma",
+        "Chunjiang Mu",
+        "Haoyang Peng",
+        "Tianshuo Peng",
+        "Jinxin Shi",
+        "Luohe Shi",
+        "Boyuan Sun",
+        "Zelin Tan",
+        "Shengji Tang",
+        "Yan Teng",
+        "Qianyi Wang",
+        "Xiaosong Wang",
+        "Yiming Wu",
+        "Yi Xie",
+        "Xiangchao Yan",
+        "Jingqi Ye",
+        "Peng Ye",
+        "Fangchen Yu",
+        "Jiakang Yuan",
+        "Bihao Zhan",
+        "Bo Zhang",
+        "Chen Zhang",
+        "Shufei Zhang",
+        "Shuaiyu Zhang",
+        "Wenlong Zhang",
+        "Yiqun Zhang",
+        "Junpeng Zhao",
+        "Zhijie Zhong",
+        "Bowen Zhou",
+        "Yuhao Zhou"
+      ],
+      "version": "2606.30616v2",
+      "arxiv_id": "2606.30616"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.09456v1",
+      "title": "Breaking the Tokenizer Barrier: On-Policy Distillation across Model Families",
+      "summary": "On-Policy Distillation (OPD) has become a core technique in the post-training of Large Language Models (LLMs) for transferring knowledge from domain experts to student models. However, existing OPD distillation methods require teacher and student models to share the same tokenizer, restricting the applicability of OPD within the model series. Current mainstream practice typically employs Supervised Fine-Tuning (SFT) on teacher-generated responses for cross-tokenizer distillation, which fails to capture the rich knowledge embedded in the teacher's probability distribution. In this work, we enable the standard on-policy distillation method to operate across model families, ensuring that high-fidelity token-level signals can propagate across different tokenizers with a precise token-mapping algorithm. Extensive experiments show that cross-tokenizer OPD is significantly more compute-efficient than baselines on various benchmarks. Our results unlock a broader range of teacher-student pairs for OPD, opening up new avenues for adapting and enhancing interactions between LLMs.",
+      "published": "2026-06-08T13:12:01Z",
+      "updated": "2026-06-08T13:12:01Z",
+      "authors": [
+        "Yifan Niu",
+        "Han Xiao",
+        "Dongyi Liu",
+        "Zelong Wang",
+        "Dihong Gong",
+        "Yasheng Wang",
+        "Jia Li"
+      ],
+      "version": "2606.09456v1",
+      "arxiv_id": "2606.09456"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.06021v4",
+      "title": "OPRD: On-Policy Representation Distillation",
+      "summary": "On-policy distillation (OPD) supervises the student exclusively in the output space by matching next-token distributions. This paradigm suffers from two limitations: (i) a high-variance gradient estimator whose signal-to-noise ratio collapses as the student approaches the teacher, and (ii) an LM-head information bottleneck that discards the teacher's intermediate hidden states. We propose On-Policy Representation Distillation (OPRD), the first method to lift on-policy distillation into the hidden-state space. OPRD aligns student and teacher representations across selected layers on the same on-policy rollouts, providing dense, deterministic, per-layer supervision while bypassing the LM head entirely. Theoretically, OPRD provides a deterministic per-sample gradient, removing the token-level estimation variance that plagues OPD, and exposes structural information that any output-space objective necessarily discards. Empirically, OPRD closes the student-teacher gap on competition mathematics benchmarks (AIME 2024, AIME 2025, and AIMO), where every output-space baseline plateaus below the teacher, while training 1.44x faster and using up to 54% less memory. We further extend OPRD to the cross-architecture setting via OPRD-Bridge. By exploiting the observation that heterogeneous models share a low-rank representational structure, we construct a frozen projector pair that aligns representations across arbitrary depth and width mismatches, shifting the alignment from the output space (which depends on a shared vocabulary) to the representation space. We validate OPRD-Bridge on both cross-architecture (Qwen3-4B -> Qwen3-1.7B-Base) and cross-tokenizer (Phi-4-mini-reasoning -> Qwen3-1.7B-Base) settings, demonstrating successful knowledge transfer even when the vocabulary-based alignment channel is unavailable. Code: https://github.com/ShenzhiYang2000/OPRD.",
+      "published": "2026-06-04T11:13:01Z",
+      "updated": "2026-06-20T15:47:56Z",
+      "authors": [
+        "Shenzhi Yang",
+        "Guangcheng Zhu",
+        "Bowen Song",
+        "Haobo Wang",
+        "Mingxuan Xia",
+        "Xing Zheng",
+        "Yingfan Ma",
+        "Zhongqi Chen",
+        "Weiqiang Wang",
+        "Junbo Zhao",
+        "Gang Chen"
+      ],
+      "version": "2606.06021v4",
+      "arxiv_id": "2606.06021"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.07711v3",
+      "title": "SimCT: Recovering Lost Supervision for Cross-Tokenizer On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) is a standard tool for transferring teacher behavior to a smaller student, but it implicitly assumes that teacher and student predictions are comparable token by token, an assumption that fails whenever the two models tokenize the same text differently. Under heterogeneous tokenizers, exact shared-token matching silently discards a large fraction of the teacher signal at precisely the positions where vocabularies disagree. We propose \\textbf{\\underline{Sim}ple \\underline{C}ross-\\underline{T}okenizer OPD (SimCT)}, which restores this signal by enlarging the supervision space: alongside shared tokens, SimCT compares teacher and student over short multi-token continuations that both tokenizers can realize, leaving the OPD loss form itself unchanged. We show that these units are the finest jointly tokenizable supervision interface, and that coarser alternatives remove teacher-student distinctions that are useful for on-policy learning. Across three heterogeneous teacher-student pairs on mathematical reasoning and code-generation benchmarks, SimCT shows consistent gains over shared-vocabulary OPD and representative cross-tokenizer baselines, with ablations confirming that the improvements come from recovering supervision discarded by exact shared-token matching. Code is available at \\href{https://github.com/sunjie279/SimCT-}{https://github.com/sunjie279/SimCT-}.",
+      "published": "2026-05-08T13:16:17Z",
+      "updated": "2026-10-15T08:39:01Z",
+      "authors": [
+        "Jie Sun",
+        "Mao Zheng",
+        "Mingyang Song",
+        "Qiyong Zhong",
+        "Yilin Cheng",
+        "Bichuan Feng",
+        "Pengfei Liu",
+        "Junfeng Fang",
+        "Xiang Wang"
+      ],
+      "version": "2605.07711v3",
+      "arxiv_id": "2605.07711"
+    },
+    {
+      "id": "http://arxiv.org/abs/2603.01875v4",
+      "title": "KDFlow: A User-Friendly and Efficient Knowledge Distillation Framework for Large Language Models",
+      "summary": "Knowledge distillation (KD) is widely used to compress and post-train large language models (LLMs), yet many existing frameworks execute teacher inference with the same training-oriented backend as student optimization, leading to suboptimal efficiency. In this paper, we propose KDFlow, a novel framework for LLM distillation that features a decoupled architecture and employs SGLang for teacher inference. KDFlow combines SGLang for teacher inference with PyTorch FSDP2 for student optimization, allowing each model to run on a backend tailored to its workload. To enable efficient full-vocabulary distillation in this decoupled architecture, KDFlow transfers the teacher's final hidden states via Ray's object store and recomputes teacher logits on each student worker using a frozen copy of the teacher's output head. Furthermore, our framework supports both off-policy and on-policy distillation and incorporates cross-tokenizer algorithms through highly extensible and user-friendly APIs. Experiments show that KDFlow achieves a 1.44$\\times$ to 6.36$\\times$ speedup over MS-SWIFT in off-policy distillation and a 1.43$\\times$ to 1.75$\\times$ speedup over verl in on-policy distillation. KDFlow further scales to 64 GPUs, achieving 3.68$\\times$ and 2.52$\\times$ strong-scaling speedups in two representative model configurations. The code and documentation are publicly available.",
+      "published": "2026-03-02T13:54:19Z",
+      "updated": "2026-09-07T09:25:30Z",
+      "authors": [
+        "Songming Zhang",
+        "Xue Zhang",
+        "Tong Zhang",
+        "Bojie Hu",
+        "Yufeng Chen",
+        "Jinan Xu"
+      ],
+      "version": "2603.01875v4",
+      "arxiv_id": "2603.01875"
+    }
+  ]
+}

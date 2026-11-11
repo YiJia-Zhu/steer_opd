@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-11-07T16:34:54.550050+00:00",
+  "seed": 42,
+  "source": {
+    "path": "/local_nvme/data/zhenning/working_tmp/steer_opd/ref/ref_rep/Rethinking-OPD/datasets/test_data/DAPO/train.json",
+    "sha256": "4412fbb57792ad667eb5dfbf6f79b092b67735bdb39216db8ab4f85711ee7e67",
+    "rows": 17398,
+    "git_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8"
+  },
+  "test": {
+    "path": "/home/zhenning/data/hugggingface_datasets/MATH-500/test.jsonl",
+    "sha256": "35dc41080a3680858b27fa7e0533d2d547825316fc5dafe5d316f4ccc5a06132",
+    "rows": 500
+  },
+  "normalization": "Unicode NFKC, collapse whitespace, strip",
+  "near_duplicate_rule": "casefold lexical 5-grams; >=8 distinct shorter shingles; Jaccard>=0.8 OR containment>=0.9",
+  "normalized_unique_source_questions": 17187,
+  "retained_unique_questions": 17169,
+  "exclusion_groups_by_reason": {
+    "lexical_near_test_overlap": 9,
+    "conflicting_answers": 5,
+    "exact_test_overlap": 4
+  },
+  "split_counts": {
+    "calibration_candidates": 1024,
+    "dev": 256,
+    "train": 15889,
+    "dev_pilot": 128,
+    "train_pilot": 2048
+  },
+  "files": {
+    "calibration_candidates.jsonl": {
+      "sha256": "cda773729bf4a7d9da59135afe03ee42716c9e5c3adaadfa7832bf72ab154da3",
+      "bytes": 488202
+    },
+    "dev.jsonl": {
+      "sha256": "4b34c0558ee16e8d2ca995ae12d59e7ef28807683cc71404e6e2acb0f0790422",
+      "bytes": 123038
+    },
+    "dev_pilot.jsonl": {
+      "sha256": "b4dad043a826cd004ca3b8810852c31cd24c404192914363ba0ca4e8f022dbbb",
+      "bytes": 62437
+    },
+    "exclusions.jsonl": {
+      "sha256": "e486b9b0eb6e3723eb8eecb85032746ce255c35390c4b207ec2c1c9189ba85d0",
+      "bytes": 2472
+    },
+    "math500.jsonl": {
+      "sha256": "72285bf8c4200475a4063ae6e28d85471b776928a39f3a720f29e722f7676dd1",
+      "bytes": 157785
+    },
+    "merged_duplicates.jsonl": {
+      "sha256": "447be31470cd72288e1c943038ac11101388b2f5523c85cc503c21e204448d6b",
+      "bytes": 11939
+    },
+    "train.jsonl": {
+      "sha256": "1fe8e324f50eac4ac1f44fe7b2c906e79d7d53ca608ed70871db5064d5612f7f",
+      "bytes": 7490879
+    },
+    "train_pilot.jsonl": {
+      "sha256": "0bdb7aa44812e553eb493d0733c41ce95b33264d567bffd060b0cc6839e429a2",
+      "bytes": 958237
+    }
+  },
+  "script_sha256": "8628adb955e43c964721ad4a33e9d2586a0bbb315a841dc4542a062dd00f24f2",
+  "limitations": [
+    "Lexical exclusion does not establish absence of semantic contamination.",
+    "No claim that JSON snapshot equals original paper training parquet.",
+    "Base-model pretraining or teacher RL overlap is not audited."
+  ]
+}

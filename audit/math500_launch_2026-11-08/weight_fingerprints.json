@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-11-07T16:50:13.709404+00:00",
+  "models": {
+    "student_r1_1p5b": [
+      {
+        "file": "model.safetensors",
+        "bytes": 3554214621,
+        "sha256": "58858233513d76b8703e72eed6ce16807b523328188e13329257fb9594462945"
+      }
+    ],
+    "teacher_justrl_1p5b": [
+      {
+        "file": "model.safetensors",
+        "bytes": 3554214752,
+        "sha256": "1bedcdf243c4e2e633fa04c05617809cf6a1bbc1a07221609035f6347efecffb"
+      }
+    ],
+    "teacher_r1_7b": [
+      {
+        "file": "model-00001-of-000002.safetensors",
+        "bytes": 8606596466,
+        "sha256": "8b27be8d43b81d0cd19b3113ef88caf1a61c2fc602de77e3cce97aedcec184b4"
+      },
+      {
+        "file": "model-00002-of-000002.safetensors",
+        "bytes": 6624675384,
+        "sha256": "1780a9502f56f592cb4d6262c8c76ca8ad36a86b0257e052c672d87f49707e80"
+      }
+    ]
+  },
+  "scope": "Local weight fingerprints; upstream revision equivalence not established"
+}

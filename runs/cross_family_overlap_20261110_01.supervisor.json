@@ -1,0 +1,11 @@
+{
+  "pid": 4034185,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_cross_family_diagnosis.py",
+    "--output-dir",
+    "runs/cross_family_overlap_20261110_01"
+  ],
+  "started_at": "2026-11-10T12:34:00.696470+00:00",
+  "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/cross_family_overlap_20261110_01.wrapper.log"
+}

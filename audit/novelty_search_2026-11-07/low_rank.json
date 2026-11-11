@@ -1,0 +1,776 @@
+{
+  "key": "low_rank",
+  "query": "(all:\"on-policy distillation\" OR all:\"on-policy self-distillation\" OR all:\"on policy distillation\") AND (all:\"low-rank\" OR all:\"subspace\" OR all:\"geometry\")",
+  "requested_max": 150,
+  "retrieved_at": "2026-11-07T15:49:14.285411+00:00",
+  "status": 200,
+  "url": "https://export.arxiv.org/api/query?search_query=%28all%3A%22on-policy+distillation%22+OR+all%3A%22on-policy+self-distillation%22+OR+all%3A%22on+policy+distillation%22%29+AND+%28all%3A%22low-rank%22+OR+all%3A%22subspace%22+OR+all%3A%22geometry%22%29&max_results=150&sortBy=submittedDate&sortOrder=descending",
+  "total_results": 38,
+  "records": [
+    {
+      "id": "http://arxiv.org/abs/2611.08016v1",
+      "title": "Learning Dynamics of On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) is emerging as an important paradigm for language-model post-training, combining dense teacher supervision with training on student-generated trajectories. This creates a feedback loop where each update changes the student and thereby the training distribution that generates subsequent updates. Yet, how this feedback shapes learning and generalization remains poorly understood. We conduct a mechanistic analysis of OPD's learning dynamics, distinguishing the two feedback loop stages: conversion of the distillation signal into parameter updates, and broadcast through which these updates change predictions across prefixes and reshape the rollout distribution. This framework helps us understand both limited student responsiveness despite substantial teacher-student disagreement, and degeneration when updates that improve local teacher agreement also increase the probability of unsuccessful continuations, exposing the student to unreliable supervision in subsequent rollouts. Finally, we show that offline distillation can prepare a student for OPD without significantly improving immediate held-out accuracy. While OPD alone may degrade generation, it can yield substantial accuracy gains after sufficient offline preparation. Together, our results connect teacher supervision, student geometry, and the evolving rollout distribution in determining the learning dynamics of OPD and its effects on downstream performance.",
+      "published": "2026-11-05T13:38:26Z",
+      "updated": "2026-11-05T13:38:26Z",
+      "authors": [
+        "Guan Zhe Hong",
+        "Sumeet Ramesh Motwani",
+        "Liang Chen",
+        "Yangchen Pan",
+        "Junchi Yu",
+        "Jialin Yu",
+        "Philip Torr",
+        "Yi Ren"
+      ],
+      "version": "2611.08016v1",
+      "arxiv_id": "2611.08016"
+    },
+    {
+      "id": "http://arxiv.org/abs/2611.05609v1",
+      "title": "On the Generalization Limitation of On-Policy Distillation for Post-RL Consolidation",
+      "summary": "Multi-teacher on-policy distillation (MOPD) extends on-policy distillation (OPD) to consolidate capabilities from multiple teachers. Although prior work reports near-perfect in-distribution (IND) distillation performance, we find that this can mask incomplete capability consolidation beyond the supervised distribution. A preliminary study on synthetic reasoning shows that OPD does not fully transfer teachers' generalization capabilities. We then extend this investigation to real-world tasks, evaluating extrapolative and compositional generalization across mathematical reasoning, coding, agent, and long-context capabilities using Qwen3 models. Across extrapolative settings, OPD and MOPD reach 96.04-102.73% of their teachers' IND scores. Yet their out-of-distribution (OOD) scores remain 2.45-16.25% below the base model's. Across three compositional settings, MOPD improves IND performance over the base model, but its performance on composed tasks as OOD remains 18.19-24.34% below that of the best teachers. To understand these gaps, we examine teacher capability and data coverage as two potential bottlenecks. Jointly alleviating these bottlenecks eliminates OOD forgetting in our experiments and suggests the potential for generalization beyond the teacher. (M)OPD also reduces OOD forgetting on average relative to its reinforcement learning (RL) baselines. Analysis of the associated update geometry reveals smaller and more spectrally concentrated updates on average than those of the RL baselines, along with greater shared update structure under MOPD. Motivated by these findings, we propose geometry-based patching and base-preserving replay to improve OOD performance while largely preserving IND performance. Our findings identify a blind spot in capability consolidation via (M)OPD, highlighting the need for algorithms that explicitly support OOD retention and generalization.",
+      "published": "2026-11-03T20:53:26Z",
+      "updated": "2026-11-03T20:53:26Z",
+      "authors": [
+        "Yichen Wang",
+        "Yufa Zhou",
+        "Siqi Zhu",
+        "Haozheng Luo",
+        "Jingzhi Bao",
+        "Zhichao Liu",
+        "Zijun Wei"
+      ],
+      "version": "2611.05609v1",
+      "arxiv_id": "2611.05609"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.31438v1",
+      "title": "DIAL: Steerable Language Models with Distilled Instruction-Adherence Levels",
+      "summary": "When a user says \"Keep it short\", how short should the LLM's response be? More generally, users and applications require different levels of instruction adherence, but prompting does not reliably provide fine-grained control over them. We therefore study \"steerable language models\" that provide fine-grained numerical control over the degree to which models follow general instructions specified in text. However, existing approaches do not jointly offer fine-grained control, efficiency, and scalability across diverse instructions. To address this gap, we introduce DIAL (Distilled Instruction-Adherence Levels) to achieve all three properties. For fine-grained control, we perform classifier-free guidance (CFG) with a frozen LLM to provide training signals for on-policy distillation of instruction adherence at different levels. For efficiency, we design a lightweight steering adapter that uses a classifier over the LLM's hidden states to compute a closed-form steering edit. The classifier adaptively sets the steering magnitude at each token based on the target adherence level, while accounting for the geometry of the LLM's hidden states to preserve response coherence. For scalability, the classifier is text-conditioned, allowing a shared adapter to support new instructions without per-instruction fitting, and training requires only instruction and request text. Evaluation across multiple LLM families shows that DIAL achieves a competitive balance between concept expression and response fluency, with concept scores increasing monotonically across adherence levels. We introduce SteerIF, an instruction-only dataset of 98, 625 concept, persona, verifiable, and descriptive instructions. When trained on SteerIF, DIAL provides fine-grained control over personas and, when combined with prompting, improves verifiable instruction following.",
+      "published": "2026-10-22T15:34:39Z",
+      "updated": "2026-10-22T15:34:39Z",
+      "authors": [
+        "Thanh Q. Tran",
+        "John Russell Himawan",
+        "Arun Verma",
+        "Kiwan Wong",
+        "Wei Xiao",
+        "Daniela Rus",
+        "Bryan Kian Hsiang Low"
+      ],
+      "version": "2610.31438v1",
+      "arxiv_id": "2610.31438"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.26525v1",
+      "title": "A Fisher-Geometric View of Multi-Teacher On-Policy Distillation",
+      "summary": "Consolidating specialized foundation models into a unified generalist is a central goal of post-training. Two approaches are in common use: model merging, which is fast but treated as a heuristic, and multi-teacher on-policy distillation, which matches distributions but demands heavy rollout compute and suffers from cross-task gradient conflict. We show that the two are one objective seen at different orders. Within a shared basin of homologous specialists, the multi-teacher on-policy distillation objective is, to second order, exactly the Fisher-merging objective. Its minimizer is therefore the Fisher merge, a classic model-merging method given by a closed-form combination of the specialists, so merging is optimal, to second order, as a closed-form stage of distillation. Building on this identification, we propose Residual-Governed Branch-and-Merge(RGBM), a two-phase consolidation procedure. Concretely, a full-parameter Fisher merge is intractable on foundation models, so Phase~1 restricts the merge to the task-vector subspace. Extending tangent-space analyses of merging, we show that the same coefficients that mix task vectors also mix implicit rewards, which lets a residual program on unlabelled prompts solve for them. The program minimizes the worst per-domain residual and reports its energy-normalized values as the domain residual spectrum. Phase~2 lets this spectrum govern what may be added: RGBM passivates domains with low normalized residuals, trains isolated branches only for domains above the spectral gap, and writes back the admitted updates with calibrated shrinkage. On two open-source consolidation suites, the Phase~1 merge alone matches or outperforms fully trained multi-teacher distillation, and RGBM improves on it further with zero extra joint-training steps, whereas every un-gated write-back, including continued joint distillation from the merge, falls below it.",
+      "published": "2026-10-19T14:54:47Z",
+      "updated": "2026-10-19T14:54:47Z",
+      "authors": [
+        "Liu Kaiyuan",
+        "Zhuang Ziyuan",
+        "Ma Haoxuan",
+        "Gu Yannian",
+        "Song Mingfei",
+        "Weng Rongxiang",
+        "Ye Jieping"
+      ],
+      "version": "2610.26525v1",
+      "arxiv_id": "2610.26525"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.22681v1",
+      "title": "EgoP$^{2}$C: Internalizing Plan-Perceive-Compose for Spatial Reasoning in Egocentric Video",
+      "summary": "Answering complex spatial reasoning questions from egocentric video requires determining what evidence is needed, acquiring targeted observations, and combining them through multiple reasoning steps. Existing vision-language models (VLMs) struggle to perform this process reliably. Agentic systems address this challenge by querying external vision and geometry tools, but training their reasoning leaves these tools unchanged, so inaccurate observations can still lead to incorrect answers. We introduce EgoP$^{2}$C, a framework that internalizes a plan-perceive-compose process within a single VLM. To this end, we first train specialized Planner and Perception teachers using separate adapters (Dual-LoRA), then fine-tune the corresponding experts in a mixture-of-experts (MoE) student under their supervision. We subsequently train the student on trajectories generated by its current policy using a segment-level extension of multi-teacher on-policy distillation (MOPD), assigning different trajectory segments to different supervisors. The Planner teacher supervises which evidence-seeking questions to ask, when to stop gathering evidence, and how to compose the final answer. The Perception teacher supervises the video-grounded answers to those questions. At inference, the student executes this adaptive workflow end-to-end, without external spatial tools. Across three spatial reasoning benchmarks, EgoP$^{2}$C students built from Qwen3-VL-8B and SenseNova-SI-1.3-8B outperform their base models by an average of 9.2 and 7.5 percentage points, respectively. Across both backbones, EgoP$^{2}$C reduces inference FLOPs by 65.8-66.3% and achieves $1.29$-$1.49\\times$ speedups over their shared Dual-LoRA teacher.",
+      "published": "2026-10-15T21:51:56Z",
+      "updated": "2026-10-15T21:51:56Z",
+      "authors": [
+        "Chaoyu Li",
+        "Arka Sadhu",
+        "Yuliang Li",
+        "Hyo Jin Kim",
+        "Yuning Chai",
+        "Pooyan Fazli"
+      ],
+      "version": "2610.22681v1",
+      "arxiv_id": "2610.22681"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.22293v1",
+      "title": "Towards Continual Learning: Mitigating Forgetting With Subspace Tuning",
+      "summary": "Large language models (LLMs) acquire new skills through fine-tuning, but it can destroy capabilities they already have: catastrophic forgetting remains a central obstacle to continual learning in LLMs. Recent works connect forgetting to how far, and along which directions, fine-tuning moves the weights. On-policy methods such as reinforcement learning and on-policy distillation avoid updating the principal singular directions of weight matrices and thus forget less. In contrast, SFT concentrates updates along these directions and is susceptible to catastrophic forgetting. In this work, we introduce Subspace Tuning (SST), which restricts each weight update to the bottom singular subspace, eliminating changes along the principal directions. SST is optimizer-agnostic and composes well with fine-tuning recipes including SFT and self-distillation. SST combines tight subspace protection, dense gradient estimation, and a simple refresh mechanism, enabling stronger learning than prior orthogonal fine-tuning methods. With these mechanisms, protecting as much as 99\\% of the weight subspace substantially improves retention while preserving strong target-task performance. This behavior strengthens with model and data size and nearly eliminates forgetting in the large-model regime. SST also keeps the model close to its base distribution, inducing $2$--$4\\times$ less KL drift than the baseline recipes. Overall, SST advances the learning--forgetting Pareto frontier, making it a practical default for fine-tuning pre-trained language models.",
+      "published": "2026-10-15T17:44:43Z",
+      "updated": "2026-10-15T17:44:43Z",
+      "authors": [
+        "Arnav Chavan",
+        "Kusha Sareen",
+        "Rishabh Tiwari",
+        "Abhranil Chandra",
+        "Johan Obando-Ceron",
+        "Kurt Keutzer",
+        "Scott Niekum",
+        "Inderjit S Dhillon",
+        "Devvrit Khatri"
+      ],
+      "version": "2610.22293v1",
+      "arxiv_id": "2610.22293"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.12855v1",
+      "title": "Mitigating Capability Degradation in LLM Self-Improvement via Representation Geometry Regularization",
+      "summary": "On-Policy Self-distillation is a self-improvement paradigm that enables large language models (LLMs) to improve their capabilities by leveraging the same model as both teacher and student under different conditioning contexts. However, we find that OPSD methods can progressively degrade previously acquired capabilities: queries that are correctly responded at earlier training stages may become incorrectly responded as optimization proceeds, even the overall performance continues to improve. Further analysis reveals that this degradation coincides with a deterioration of the geometry of hidden representations, characterized by reduced intra-cluster compactness and diminished inter-cluster separation. Motivated by this observation, we propose Representation Geometry Regularization (RGR), which preserves representation geometry during post-training by encouraging compactness within cluster and separation across cluster. RGR can be seamlessly integrated into existing OPSD methods without altering their core optimization procedures. Extensive experiments on multiple OPSD methods and benchmarks show that RGR generally alleviates capability degradation while retaining capability improvements. Our code is available in https://github.com/supermachinelearner/RGR.",
+      "published": "2026-10-09T01:28:50Z",
+      "updated": "2026-10-09T01:28:50Z",
+      "authors": [
+        "Jiaqi Tian",
+        "Ting Long"
+      ],
+      "version": "2610.12855v1",
+      "arxiv_id": "2610.12855"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.12355v2",
+      "title": "Distilling Routed 3D Privilege for Spatial Reasoning in Vision-Language Models",
+      "summary": "Spatial reasoning remains a persistent weakness of vision-language models (VLMs), because RGB inputs do not directly provide geometric evidence. Existing remedies either inject 3D into the model at inference, paying architecture and latency costs, or train with outcome rewards that supervise only the final answer. Spatial errors originate in perception: a misjudged depth or direction can be corrected only by the scene's true geometry, which the 3D-scanned sources of spatial training corpora already provide. We propose GPD (Geometry-Privileged Distillation), which makes geometric evidence the privilege in on-policy self-distillation (OPSD). For each question, depth, semantic, and bird's-eye-view (BEV) cues are rendered as compact text and routed to the teacher alongside the reference answer; a privileged KL, applied only to incorrect trajectories, augments GRPO, and the deployed model remains RGB-only. On the 4B backbone, GPD achieves 57.1 on VSI-Bench and 37.6 average across MindCube, SPARBench, MMSI-Bench, and ViewSpatial, outperforming both GRPO and answer-privileged OPSD across spatial reasoning benchmarks. Ablations confirm the complementarity of 3D and answer privilege, the advantage of question-conditioned routing over full-context injection, and the benefit of restricting distillation to incorrect trajectories.",
+      "published": "2026-10-08T17:22:24Z",
+      "updated": "2026-10-12T16:58:33Z",
+      "authors": [
+        "Hongxing Li",
+        "Yixin Li",
+        "Dingming Li",
+        "Zixuan Wang",
+        "Yuchen Yan",
+        "Wenqi Zhang",
+        "Weiming Lu",
+        "Yongliang Shen"
+      ],
+      "version": "2610.12355v2",
+      "arxiv_id": "2610.12355"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.07842v1",
+      "title": "Privileged Context as Drift in On-Policy Self-Distillation",
+      "summary": "On-policy self-distillation (OPSD) trains a language model to match a copy of itself conditioned on privileged context. Existing work varies what privileged context contains and how it is produced while also changing models, data, and training setups, making the effects of privileged context design difficult to isolate. Motivated by efforts in continual learning to reduce catastrophic forgetting, we study how the choice of privileged context affects policy drift. Specifically, we vary two axes: content (a demonstration, feedback, or rephrase) and source (external, self-generated with a verifier, or self-generated without a verifier). We train Qwen2.5-7B with OPSD across these nine combinations and three datasets, measuring target-task accuracy, prior-task retention, reverse KL from the base policy, and parameter-update geometry. Holding source fixed, changing content spans a wider median KL range than holding content fixed and changing source. The ratio between these ranges is $5.1\\times$ for per-token KL and $2.2\\times$ for per-sequence KL. Parameter-update geometry shows the same pattern: updates from adapters that share content are more closely aligned (mean cosine $0.571$) than updates from adapters that share source ($0.255$). For continual learning, these findings suggest that privileged context should be treated as part of OPSD's stability design because it is associated with how far and in what direction the policy moves.",
+      "published": "2026-10-06T06:45:39Z",
+      "updated": "2026-10-06T06:45:39Z",
+      "authors": [
+        "Ravenor Davion",
+        "Nick Rui"
+      ],
+      "version": "2610.07842v1",
+      "arxiv_id": "2610.07842"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.34605v1",
+      "title": "PMOPD: Task Ordering, Cycling, and Parameter-Update Subspace Protection in Multi-Teacher On-Policy Distillation",
+      "summary": "Multi-teacher on-policy distillation (MOPD) has emerged as a popular post-training paradigm for integrating specialized capabilities in frontier language models. Existing OPD research has primarily focused on optimizing single-task distillation through objective design, distillation scope, and teacher signal construction, whereas MOPD must aggregate multiple capabilities in shared parameters and address the resulting capability seesaw, in which improving one domain suppresses capabilities acquired from another. Inspired by the distinctive update geometry of OPD, we find that parameter updates from different tasks rapidly concentrate in their respective low-dimensional subspaces during MOPD, providing a direct geometric basis for identifying and controlling cross-task interference. We therefore propose PMOPD (Projection-based Multi-Teacher On-Policy Distillation), which constructs subspace memories from the cumulative parameter displacements of different tasks and projects both gradients and optimizer updates to remove components that interfere with protected task directions. We further develop a lightweight conflict probe to characterize task interactions and guide task ordering, together with a cycling strategy that balances subspace estimation and timely task revisitation. Experiments on representative Code, Reason, and Math tasks show that PMOPD improves every evaluated capability over MOPD, raising the average score across the three tasks by 2.54 points on Qwen2.5-7B and 2.09 points on Llama-3.1-8B. These consistent gains establish geometry-aware optimization as an effective and transferable approach to balanced multi-teacher distillation.",
+      "published": "2026-09-28T08:36:16Z",
+      "updated": "2026-09-28T08:36:16Z",
+      "authors": [
+        "Youzhi Liu",
+        "Ruobing Zheng",
+        "Boyuan Tong",
+        "Tianqi Li",
+        "Pingqi Li",
+        "Hanbo Bi",
+        "Yi Yuan",
+        "Jingdong Chen"
+      ],
+      "version": "2609.34605v1",
+      "arxiv_id": "2609.34605"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.14001v1",
+      "title": "PreSO: Privileged Representation Isolation for On-Policy Self-Distillation",
+      "summary": "On-policy self-distillation (OPSD) uses a self-teacher conditioned on privileged information to turn the sparse outcome signal of reinforcement learning with verifiable rewards (RLVR) into dense token-level supervision. Yet the teacher's advantage may depend on information unavailable to the student at inference, raising a central question: which privileged changes are worth distilling? We use cross-problem recurrence as an empirical cue for potentially reusable guidance. Comparing the representation shifts induced by full solutions and compact hints, we find that hint-induced shifts are more concentrated and directionally consistent across problems, and yield more sustained downstream gains despite revealing less information. Motivated by this association, we propose Privileged Representation Isolation for On-Policy Self-Distillation (PreSO). At the source, PreSO uses compact hints to limit the solution-specific detail entering the privileged shift. At the target, it estimates a leading low-rank subspace from shifts pooled across related problems, projects the privilege-induced correction onto this subspace, and adds it to the student's unprivileged representation to form the representation-level distillation target. The selected subspace serves as an operational proxy for recurring structure, rather than a guaranteed separation of transferable and instance-specific information. On five competition-level mathematics benchmarks, PreSO consistently outperforms strong baselines across Qwen3-1.7B, 4B, and 8B, improving average accuracy over the base model by 6.8, 9.0, and 10.0 points. Beyond peak accuracy, PreSO attains the highest final-checkpoint average at every model scale, with improvements that persist through the end of training.",
+      "published": "2026-09-27T08:48:42Z",
+      "updated": "2026-09-27T08:48:42Z",
+      "authors": [
+        "Yuhang Yang",
+        "Mingxuan Xia",
+        "Chao Ye",
+        "Shuai Zhu",
+        "Shouqing Yang",
+        "Haobo Wang",
+        "Shenzhi Yang",
+        "Zhengqing Zang",
+        "Chenglong Wang"
+      ],
+      "version": "2610.14001v1",
+      "arxiv_id": "2610.14001"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.32239v1",
+      "title": "Federated Subspace Guided Vision-Language-Action Policy Distillation for Non-IID Multi-Robot Manipulation",
+      "summary": "Federated learning offers a natural way for multiple robots to jointly improve manipulation policies without requiring centralized access to training demonstrations. However, non-IID task and environment distributions can induce representation drift and mutually incompatible robot-policy updates, making naive parameter aggregation destructive. We present FedDRMan, a federated subspace-guided distillation framework for heterogeneous robot manipulation. At each communication round, the server model provides a frozen teacher for local behavior cloning, while low-rank multimodal subspace and action-distribution distillation preserve globally useful representation geometry and policy behavior. To address heterogeneous aggregation, FedDRMan groups clients by update compatibility and maintains a persistent model for each cluster. The server then spectrally rebalances each compatible aggregate to mitigate attenuation of weaker task-relevant robot-policy update directions. Extensive experiments on LIBERO across diverse non-IID settings, heterogeneity levels, client participation variation, together with ablations and aggregation analyses, show that FedDRMan substantially improves knowledge transfer and consistently outperforms strong federated baselines achieving a peak mean success rate of 80.7%, 11.6 percentage points above the strongest evaluated federated baseline.",
+      "published": "2026-09-26T04:56:49Z",
+      "updated": "2026-09-26T04:56:49Z",
+      "authors": [
+        "Biprodip Pal",
+        "Kaushik Roy",
+        "Yanming Zhu",
+        "Brendan Tidd",
+        "Alan Wee-Chung Liew",
+        "Peyman Moghadam"
+      ],
+      "version": "2609.32239v1",
+      "arxiv_id": "2609.32239"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.24432v1",
+      "title": "1% of Tokens Can Be Enough: On Gradient Estimation in On-Policy Distillation",
+      "summary": "Sparse on-policy distillation (OPD) allocates teacher supervision to a small subset of tokens in student-generated trajectories. However, useful teacher guidance can yield a noisy update when its gradient is estimated from a sampled next token. We study this estimation problem at a fixed prefix in information geometry and propose an information-efficiency ratio (IER) based on a signal-to-noise decomposition. IER characterizes relative gradient estimation error under an optimal scalar baseline. A candidate-set approximation enables token selection based on IER and its combination with existing usefulness scores, while retaining the sampled reverse-KL training objective. On mathematical and medical reasoning tasks, adding IER improves existing selectors in multiple settings, with sparse configurations matching or exceeding full OPD without token selection at small token budgets of 0.1\\%--1\\%. These results support accounting for both usefulness and gradient-estimation reliability when allocating sparse supervision. Our code is available at https://github.com/BruceSheng1202/IER-OPD.",
+      "published": "2026-09-21T11:28:24Z",
+      "updated": "2026-09-21T11:28:24Z",
+      "authors": [
+        "Huanxin Sheng",
+        "Zhiling Ye",
+        "Haonan Wang",
+        "Jian Wang",
+        "Jinjie Gu",
+        "Jian Kang"
+      ],
+      "version": "2609.24432v1",
+      "arxiv_id": "2609.24432"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.12579v1",
+      "title": "SCOPE-OPSD: Fisher-Conditioned Privileged Subspaces for On-Policy Self-Distillation",
+      "summary": "On-policy self-distillation (OPSD) scores student-generated prefixes with a solution-conditioned self-teacher, yet transfers supervision only through next-token probabilities. We ask whether the aligned final-layer discrepancy offers a useful second channel, and how to test that channel without confusing its geometry with auxiliary strength. SCOPE-OPSD projects the privileged teacher-student residual onto a frozen rank-64 factor estimated from residual covariance and language-model-head Fisher sensitivity. It reuses the forwards already required by OPSD and adds neither rollouts nor inference-time modules. A matched Random control preserves the structured factor's rank and nonzero spectrum and uses per-arm gradient-RMS calibration, isolating the effect of the data-dependent orientation. Across the complete 25/50/75/100-step trajectories for Qwen3-1.7B, 4B, and 8B, Structured is never below Pure OPSD, with strict gains in 11 of the 12 model-checkpoint combinations and an exact tie at 4B step 25. Structured also exceeds matched Random in 10 of the 12 combinations. At step 75 on Qwen3-1.7B, Structured exceeds matched Random by 1.39 Macro Avg@12 points in each of two independent training reruns. A cross-fitted diagnostic also shows 4.40 times greater held-out privileged-gap capture than the matched random orientation. The results support a compact, Fisher-conditioned privileged subspace for short-budget OPSD.",
+      "published": "2026-09-11T08:33:52Z",
+      "updated": "2026-09-11T08:33:52Z",
+      "authors": [
+        "Yunmeng Chen",
+        "Kunyu Wang",
+        "Peihan Li",
+        "Yi Wang",
+        "Shuyin Xia",
+        "Yi Liu",
+        "Xinyong Cheng",
+        "Dehui Wang",
+        "Xiangyong Zhai",
+        "Yanxing Liu",
+        "Song Liu"
+      ],
+      "version": "2609.12579v1",
+      "arxiv_id": "2609.12579"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.11929v1",
+      "title": "SenseNova-U1.5: Towards Native Unified Visual Intelligence",
+      "summary": "We launch SenseNova-U1.5, an 8B-MoT native unified multimodal model that understands, reasons about, and generates visual content within an encoder-free and VAE-free architecture. We strengthen its visual interface through spatially coherent patch reconstruction and scale its training with carefully curated generation and editing data, improved task formulation, structural prompt enhancement, and native resolutions of up to 4K. For post-training, we optimize specialized experts for visual aesthetics, bilingual text rendering, infographic generation, and image editing, and consolidate their capabilities through multi-expert on-policy distillation. Across extensive evaluations, SenseNova-U1.5 largely advances image fidelity, text rendering, complex composition, multi-reference editing, and interleaved generation, while improving instruction following and preserving subject identity, geometry, and unmodified regions. Despite limited exposure to structured formats in its generation data, SenseNova-U1.5 generalizes effectively to long, complex, and structured visual instructions, further proving that multimodal understanding can transfer to visual planning and creation. Together, these findings position native unified modelling as a promising path towards systems that perceive, reason and create within a fully end-to-end framework. We will open-source training code, including supervised fine-tuning, reinforcement learning, and on-policy distillation.",
+      "published": "2026-09-10T17:59:55Z",
+      "updated": "2026-09-10T17:59:55Z",
+      "authors": [
+        "Haiwen Diao",
+        "Jiahao Wang",
+        "Chenjing Ding",
+        "Hanming Deng",
+        "Jiangnan Chen",
+        "Ruixi Zhang",
+        "Ruohui Wang",
+        "Wenwen Tong",
+        "Xiangyu Fan",
+        "Yubo Wang",
+        "Yue Zhu",
+        "Yuwei Niu",
+        "Zhengqi Bai",
+        "Zhiqian Lin",
+        "Zhitao Yang",
+        "Zhongang Cai",
+        "Bo Yang",
+        "Chen Feng",
+        "Chengguang Lv",
+        "Guangjia Liu",
+        "Guanlin Wang",
+        "Hanyu Zhang",
+        "Haojia Yu",
+        "Hongcan Xiao",
+        "Hongli Wang",
+        "Huan Wu",
+        "Huaping Zhong",
+        "Jian Fang",
+        "Jianan Fan",
+        "Jiaqi Li",
+        "Jiefan Lu",
+        "Jing Zuo",
+        "Jingcheng Ni",
+        "Junxiang Xu",
+        "Linjun Dai",
+        "Mutian Xu",
+        "Peishen Yan",
+        "Penghao Wu",
+        "Ruijie Mao",
+        "Ruisi Wang",
+        "Shihao Bai",
+        "Shuang Yang",
+        "Shuya Yang",
+        "Shuyan Zheng",
+        "Silei Wu",
+        "Siying Li",
+        "Tao Chu",
+        "Tianbo Zhong",
+        "Tongxi Zhou",
+        "Weichao Luo",
+        "Weichen Fan",
+        "Wenhao Jia",
+        "Wenjie Gao",
+        "Xiangli Kong",
+        "Yan Li",
+        "Yang Yong",
+        "Zimo Wen",
+        "Zixuan Qian",
+        "Wenxiu Sun",
+        "Ruihao Gong",
+        "Quan Wang",
+        "Lewei Lu",
+        "Lei Yang",
+        "Ziwei Liu",
+        "Dahua Lin"
+      ],
+      "version": "2609.11929v1",
+      "arxiv_id": "2609.11929"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.07137v1",
+      "title": "Flow3D-OPD: Multi-Teacher On-Policy Distillation for 3D Geometry Generation with Flow-Matching Diffusion Transformer",
+      "summary": "Recent image-to-3D generation models built on flow-matching diffusion Transformers (DiT) can produce high-fidelity meshes, yet their post-training strategy remains largely unexplored. There exist several critical bottlenecks in reinforcement learning: the inherent difficulty of defining comprehensive rewards for 3D geometric quality, and the gradient interference that arises when jointly optimizing heterogeneous objectives. Inspired by the practicability of on-policy distillation (OPD) in large language models and image generation, we propose \\textbf{Flow3D-OPD}, a two-stage post-training framework that introduces multi-teacher distillation into 3D geometry generation. In the first stage, we utilize the semi-policy to enhance the foundational capability of the pretrained model and then design an agentic verifier for 3D geometric quality evaluation. Based on the verifier, we could cultivate domain-specialized teacher models via direct preference optimization (DPO). In the second stage, we consolidate heterogeneous expertise into a unified student model through on-policy distillation with hard task-routing sampling and gradient accumulation, which could mitigate the gradient interference in joint optimization. Without relying on elaborate modifications, our straightforward yet effective design achieves consistent improvements across all geometric quality dimensions and surpasses all teacher models in the average metric. Extensive experiments demonstrate that our approach provides an effective paradigm for reinforcement learning in 3D generation.",
+      "published": "2026-09-07T07:36:52Z",
+      "updated": "2026-09-07T07:36:52Z",
+      "authors": [
+        "Zhiwei Ning",
+        "Zhen Zhou",
+        "Puhua Jiang",
+        "Xintong Han",
+        "Gengming Zhang",
+        "Jie Yang",
+        "Zhonglong Zheng",
+        "Yuanjie Zheng",
+        "Wei Liu",
+        "Chunchao Guo"
+      ],
+      "version": "2609.07137v1",
+      "arxiv_id": "2609.07137"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.27409v2",
+      "title": "Consolidating RLVR Capabilities Across Domains: A Deep Dive into Fusion Paradigms",
+      "summary": "Reinforcement learning with verifiable rewards (RLVR) improves specific capabilities of large language models, but covering multiple capabilities often involves training separate domain experts and subsequently consolidating them. We organize three fusion paradigms by the artifacts they reuse: Merge combines expert task vectors, Mix RL pools their datasets, and multi-teacher on-policy distillation (MOPD) uses both. Because they have largely been studied in isolation, how they compare and how to choose among them remain unclear. We compare all three using shared experts and data across model scales and a multi-domain benchmark suite. Although their average performance differs by at most 1.4 points, the gap reaches 8.6 points on a single benchmark, with domain-level variation tracking cross-domain relations visible in task-vector geometry. Training dynamics expose distinct constraints: Mix RL depends on domain mixture proportions, MOPD remains bounded by its teachers, and Merge compresses all expert updates into one. All three improve single-sample accuracy without measurable gains in solution coverage or losses in held-out capabilities. These results yield a practical guideline: use Merge when experts already exist and cheap fusion is paramount; Mix RL when training a unified model without experts, with domain proportions adjusted for cross-domain transfer; and MOPD when preserving domain-specific gains matters more than surpassing teachers or minimizing end-to-end cost.",
+      "published": "2026-08-27T17:38:04Z",
+      "updated": "2026-09-18T10:01:44Z",
+      "authors": [
+        "Siye Wu",
+        "Kai Yang",
+        "Yuchen Cai",
+        "Xin Xu",
+        "Peng-Yuan Wang",
+        "Jiaxuan Wang",
+        "Jiashun Liu",
+        "Jiafei Lyu",
+        "Yangkun Chen",
+        "Saiyong Yang",
+        "Yanghua Xiao"
+      ],
+      "version": "2608.27409v2",
+      "arxiv_id": "2608.27409"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.09745v2",
+      "title": "SR-OPSD: Self-Referenced On-Policy Self-Distillation",
+      "summary": "On-policy self-distillation (OPSD) converts feedback into dense token-level supervision on student-generated trajectories, complementing reinforcement learning with sparse outcome rewards. Its self-teacher, derived from the student's current or exponentially averaged parameters and conditioned on additional context, evolves alongside the student and its rollout context distribution. The benefit of modifying this moving target depends on how target--student probability mismatches translate into updates. We propose \\emph{Self-Referenced On-Policy Self-Distillation (SR-OPSD)}, which constructs a normalized geometric target from the self-teacher and a frozen initial policy, then minimizes the forward Rényi divergence from this target to the student. The interpolation coefficient controls the self-teacher's contribution, while the Rényi order controls the power weighting of target-to-student probability ratios in the gradient. For fixed contexts and target components, we establish a conditional variational characterization and derive the exact token-logit gradient, revealing how anchoring and projection jointly shape the effective update target. Experiments across scientific reasoning, tool use, mathematical reasoning, and code generation demonstrate strong performance across multiple model families and scales. Ablations further show that reference anchoring can improve or degrade performance depending on the projection objective, supporting the joint design of target construction and projection geometry.",
+      "published": "2026-08-10T15:40:07Z",
+      "updated": "2026-09-29T10:21:35Z",
+      "authors": [
+        "Zhuo Sun",
+        "Entong Li",
+        "Yanlong Zhao",
+        "Xiaoyuan Cheng",
+        "Wenxuan Yuan",
+        "Kaiyu Li",
+        "Che Liu",
+        "Huihang Liu",
+        "Baihua He",
+        "Xinyu Zhang",
+        "Harrison Bo Hua Zhu",
+        "Li Zeng"
+      ],
+      "version": "2608.09745v2",
+      "arxiv_id": "2608.09745"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.06802v1",
+      "title": "Simple-OPD: Demystifying Warm-up for On-policy Distillation",
+      "summary": "On-policy distillation (OPD) trains a student on its own rollouts with token-level supervision from teacher models, but its effectiveness can depend strongly on the warm-up stage before OPD. In this paper, we demystify warm-up for OPD from both data and training perspectives. For data, we find that effective warm-up relies on teacher-compatible chain-of-thought supervision, and that even incorrect teacher rollouts can provide comparable benefits to correct ones. This suggests that warm-up primarily transfers a teacher-compatible thinking pattern rather than merely correct answers. For training, we show that low-rank adaptation (LoRA) with a near-saturation training duration better balances in-domain adaptation and out-of-distribution generalization than full-parameter SFT. Based on these findings, we propose Simple-OPD, a plug-and-play initialization method that warms up the student on teacher-generated CoT with LoRA before OPD. Experiments across diverse settings demonstrate the effectiveness and robustness of Simple-OPD.",
+      "published": "2026-08-07T04:47:38Z",
+      "updated": "2026-08-07T04:47:38Z",
+      "authors": [
+        "Tao Liu",
+        "Taiqiang Wu",
+        "Mao Zheng",
+        "Xuan Luo",
+        "Runming Yang",
+        "Xuewei Yang",
+        "Junjie Wang",
+        "Yujiu Yang"
+      ],
+      "version": "2608.06802v1",
+      "arxiv_id": "2608.06802"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.06490v1",
+      "title": "InsertFuse: A Unified Framework for Multi-Category Reference-Guided Image Insertion",
+      "summary": "We present InsertFuse, a unified framework for multi-category reference-guided image insertion. Its key idea is to decouple category-specific expertise learning from cross-category capability consolidation. InsertFuse first trains specialized experts for different insertion categories and then introduces Insertion On-Policy Distillation (IOPD) to consolidate their capabilities into a single student. By querying the matched expert at states visited by the student, IOPD preserves category-specific insertion behavior while mitigating the cross-category interference caused by direct joint training. To improve spatial control, we propose Token-Aligned Geometry Conditioning (TAGC), which maps mask-derived geometric cues to the visual token grid, and Region-Balanced Flow Matching, which separately normalizes prediction errors inside and outside the insertion region to prevent background-dominated and scale-dependent supervision. We further introduce Reference CFG to isolate and strengthen the guidance induced by the visual reference under fixed scene and geometry conditions, with IOPD transferring this enhanced supervision into the unified student. Extensive experiments on the public AnyInsertion benchmark and our multi-category test set demonstrate state-of-the-art performance on most metrics, showing strong reference fidelity and generation quality across diverse insertion categories.",
+      "published": "2026-08-06T18:30:41Z",
+      "updated": "2026-08-06T18:30:41Z",
+      "authors": [
+        "Guangzhao Li",
+        "Qingyan Wei",
+        "Huayu Zheng",
+        "Yige Zheng",
+        "Chaoyang Zhang",
+        "Jie Yang",
+        "Yunan Ding",
+        "Yan Tai",
+        "Siqi Luo",
+        "Xiaohong Liu"
+      ],
+      "version": "2608.06490v1",
+      "arxiv_id": "2608.06490"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.18835v1",
+      "title": "ABOPD: Antibody CDR Design via On-Policy Distillation",
+      "summary": "Antibodies are essential therapeutic molecules, and their complementarity-determining regions (CDRs) form the primary antigen-recognition interface. Recent protein generative models have demonstrated broad capabilities in biomolecular design, yet post-training strategies for downstream objectives remain limited. Standard denoising training operates on noisy states obtained by perturbing native structures, whereas recursive generation proceeds through model-generated intermediate states. For flexible antibody CDR loops such as CDR-H3, this mismatch can allow backbone deviations to accumulate along the denoising trajectory and compromise antigen-facing loop geometry. We introduce ABOPD, an antibody design framework based on on-policy distillation that leverages privileged native geometry during training to supervise states visited along the model's own denoising trajectories. With this fine-grained structural supervision, ABOPD substantially improves structural recovery on RAbD CDR-H3 generation, reducing RMSD by 0.42 Å (from 2.37 Å to 1.95 Å) and outperforming supervised fine-tuning and offline distillation controls, offering a path to higher-fidelity protein design.",
+      "published": "2026-07-21T08:18:04Z",
+      "updated": "2026-07-21T08:18:04Z",
+      "authors": [
+        "Zhuo Yang",
+        "Jiaying He",
+        "Jiaqing Xie",
+        "Daolang Wang",
+        "Xipeng Qiu",
+        "Yuxin Wang",
+        "Tianfan Fu",
+        "Beilun Wang"
+      ],
+      "version": "2607.18835v1",
+      "arxiv_id": "2607.18835"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.15456v2",
+      "title": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
+      "summary": "Looped, weight-tied Transformers reduce parameters by reusing a single block, but decoding still stores a separate K/V cache for every recurrence step. We show that this loop-indexed cache is highly structured. For a fixed token, layer and head, K/V vectors trace a short low-rank trajectory across loops, while the head and layer axes remain much flatter. We introduce Looped Latent Attention (\\lla{}), a post-training cache codec that stores compact K and V latents and reconstructs loop-specific K/V vectors only when attention reads them. The default per-head codec compresses recurrence, while \\lla{}-2D also folds heads into one latent for the extreme-compression regime. The codec is initialized from the SVD of teacher activations and refined with logit and attention-output distillation. At matched cache budget, per-head \\lla{} outperforms head-axis MLA, cross-layer sharing, KV quantization and final-loop reuse, showing that the recurrent cache is low-rank but not safely collapsible to a single state. The same axis advantage holds on Ouro-2.6B-Thinking and transfers to Huginn-3.5B, where an SVD codec remains near-lossless to $32\\times$ compression in decoder-independent evaluation. The cache reduction is exact. On one H200, the latent-store path increases measured Ouro-1.4B batch capacity at 4k context from 32 to 768 sequences at $21.3\\times$ compression. Lastly, for long reasoning rollouts such as in MATH-500, on-policy refinement on student-generated prefixes raises accuracy at $4\\times$ compression from 0.43 to 0.66 and reduces no-answer generations when compared to token-level off-policy distillation.",
+      "published": "2026-07-16T20:58:16Z",
+      "updated": "2026-07-24T02:15:23Z",
+      "authors": [
+        "James O' Neill",
+        "Fergal Reid"
+      ],
+      "version": "2607.15456v2",
+      "arxiv_id": "2607.15456"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.09029v1",
+      "title": "MOSAIC: Adaptive Inter-layer Composition for Efficient Heterogeneous Vision-Language Models",
+      "summary": "Vision-Language Models (VLMs) have achieved success using homogeneous Transformers to process multimedia data. Recent studies show that heterogeneous structures interleaving efficient mechanisms, like linear attention, improve both performance and inference latency over homogeneous designs. However, these efforts rely on handcrafted static mixing patterns, which are sub-optimal and difficult to adapt to specific hardware. To bridge this gap, we propose Multi-Objective Search for Adaptive Inter-layer Composition (MOSAIC), a hardware-aware search method that automatically transforms homogeneous models into optimized heterogeneous architectures. MOSAIC integrates diverse efficiency mechanisms--including linear, sparse, and low-rank operators--into a unified search space. By formulating the selection as a multi-objective Mixed Integer Programming (MIP) problem, our method identifies optimal configurations that maximize downstream performance under strict hardware latency constraints. To mitigate performance degradation from structural transitions, we introduce a two-stage parameter recovery process: global off-policy distillation to stabilize internal representations, followed by a dual-teacher on-policy distillation leveraging a 235B oracle for knowledge expansion and the original 4B teacher for distributional stability. We validate MOSAIC through MOSAIC-4B, derived from Qwen3-VL-4B-Instruct. Results demonstrate that MOSAIC-4B matches the baseline's performance across multiple benchmarks while requiring less than 2% of the original training cost. Furthermore, it substantially improves inference efficiency, achieving 1.76x prefilling and 2.54x decoding speedups.",
+      "published": "2026-07-10T01:31:02Z",
+      "updated": "2026-07-10T01:31:02Z",
+      "authors": [
+        "Yuncheng Yang",
+        "Feiyang Ye",
+        "Shixian Luo",
+        "Yinna Zhu",
+        "Lianlei Shan",
+        "Wangcai Zhao",
+        "Kuo Zhang",
+        "Yan Chen",
+        "Yong Wu",
+        "Yan Xie"
+      ],
+      "version": "2607.09029v1",
+      "arxiv_id": "2607.09029"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.06855v2",
+      "title": "Geometric Self-Distillation for Reasoning Generalization",
+      "summary": "On-policy distillation provides dense teacher supervision on a language model's own trajectories. In self-distillation with privileged context, this supervision comes from the model itself, conditioned on a hint or solution trace hidden from the student. When the teacher's preferences hinge on privileged information, it can assign higher probability to continuations the student cannot infer from its own context. Matching these preferences throughout training can induce predictive drift and degrade out-of-distribution (OOD) reasoning. We propose GeoSD, a self-distillation method that controls this drift through two complementary geometric terms. A Hellinger loss weights each teacher preference by the student--teacher overlap, reducing the influence of tokens to which the student assigns low probability. Because these influences can still accumulate, a Fisher--Rao penalty regulates predictive distance from a copy of the student refreshed periodically during training. Both terms compare next-token distributions in Fisher--Rao geometry and are jointly optimized with a preconditioner motivated by the natural gradient. Across three model families, GeoSD retains strong in-distribution gains while improving average mathematical OOD accuracy by 5.7--8.6 points over the base model. OOD gains hold across five model scales from 1.7B to 32B and transfer to code generation, where GeoSD improves code accuracy by 1.9 points on average despite distilling on mathematics alone. Our analysis of mathematical reasoning shows that standard matching rapidly concentrates probability mass at high-entropy states and that its samples confidently agree on incorrect answers. In contrast, GeoSD preserves alternative token mass and reduces false consensus.",
+      "published": "2026-07-07T23:16:19Z",
+      "updated": "2026-10-05T08:07:41Z",
+      "authors": [
+        "Josip Jukić",
+        "Ivan Titov"
+      ],
+      "version": "2607.06855v2",
+      "arxiv_id": "2607.06855"
+    },
+    {
+      "id": "http://arxiv.org/abs/2607.18293v1",
+      "title": "One Student, Many Teachers: Multi-Task On-Policy Distillation via Soft-Prompt Privileged Context",
+      "summary": "On-policy self-distillation (OPSD) teaches large language models new skills through a teacher that shares the student's backbone and supervises its own rollouts. Existing teachers either inject privileged context at the input -- inducing post-hoc rationalization -- or fine-tune weights, accumulating drift and forgetting across tasks. We propose \\method, whose teacher differs from the student only by a learnable soft prompt: trained on $(x, y_\\text{gold})$ pairs with the backbone frozen, the prompt yields a task-specific teacher that preserves the student's exact representational geometry. \\method\\ extends naturally to multi-task settings by routing each example in a merged corpus to its corresponding soft-prompt teacher, allowing a single student to absorb knowledge from $K$ teachers in parallel; at inference, all prompts are discarded. On Qwen3-1.7B-Base and Phi-4-mini-instruct across four tasks (Science, Tool Use, Biology, Math), the single-task variant (OPD with a PT teacher) matches or exceeds full fine-tuning while training orders of magnitude fewer parameters, and the multi-task variant achieves the best overall average ($56.2$ on Qwen3-1.7B-Base) while preserving general-capability benchmarks -- in contrast to sequential SFT, which degrades both.",
+      "published": "2026-06-30T19:56:05Z",
+      "updated": "2026-06-30T19:56:05Z",
+      "authors": [
+        "Yingzi Ma",
+        "Zichen Zhu",
+        "Ming Jiang",
+        "Chaowei Xiao"
+      ],
+      "version": "2607.18293v1",
+      "arxiv_id": "2607.18293"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.29340v1",
+      "title": "PHF: Privileged Hidden Flow for On-Policy Self-Distillation",
+      "summary": "On-policy self-distillation (OPSD) trains a reasoning model on rollouts sampled from its own policy by matching a privileged teacher that also sees verified reference solutions. Existing OPSD objectives supervise only the output distribution, so privileged context affects training through a token-level divergence without directly supervising the internal computation that produced that distribution. We propose Privileged Hidden Flow (PHF), which additionally distills how a privileged teacher's hidden states move along the same rollout. Rather than forcing each student hidden vector to match the teacher vector at the same token position, PHF aligns token-to-token transition directions and trajectory geometry over selected generated positions. The all-layer recipe also includes an adjacent-layer relation computed from these same transitions, without pointwise hidden-state imitation. Under the same 100-step training schedule, PHF improves the Average@12 aggregate over our reproduced OPSD baseline on Qwen3-1.7B, 4B, and 8B, with observed gains of about +2.2, +1.5, and +1.7 points. The transport objective is exactly invariant to shared trajectory offsets; its local geometry term is also invariant to orthogonal transformations of transition directions. Ablations distinguish the fixed PHF recipe from pointwise hidden-state matching, single-channel transition losses, and layer-subset choices, supporting PHF as a compact hidden-flow extension to OPSD.",
+      "published": "2026-06-28T11:15:26Z",
+      "updated": "2026-06-28T11:15:26Z",
+      "authors": [
+        "Yuhan Li",
+        "Mingxu Zhang",
+        "Dazhong Shen",
+        "Ying Sun"
+      ],
+      "version": "2606.29340v1",
+      "arxiv_id": "2606.29340"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.13657v4",
+      "title": "Dense Supervision, Sparse Updates: On the Sparsity and Geometry of On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) has recently become a prominent post-training recipe by combining two desirable ingredients: on-policy student-generated trajectories and dense token-level teacher supervision. Yet how this hybrid training regime shapes a model remains poorly understood. We characterize the sparsity and geometry of OPD parameter updates across several language and vision-language model pairs and application settings. OPD updates are small and coordinate-sparse, while remaining distributed across layers and modules. This sparse support is operationally meaningful: masked training on the discovered subnetwork nearly recovers full-training performance. At the matrix level, the updates are numerically full-rank but spectrally concentrated. Their visible supports avoid coordinates emphasized by the source's principal structure and favor low-magnitude source coordinates, while the source singular-value spectra change little. Together, these findings show that OPD exhibits important weight-space signatures of on-policy post-training despite using dense teacher supervision.",
+      "published": "2026-06-11T17:54:09Z",
+      "updated": "2026-11-05T13:17:02Z",
+      "authors": [
+        "Guo Yu",
+        "Wenlin Liu",
+        "Yulan Hu",
+        "Hao-Xuan Ma",
+        "Jun-Peng Jiang",
+        "Han-Jia Ye"
+      ],
+      "version": "2606.13657v4",
+      "arxiv_id": "2606.13657"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.07082v3",
+      "title": "On the Geometry of On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) is increasingly used to improve large language model reasoning, but its training dynamics remain poorly understood. We characterize the trajectory of OPD updates in parameter space and compare it with supervised fine-tuning (SFT) and reinforcement learning with verifiable rewards (RLVR). A suite of parameter-space diagnostics consistently places OPD in a relaxed off-principal regime: compared with SFT, its updates affect fewer weights and avoid principal directions more strongly, while compared with RLVR, they remain less tightly constrained. Beyond this static localization, OPD exhibits subspace locking: its cumulative updates rapidly enter a narrow low-dimensional channel. Constraining training to the update subspace formed early in training preserves OPD performance but substantially degrades SFT, indicating that the locked subspace is functionally sufficient for OPD. Control experiments further show that sparsifying the update tokens and shifting rollout generation off-policy preserve the rank dynamics, whereas mixing the OPD objective with RLVR changes them. Overall, these results suggest that OPD is not merely an intermediate point between SFT and RLVR, but induces its own update geometry in parameter space.",
+      "published": "2026-06-05T09:20:15Z",
+      "updated": "2026-06-14T02:17:39Z",
+      "authors": [
+        "Zhennan Shen",
+        "Yanshu Li",
+        "Qingyu Yin",
+        "Chak Tou Leong",
+        "Zhilin Wang",
+        "Yanxu Chen",
+        "Rongduo Han",
+        "Sunbowen Lee",
+        "Yi R. Fung"
+      ],
+      "version": "2606.07082v3",
+      "arxiv_id": "2606.07082"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.06021v4",
+      "title": "OPRD: On-Policy Representation Distillation",
+      "summary": "On-policy distillation (OPD) supervises the student exclusively in the output space by matching next-token distributions. This paradigm suffers from two limitations: (i) a high-variance gradient estimator whose signal-to-noise ratio collapses as the student approaches the teacher, and (ii) an LM-head information bottleneck that discards the teacher's intermediate hidden states. We propose On-Policy Representation Distillation (OPRD), the first method to lift on-policy distillation into the hidden-state space. OPRD aligns student and teacher representations across selected layers on the same on-policy rollouts, providing dense, deterministic, per-layer supervision while bypassing the LM head entirely. Theoretically, OPRD provides a deterministic per-sample gradient, removing the token-level estimation variance that plagues OPD, and exposes structural information that any output-space objective necessarily discards. Empirically, OPRD closes the student-teacher gap on competition mathematics benchmarks (AIME 2024, AIME 2025, and AIMO), where every output-space baseline plateaus below the teacher, while training 1.44x faster and using up to 54% less memory. We further extend OPRD to the cross-architecture setting via OPRD-Bridge. By exploiting the observation that heterogeneous models share a low-rank representational structure, we construct a frozen projector pair that aligns representations across arbitrary depth and width mismatches, shifting the alignment from the output space (which depends on a shared vocabulary) to the representation space. We validate OPRD-Bridge on both cross-architecture (Qwen3-4B -> Qwen3-1.7B-Base) and cross-tokenizer (Phi-4-mini-reasoning -> Qwen3-1.7B-Base) settings, demonstrating successful knowledge transfer even when the vocabulary-based alignment channel is unavailable. Code: https://github.com/ShenzhiYang2000/OPRD.",
+      "published": "2026-06-04T11:13:01Z",
+      "updated": "2026-06-20T15:47:56Z",
+      "authors": [
+        "Shenzhi Yang",
+        "Guangcheng Zhu",
+        "Bowen Song",
+        "Haobo Wang",
+        "Mingxuan Xia",
+        "Xing Zheng",
+        "Yingfan Ma",
+        "Zhongqi Chen",
+        "Weiqiang Wang",
+        "Junbo Zhao",
+        "Gang Chen"
+      ],
+      "version": "2606.06021v4",
+      "arxiv_id": "2606.06021"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.00564v1",
+      "title": "Decomposed On-Policy Distillation for Vision-Language Reasoning: Steering Gradients for Visual Grounding",
+      "summary": "While on-policy distillation offers dense supervision for training small reasoning models, its optimization dynamics in the multimodal domain remain under-explored. In this work, we challenge the standard monolithic view of Vision-Language Model (VLM) distillation by mathematically decomposing the loss into two distinct components: the language prior and visual grounding. Our analysis uncovers that gradient vectors for these components are nearly orthogonal, indicating that the objective of aligning with the teacher's language distribution is geometrically independent from the objective of matching its visual perception. Consequently, standard optimization passively follows a suboptimal compromise trajectory that implicitly balances the two objectives. Hypothesizing that visual grounding constitutes the primary bottleneck for vision-language reasoning, we introduce Visual Gradient Steering (VGS), a method that dynamically reorients the update vector to prioritize the visual subspace. Experimental results on multiple distillation settings and complex multimodal benchmarks demonstrate that VGS significantly outperforms the standard monolithic formulation of on-policy distillation, achieving superior grounding with minimal training overhead.",
+      "published": "2026-05-30T06:34:37Z",
+      "updated": "2026-05-30T06:34:37Z",
+      "authors": [
+        "Hee Suk Yoon",
+        "Eunseop Yoon",
+        "Jaehyun Jang",
+        "SooHwan Eom",
+        "Ji Woo Hong",
+        "Mark Hasegawa-Johnson",
+        "Qi Dai",
+        "Chong Luo",
+        "Chang D. Yoo"
+      ],
+      "version": "2606.00564v1",
+      "arxiv_id": "2606.00564"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.25378v2",
+      "title": "CollectionLoRA: Collecting 50 Effects in 1 LoRA via Multi-Teacher On-Policy Distillation",
+      "summary": "Customized image editing aims to equip pre-trained diffusion models with specific visual effects using limited paired data, typically via Low-Rank Adaptation (LoRA). As the number of desired effects grows, storing and dynamically loading numerous these effect LoRAs significantly increases deployment overhead. Furthermore, current pipelines typically cascade these effect LoRAs with acceleration modules for fast generation, which triggers severe parameter interference and results in concept bleeding and style degradation. We propose CollectionLoRA, a multi-teacher on-policy distillation framework capable of distilling the concepts of up to 50 different effect LoRAs along with few-step generation capabilities into a single LoRA. This fundamentally resolves the feature interference issue and significantly reduces deployment costs. Specifically, the method introduces (i) a Probabilistic Dual-Stream Routing mechanism that enables the model to randomly switch between data sources during training, effectively enhancing its generalization in unseen scenarios; (ii) an Asymmetric Orthogonal Prompting strategy to achieve concept isolation within the prompt space; (iii) a Coarse-to-Fine Distillation Objective to mitigate the distribution gap between the teacher and student models. Extensive evaluations show that CollectionLoRA distills all customized effects and few-step generation into a single LoRA, reducing deployment overhead while achieving concept fidelity comparable to or better than independently trained teacher models. Code: https://github.com/Qwen-Applications/CollectionLoRA",
+      "published": "2026-05-25T03:07:01Z",
+      "updated": "2026-05-27T03:52:59Z",
+      "authors": [
+        "Fangtai Wu",
+        "Hailong Guo",
+        "Shijie Huang",
+        "Jiayi Song",
+        "Yubo Huang",
+        "Mushui Liu",
+        "Zhao Wang",
+        "Yunlong Yu",
+        "Jiaming Liu",
+        "Ruihua Huang"
+      ],
+      "version": "2605.25378v2",
+      "arxiv_id": "2605.25378"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.22675v2",
+      "title": "Self-Policy Distillation via Capability-Selective Subspace Projection",
+      "summary": "Self-distillation bootstraps large language models (LLMs) by training on their own generations. However, existing methods either rely on external signals to curate self-generated outputs (e.g., correctness filtering, execution feedback, and reward search), which are costly and unavailable for the best-performing frontier models, or skip curation entirely and train on all raw outputs, an approach that is often domain-specific and hard to generalize. Both also share a deeper weakness that self-generated outputs entangle task-relevant capability with others, such as stylistic patterns, formatting artifacts, and model-specific errors, diluting the signal for the specific capability one aims to improve. In this paper, we propose Self-Policy Distillation (SPD), which achieves generalizable, capability selective with only minimal external signal (<5% labeled data in each domain). Specifically, SPD extracts a low-rank capability subspace from the model's own gradients on correctness-defining tokens, projects key-value (KV) activations into this subspace during self-generation, and fine-tunes on the resulting raw outputs with standard next-token prediction loss.Through extensive experiments across code generation, mathematical reasoning, and multiple-choice QA, we show that SPD achieves up to 13% improvement over state-of-the-art self-distillation methods and up to 16.3% improvement over pre-trained baselines. Notably,SPD demonstrates superior generalizability, achieving 15.7% better performance under out-of-domain generalization settings.",
+      "published": "2026-05-21T16:18:41Z",
+      "updated": "2026-10-11T08:22:44Z",
+      "authors": [
+        "Guangya Hao",
+        "Hanxue Liang",
+        "Yitong Shang",
+        "Yunbo Long",
+        "Zhuokai Zhao"
+      ],
+      "version": "2605.22675v2",
+      "arxiv_id": "2605.22675"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.17743v1",
+      "title": "MoASE++: Mixture of Activation Sparsity Experts with Domain-Adaptive On-policy Distillation for Continual Test Time Adaptation",
+      "summary": "Continual test-time adaptation adapts a source-pretrained model to non-stationary, unlabeled target streams while retaining past competence, yet texture-biased backbones risk error accumulation and catastrophic forgetting. Drawing inspiration from the process of decoupling shape and texture in the human visual system, we introduce MoASE, a plug-in mixture-of-experts that disentangles domain-agnostic structure from domain-specific texture using Activation Sparsity Experts with Spatial Differentiable Dropout, forming complementary high- and low-activation pathways, while high- and low-rank bottlenecks diversify representations. The Activation Sparsity Gate produces input-adaptive SDD thresholds for precise token selection, and the Domain-Aware Router assigns per-sample expert weights using texture-sensitive cues. To curb confirmation bias on unlabeled streams and stabilize supervision, we then introduce Domain-Adaptive On-Policy Distillation to constitute MoASE++, with an EMA-anchored on-policy reverse KL distillation and an augmentation policy conditioned on entropy and confidence that aligns predictions across the same views and improves the robustness-plasticity balance. Extensive experiments on classification (CIFAR-10/100-C, ImageNet-C) and semantic segmentation (Cityscapes->ACDC) demonstrate consistent state-of-the-art performance, offering a principled, controllable approach to continual adaptation in dynamic visual environments.",
+      "published": "2026-05-18T01:52:12Z",
+      "updated": "2026-05-18T01:52:12Z",
+      "authors": [
+        "Ronyu Zhang",
+        "Aosong Cheng",
+        "Gaole Dai",
+        "Yulin Luo",
+        "Jiaming Liu",
+        "Li Du",
+        "Huanrui Yang",
+        "Dan Wang",
+        "Leyuan Fang",
+        "Yuan Du",
+        "Shanghang Zhang"
+      ],
+      "version": "2605.17743v1",
+      "arxiv_id": "2605.17743"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.13665v1",
+      "title": "Robot Squid Game: Quadrupedal Locomotion for Traversing Narrow Tunnels",
+      "summary": "Quadruped robots demonstrate exceptional potential for navigating complex terrain in critical applications such as search and rescue missions and infrastructure inspection However autonomous traversal of confined 3D environments including tunnels caves and collapsed structures remains a significant challenge Existing methods often struggle with rigid gait patterns limited adaptability to diverse geometries and reliance on oversimplified environmental assumptions This paper introduces a Reinforcement Learning RL framework that combines procedural environment generation with policy distillation to enable robust locomotion across various tunnel configurations Our approach leverages a teacher student training paradigm where specialized expert policies trained on procedurally generated tunnel geometries transfer their knowledge to a unified student policy This strategy eliminates the need for complex reward shaping in end-to-end RL training simplifying the process by breaking down complicated tasks into smaller more manageable components that are easier for the robot to learn By synthesizing diverse tunnel structures during training and distilling navigation strategies into a generalizable policy our method achieves consistent traversal across complex spatial constraints where conventional approaches fail We demonstrate through both simulation and real world experiments that our method enables quadruped robots to successfully traverse challenging confined tunnel environments",
+      "published": "2026-05-13T15:22:18Z",
+      "updated": "2026-05-13T15:22:18Z",
+      "authors": [
+        "Amir Hossain Raj",
+        "Dibyendu Das",
+        "Xuesu Xiao"
+      ],
+      "version": "2605.13665v1",
+      "arxiv_id": "2605.13665"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.15220v2",
+      "title": "Always Learning, Always Mixing: Efficient and Simple Data Mixing All the Time",
+      "summary": "Data mixing decides how to combine different sources or types of data and is a consequential problem throughout language model training. In pretraining, data composition is a key determinant of model quality; in continual learning and adaptation, it governs what is retained and acquired. Yet existing data mixing methods address only one phase of this lifecycle at a time: some require smaller proxy models tied to a single training phase, others assume a fixed domain set, and continual learning lacks principled guidance altogether. We argue that data mixing is fundamentally an online decision making problem---one that recurs throughout training and demands a single, unified solution. We introduce OP-Mix (On-Policy Mix), a data mixing algorithm that operates across pretraining, midtraining, and instruction tuning. Our main insight is that candidate data mixtures can be cheaply simulated by interpolating between low-rank adapters trained directly on the current model, eliminating separate proxy models and ensuring the search is always grounded in the model's actual learning dynamics. Across the language model training lifecycle, OP-Mix consistently finds near-optimal mixtures while using a fraction of the compute of the baselines. In pretraining, OP-Mix improves upon training without mixing by 6.3% in average perplexity. For continual learning, OP-Mix matches the performance of both retraining and on-policy distillation while using 66% and 95% less overall compute, respectively. OP-Mix suggests a different view of language model training: not a sequence of distinct phases, but a single continuous process of learning from data.",
+      "published": "2026-05-13T02:29:19Z",
+      "updated": "2026-10-28T22:37:06Z",
+      "authors": [
+        "Michael Y. Hu",
+        "Apurva Gandhi",
+        "Kyunghyun Cho",
+        "Tal Linzen",
+        "Pratyusha Sharma"
+      ],
+      "version": "2605.15220v2",
+      "arxiv_id": "2605.15220"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.11739v3",
+      "title": "Learning to Foresee: Unveiling the Unlocking Efficiency of On-Policy Distillation",
+      "summary": "On-policy distillation (OPD) has emerged as an efficient post-training paradigm for large language models. However, existing studies largely attribute this advantage to denser and more stable supervision, while the parameter-level mechanisms underlying OPD's efficiency remain poorly understood. In this work, we argue that OPD's efficiency stems from a form of ``foresight'': it establishes a stable update trajectory toward the final model early in training. This foresight manifests in two aspects. First, at the \\textbf{Module-Allocation Level}, OPD identifies regions with low marginal utility and concentrates updates on modules that are more critical to reasoning. Second, at the \\textbf{Update-Direction Level}, OPD exhibits stronger low-rank concentration, with its dominant subspaces aligning closely with the final update subspace early in training. Building on these findings, we propose \\textbf{EffOPD}, a plug-and-play acceleration method that speeds up OPD by adaptively selecting an extrapolation step size and moving along the current update direction. EffOPD requires no additional trainable modules or complex hyperparameter tuning, and achieves an average training acceleration of $3\\times$ while maintaining comparable final performance. Overall, our findings provide a parameter-dynamics perspective for understanding the efficiency of OPD and offer practical insights for designing more efficient post-training methods for large language models.",
+      "published": "2026-05-12T08:19:15Z",
+      "updated": "2026-05-21T08:50:47Z",
+      "authors": [
+        "Yuchen Cai",
+        "Ding Cao",
+        "Liang Lin",
+        "Chunxi Luo",
+        "Xin Xu",
+        "Kai Yang",
+        "Weijie Liu",
+        "Saiyong Yang",
+        "Tianxiang Zhao",
+        "Guangzhong Sun",
+        "Guiquan Liu",
+        "Junfeng Fang"
+      ],
+      "version": "2605.11739v3",
+      "arxiv_id": "2605.11739"
+    },
+    {
+      "id": "http://arxiv.org/abs/2602.17921v1",
+      "title": "Latent Diffeomorphic Co-Design of End-Effectors for Deformable and Fragile Object Manipulation",
+      "summary": "Manipulating deformable and fragile objects remains a fundamental challenge in robotics due to complex contact dynamics and strict requirements on object integrity. Existing approaches typically optimize either end-effector design or control strategies in isolation, limiting achievable performance. In this work, we present the first co-design framework that jointly optimizes end-effector morphology and manipulation control for deformable and fragile object manipulation. We introduce (1) a latent diffeomorphic shape parameterization enabling expressive yet tractable end-effector geometry optimization, (2) a stress-aware bi-level co-design pipeline coupling morphology and control optimization, and (3) a privileged-to-pointcloud policy distillation scheme for zero-shot real-world deployment. We evaluate our approach on challenging food manipulation tasks, including grasping and pushing jelly and scooping fillets. Simulation and real-world experiments demonstrate the effectiveness of the proposed method.",
+      "published": "2026-02-20T00:33:20Z",
+      "updated": "2026-02-20T00:33:20Z",
+      "authors": [
+        "Kei Ikemura",
+        "Yifei Dong",
+        "Florian T. Pokorny"
+      ],
+      "version": "2602.17921v1",
+      "arxiv_id": "2602.17921"
+    },
+    {
+      "id": "http://arxiv.org/abs/2110.06192v2",
+      "title": "Beyond Pick-and-Place: Tackling Robotic Stacking of Diverse Shapes",
+      "summary": "We study the problem of robotic stacking with objects of complex geometry. We propose a challenging and diverse set of such objects that was carefully designed to require strategies beyond a simple \"pick-and-place\" solution. Our method is a reinforcement learning (RL) approach combined with vision-based interactive policy distillation and simulation-to-reality transfer. Our learned policies can efficiently handle multiple object combinations in the real world and exhibit a large variety of stacking skills. In a large experimental study, we investigate what choices matter for learning such general vision-based agents in simulation, and what affects optimal transfer to the real robot. We then leverage data collected by such policies and improve upon them with offline RL. A video and a blog post of our work are provided as supplementary material.",
+      "published": "2021-10-12T17:46:06Z",
+      "updated": "2021-11-03T17:02:57Z",
+      "authors": [
+        "Alex X. Lee",
+        "Coline Devin",
+        "Yuxiang Zhou",
+        "Thomas Lampe",
+        "Konstantinos Bousmalis",
+        "Jost Tobias Springenberg",
+        "Arunkumar Byravan",
+        "Abbas Abdolmaleki",
+        "Nimrod Gileadi",
+        "David Khosid",
+        "Claudio Fantacci",
+        "Jose Enrique Chen",
+        "Akhil Raju",
+        "Rae Jeong",
+        "Michael Neunert",
+        "Antoine Laurens",
+        "Stefano Saliceti",
+        "Federico Casarini",
+        "Martin Riedmiller",
+        "Raia Hadsell",
+        "Francesco Nori"
+      ],
+      "version": "2110.06192v2",
+      "arxiv_id": "2110.06192"
+    }
+  ]
+}

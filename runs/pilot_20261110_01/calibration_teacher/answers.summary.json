@@ -1,0 +1,33 @@
+{
+  "started_at": "2026-11-10T10:56:45.235827+00:00",
+  "model": "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+  "input": "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/calibration_candidates.jsonl",
+  "input_sha256": "57b33a98932fa7a076ab43063b4a2d39cbd68594ed84b82cd0a44af571c5a422",
+  "n": 1,
+  "max_tokens": 7168,
+  "seed": 42,
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "top_k": -1,
+  "steering": false,
+  "overlong_excluded_ids": [
+    "0bbe8472-6c33-44ea-8afe-fabea7edcf92"
+  ],
+  "gpu_admission": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_teacher/process.json",
+  "packages": {
+    "torch": "2.13.0+cu130",
+    "transformers": "5.16.1",
+    "vllm": "0.32.0",
+    "math-verify": "0.9.0"
+  },
+  "samples": 240,
+  "questions": 240,
+  "avg_accuracy": 0.6333333333333333,
+  "truncation_rate": 0.42916666666666664,
+  "mean_response_tokens": 5866.275,
+  "grading_statuses": {
+    "graded": 240
+  },
+  "elapsed_seconds": 732.2039589099586,
+  "output_sha256": "32ddc8d02c696995aa32172d846ae2a3a38d8d3855ec6e0ee1ece95333984b02"
+}

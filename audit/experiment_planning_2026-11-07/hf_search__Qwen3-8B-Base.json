@@ -1,0 +1,2659 @@
+{
+  "url": "https://huggingface.co/api/models?search=Qwen3-8B-Base&limit=30&full=true",
+  "retrieved_at": "2026-11-07T15:19:20.050875+00:00",
+  "status": 200,
+  "data": [
+    {
+      "_id": "680f0c3e6eacf22a04ee1219",
+      "id": "Qwen/Qwen3-8B-Base",
+      "author": "Qwen",
+      "gated": false,
+      "lastModified": "2025-05-21T05:59:01.000Z",
+      "likes": 151,
+      "trendingScore": 2,
+      "private": false,
+      "sha": "49e3418fbbbca6ecbdf9608b4d22e5a407081db4",
+      "downloads": 559176,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "conversational",
+        "arxiv:2505.09388",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T05:03:58.000Z",
+      "modelId": "Qwen/Qwen3-8B-Base",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00003-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00004-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00005-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "69eeda79fc754d3b3ae87741",
+      "id": "Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_50",
+      "author": "Qwen",
+      "gated": false,
+      "lastModified": "2026-05-13T12:19:26.000Z",
+      "likes": 16,
+      "trendingScore": 1,
+      "private": false,
+      "sha": "9b7d647127c303dd371e5dbd992236bd9799b171",
+      "downloads": 519,
+      "tags": [
+        "topk_sae",
+        "sparse-autoencoder",
+        "sae",
+        "mechanistic-interpretability",
+        "interpretability",
+        "qwen-scope",
+        "arxiv:2605.11887",
+        "en",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "license:other",
+        "region:us"
+      ],
+      "createdAt": "2026-04-27T03:39:37.000Z",
+      "modelId": "Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_50",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "LICENSE"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "app.py"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "layer0.sae.pt"
+        },
+        {
+          "rfilename": "layer1.sae.pt"
+        },
+        {
+          "rfilename": "layer10.sae.pt"
+        },
+        {
+          "rfilename": "layer11.sae.pt"
+        },
+        {
+          "rfilename": "layer12.sae.pt"
+        },
+        {
+          "rfilename": "layer13.sae.pt"
+        },
+        {
+          "rfilename": "layer14.sae.pt"
+        },
+        {
+          "rfilename": "layer15.sae.pt"
+        },
+        {
+          "rfilename": "layer16.sae.pt"
+        },
+        {
+          "rfilename": "layer17.sae.pt"
+        },
+        {
+          "rfilename": "layer18.sae.pt"
+        },
+        {
+          "rfilename": "layer19.sae.pt"
+        },
+        {
+          "rfilename": "layer2.sae.pt"
+        },
+        {
+          "rfilename": "layer20.sae.pt"
+        },
+        {
+          "rfilename": "layer21.sae.pt"
+        },
+        {
+          "rfilename": "layer22.sae.pt"
+        },
+        {
+          "rfilename": "layer23.sae.pt"
+        },
+        {
+          "rfilename": "layer24.sae.pt"
+        },
+        {
+          "rfilename": "layer25.sae.pt"
+        },
+        {
+          "rfilename": "layer26.sae.pt"
+        },
+        {
+          "rfilename": "layer27.sae.pt"
+        },
+        {
+          "rfilename": "layer28.sae.pt"
+        },
+        {
+          "rfilename": "layer29.sae.pt"
+        },
+        {
+          "rfilename": "layer3.sae.pt"
+        },
+        {
+          "rfilename": "layer30.sae.pt"
+        },
+        {
+          "rfilename": "layer31.sae.pt"
+        },
+        {
+          "rfilename": "layer32.sae.pt"
+        },
+        {
+          "rfilename": "layer33.sae.pt"
+        },
+        {
+          "rfilename": "layer34.sae.pt"
+        },
+        {
+          "rfilename": "layer35.sae.pt"
+        },
+        {
+          "rfilename": "layer4.sae.pt"
+        },
+        {
+          "rfilename": "layer5.sae.pt"
+        },
+        {
+          "rfilename": "layer6.sae.pt"
+        },
+        {
+          "rfilename": "layer7.sae.pt"
+        },
+        {
+          "rfilename": "layer8.sae.pt"
+        },
+        {
+          "rfilename": "layer9.sae.pt"
+        }
+      ]
+    },
+    {
+      "_id": "69eeda7ac87e5378becef7d6",
+      "id": "Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_100",
+      "author": "Qwen",
+      "gated": false,
+      "lastModified": "2026-05-13T12:19:23.000Z",
+      "likes": 16,
+      "trendingScore": 1,
+      "private": false,
+      "sha": "f308c1df7c9746544f0af047fd00d6cf374627bd",
+      "downloads": 660,
+      "tags": [
+        "topk_sae",
+        "sparse-autoencoder",
+        "sae",
+        "mechanistic-interpretability",
+        "interpretability",
+        "qwen-scope",
+        "arxiv:2605.11887",
+        "en",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "license:other",
+        "region:us"
+      ],
+      "createdAt": "2026-04-27T03:39:38.000Z",
+      "modelId": "Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_100",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "LICENSE"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "app.py"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "layer0.sae.pt"
+        },
+        {
+          "rfilename": "layer1.sae.pt"
+        },
+        {
+          "rfilename": "layer10.sae.pt"
+        },
+        {
+          "rfilename": "layer11.sae.pt"
+        },
+        {
+          "rfilename": "layer12.sae.pt"
+        },
+        {
+          "rfilename": "layer13.sae.pt"
+        },
+        {
+          "rfilename": "layer14.sae.pt"
+        },
+        {
+          "rfilename": "layer15.sae.pt"
+        },
+        {
+          "rfilename": "layer16.sae.pt"
+        },
+        {
+          "rfilename": "layer17.sae.pt"
+        },
+        {
+          "rfilename": "layer18.sae.pt"
+        },
+        {
+          "rfilename": "layer19.sae.pt"
+        },
+        {
+          "rfilename": "layer2.sae.pt"
+        },
+        {
+          "rfilename": "layer20.sae.pt"
+        },
+        {
+          "rfilename": "layer21.sae.pt"
+        },
+        {
+          "rfilename": "layer22.sae.pt"
+        },
+        {
+          "rfilename": "layer23.sae.pt"
+        },
+        {
+          "rfilename": "layer24.sae.pt"
+        },
+        {
+          "rfilename": "layer25.sae.pt"
+        },
+        {
+          "rfilename": "layer26.sae.pt"
+        },
+        {
+          "rfilename": "layer27.sae.pt"
+        },
+        {
+          "rfilename": "layer28.sae.pt"
+        },
+        {
+          "rfilename": "layer29.sae.pt"
+        },
+        {
+          "rfilename": "layer3.sae.pt"
+        },
+        {
+          "rfilename": "layer30.sae.pt"
+        },
+        {
+          "rfilename": "layer31.sae.pt"
+        },
+        {
+          "rfilename": "layer32.sae.pt"
+        },
+        {
+          "rfilename": "layer33.sae.pt"
+        },
+        {
+          "rfilename": "layer34.sae.pt"
+        },
+        {
+          "rfilename": "layer35.sae.pt"
+        },
+        {
+          "rfilename": "layer4.sae.pt"
+        },
+        {
+          "rfilename": "layer5.sae.pt"
+        },
+        {
+          "rfilename": "layer6.sae.pt"
+        },
+        {
+          "rfilename": "layer7.sae.pt"
+        },
+        {
+          "rfilename": "layer8.sae.pt"
+        },
+        {
+          "rfilename": "layer9.sae.pt"
+        }
+      ]
+    },
+    {
+      "_id": "6a76e31a8a10ee4a57d56830",
+      "id": "keisuke-miyako/Qwen3-Embedding-8B-basert",
+      "author": "keisuke-miyako",
+      "gated": false,
+      "lastModified": "2026-08-08T08:06:08.000Z",
+      "likes": 1,
+      "trendingScore": 1,
+      "private": false,
+      "sha": "3b7cdd838f2a20e7e4160c281309ec20f7f47f2e",
+      "downloads": 0,
+      "tags": [
+        "base_model:Qwen/Qwen3-Embedding-8B",
+        "base_model:finetune:Qwen/Qwen3-Embedding-8B",
+        "region:us"
+      ],
+      "createdAt": "2026-08-08T08:04:42.000Z",
+      "modelId": "keisuke-miyako/Qwen3-Embedding-8B-basert",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "Qwen3-Embedding-8B-Q4.base"
+        },
+        {
+          "rfilename": "README.md"
+        }
+      ]
+    },
+    {
+      "_id": "680f7a4b1e7bfb412c617246",
+      "id": "unsloth/Qwen3-8B-Base",
+      "author": "unsloth",
+      "gated": false,
+      "lastModified": "2025-07-14T12:59:41.000Z",
+      "likes": 5,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "b5f3aaf0eaf16eb22368a19cc5b20225e619737d",
+      "downloads": 3928,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "unsloth",
+        "arxiv:2505.09388",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T12:53:31.000Z",
+      "modelId": "unsloth/Qwen3-8B-Base",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00003-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00004-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "680f7aa53952fce7491eb980",
+      "id": "unsloth/Qwen3-8B-Base-unsloth-bnb-4bit",
+      "author": "unsloth",
+      "gated": false,
+      "lastModified": "2025-07-14T13:02:43.000Z",
+      "likes": 4,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "c49b94d0d5bc1c0404c71b2174560e24bd5a1e44",
+      "downloads": 9212,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "unsloth",
+        "arxiv:2505.09388",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "4-bit",
+        "bitsandbytes",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T12:55:01.000Z",
+      "modelId": "unsloth/Qwen3-8B-Base-unsloth-bnb-4bit",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "680f7aef1a80ebc470a586cb",
+      "id": "unsloth/Qwen3-8B-Base-bnb-4bit",
+      "author": "unsloth",
+      "gated": false,
+      "lastModified": "2025-07-14T13:04:35.000Z",
+      "likes": 3,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "e3276524f7f4ce7df7b65dd9fcb7552a7f2d6de9",
+      "downloads": 7802,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "unsloth",
+        "arxiv:2505.09388",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "4-bit",
+        "bitsandbytes",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T12:56:15.000Z",
+      "modelId": "unsloth/Qwen3-8B-Base-bnb-4bit",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "680ff2b392c2e5baa9941369",
+      "id": "qwen-community/Qwen3-8B-Base",
+      "author": "qwen-community",
+      "gated": false,
+      "lastModified": "2025-04-28T21:27:16.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "d4ff6dd847cbfa50cdc84a60eed8adbcdbf78a18",
+      "downloads": 15,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "conversational",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T21:27:15.000Z",
+      "modelId": "qwen-community/Qwen3-8B-Base",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00003-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00004-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model-00005-of-00005.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "681014ff47f733776ce66206",
+      "id": "jessicata/Qwen3-8B-Base-Q8_0-GGUF",
+      "author": "jessicata",
+      "gated": false,
+      "lastModified": "2025-04-28T23:54:18.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "47759217a84ee574825f5287ce1980d4defe0c09",
+      "downloads": 21,
+      "tags": [
+        "transformers",
+        "gguf",
+        "llama-cpp",
+        "gguf-my-repo",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-28T23:53:35.000Z",
+      "modelId": "jessicata/Qwen3-8B-Base-Q8_0-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q8_0.gguf"
+        }
+      ]
+    },
+    {
+      "_id": "68105934d7ca9ff852b44340",
+      "id": "Antigma/Qwen3-8B-Base-GGUF",
+      "author": "Antigma",
+      "gated": false,
+      "lastModified": "2025-05-29T22:10:27.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "39e3e606b9f228715a5663ac9f538d9c47efa81c",
+      "downloads": 468,
+      "tags": [
+        "transformers",
+        "gguf",
+        "llama-cpp",
+        "gguf-my-repo",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T04:44:36.000Z",
+      "modelId": "Antigma/Qwen3-8B-Base-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q4_0.gguf"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q4_k_m.gguf"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q4_k_s.gguf"
+        }
+      ]
+    },
+    {
+      "_id": "6810a5884aad6c78dd00d8a4",
+      "id": "polyverse/Qwen3-8B-Base-Q8_0-GGUF",
+      "author": "polyverse",
+      "gated": false,
+      "lastModified": "2025-04-29T10:11:02.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "513d902c0223fae09093ee54a14a298db43fae85",
+      "downloads": 32,
+      "tags": [
+        "transformers",
+        "gguf",
+        "llama-cpp",
+        "gguf-my-repo",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T10:10:16.000Z",
+      "modelId": "polyverse/Qwen3-8B-Base-Q8_0-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q8_0.gguf"
+        }
+      ]
+    },
+    {
+      "_id": "6810b15d0557bd1545917d98",
+      "id": "itlwas/Qwen3-8B-Base-Q4_K_M-GGUF",
+      "author": "itlwas",
+      "gated": false,
+      "lastModified": "2025-04-29T11:01:09.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "24e254d329e2addc173630e8e78bb16777f19974",
+      "downloads": 66,
+      "tags": [
+        "transformers",
+        "gguf",
+        "llama-cpp",
+        "gguf-my-repo",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T11:00:45.000Z",
+      "modelId": "itlwas/Qwen3-8B-Base-Q4_K_M-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "qwen3-8b-base-q4_k_m.gguf"
+        }
+      ]
+    },
+    {
+      "_id": "6810b99cd194a9b10f82d36a",
+      "id": "debisoft/Qwen3-base-8B-thinking-function_calling-quant-V0",
+      "author": "debisoft",
+      "gated": false,
+      "lastModified": "2025-04-29T11:41:12.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "b30608f1cef706c241e5c7931c1ebdd0e60ecfaf",
+      "downloads": 0,
+      "tags": [
+        "transformers",
+        "tensorboard",
+        "safetensors",
+        "generated_from_trainer",
+        "trl",
+        "sft",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T11:35:56.000Z",
+      "modelId": "debisoft/Qwen3-base-8B-thinking-function_calling-quant-V0",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "adapter_config.json"
+        },
+        {
+          "rfilename": "adapter_model.safetensors"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "runs/Apr29_18-00-50_ada-B550-AORUS-ELITE/events.out.tfevents.1745920872.ada-B550-AORUS-ELITE"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "training_args.bin"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "6810ec1e42b41b1ed909f239",
+      "id": "mradermacher/Qwen3-8B-Base-GGUF",
+      "author": "mradermacher",
+      "gated": false,
+      "lastModified": "2025-04-29T17:43:51.000Z",
+      "likes": 3,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "11c0eaa7581c2cedab123814f676ff44da1bc7b0",
+      "downloads": 2703,
+      "tags": [
+        "transformers",
+        "gguf",
+        "en",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T15:11:26.000Z",
+      "modelId": "mradermacher/Qwen3-8B-Base-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.IQ4_XS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q2_K.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q3_K_L.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q3_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q3_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q4_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q4_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q5_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q5_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q6_K.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.Q8_0.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.f16.gguf"
+        },
+        {
+          "rfilename": "README.md"
+        }
+      ]
+    },
+    {
+      "_id": "6810fe9bd83172524f7c2889",
+      "id": "mradermacher/Qwen3-8B-Base-i1-GGUF",
+      "author": "mradermacher",
+      "gated": false,
+      "lastModified": "2025-04-29T18:23:32.000Z",
+      "likes": 1,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "19a5b1a1ff4a5a411338e83f419043c992ee5984",
+      "downloads": 1223,
+      "tags": [
+        "transformers",
+        "gguf",
+        "en",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:quantized:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "endpoints_compatible",
+        "region:us",
+        "imatrix",
+        "conversational"
+      ],
+      "library_name": "transformers",
+      "createdAt": "2025-04-29T16:30:19.000Z",
+      "modelId": "mradermacher/Qwen3-8B-Base-i1-GGUF",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ1_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ1_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ2_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ2_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ2_XS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ2_XXS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ3_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ3_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ3_XS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ3_XXS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ4_NL.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-IQ4_XS.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q2_K.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q2_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q3_K_L.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q3_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q3_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q4_0.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q4_1.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q4_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q4_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q5_K_M.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q5_K_S.gguf"
+        },
+        {
+          "rfilename": "Qwen3-8B-Base.i1-Q6_K.gguf"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "imatrix.dat"
+        }
+      ]
+    },
+    {
+      "_id": "6811e61537b4b775d7de652a",
+      "id": "Siddharth63/Qwen3-1.7B-Base-8bits-Autoround-sym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-04-30T09:01:04.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "3d95073c73bc5c7c72f166ff711edc7235240e7a",
+      "downloads": 8,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "8-bit",
+        "auto-round",
+        "region:us"
+      ],
+      "createdAt": "2025-04-30T08:57:57.000Z",
+      "modelId": "Siddharth63/Qwen3-1.7B-Base-8bits-Autoround-sym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "quantization_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "6811e62594d2a4531ca03c72",
+      "id": "Siddharth63/Qwen3-1.7B-Base-8bits-Autoround-GPTQ-sym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-04-30T12:30:57.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "9c5c85024538fc8542983dd24c463d17bc239119",
+      "downloads": 6,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "8-bit",
+        "gptq",
+        "region:us"
+      ],
+      "createdAt": "2025-04-30T08:58:13.000Z",
+      "modelId": "Siddharth63/Qwen3-1.7B-Base-8bits-Autoround-GPTQ-sym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "quantize_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "68126f2179d4f3b73fe922c7",
+      "id": "Siddharth63/Qwen3-8B-Base-4bits-AutoRound-asym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-05-02T08:31:08.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "42540e5b881b557f0fdda1deeb1106d6c5e0f26e",
+      "downloads": 10,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "4-bit",
+        "auto-round",
+        "region:us"
+      ],
+      "createdAt": "2025-04-30T18:42:41.000Z",
+      "modelId": "Siddharth63/Qwen3-8B-Base-4bits-AutoRound-asym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": ".ipynb_checkpoints/config-checkpoint.json"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "quantization_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "68133db98a7590f77e5e9168",
+      "id": "Siddharth63/Qwen3-8B-Base-AWQ",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-05-01T12:25:54.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "3d0505d18eefa1b9646045ede76457364b340bb8",
+      "downloads": 11,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "4-bit",
+        "awq",
+        "region:us"
+      ],
+      "createdAt": "2025-05-01T09:24:09.000Z",
+      "modelId": "Siddharth63/Qwen3-8B-Base-AWQ",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "681482dfdc0f8971ef731366",
+      "id": "Siddharth63/Qwen3-8B-Base-4bits-AutoRound-sym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-05-02T09:07:29.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "c46e2646b9466651fa1e530c325761382308ed51",
+      "downloads": 11,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "4-bit",
+        "auto-round",
+        "region:us"
+      ],
+      "createdAt": "2025-05-02T08:31:27.000Z",
+      "modelId": "Siddharth63/Qwen3-8B-Base-4bits-AutoRound-sym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00002.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "quantization_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "681482edbedc72201593763e",
+      "id": "Siddharth63/Qwen3-8B-Base-2bits-AutoRound-GPTQ-sym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-05-02T09:07:09.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "29820f1c61501dda7bfdc960a751b320a96db7ab",
+      "downloads": 11,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:apache-2.0",
+        "2-bit",
+        "gptq",
+        "region:us"
+      ],
+      "createdAt": "2025-05-02T08:31:41.000Z",
+      "modelId": "Siddharth63/Qwen3-8B-Base-2bits-AutoRound-GPTQ-sym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "quantize_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "68148b60dc0f8971ef749033",
+      "id": "Siddharth63/Qwen3-8B-Base-2bits-AutoRound-sym",
+      "author": "Siddharth63",
+      "gated": false,
+      "lastModified": "2025-05-02T09:24:51.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "7b02b0a72f69e57c0b94babc8eba981ca29ba259",
+      "downloads": 10,
+      "tags": [
+        "safetensors",
+        "qwen3",
+        "license:mit",
+        "2-bit",
+        "auto-round",
+        "region:us"
+      ],
+      "createdAt": "2025-05-02T09:07:44.000Z",
+      "modelId": "Siddharth63/Qwen3-8B-Base-2bits-AutoRound-sym",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors"
+        },
+        {
+          "rfilename": "quantization_config.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "68163207e542d6069f4b5c45",
+      "id": "mlx-community/Qwen3-8B-Base-bf16",
+      "author": "mlx-community",
+      "gated": false,
+      "lastModified": "2025-05-03T15:15:47.000Z",
+      "likes": 1,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "4dbf087bba2cd6f31ced1f188ff723790e24a6f0",
+      "downloads": 136,
+      "tags": [
+        "mlx",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "conversational",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "mlx",
+      "createdAt": "2025-05-03T15:11:03.000Z",
+      "modelId": "mlx-community/Qwen3-8B-Base-bf16",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "added_tokens.json"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model-00001-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00002-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00003-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model-00004-of-00004.safetensors"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "special_tokens_map.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "6816b25e7653a91c2adb829b",
+      "id": "SmerkyG/Qwen3Softpick-8B-Base",
+      "author": "SmerkyG",
+      "gated": false,
+      "lastModified": "2025-05-04T00:25:28.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "38b04240309987565af1a69c7fc0ae9399e28f23",
+      "downloads": 0,
+      "tags": [
+        "safetensors",
+        "region:us"
+      ],
+      "createdAt": "2025-05-04T00:18:38.000Z",
+      "modelId": "SmerkyG/Qwen3Softpick-8B-Base",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "model.safetensors"
+        }
+      ]
+    },
+    {
+      "_id": "6818be4d367d2fac1850e578",
+      "id": "Efficient-ML/Qwen3-8B-base-gptq-w4-128",
+      "author": "Efficient-ML",
+      "gated": false,
+      "lastModified": "2025-05-05T13:41:54.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "b314c411f137bf6fec5f8713cce7144a914fc75a",
+      "downloads": 0,
+      "tags": [
+        "region:us"
+      ],
+      "createdAt": "2025-05-05T13:34:05.000Z",
+      "modelId": "Efficient-ML/Qwen3-8B-base-gptq-w4-128",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "gptq_8B_w4.pth"
+        }
+      ]
+    },
+    {
+      "_id": "6818c39378f9d22c3937250f",
+      "id": "Efficient-ML/Qwen3-8B-base-gptq-w4-perchannel",
+      "author": "Efficient-ML",
+      "gated": false,
+      "lastModified": "2025-05-05T14:04:52.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "e6c1bef3a100770a7d24fcada476b9fef27eb500",
+      "downloads": 0,
+      "tags": [
+        "region:us"
+      ],
+      "createdAt": "2025-05-05T13:56:35.000Z",
+      "modelId": "Efficient-ML/Qwen3-8B-base-gptq-w4-perchannel",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "gptq_8B_w4_perchannel.pth"
+        }
+      ]
+    },
+    {
+      "_id": "6818d12d7d69d5a8e3ad93ff",
+      "id": "Efficient-ML/Qwen3-8B-base-gptq-w8-128",
+      "author": "Efficient-ML",
+      "gated": false,
+      "lastModified": "2025-05-05T15:23:04.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "11b8fc883ef9fbb9bf1508fd071ad7d7c4c37927",
+      "downloads": 0,
+      "tags": [
+        "region:us"
+      ],
+      "createdAt": "2025-05-05T14:54:37.000Z",
+      "modelId": "Efficient-ML/Qwen3-8B-base-gptq-w8-128",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "gptq_8B_w8.pth"
+        }
+      ]
+    },
+    {
+      "_id": "6818d8ca4eb0bf198c419712",
+      "id": "dulimov/Qwen3-8B-rk3588-1.2.1-base",
+      "author": "dulimov",
+      "gated": false,
+      "lastModified": "2025-05-06T20:31:56.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "0633d48953eebfcba8ffa97cd45eb8a02dfabeb2",
+      "downloads": 12,
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "text-generation",
+        "conversational",
+        "arxiv:2309.00071",
+        "base_model:Qwen/Qwen3-8B-Base",
+        "base_model:finetune:Qwen/Qwen3-8B-Base",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "createdAt": "2025-05-05T15:27:06.000Z",
+      "modelId": "dulimov/Qwen3-8B-rk3588-1.2.1-base",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-0-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-0-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-0-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-1-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-1-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8-opt-1-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-0-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-0-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-0-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-1-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-1-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g128-opt-1-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-0-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-0-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-0-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-1-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-1-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g256-opt-1-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-0-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-0-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-0-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-1-hybrid-ratio-0.0.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-1-hybrid-ratio-0.5.rkllm"
+        },
+        {
+          "rfilename": "Qwen3-8B-rk3588-w8a8_g512-opt-1-hybrid-ratio-1.0.rkllm"
+        },
+        {
+          "rfilename": "README.md"
+        },
+        {
+          "rfilename": "config.json"
+        },
+        {
+          "rfilename": "generation_config.json"
+        },
+        {
+          "rfilename": "merges.txt"
+        },
+        {
+          "rfilename": "model.safetensors.index.json"
+        },
+        {
+          "rfilename": "tokenizer.json"
+        },
+        {
+          "rfilename": "tokenizer_config.json"
+        },
+        {
+          "rfilename": "vocab.json"
+        }
+      ]
+    },
+    {
+      "_id": "6818ebcbf6604a1806c9f156",
+      "id": "Efficient-ML/Qwen3-8B-base-gptq-w8-perchannel",
+      "author": "Efficient-ML",
+      "gated": false,
+      "lastModified": "2025-05-05T17:07:11.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "e53632a8949e9904a1e38cc74136e7553d64cdda",
+      "downloads": 0,
+      "tags": [
+        "region:us"
+      ],
+      "createdAt": "2025-05-05T16:48:11.000Z",
+      "modelId": "Efficient-ML/Qwen3-8B-base-gptq-w8-perchannel",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "gptq_8B_w8_perchannel.pth"
+        }
+      ]
+    },
+    {
+      "_id": "6819ccfefdcf582e6d263732",
+      "id": "SVRL/verl-scalable-0504_Qwen3-8B-Base_webinstruct-verified",
+      "author": "SVRL",
+      "gated": false,
+      "lastModified": "2025-05-08T02:14:01.000Z",
+      "likes": 0,
+      "trendingScore": 0,
+      "private": false,
+      "sha": "bd243f35a500860b9c10bd0a3bb52b2e10d8dd9c",
+      "downloads": 0,
+      "tags": [
+        "region:us"
+      ],
+      "createdAt": "2025-05-06T08:49:02.000Z",
+      "modelId": "SVRL/verl-scalable-0504_Qwen3-8B-Base_webinstruct-verified",
+      "siblings": [
+        {
+          "rfilename": ".gitattributes"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_120/extra_state_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_120/model_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_120/optim_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_160/extra_state_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_160/model_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_160/optim_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_200/extra_state_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_0.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_1.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_10.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_11.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_12.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_13.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_14.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_15.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_16.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_17.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_18.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_19.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_2.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_20.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_21.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_22.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_23.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_24.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_25.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_26.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_27.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_28.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_29.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_3.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_30.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_31.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_4.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_5.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_6.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_7.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_8.pt"
+        },
+        {
+          "rfilename": "global_step_200/model_world_size_32_rank_9.pt"
+        },
+        {
+          "rfilename": "global_step_200/optim_world_size_32_rank_0.pt"
+        }
+      ]
+    }
+  ]
+}

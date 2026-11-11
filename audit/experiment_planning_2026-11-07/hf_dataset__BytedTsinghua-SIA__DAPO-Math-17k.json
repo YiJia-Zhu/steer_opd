@@ -1,0 +1,60 @@
+{
+  "url": "https://huggingface.co/api/datasets/BytedTsinghua-SIA/DAPO-Math-17k",
+  "retrieved_at": "2026-11-07T15:20:21.116342+00:00",
+  "status": 200,
+  "data": {
+    "_id": "67d7eeec9830e5c1e2a8f708",
+    "id": "BytedTsinghua-SIA/DAPO-Math-17k",
+    "author": "BytedTsinghua-SIA",
+    "sha": "65877096c24ffa7abc4e4fa5edb95cf3413a5674",
+    "lastModified": "2025-04-18T11:20:51.000Z",
+    "private": false,
+    "gated": false,
+    "disabled": false,
+    "tags": [
+      "task_categories:text-generation",
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us",
+      "math"
+    ],
+    "downloads": 19148,
+    "likes": 193,
+    "cardData": {
+      "license": "apache-2.0",
+      "task_categories": [
+        "text-generation"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "math"
+      ],
+      "pretty_name": "DAPO-Math-17k",
+      "size_categories": [
+        "1M<n<10M"
+      ]
+    },
+    "siblings": [
+      {
+        "rfilename": ".gitattributes"
+      },
+      {
+        "rfilename": "README.md"
+      },
+      {
+        "rfilename": "data/dapo-math-17k.parquet"
+      }
+    ],
+    "createdAt": "2025-03-17T09:44:12.000Z",
+    "usedStorage": 609096421
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "url": "https://huggingface.co/api/models/Keven16/Qwen3-4B-Non-Thinking-RL-Math-Step500?blobs=true",
+  "retrieved_at": "2026-11-07T15:20:20.588521+00:00",
+  "status": 200,
+  "data": {
+    "_id": "69b7c17923cbf39dc1996954",
+    "id": "Keven16/Qwen3-4B-Non-Thinking-RL-Math-Step500",
+    "private": false,
+    "tags": [
+      "safetensors",
+      "qwen3",
+      "license:apache-2.0",
+      "region:us"
+    ],
+    "downloads": 2396,
+    "likes": 1,
+    "modelId": "Keven16/Qwen3-4B-Non-Thinking-RL-Math-Step500",
+    "author": "Keven16",
+    "sha": "05d82d02780d4a6f8295b2909dbbd89e8a8b5aaa",
+    "lastModified": "2026-03-16T11:20:36.000Z",
+    "gated": false,
+    "disabled": false,
+    "model-index": null,
+    "config": {
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "model_type": "qwen3",
+      "tokenizer_config": {
+        "bos_token": null,
+        "eos_token": "<|im_end|>",
+        "unk_token": null,
+        "pad_token": "<|endoftext|>",
+        "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {{- messages[0].content + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if loop.last or (not loop.last and reasoning_content) %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}"
+      }
+    },
+    "cardData": {
+      "license": "apache-2.0"
+    },
+    "siblings": [
+      {
+        "rfilename": ".gitattributes",
+        "blobId": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+        "size": 1570
+      },
+      {
+        "rfilename": "README.md",
+        "blobId": "7b95401dc46245ac339fc25059d4a56d90b4cde5",
+        "size": 31
+      },
+      {
+        "rfilename": "added_tokens.json",
+        "blobId": "b54f9135e44c1e81047e8d05cb027af8bc039eed",
+        "size": 707
+      },
+      {
+        "rfilename": "config.json",
+        "blobId": "038046bac9fe15498460db44b932c9eae1b7b5a2",
+        "size": 727
+      },
+      {
+        "rfilename": "generation_config.json",
+        "blobId": "a87305cf98d7db8cff886b26ea33d70f89522e2a",
+        "size": 121
+      },
+      {
+        "rfilename": "merges.txt",
+        "blobId": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+        "size": 1671853
+      },
+      {
+        "rfilename": "model-00001-of-00002.safetensors",
+        "blobId": "136e08727a62f76fcdeab131daf44315b14a9612",
+        "size": 4996089088,
+        "lfs": {
+          "sha256": "c08b74e9aeadbf9e0308a236506ce78be8dcf61583745a5ee2b704037cde1fae",
+          "size": 4996089088,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model-00002-of-00002.safetensors",
+        "blobId": "d5746ef2874311e9957ade192fc47113291eda59",
+        "size": 3826805416,
+        "lfs": {
+          "sha256": "d6a640e3c273f8e081c8541d5e94cc5e5f1ca8e995f2b4a3b778e7103b506f37",
+          "size": 3826805416,
+          "pointerSize": 135
+        }
+      },
+      {
+        "rfilename": "model.safetensors.index.json",
+        "blobId": "8fcc89f1caddd92932fe24215c5ca9ad91d65fe0",
+        "size": 32877
+      },
+      {
+        "rfilename": "special_tokens_map.json",
+        "blobId": "ac23c0aaa2434523c494330aeb79c58395378103",
+        "size": 613
+      },
+      {
+        "rfilename": "tokenizer.json",
+        "blobId": "cd71f61a15a522601badb3dc960d800d9cb3766c",
+        "size": 11422654,
+        "lfs": {
+          "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+          "size": 11422654,
+          "pointerSize": 133
+        }
+      },
+      {
+        "rfilename": "tokenizer_config.json",
+        "blobId": "3fb43942263a11337702b048c26ece71cdd7cfa1",
+        "size": 9762
+      },
+      {
+        "rfilename": "vocab.json",
+        "blobId": "4783fe10ac3adce15ac8f358ef5462739852c569",
+        "size": 2776833
+      }
+    ],
+    "spaces": [],
+    "createdAt": "2026-03-16T08:38:17.000Z",
+    "safetensors": {
+      "parameters": {
+        "BF16": 4411424256
+      },
+      "total": 4411424256
+    },
+    "usedStorage": 8834317158
+  }
+}

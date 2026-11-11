@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-11-10T10:50:31.621685+00:00",
+  "model": "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+  "input": "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/dev_pilot.jsonl",
+  "input_sha256": "969cc0eb5bd8922afe32a378307881f3e5a63e41320019a5645aec430874cb39",
+  "n": 1,
+  "max_tokens": 7168,
+  "seed": 42,
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "top_k": -1,
+  "steering": false,
+  "overlong_excluded_ids": [],
+  "gpu_admission": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/initial_dev/process.json",
+  "packages": {
+    "torch": "2.13.0+cu130",
+    "transformers": "5.16.1",
+    "vllm": "0.32.0",
+    "math-verify": "0.9.0"
+  },
+  "samples": 128,
+  "questions": 128,
+  "avg_accuracy": 0.640625,
+  "truncation_rate": 0.3515625,
+  "mean_response_tokens": 5741.390625,
+  "grading_statuses": {
+    "graded": 128
+  },
+  "elapsed_seconds": 356.5277458478231,
+  "output_sha256": "f718cf28474ffaae669a56da2a9bd47b47c435b8f264740f752df2e36b942217"
+}

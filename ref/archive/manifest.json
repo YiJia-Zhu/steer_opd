@@ -1,0 +1,104 @@
+{
+  "archived_at": "2026-11-07T15:38:24.944398+00:00",
+  "scope": "Historical background only; not part of the current related-work comparison.",
+  "papers": [
+    {
+      "version": "2402.12842v3",
+      "title": "PromptKD: Distilling Student-Friendly Knowledge for Generative Language Models via Prompt Tuning",
+      "relationship": "student_friendly_teacher_problem",
+      "authors": [],
+      "published": "2024-02-20T09:10:08Z",
+      "updated": "2024-09-27T06:25:33Z",
+      "pdf_url": "https://arxiv.org/pdf/2402.12842v3",
+      "abstract_url": "https://arxiv.org/abs/2402.12842v3",
+      "pdf_file": "ref/archive/2402.12842v3_promptkd.pdf",
+      "pdf_sha256": "931685d79bda73d003159d63f4160223e707ae15810a9f7c9750ab463cd64bed",
+      "pdf_bytes": 458283,
+      "pdf_pages": 17,
+      "source_html": "ref/archive/sources/2402.12842v3.html",
+      "source_text": "ref/archive/sources/2402.12842v3.txt",
+      "source_html_sha256": "101b489fc89723af15ba3e7fe8606a2e1cd1b00b8667f979564c37841303498e",
+      "source_text_sha256": "0504962f36aef6970fcea79c17ffba91e2d9d17887ac8c1976aac59d12ef68ee",
+      "source_url": "https://arxiv.org/html/2402.12842v3",
+      "source_retrieved_at": "2026-11-06T11:11:45.323879+00:00",
+      "reading_scope": "§3.1–§3.3；实验配置概述",
+      "interpretation_limits": "冻结教师、软提示适配、学生生成轨迹、原教师正则均已有。原实验不是现代跨family长推理的完整验证。",
+      "evidence_locators": [
+        {
+          "marker": "3.1 Pseudo-Target Generation",
+          "matching_lines": [
+            24,
+            96
+          ]
+        },
+        {
+          "marker": "3.2 Prompt Tuning for Adaptive Teaching",
+          "matching_lines": [
+            25,
+            98
+          ]
+        },
+        {
+          "marker": "3.3 Student-Friendly Knowledge Distillation",
+          "matching_lines": [
+            26,
+            318
+          ]
+        }
+      ],
+      "downloaded_at": "2026-11-07T15:02:52.934496+00:00",
+      "status": "ready",
+      "active_comparison": false,
+      "archived_reason": "Broad teaching-adaptation background; excluded from current student-training steering and cross-family OPD comparison."
+    },
+    {
+      "version": "2610.10447v1",
+      "title": "A Good Self-Teacher Meets the Student Where They Are: Joint On-Policy Learning and Teaching",
+      "relationship": "teacher_utility_compatibility_problem",
+      "authors": [],
+      "published": "2026-10-07T17:19:19Z",
+      "updated": "2026-10-07T17:19:19Z",
+      "pdf_url": "https://arxiv.org/pdf/2610.10447v1",
+      "abstract_url": "https://arxiv.org/abs/2610.10447v1",
+      "pdf_file": "ref/archive/2610.10447v1_jolt.pdf",
+      "pdf_sha256": "8cf02f60be4e3e62973edb0e92176efe463307657c38d34b468fd0d429b3fdb0",
+      "pdf_bytes": 1010690,
+      "pdf_pages": 29,
+      "source_html": "ref/archive/sources/2610.10447v1.html",
+      "source_text": "ref/archive/sources/2610.10447v1.txt",
+      "source_html_sha256": "b529a4331209d64b2935d8065374e60abfb81a7df28cad4be42367be41f2bb70",
+      "source_text_sha256": "df7ce44110eaef1082ad416abc4222536e8c6f200f450706be4eb68ee3b38033",
+      "source_url": "https://arxiv.org/html/2610.10447v1",
+      "source_retrieved_at": "2026-11-06T09:28:11.936774+00:00",
+      "reading_scope": "摘要；§2.2–§2.3",
+      "interpretation_limits": "教师兼顾任务奖励与向学生KL正则已有先例；局部梯度比例的必要充分积分条件与更强的逐点充分构造分开。",
+      "evidence_locators": [
+        {
+          "marker": "2.2 A Reward-Consistent Teacher",
+          "matching_lines": [
+            21,
+            240
+          ]
+        },
+        {
+          "marker": "A sufficient pointwise condition",
+          "matching_lines": [
+            260
+          ]
+        },
+        {
+          "marker": "2.3 Joint On-Policy Learning and Teaching",
+          "matching_lines": [
+            22,
+            276
+          ]
+        }
+      ],
+      "downloaded_at": "2026-11-07T15:02:53.207375+00:00",
+      "status": "ready",
+      "active_comparison": false,
+      "archived_reason": "Broad teaching-adaptation background; excluded from current student-training steering and cross-family OPD comparison."
+    }
+  ],
+  "experiments_run": false
+}

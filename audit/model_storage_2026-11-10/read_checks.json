@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "models": [
+    {
+      "model": "Phi-3.5-mini-instruct",
+      "resolved": "/local_nvme/data/zhenning/huggingface_models/Phi-3.5-mini-instruct",
+      "tokenizer_loaded": true,
+      "weight_tensor_names_verified": 195
+    },
+    {
+      "model": "SmolLM3-3B",
+      "resolved": "/local_nvme/data/zhenning/huggingface_models/SmolLM3-3B",
+      "tokenizer_loaded": true,
+      "weight_tensor_names_verified": 326
+    }
+  ]
+}

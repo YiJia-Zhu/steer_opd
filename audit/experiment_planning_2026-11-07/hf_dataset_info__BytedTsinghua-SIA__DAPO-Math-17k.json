@@ -1,0 +1,78 @@
+{
+  "url": "https://datasets-server.huggingface.co/info?dataset=BytedTsinghua-SIA/DAPO-Math-17k",
+  "retrieved_at": "2026-11-07T15:20:21.243864+00:00",
+  "status": 200,
+  "data": {
+    "dataset_info": {
+      "default": {
+        "description": "",
+        "citation": "",
+        "homepage": "",
+        "license": "",
+        "features": {
+          "data_source": {
+            "dtype": "string",
+            "_type": "Value"
+          },
+          "prompt": [
+            {
+              "content": {
+                "dtype": "string",
+                "_type": "Value"
+              },
+              "role": {
+                "dtype": "string",
+                "_type": "Value"
+              }
+            }
+          ],
+          "ability": {
+            "dtype": "string",
+            "_type": "Value"
+          },
+          "reward_model": {
+            "ground_truth": {
+              "dtype": "string",
+              "_type": "Value"
+            },
+            "style": {
+              "dtype": "string",
+              "_type": "Value"
+            }
+          },
+          "extra_info": {
+            "index": {
+              "dtype": "string",
+              "_type": "Value"
+            }
+          }
+        },
+        "builder_name": "parquet",
+        "dataset_name": "dapo-math-17k",
+        "config_name": "default",
+        "version": {
+          "version_str": "0.0.0",
+          "major": 0,
+          "minor": 0,
+          "patch": 0
+        },
+        "splits": {
+          "train": {
+            "name": "train",
+            "num_bytes": 1113238400,
+            "num_examples": 1791700,
+            "shard_lengths": [
+              1048576,
+              743124
+            ],
+            "dataset_name": "dapo-math-17k"
+          }
+        },
+        "dataset_size": 1113238400
+      }
+    },
+    "pending": [],
+    "failed": [],
+    "partial": false
+  }
+}

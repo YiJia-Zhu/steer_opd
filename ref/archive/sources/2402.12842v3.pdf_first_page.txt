@@ -1,0 +1,99 @@
+PromptKD: Distilling Student-Friendly Knowledge for Generative
+Language Models via Prompt Tuning
+Gyeongman Kim1 Doohyuk Jang1 Eunho Yang1,2
+1
+Korea Advanced Institute of Science and Technology (KAIST), South Korea
+2
+AITRICS, South Korea
+{gmkim, jadohu, eunhoy}@kaist.ac.kr
+
+2 6
+
+Recent advancements in large language models (LLMs) have raised concerns about inference costs, increasing the need for research
+into model compression. While knowledge distillation (KD) is a prominent method for this,
+research on KD for generative language models
+like LLMs is relatively sparse, and the approach
+of distilling student-friendly knowledge, which
+has shown promising performance in KD for
+classification models, remains unexplored in
+generative language models. To explore this approach, we propose PromptKD, a simple yet
+effective method that utilizes prompt tuning for the first time in KD - to enable generative
+language models to transfer student-friendly
+knowledge. Unlike previous works in classification that require fine-tuning the entire teacher
+model for extracting student-friendly knowledge, PromptKD achieves similar effects by
+adding a small number of prompt tokens and
+tuning only the prompt with student guidance.
+Extensive experiments on instruction-following
+datasets show that PromptKD achieves state-ofthe-art performance while adding only 0.0007%
+of the teacher’s parameters as prompts. Further
+analysis suggests that distilling student-friendly
+knowledge alleviates exposure bias effectively
+throughout the entire training process, leading
+to performance enhancements.1
+
+1
+
+G P T -2 X L (T e a c h e r)
+
+A v e ra g e R O U G E -L
+
+arXiv:2402.12842v3 [cs.CL] 27 Sep 2024
+
+Abstract
+
+2 0
+S F T
+S e q K D
+G K D
+
+1 7
+1 0 0 M
+
+3 0 0 M
+S tu d e n t (# P a ra m s )
+
+K D
+M in iL L M
+P ro m p tK D
+
+8 0 0 M
+
+Figure 1: Comparison of instruction-following performance of KD methods using the GPT-2 model family.
+Owing to the student-friendly knowledge, our PromptKD outperforms others with only an additional 11K
+parameters. Dashed reference line represents the performance of the teacher model.
+
+et al., 2022), KD has not been successfully applied
+to generative language models.
+Since most KD methods are devised with models like BERT (Devlin et al., 2019) for classification tasks, the challenge arises when attempting
+to directly apply these KD methods to generative
+language models, which have different architectures and are designed for tasks other than classification. While there have been some methods
+proposed for generative language models, such as
+Supervised KD (Sanh et al., 2019) or SeqKD (Kim
+and Rush, 2016), they tend to be naive approaches.
+Even recently proposed works (Agarwal et al.,
+2024; Gu et al., 2024), like previous research,
+have focused on distribution discrepancy metrics
+or pseudo-targets. Therefore, despite the rapid advancement of LLMs in recent times, the drawback
+is that they are not designed with the extension to
+LLMs in mind.
+Moreover, attempts to distill student-friendly
+knowledge in a generative language model have
+
+Introduction
+
+With the massive improvement of generative language models, such as the emerging abilities (Wei
+et al., 2022) observed in large language models
+(LLMs), there is a growing need for model compression research to efficiently deploy models in
+various tasks (Touvron et al., 2023b; Taori et al.,
+2023). However, among notable compression methods such as knowledge distillation (KD; Hinton
+et al., 2015; Kim and Rush, 2016; Gu et al., 2024),
+pruning (Ma et al., 2023), and quantization (Tao
+1
+
+2 3
+
+Project page: https://promptkd.github.io
+
+1
+
+

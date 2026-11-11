@@ -1,0 +1,112 @@
+{
+  "key": "latent_intervention",
+  "query": "(all:\"distillation\" AND (all:\"activation intervention\" OR all:\"latent steering\" OR all:\"residual injection\" OR all:\"training-time steering\"))",
+  "requested_max": 100,
+  "retrieved_at": "2026-11-07T15:47:26.159346+00:00",
+  "status": 200,
+  "url": "https://export.arxiv.org/api/query?search_query=%28all%3A%22distillation%22+AND+%28all%3A%22activation+intervention%22+OR+all%3A%22latent+steering%22+OR+all%3A%22residual+injection%22+OR+all%3A%22training-time+steering%22%29%29&max_results=100&sortBy=submittedDate&sortOrder=descending",
+  "total_results": 6,
+  "records": [
+    {
+      "id": "http://arxiv.org/abs/2610.32113v1",
+      "title": "REACT: Representational Early Analysis and Control of Chain-of-Thought Trajectories",
+      "summary": "Chain-of-thought (CoT) generation offers an opportunity to intervene before a reasoning model completes its answer. But does the point at which risk is easiest to detect also offer the most effective control? We study this question with REACT, a conditional activation intervention that learns a safety direction from paired safe and unsafe trajectories and applies it once to an early CoT hidden state. The model weights remain frozen, and all subsequent tokens are generated without further edits. To study timing, we train directions separately at each of the first five CoT positions and evaluate ungated edits with full post-edit regeneration. Across three distilled reasoning models and three generation seeds, the strongest gains concentrate in a two- to three-token early window; on DeepSeek-R1-Distill-Llama-8B, the effect falls to approximately zero at the fourth and fifth tokens, even though later states can be more predictive of risk. This separates risk readability from effective control: intervention timing must be evaluated through its effect on subsequent generation. On the same 8B model, REACT raises the rate of fully safe CoT-answer outputs on StrongREJECT-273 from 29.06% to 82.05%, while keeping benign refusal and usefulness near baseline. An anonymized implementation is available at https://anonymous.4open.science/r/REACT_official2-333B.",
+      "published": "2026-10-23T03:28:34Z",
+      "updated": "2026-10-23T03:28:34Z",
+      "authors": [
+        "Hanwen Zhang",
+        "Enyi Jiang",
+        "Ruike Zhu",
+        "Qinan Yu",
+        "Sanmi Koyejo"
+      ],
+      "version": "2610.32113v1",
+      "arxiv_id": "2610.32113"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.00110v1",
+      "title": "Distill What RGB Can Recover: Privileged 3D Evidence for RGB-Only Vision-Language Models",
+      "summary": "3D scene understanding requires reasoning about entity existence, spatial layout, and object relations, yet RGB images alone often provide insufficient 3D cues. Existing 3D-VLMs commonly rely on depth or 3D-position-aware inputs at inference time, introducing additional acquisition, reconstruction, or annotation costs that limit RGB-only deployment. We therefore study how training-time 3D evidence can be converted into spatial reasoning capabilities retained under RGB-only inference. We propose a privileged-evidence distillation framework that constructs a distillable teacher through a unified evidence interface and controlled residual injection, and transfers its knowledge to a deployable student receiving only RGB images and questions through logit and structured representation distillation. To avoid imitating teacher signals unsupported by RGB, we further introduce evidence-sensitivity-guided distillation, which uses corrupted evidence to identify highly evidence-dependent targets and down-weight their supervision. We also define a recoverability decomposition based on the matched baseline, teacher, and student, separating privileged gains into RGB-recoverable improvements and residual teacher advantages. Across four benchmarks, the teacher achieves the best result on 7 of 11 reported metrics among the compared methods. The RGB-only student outperforms its matched baseline on all 11 metrics, including gains of 10.4 ScanQA CIDEr and 19.1 Scan2Cap CIDEr@0.5, without additional inference-time inputs. These results validate the effectiveness of training-time privileged 3D evidence distillation for both teacher performance and deployable RGB-only spatial reasoning. Separately, our matched baseline-teacher-student analysis characterizes privileged-gain transfer across evidence types and spatial skills.",
+      "published": "2026-07-31T08:24:05Z",
+      "updated": "2026-07-31T08:24:05Z",
+      "authors": [
+        "Yanbin Hu",
+        "Jin Cui",
+        "Jun Ye",
+        "Jiepeng Zhou",
+        "Jiangcheng Song",
+        "Boran Zhao",
+        "Pengju Ren"
+      ],
+      "version": "2608.00110v1",
+      "arxiv_id": "2608.00110"
+    },
+    {
+      "id": "http://arxiv.org/abs/2605.03907v1",
+      "title": "Steer Like the LLM: Activation Steering that Mimics Prompting",
+      "summary": "Large language models can be steered at inference time through prompting or activation interventions, but activation steering methods often underperform compared to prompt-based approaches. We propose a framework that formulates prompt steering as a form of activation steering and investigates whether distilling successful prompt steering behavior into simpler, interpretable models can close this gap. Our analysis reveals that popular activation steering methods are not faithful to the mechanics of prompt steering, which applies strong interventions on some tokens while barely affecting others. Based on these insights, we introduce Prompt Steering Replacement (PSR) models that estimate token-specific steering coefficients from the activations themselves and are trained to imitate prompt-based interventions. Experiments on three steering benchmarks across multiple language models show that PSR models outperform existing activation steering methods, especially when controlling for high-coherence completions, and also compare favorably to prompting on AxBench and persona steering.",
+      "published": "2026-05-05T15:59:42Z",
+      "updated": "2026-05-05T15:59:42Z",
+      "authors": [
+        "Geert Heyman",
+        "Frederik Vandeputte"
+      ],
+      "version": "2605.03907v1",
+      "arxiv_id": "2605.03907"
+    },
+    {
+      "id": "http://arxiv.org/abs/2603.10359v2",
+      "title": "HEAL: Hindsight Entropy-Assisted Learning for Reasoning Distillation",
+      "summary": "Distilling reasoning capabilities from Large Reasoning Models (LRMs) into smaller models is typically constrained by the limitations of rejection sampling. Standard methods treat the teacher as a static filter, discarding complex \"corner-case\" problems where the teacher fails to explore valid solutions independently, thereby creating an artificial \"Teacher Ceiling\" for the student. In this work, we propose Hindsight Entropy-Assisted Learning (HEAL), an RL-free framework designed to bridge this reasoning gap. Drawing on the educational theory of the Zone of Proximal Development (ZPD), HEAL synergizes three core modules: (1) Guided Entropy-Assisted Repair (GEAR), an active intervention mechanism that detects critical reasoning breakpoints via entropy dynamics and injects targeted hindsight hints to repair broken trajectories; (2) Perplexity-Uncertainty Ratio Estimator (PURE), a ratio-based filtering heuristic that reduces high-anomaly shortcut-like rationales; and (3) Progressive Answer-guided Curriculum Evolution (PACE), a three-stage distillation strategy that organizes training from foundational alignment to hard-case adaptation. Extensive experiments on multiple benchmarks demonstrate that HEAL significantly outperforms traditional SFT distillation and other baselines.",
+      "published": "2026-03-11T03:12:10Z",
+      "updated": "2026-09-01T02:50:46Z",
+      "authors": [
+        "Wenjing Zhang",
+        "Jiangze Yan",
+        "Jieyun Huang",
+        "Yi Shen",
+        "Shuming Shi",
+        "Ping Chen",
+        "Ning Wang",
+        "Zhaoxiang Liu",
+        "Kai Wang",
+        "Shiguo Lian"
+      ],
+      "version": "2603.10359v2",
+      "arxiv_id": "2603.10359"
+    },
+    {
+      "id": "http://arxiv.org/abs/2603.05296v3",
+      "title": "Latent Policy Steering through One-Step Flow Policies",
+      "summary": "Offline reinforcement learning (RL) allows robots to learn from offline datasets without risky exploration. Yet, offline RL's performance often hinges on a brittle trade-off between (1) return maximization, which can push policies outside the dataset support, and (2) behavioral constraints, which typically require sensitive hyperparameter tuning. Latent steering offers a structural way to stay within the dataset support during RL, but existing offline adaptations commonly approximate action values using latent-space critics learned via indirect distillation, which can lose information and hinder convergence. We propose Latent Policy Steering (LPS), which enables high-fidelity latent policy improvement by backpropagating original-action-space Q-gradients through a differentiable one-step MeanFlow policy to update a latent-action-space actor. By eliminating proxy latent critics, LPS allows an original-action-space critic to guide end-to-end latent-space optimization, while the one-step MeanFlow policy serves as a behavior-constrained generative prior. This decoupling yields a robust method that works out-of-the-box with minimal tuning. Across OGBench and real-world robotic tasks, LPS achieves state-of-the-art performance and consistently outperforms behavioral cloning and strong latent steering baselines.",
+      "published": "2026-03-05T15:38:08Z",
+      "updated": "2026-10-29T06:04:06Z",
+      "authors": [
+        "Hokyun Im",
+        "Andrey Kolobov",
+        "Jianlong Fu",
+        "Youngwoon Lee"
+      ],
+      "version": "2603.05296v3",
+      "arxiv_id": "2603.05296"
+    },
+    {
+      "id": "http://arxiv.org/abs/2602.09070v2",
+      "title": "NarraScore: Bridging Visual Narrative and Musical Dynamics via Hierarchical Affective Control",
+      "summary": "Synthesizing coherent soundtracks for long-form videos remains a formidable challenge, currently stalled by three critical impediments: computational scalability, temporal coherence, and, most critically, a pervasive semantic blindness to evolving narrative logic. To bridge these gaps, we propose NarraScore, a hierarchical framework predicated on the core insight that emotion serves as a high-density compression of narrative logic. Uniquely, we repurpose frozen Vision-Language Models (VLMs) as continuous affective sensors, distilling high-dimensional visual streams into dense, narrative-aware Valence-Arousal trajectories. Mechanistically, NarraScore employs a Dual-Branch Injection strategy to reconcile global structure with local dynamism: a \\textit{Global Semantic Anchor} ensures stylistic stability, while a surgical \\textit{Token-Level Affective Adapter} modulates local tension via direct element-wise residual injection. This minimalist design bypasses the bottlenecks of dense attention and architectural cloning, effectively mitigating the overfitting risks associated with data scarcity. Experiments demonstrate that NarraScore achieves state-of-the-art consistency and narrative alignment with negligible computational overhead, establishing a fully autonomous paradigm for long-video soundtrack generation.",
+      "published": "2026-02-09T09:39:42Z",
+      "updated": "2026-02-12T02:33:29Z",
+      "authors": [
+        "Yufan Wen",
+        "Zhaocheng Liu",
+        "YeGuo Hua",
+        "Ziyi Guo",
+        "Lihua Zhang",
+        "Chun Yuan",
+        "Jian Wu"
+      ],
+      "version": "2602.09070v2",
+      "arxiv_id": "2602.09070"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "id": "rethinking_figure8_20261111",
+  "status": "awaiting_dataset_scope_clarification",
+  "executable_launch_config": false,
+  "authority": "Latest user request: first compare steering with SFT using Rethinking Figure 8, AIME2025 only, otherwise follow the original paper/code.",
+  "source_audit": "audit/rethinking_figure8_2026-11-11/source_audit.json",
+  "paper": "2604.13016v2",
+  "official_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+  "teacher": {
+    "repo_id": "Qwen/Qwen3-4B",
+    "local_path": "/home/zhenning/data/huggingface_models/Qwen3-4B",
+    "mode": "non_thinking",
+    "enable_thinking": false
+  },
+  "groups": [
+    {
+      "id": "base_opd",
+      "initialization": "Qwen/Qwen3-1.7B-Base",
+      "steering": false
+    },
+    {
+      "id": "sft_opd",
+      "initialization": "lllyx/Qwen3-1.7B-SFT if original training is retained; otherwise a separately labeled AIME-only SFT checkpoint",
+      "steering": false
+    },
+    {
+      "id": "base_steer_opd",
+      "initialization": "Qwen/Qwen3-1.7B-Base",
+      "steering": true,
+      "calibration_data": null,
+      "layer": null,
+      "rho": null,
+      "auxiliary_updates": null,
+      "rollout_hook": false,
+      "evaluation_hook": false
+    }
+  ],
+  "data": {
+    "requested_root": "/home/zhenning/data/huggingface_datasets/AIME2025",
+    "questions": 30,
+    "interpretation": null,
+    "question_pending": "Does AIME2025-only apply to evaluation only, or to SFT/calibration/OPD as well?",
+    "sft_original": "200K OpenThoughts3 math teacher responses; author released checkpoint available",
+    "opd_original": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
+    "opd_original_rows": 30000,
+    "no_test_to_train_assignment_without_clarification": true
+  },
+  "original_training": {
+    "global_prompt_batch_size": 64,
+    "mini_batch_size": 64,
+    "rollouts_per_prompt": 4,
+    "top_k": 16,
+    "top_k_strategy": "only_stu",
+    "reward_weight_mode": "student_p",
+    "adv_estimator": "token_reward_direct",
+    "policy_loss": "original fork PPO top-K surrogate; must audit numerical and gradient equivalence before launch",
+    "training_temperature": 1.0,
+    "teacher_temperature": 1.0,
+    "top_p": 1.0,
+    "repetition_penalty": 1.0,
+    "max_prompt_tokens": 1024,
+    "max_response_tokens": 7168,
+    "learning_rate": 1e-06,
+    "epochs": 1,
+    "extra_kl": false,
+    "loss_aggregation": "token-mean",
+    "shuffle": false,
+    "checkpoint_frequency": 20,
+    "builtin_validation_frequency": -1,
+    "original_gpu_setup": "8 x A800 80GB; any local execution changes must be recorded"
+  },
+  "evaluation": {
+    "benchmark": "AIME2025",
+    "source_files": [
+      {
+        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-I.jsonl",
+        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-I.jsonl",
+        "rows": 15,
+        "sha256": "b91b3c96f05d9635d2a0692b124ebe023c1ff59cb19c074275e6c4b349d0659e"
+      },
+      {
+        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-II.jsonl",
+        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-II.jsonl",
+        "rows": 15,
+        "sha256": "16a2dcfbbf9db1b11f8a69a3ba5e4cac73e3641b19a37e2307e9c12240bbed5e"
+      }
+    ],
+    "generations_per_question": 16,
+    "accuracy": "avg@16; mean correctness across per-question samples, not pass@16",
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "max_response_tokens": 31744,
+    "enable_thinking": false,
+    "stop_markers": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ],
+    "overlap": "sum of Top16 intersection counts / (16 * valid response prediction positions), on ordinary student prefixes, no hook",
+    "overlap_source_original": "training rollout metrics, not the standalone accuracy generator",
+    "figure_step_window": [
+      0,
+      200
+    ],
+    "rendering": "two panels: AIME2025 avg@16 accuracy and Overlap@16; all three groups; raw measurements retained; no fabricated or extrapolated curves"
+  },
+  "implementation_gates": [
+    "exact Base and author-SFT lineage/revisions; existing ordinary 1.7B cannot substitute",
+    "resolve SFT/calibration/OPD/evaluation data scope",
+    "verify templates/mode/stop handling separately for Base, SFT and teacher",
+    "original Student-Top-K student_p surrogate baseline; do not reuse pilot teacher-top-K forward_kl_topk_tail",
+    "alpha=0 exact loss/gradient agreement, prediction masks, packed remove-padding positions, backward recomputation",
+    "steering surrogate semantics explicitly audited; ordinary rollouts are not steered-policy samples",
+    "fixed steering configuration or independent dev selection; do not tune on AIME test curves",
+    "GPU admission and project-local process/caches/output paths"
+  ],
+  "state": {
+    "gpu_tasks_launched": false,
+    "model_weights_downloaded": false,
+    "curves_generated": false,
+    "cross_family_campaign_resumed": false
+  }
+}

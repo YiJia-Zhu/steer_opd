@@ -1,0 +1,58 @@
+A G OOD S ELF -T EACHER M EETS THE S TUDENT
+W HERE T HEY A RE : J OINT O N -P OLICY L EARNING
+AND T EACHING
+Randy Ardywibowo
+Perplexity
+
+Arnav Dalal
+Perplexity
+
+Jiantao Jiao
+NVIDIA
+
+randy@perplexity.ai
+
+arnav.dalal@perplexity.ai
+
+jiantaoj@nvidia.com
+
+arXiv:2610.10447v1 [cs.LG] 7 Oct 2026
+
+A BSTRACT
+Reinforcement Learning (RL) from outcome rewards suffers from sparse supervision, particularly on difficult, long-horizon tasks where successful trajectories are
+rare and costly to generate. On-Policy Distillation (OPD) offers an attractive alternative by providing dense token-level supervision from a stronger teacher along
+the student’s own generations. Self-distillation methods further remove the need
+for a separate teacher model by conditioning the same policy on privileged information to serve as its own teacher. However, privileged conditioning alone does
+not guarantee that the resulting distillation update improves the student. Indeed,
+privileged information can lead the teacher to solve tasks through shortcuts unavailable to the student, producing supervision poorly matched to the student’s
+current behavior. Consequently, even a higher-performing teacher can provide
+guidance that degrades student performance. To address this, we analyze how
+the choice of privileged teacher affects the student’s update. We derive a necessary and sufficient condition for the teacher’s local distillation update to be a
+positive multiple of the student’s reward gradient. Our analysis suggests that the
+teacher should not only perform well on the task, but also provide guidance suited
+to the student’s current capabilities. This characterization motivates a practical
+teacher-training surrogate that combines outcome rewards with token-level Kullback–Leibler (KL) regularization toward the student. Based on this result, we
+propose Joint On-Policy Learning and Teaching (JOLT), which jointly trains a
+single policy in two roles: a privileged teacher using a KL-regularized objective,
+and an unprivileged student using dense on-policy distillation. Our experiments
+across mathematical reasoning, code generation, tool use, and agentic terminaluse tasks demonstrate improvements in both training efficiency and evaluation
+performance. On MATH, JOLT uses 13× fewer completion tokens and 6.5×
+fewer processed training tokens than GRPO at matched accuracy, without direct
+student reward. With student outcome rewards, JOLT+ achieves absolute gains
+over GRPO of +4.2% on MATH, +3.0% on LCBv6, +9.9% on AppWorld, and
++4.5% in Terminal-Bench pass@32.
+
+1
+
+I NTRODUCTION
+
+Reinforcement Learning (RL) has become an effective way to improve language models on reasoning tasks (Shao et al., 2024; OpenAI, 2024; DeepSeek-AI, 2025). Many such methods rely on
+outcome rewards observed only after a trajectory ends, resulting in a sparse learning signal. This
+sparsity is especially challenging for difficult, long-horizon agentic tasks, where successful trajectories may be rare and costly to generate (Yang et al., 2026b; Li et al., 2026).
+On the other hand, On-Policy Distillation (OPD) provides a complementary source of dense supervision. Rather than learning only from a final reward, OPD samples trajectories from the student
+and evaluates each sampled action under a stronger teacher. The teacher-student log-probability ratio then provides a dense learning signal at every visited state (Agarwal et al., 2024). More recently,
+On-Policy Self-Distillation (OPSD) removes the need for a separate teacher model. The student
+
+1
+
+

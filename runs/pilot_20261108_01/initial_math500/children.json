@@ -1,0 +1,40 @@
+{
+  "student": {
+    "pid": 1683814,
+    "gpu_uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+    "command": [
+      "/home/zhenning/data/miniconda3/envs/verl/bin/python",
+      "scripts/generate_math.py",
+      "--model",
+      "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "--input",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/math500.jsonl",
+      "--output",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500/student.jsonl",
+      "--n",
+      "4",
+      "--max-tokens",
+      "31744"
+    ],
+    "exit_code": 0
+  },
+  "teacher": {
+    "pid": 1683815,
+    "gpu_uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+    "command": [
+      "/home/zhenning/data/miniconda3/envs/verl/bin/python",
+      "scripts/generate_math.py",
+      "--model",
+      "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+      "--input",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/math500.jsonl",
+      "--output",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500/teacher.jsonl",
+      "--n",
+      "4",
+      "--max-tokens",
+      "31744"
+    ],
+    "exit_code": 0
+  }
+}

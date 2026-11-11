@@ -1,0 +1,15 @@
+{
+  "pid": 4075717,
+  "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_cross_family_steering_probe.py",
+    "--config",
+    "experiments/cross_family_steering_probe_20261110.json",
+    "--baseline-dir",
+    "runs/cross_family_overlap_20261110_02",
+    "--output-dir",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/cross_family_steering_probe_20261110_02"
+  ],
+  "started_at": "2026-11-10T12:48:33.195067+00:00"
+}

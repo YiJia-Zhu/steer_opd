@@ -1,0 +1,3 @@
+PASS: shared environment rejected before GPU launch
+/home/zhenning/data/miniconda3/envs/verl
+OPD runtime differs from the validated baseline: {'torch': {'expected': '2.13.0+cu130', 'actual': '2.8.0'}, 'vllm': {'expected': '0.32.0', 'actual': '0.11.0'}}. Use the project .venv-opd interpreter after sourcing scripts/runtime_env.sh.

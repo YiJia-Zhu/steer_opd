@@ -1,0 +1,851 @@
+REVEAL: Reverse Engineering Agentic Latents from Frontier-Model Traces
+Skip to main content
+ Report GitHub Issue
+ ×
+ Title:
+Content selection saved. Describe the issue below:
+ Description:
+ Submit without GitHub
+ Submit in GitHub
+ Why HTML?
+ Report Issue
+ Back to Abstract
+ Download PDF
+ Contents
+ Reading mode
+ Colour theme
+Abstract
+1 Introduction
+2 Method
+2.1 Overview
+2.2 Preliminaries
+2.3 Characterizing Agentic Latents
+2.4 Trajectory Reverse Engineering and Steering
+3 Experiments
+3.1 Tasks and Datasets
+3.2 Baselines
+3.3 Implementation Details
+3.4 Main Results
+3.5 Empirical Analysis
+4 Related Work
+4.1 Representation Engineering and Activation Steering
+4.2 Tool Use and Long-Horizon Agents
+5 Conclusion
+References
+A Jacobian-Lens Readout
+A.1 From Local Perturbations to a Shared Readout
+A.2 Vocabulary Scores and the J-Space
+A.3 Why This Readout Fits REVEAL
+A.4 Interpreting the Empirical Readout
+B Agentic Latents: Anchors and Dynamic Profiles
+B.1 Anchored States and Causal Prefixes
+B.2 Normalization and Geometric Interpretation
+B.3 Verbal Accessibility as a Rank Statistic
+B.4 From Profiles to Event Comparisons
+B.5 Hierarchical Averaging of Response-Transition Contrasts
+B.6 Validity and Missing Measurements
+C Prompt-Reg Policy
+D Additional Analyses of Agentic Latents
+D.1 Anchor Fidelity Across Response Lengths
+D.2 Representation Dynamics on HLE
+D.3 Retention Within a Response
+D.4 Readout Rank and Content Coverage
+D.5 Outcome-Conditioned Structure Across Observers
+ License: arXiv.org perpetual non-exclusive license
+arXiv:2610.16288v2 [cs.AI] 14 Oct 2026
+REVEAL: Reverse Engineering Agentic 
+Latents from Frontier-Model Traces
+Yuetian Du
+††thanks: Equal contribution.
+Affiliation: Zhejiang University
+Meng Wang
+Affiliation: Zhejiang University
+Yucheng Wang
+Affiliation: Zhejiang University
+Zhangzhe Chen
+Affiliation: South China University of Technology
+Wei Wang
+Affiliation: Alibaba Group
+Boyu Yang
+Affiliation: Alibaba Group
+Weiqi Zhai
+Affiliation: Alibaba Group
+Affiliation: Fudan University
+Bing Zhao
+Affiliation: Alibaba Group
+Ming Kong
+Affiliation: Zhejiang University
+Zhan Zhou
+Affiliation: Zhejiang University
+Jie Liu
+††thanks: Corresponding authors.
+Affiliation: Zhejiang University
+Affiliation: City University of Hong Kong
+Qiang Zhu
+Affiliation: Zhejiang University
+Abstract
+Frontier LLM agents perform complex interactive tasks, but their inference costs motivate transferring their experience to smaller open-source agents. Distillation and latent communication typically require target-model training or access to source-model internals. We study how textual frontier-model trajectories can provide reusable local controls for a frozen agent. Inspired by protocol reverse engineering, we introduce Agentic Latents, comprising anchored states and dynamic profiles of feedback–response cycles elicited by replay in the target model. Our training-free framework, REVEAL (REVerse Engineering Agentic Latents), uses these profiles and trajectory outcomes to match and select local events from successful and failed rollouts of the same task and source model. Their response-transition contrasts yield a target-specific steering direction, applied before each response. Within-benchmark evaluations on Terminal-Bench 2.1 and Humanity’s Last Exam with tools report higher accuracy than unmodified agents across three targets. Representation analyses and behavioral case studies support reusing frontier-model experience as local activation control.
+1 Introduction
+Large language model (LLM) agents perform complex tasks through repeated interactions with tools and environments. Frontier models navigate these interactions effectively, but repeated calls over long trajectories can incur substantial inference costs. Smaller open-source models offer a path to lower-cost and more flexible deployment, yet often struggle with complex tool use and sustained task execution (Qin et al., 2024b; Merrill et al., 2026). Frontier-model trajectories provide a record of how stronger agents reason, act, and respond to feedback. Reusing this experience could help smaller agents complete demanding tasks with low additional adaptation cost.
+Existing approaches transfer model capabilities through several forms of supervision. Teacher-generated task labels and explanations can supervise smaller models (Hsieh et al., 2023), while interaction trajectories provide demonstrations of tool use and sequential decision-making (Qin et al., 2024b). Access to internal states further enables representation-level transfer, including latent communication (Zou et al., 2025; Zou et al., 2026). These routes rely on target-model training or access to source-model internals. Figure 1 contrasts the corresponding training and information-access requirements. These requirements leave a practical gap: training adds optimization costs for each target, while text-only interfaces preclude internal-state transfer. This leads us to ask: Can long-horizon text trajectories from frontier models be reconstructed as reusable local control signals for a frozen open-source agent?
+Inspired by protocol reverse engineering, which infers message structure through comparisons of observed network traces (Cui et al., 2007), we organize frontier-model experience into local interaction units for representation analysis and control. We introduce Agentic Latents: anchored states and dynamic profiles of feedback–response cycles, obtained by replaying interaction traces in a frozen open-source model. Representation engineering provides tools for analyzing these states and intervening on model behavior (Zou et al., 2023). A central challenge is that trajectory outcomes provide coarse supervision for local control: successful rollouts may contain ineffective retries, while failed ones may include useful corrections. We therefore use local representation dynamics to guide comparisons between successful and failed rollouts of the same task and frontier model.
+Figure 1: Three routes for reusing frontier-model experience: (1) feature distillation trains on internal states; (2) black-box distillation trains on textual trajectories; (3) REVEAL characterizes Agentic Latents through frozen target-model replay of textual trajectories and derives steering directions.
+We introduce REVEAL (REVerse Engineering Agentic Latents), a training-free framework that derives activation-steering signals from Agentic Latents (Figure 1, bottom). Anchored states are read at corresponding stages of feedback reception and response generation across trajectories, providing a common basis for local comparison. Their dynamic profiles characterize local interaction through update magnitude (UU), directional retention (CC), verbal accessibility (VV), and cross-cycle consistency (SS), guiding event matching and selection. Each target model aggregates response-transition contrasts from the selected events into a direction in its own representation space and applies it before generating each response.
+We evaluate REVEAL on Terminal-Bench 2.1 (Merrill et al., 2026) and Humanity’s Last Exam with tools (Phan et al., 2025). On Terminal-Bench, REVEAL improves task completion across all three evaluated target models; for Qwen3.6-27B, it also outperforms trajectory SFT with fewer online tokens and interactions. Complementary analyses examine how response anchors summarize local transitions, how feedback-associated directions evolve during responses, and which trajectory patterns are shared across target models. Together with behavioral case analysis, these results support using Agentic Latents to characterize long-horizon experience and derive local controls for open-source agents.
+Our contributions are threefold:
+• 
+Agentic Latents for characterizing long-horizon interaction. We introduce Agentic Latents, comprising anchored states and dynamic profiles, to characterize local internal representations in long-horizon interaction. The states mark corresponding interaction stages, while the profiles describe within- and cross-cycle dynamics for event comparison and selection.
+• 
+Training-free control through trajectory reverse engineering. We propose REVEAL, which selects matched local events from successful and failed frontier-model rollouts and constructs steering directions from their response-transition contrasts in each target model. The method uses textual trajectories and outcome labels without updating target parameters or accessing frontier-model logits or hidden states.
+• 
+Evidence for control utility and latent interaction structure. We evaluate REVEAL across three target models on terminal interaction and tool-assisted reasoning. Performance and online-cost comparisons assess the utility of the reconstructed controls, while complementary analyses examine response-transition approximation, representation dynamics, cross-model consistency, and subsequent agent behavior.
+2 Method
+2.1 Overview
+Given textual frontier-model trajectories and task outcomes, REVEAL characterizes Agentic Latents and derives steering directions while keeping target parameters fixed. In Figure 2(a), frozen replay yields anchored states at corresponding interaction stages and dynamic profiles of within- and cross-cycle interaction. REVEAL uses these profiles to match and select local events, then aggregates their target-space response-transition contrasts into a steering direction (Figure 2(b)). During online interaction, the target applies this direction once before each response (Figure 2(c)). State extraction, profile computation, and direction construction are offline; each target serves as its own observer in our experiments.
+2.2 Preliminaries
+Agent–environment interaction.
+Given a task qq and an initial observation o0o_{0}, the agent’s history at round tt is Ht=(q,o0,a0,o1,…,at−1,ot)H_{t}=(q,o_{0},a_{0},o_{1},\ldots,a_{t-1},o_{t}). We suppress fixed system instructions, tool specifications, and serialization in this notation. Here, ata_{t} is an assistant response, which may include tool calls, and oto_{t} is the feedback received before that response. For a nonterminal interaction,
+at∼πθ(⋅∣Ht),ot+1∼ℰ(⋅∣Ht,at),a_{t}\sim\pi_{\theta}(\cdot\mid H_{t}),\qquad o_{t+1}\sim\mathcal{E}(\cdot\mid H_{t},a_{t}),
+(1)
+where πθ\pi_{\theta} is the agent policy and ℰ\mathcal{E} is the environment. A rollout τ\tau ends with task completion or an interaction limit. An external evaluator assigns its outcome yτ∈{0,1}y_{\tau}\in\{0,1\}; this label is excluded from the replay input.
+Activation steering.
+Let hℓϕ​(x)∈ℝdϕh^{\phi}_{\ell}(x)\in\mathbb{R}^{d_{\phi}} denote the residual-stream state at position xx and layer ℓ\ell in a frozen model with parameters ϕ\phi; the corresponding causal token prefix is implicit. We use ψ\psi for the observer and θ\theta for the target; the same model may serve both roles. Additive steering modifies the target state during a forward pass (Rimsky et al., 2024):
+hℓθ​(x)←hℓθ​(x)+α​vℓθ,h^{\theta}_{\ell}(x)\leftarrow h^{\theta}_{\ell}(x)+\alpha v^{\theta}_{\ell},
+(2)
+where vℓθv^{\theta}_{\ell} is a steering direction and α\alpha its strength. The remaining computation uses the modified state without updating θ\theta.
+2.3 Characterizing Agentic Latents
+Agentic Latents comprise two components: anchored states and dynamic profiles. The states are extracted at corresponding positions in feedback–response cycles, while the profiles characterize state changes, response-content accessibility, and cross-cycle relationships for event comparison and selection. A frozen observer replays recorded trajectories under teacher forcing with causal attention. We suppress the rollout index when describing an individual cycle.
+Anchored states.
+For each cycle t≥1t\geq 1, we read internal states at anchors marking the preceding response endpoint, the input boundary, and the current response endpoints:
+At−1end⟶Bt⟶Atstart⟶Atend.A_{t-1}^{\mathrm{end}}\longrightarrow B_{t}\longrightarrow A_{t}^{\mathrm{start}}\longrightarrow A_{t}^{\mathrm{end}}.
+(3)
+At−1endA_{t-1}^{\mathrm{end}} is the last non-whitespace content token of the preceding response. BtB_{t} is the final token of the input prefix, including environmental feedback and the generation header, immediately before the current response. AtstartA_{t}^{\mathrm{start}} and AtendA_{t}^{\mathrm{end}} are the first lexical and last non-whitespace content tokens of that response. Structural chat-template markers are excluded from response endpoints. Each model maps the corresponding text spans to its own token positions. Cycles with missing anchors are omitted; token-mapping conventions are given in Appendix B.
+Figure 2: REVEAL reconstructs activation control from textual frontier-model trajectories. (a) Frozen replay yields Agentic Latents: anchored states and dynamic profiles. (b) Contrastive sample selection identifies matched local events; steering vector calculation combines their response-transition differences through hierarchical averaging. (c) The frozen target applies the resulting direction before each response.
+Dynamic profiles.
+We characterize the anchored states through four measurement families, UU, CC, VV, and SS, for event comparison and selection. For UU, CC, and SS, we independently RMS-normalize observer states as h¯ℓψ​(x)=hℓψ​(x)/‖hℓψ​(x)‖22/dψ+ϵ\bar{h}^{\psi}_{\ell}(x)=h^{\psi}_{\ell}(x)/\sqrt{\|h^{\psi}_{\ell}(x)\|_{2}^{2}/d_{\psi}+\epsilon}, where ϵ>0\epsilon>0 is a numerical stabilizer (Appendix B).
+Update magnitude (UU).
+The displacement across the feedback interval and its root-mean-square magnitude are
+ut,ℓ=h¯ℓψ​(Bt)−h¯ℓψ​(At−1end),Ut,ℓ=‖ut,ℓ‖2dψ.u_{t,\ell}=\bar{h}^{\psi}_{\ell}(B_{t})-\bar{h}^{\psi}_{\ell}(A_{t-1}^{\mathrm{end}}),\qquad U_{t,\ell}=\frac{\|u_{t,\ell}\|_{2}}{\sqrt{d_{\psi}}}.
+(4)
+UU quantifies the representation change associated with the feedback interval.
+Directional retention (CC).
+We project response states onto the feedback-associated update, relative to the preceding response endpoint:
+Ct,ℓ​(X)=⟨h¯ℓψ​(X)−h¯ℓψ​(At−1end),ut,ℓ⟩‖ut,ℓ‖22+ϵ,X∈{Atstart,Atend}.C_{t,\ell}(X)=\frac{\left\langle\bar{h}^{\psi}_{\ell}(X)-\bar{h}^{\psi}_{\ell}(A_{t-1}^{\mathrm{end}}),u_{t,\ell}\right\rangle}{\|u_{t,\ell}\|_{2}^{2}+\epsilon},\qquad X\in\{A_{t}^{\mathrm{start}},A_{t}^{\mathrm{end}}\}.
+(5)
+We denote the two coefficients by Ct,ℓstartC^{\mathrm{start}}_{t,\ell} and Ct,ℓendC^{\mathrm{end}}_{t,\ell} at the response start and end, respectively. A coefficient near one indicates a projected displacement of comparable magnitude to the original update. Values may exceed one or become negative, indicating a larger or oppositely signed component along the same direction.
+Verbal accessibility (VV).
+We measure the accessibility of recorded response tokens using a frozen Jacobian lens (J-lens) (Gurnee et al., 2026), with pre-fitted matrices from Neuronpedia. The boundary vocabulary readout is
+pt,ℓJ,ψ=softmax⁡(WUψ​Normψ⁡(J^ℓψ​hℓψ​(Bt))),p^{J,\psi}_{t,\ell}=\operatorname{softmax}\!\left(W^{\psi}_{\mathrm{U}}\operatorname{Norm}_{\psi}\left(\widehat{J}^{\psi}_{\ell}h^{\psi}_{\ell}(B_{t})\right)\right),
+(6)
+where J^ℓψ\widehat{J}^{\psi}_{\ell} is a fixed residual-transport matrix for the observer, and Normψ\operatorname{Norm}_{\psi} and WUψW^{\psi}_{\mathrm{U}} are the observer’s final normalization and unembedding. Its theoretical definition is given in Appendix A. Let YtY_{t} contain the unique non-structural content token IDs in the recorded response, tokenized by the observer, and let 𝒱ψ\mathcal{V}_{\psi} be its vocabulary. We measure their mean normalized rank:
+Vt,ℓ=1|Yt|​∑y∈Yt[1−rankpt,ℓJ,ψ⁡(y)−1|𝒱ψ|−1].V_{t,\ell}=\frac{1}{|Y_{t}|}\sum_{y\in Y_{t}}\left[1-\frac{\operatorname{rank}_{p^{J,\psi}_{t,\ell}}(y)-1}{|\mathcal{V}_{\psi}|-1}\right].
+(7)
+Ranks are descending and one-based, and VV is defined for nonempty YtY_{t}. Higher values place the recorded response tokens nearer the top of the boundary ranking. These tokens supply offline readout targets; causal attention prevents them from affecting the boundary state.
+Cross-cycle consistency (SS).
+We measure the directional agreement between consecutive updates:
+St,ℓ=⟨ut,ℓ,ut+1,ℓ⟩‖ut,ℓ‖2​‖ut+1,ℓ‖2.S_{t,\ell}=\frac{\langle u_{t,\ell},u_{t+1,\ell}\rangle}{\|u_{t,\ell}\|_{2}\|u_{t+1,\ell}\|_{2}}.
+(8)
+This cosine is defined for nonzero updates in immediately adjacent cycles. Positive values indicate directional agreement, while negative values indicate disagreement. Events without a valid successor are excluded from selection.
+2.4 Trajectory Reverse Engineering and Steering
+REVEAL selects contrastive event pairs using the dynamic profiles of Agentic Latents, then calculates steering directions from their anchored target states (Figure 2(b)).
+Contrastive sample selection.
+For each task, we form pairs p=(τ+,τ−)p=(\tau^{+},\tau^{-}) of successful and failed completed rollouts from the same frontier model, excluding infrastructure failures. Candidate samples are local feedback–response events i=(τ,t)i=(\tau,t) with complete dynamic profiles, including a valid successor for SS. In a matched pair (i,j)(i,j), ii is drawn from τ+\tau^{+} and jj from τ−\tau^{-}.
+We summarize each measurement using fixed observer-layer sets and aggregation rules, restricting VV to lens-supported layers. For event ii, a summary mim_{i} is standardized as zm​(i)=(mi−μm)/(σm+ϵ)z_{m}(i)=(m_{i}-\mu_{m})/(\sigma_{m}+\epsilon) using construction-data statistics. Within each rollout pair, we match events one-to-one without replacement by their proximity in (zU,zV)(z_{U},z_{V}), prioritizing the same tool category and similar prefix lengths. We then rank matched pairs by their differences in directional retention and cross-cycle consistency. Writing Δ​zm​(i,j)=zm​(i)−zm​(j)\Delta z_{m}(i,j)=z_{m}(i)-z_{m}(j), the selection score is
+Gi​j=12​(|Δ​zCstart​(i,j)|+|Δ​zCend​(i,j)|)+|Δ​zS​(i,j)|.G_{ij}=\tfrac{1}{2}\left(|\Delta z_{C^{\mathrm{start}}}(i,j)|+|\Delta z_{C^{\mathrm{end}}}(i,j)|\right)+|\Delta z_{S}(i,j)|.
+(9)
+The top half of matched pairs within each rollout pair form 𝒦p\mathcal{K}_{p}. Thus, UU and VV guide comparability, while CC and SS identify contrasting dynamics. Rollout outcomes determine the contrast’s orientation; larger CC or SS values are not assumed to be better.
+Table 1: Main agent performance (accuracy, %). Shading is normalized within each column; darker cells indicate higher scores. Within each model block, the best and second-best All scores are bold and underlined, respectively.
+Method
+Terminal-Bench 2.1
+HLE w/ Tools
+Easy
+Medium
+Hard
+All
+Math
+Phys.
+Chem.
+Bio/Med.
+CS/AI
+Eng.
+Hum./Soc.
+Other
+All
+Qwen3.6-27B
+Vanilla
+75.00
+43.64
+10.00
+33.71
+24.65
+14.00
+13.33
+20.93
+12.70
+15.79
+12.00
+4.44
+18.00
+Prompt-Reg
+100.00
+38.18
+20.00
+34.83
+28.37
+12.00
+13.33
+27.91
+17.46
+15.79
+14.00
+4.44
+20.80
+REVEAL-Base
+75.00
+41.82
+20.00
+35.96
+27.91
+20.00
+20.00
+20.93
+19.05
+10.53
+12.00
+6.67
+21.00
+REVEAL (Ours)
+100.00
+47.27
+16.67
+39.33
+29.30
+16.00
+20.00
+23.26
+19.05
+10.53
+16.00
+8.89
+22.00
+Gemma-4-31B-IT
+Vanilla
+50.00
+27.27
+3.33
+20.22
+30.70
+22.00
+20.00
+25.58
+14.29
+15.79
+14.00
+4.44
+22.40
+Prompt-Reg
+25.00
+21.82
+0.00
+14.61
+28.37
+18.00
+0.00
+27.91
+15.87
+15.79
+28.00
+4.44
+22.20
+REVEAL-Base
+75.00
+32.73
+3.33
+24.72
+28.37
+26.00
+13.33
+27.91
+20.63
+21.05
+22.00
+6.67
+23.80
+REVEAL (Ours)
+100.00
+30.91
+6.67
+25.84
+34.42
+18.00
+20.00
+30.23
+17.46
+31.58
+18.00
+8.89
+25.80
+GPT-OSS-20B
+Vanilla
+25.00
+3.64
+0.00
+3.37
+13.02
+2.00
+6.67
+9.30
+3.17
+0.00
+4.00
+2.22
+7.80
+Prompt-Reg
+25.00
+7.27
+3.33
+6.74
+11.63
+2.00
+6.67
+6.98
+9.52
+5.26
+4.00
+4.44
+8.20
+REVEAL-Base
+25.00
+9.09
+0.00
+6.74
+15.35
+4.00
+13.33
+11.63
+4.76
+0.00
+2.00
+6.67
+9.80
+REVEAL (Ours)
+50.00
+10.91
+3.33
+10.11
+19.07
+4.00
+6.67
+13.95
+7.94
+10.53
+4.00
+2.22
+12.00
+Terminal-Bench protocols. Terminal-Bench 2.1 includes 4 easy, 55 medium, and 30 hard tasks.
+HLE categories. Math, Phys., Chem., Bio/Med., CS/AI, Eng., and Hum./Soc. denote Mathematics, Physics, Chemistry, Biology/Medicine, Computer Science/AI, Engineering, and Humanities/Social Science.
+Steering vector calculation.
+Frozen target replay provides the raw anchor states for each selected event and its recorded prefix. For i=(τ,t)i=(\tau,t), we denote its anchors by BiB_{i}, AistartA_{i}^{\mathrm{start}}, and AiendA_{i}^{\mathrm{end}}, and compute the response-transition summary
+rℓ,iθ=12​[hℓθ​(Aistart)+hℓθ​(Aiend)]−hℓθ​(Bi).r^{\theta}_{\ell,i}=\tfrac{1}{2}\left[h^{\theta}_{\ell}(A_{i}^{\mathrm{start}})+h^{\theta}_{\ell}(A_{i}^{\mathrm{end}})\right]-h^{\theta}_{\ell}(B_{i}).
+(10)
+This summary averages the response-start and response-end displacements from the input boundary. Each selected pair (i,j)∈𝒦p(i,j)\in\mathcal{K}_{p} contributes rℓ,iθ−rℓ,jθr^{\theta}_{\ell,i}-r^{\theta}_{\ell,j}, contrasting boundary-relative response displacements from successful and failed source rollouts in the same target layer. Hierarchical averaging averages these contrasts within each rollout pair, then averages pair means equally within each task and task means equally across tasks (Appendix B.5). We normalize the resulting nonzero aggregate as vℓθ=v~ℓθ/‖v~ℓθ‖2v^{\theta}_{\ell}=\widetilde{v}^{\theta}_{\ell}/\|\widetilde{v}^{\theta}_{\ell}\|_{2} and use it as a candidate direction for perturbing the target’s pre-response state. The recorded response endpoints are required only during offline construction.
+Online steering.
+For each target and benchmark, we use a fixed intervention layer ℓs\ell_{s} and strength α\alpha, chosen empirically. Before each response, we apply
+hℓsθ​(Bt)←hℓsθ​(Bt)+α​vℓsθ.h^{\theta}_{\ell_{s}}(B_{t})\leftarrow h^{\theta}_{\ell_{s}}(B_{t})+\alpha v^{\theta}_{\ell_{s}}.
+(11)
+The addition occurs once during prefill at the final prefix token; B0B_{0} denotes this position for the initial response. Decoding then proceeds normally. The direction and strength remain fixed, and online execution requires no additional observer pass or frontier-model query.
+3 Experiments
+3.1 Tasks and Datasets
+We evaluate REVEAL on terminal interaction and tool-assisted reasoning. Terminal-Bench 2.1 (Merrill et al., 2026) comprises 89 tasks that require agents to operate in containerized command-line environments. We use the complete task set and evaluate task completion with the benchmark’s task-specific verifiers through Harbor.11
+ 1
+ https://github.com/harbor-framework/terminal-bench-2-1 Results are reported overall and by the official difficulty categories: 4 easy, 55 medium, and 30 hard tasks. Humanity’s Last Exam (HLE) (Phan et al., 2025) evaluates expert-level reasoning across academic disciplines. We use the fixed 500-question subset released by WebThinker (Li et al., 2025), which was randomly sampled from the text-only questions, and evaluate it in a tool-assisted setting. Final answers are graded by GPT-5.6-luna; we report accuracy overall and across eight subject categories.
+3.2 Baselines
+We compare REVEAL with three baselines. Vanilla uses the underlying agent without additional feedback-regulation instructions or activation steering. Prompt-Reg adds a fixed natural-language policy that instructs the agent to revise assumptions using feedback, carry updates into subsequent actions, avoid ineffective repetition, and preserve valid constraints. The full policy appears in Appendix C. REVEAL-Base constructs a steering direction from target-model activations elicited by successful and failed frontier-model trajectories, adapting contrastive activation addition (CAA) (Rimsky et al., 2024). It uses trajectory outcomes without REVEAL’s profile-guided selection of local feedback–response events. For the efficiency comparison, we also fine-tune Qwen3.6-27B by next-token prediction on the same 124 frontier-model trajectories used for direction construction.
+Table 2: Accuracy and online interaction costs on Terminal-Bench 2.1. The row in gray reports the frontier model’s mean pass@1 over four rollouts per task; the remaining rows use Qwen3.6-27B. Token and interaction costs are means per task. Bold values indicate the best results among the three target-model methods.
+Accuracy (%) ↑\uparrow
+Online tokens (k) ↓\downarrow
+Interactions ↓\downarrow
+Target
+training
+Method
+Easy
+Medium
+Hard
+All
+Input
+Output
+Rounds
+Tool calls
+Frontier Model
+93.75
+60.00
+39.17
+54.49
+346.16
+9.46
+16.03
+28.56
+–
+Vanilla
+75.00
+43.64
+10.00
+33.71
+595.14
+15.21
+23.30
+47.91
+No
+Vanilla + SFT
+75.00
+49.09
+6.67
+35.96
+223.14
+14.02
+15.70
+34.87
+Yes
+REVEAL
+100.00
+47.27
+16.67
+39.33
+143.71
+6.95
+13.88
+27.92
+No
+3.3 Implementation Details
+We use Qwen3.6-27B (Qwen Team, 2026), Gemma-4-31B-IT (Gemma Team, 2026), and GPT-OSS-20B (OpenAI, 2025) as target models, each serving as its own frozen observer. GPT-5.6-sol generates four rollouts per task. Tasks with both successful and failed rollouts contribute selected contrasts to one steering direction per target and benchmark. We evaluate within-benchmark adaptation using outcome-labeled source trajectories from the evaluation task collection, without a held-out task split. Target parameters remain frozen.
+We choose the intervention layer and strength empirically and keep them fixed during evaluation. On Terminal-Bench, agents use Terminus-2 through Harbor, with vLLM serving at temperature 1.0. REVEAL intervenes at layers 40, 30, and 15 for Qwen3.6-27B, Gemma-4-31B-IT, and GPT-OSS-20B, respectively, with α=0.5\alpha=0.5, at the final input-prefix position before each response. Per-request generation caps are 81,920, 8,192, and 32,768 tokens, respectively. We set these caps separately based on the models’ observed response-generation behavior during agent interactions, and share each cap across methods for the same target. They bound individual responses; actual task-level consumption is measured separately in the efficiency analysis.
+Figure 3: Endpoint approximations of mean response displacement across three models and two benchmarks; points and bars show task-balanced means and 95% task-bootstrap intervals. Layers 23, 22, and 8 are used for Qwen, Gemma, and GPT-OSS, respectively.
+Figure 4: Layerwise representation profiles on Terminal-Bench with pointwise 95% task-bootstrap intervals; dashed and solid CC curves denote response-start and response-end projections.
+3.4 Main Results
+Finding 1: REVEAL achieves higher reported performance across both benchmarks and all three target models. On Terminal-Bench, completion improves by 5.62–6.74 percentage points over Vanilla and by 1.12–3.37 points over REVEAL-Base (Table 1). On HLE, REVEAL likewise achieves the highest reported overall accuracy among the compared methods for each target model.
+Finding 2: REVEAL reduces online interaction costs relative to trajectory SFT. Using the same 124 trajectories from 33 tasks within the evaluation collection, REVEAL solves 35/89 Terminal-Bench tasks versus 32/89 for trajectory SFT (Table 2). Relative to SFT, it uses 35.60% fewer input tokens and 50.43% fewer output tokens, with fewer rounds and tool calls. These measurements cover execution after adaptation; source collection, offline replay, profile computation, and SFT training are excluded.
+3.5 Empirical Analysis
+Finding 3: Response anchors provide a compact summary of local representation transitions. At the measured layer of each model and on both benchmarks, averaging the response-start and response-end states better approximates the boundary-relative mean response displacement than either endpoint alone (Figure 3). Mean cosine similarity reaches 0.750.75–0.920.92, while relative error decreases by 14.514.5–30.9%30.9\% against the better single endpoint. These results support the response-endpoint summary used to construct steering contrasts from Agentic Latents.
+Figure 5: Cross-model Spearman correlations of trajectory-level UU and SS across depth bands, before and after task centering on matched trajectories. E/M/L denote early/middle/late bands.
+Figure 6: A case study. REVEAL and the frontier reference compare alternative token-counting operations, whereas Vanilla finalizes without testing the recognized ambiguity.
+Finding 4: Update magnitude and directional retention reveal complementary interaction dynamics. Response-end projections are lower than response-start projections in 147/148 evaluated layers on Terminal-Bench and 144/148 on HLE. Figure 4 places this shared pattern alongside the distinct depth profiles of update magnitude, verbal accessibility, and cross-cycle consistency. Full HLE profiles and within-response curves extend this analysis in Appendices D.2–D.3.
+Finding 5: The same trajectories induce correlated cross-cycle dynamics across models. For identical replayed trajectories, task-centered SS profiles retain cross-model Spearman correlations of 0.680.68–0.950.95 on Terminal-Bench and 0.710.71–0.840.84 on HLE (Figure 5). Agreement in UU is substantially weaker: shared temporal structure coexists with model-dependent update magnitudes. Outcome-conditioned contrasts retain this agreement (Appendix D.5). These correlations characterize scalar trajectory descriptors; steering directions are reconstructed separately in each target’s latent space.
+Finding 6: In a counting task, the steered agent adopts the frontier reference’s verification pattern. In count-dataset-tokens, Vanilla recognizes a possible separator effect but finalizes the direct-concatenation total of 79,566 without testing alternatives. The frontier reference counts fields independently and checks separator variants. REVEAL uses a different counting script, compares the alternatives, and revises its initial preference for concatenation before selecting 79,586 (Figure 6). This case illustrates a verification pattern shared with the frontier reference, expressed through the target’s own computation and decision sequence.
+4 Related Work
+4.1 Representation Engineering and Activation Steering
+Representation engineering examines how high-level concepts are encoded in LLM representations and how interventions on these representations alter model behavior (Bartoszcze et al., 2025; Wehner et al., 2025). The Representation Engineering framework (Zou et al., 2023) systematizes this perspective through two complementary operations: Representation Reading and Representation Control. Representative studies probe truth-related representations through Inference-Time Intervention (Li et al., 2023) and The Geometry of Truth (Marks and Tegmark, 2024), while Activation Addition (Turner et al., 2023) and Contrastive Activation Addition (Rimsky et al., 2024) construct steering directions from prompt-pair or contrastive activation differences. Related vector-based studies examine refusal (Arditi et al., 2024), in-context functions (Todd et al., 2024), and task representations (Hendel et al., 2023), while evaluation work shows that measured steering effects depend on protocol design (Pres et al., 2024). REVEAL compares feedback–response dynamics across trajectories through the anchored states and dynamic profiles of Agentic Latents.
+4.2 Tool Use and Long-Horizon Agents
+Research on tool-using LLM agents increasingly examines multi-step interactions shaped by observations, tool outputs, and environmental feedback (Qin et al., 2024a; Wang et al., 2024). Representative systems include WebGPT (Nakano et al., 2022) for browsing-grounded question answering, ReAct (Yao et al., 2023) for reasoning–action interleaving, Toolformer (Schick et al., 2023) and ToolLLM (Qin et al., 2024b) for API use, and Reflexion (Shinn et al., 2023) for feedback-based retry. Recent work reads tool necessity from pre-generation states and controls it through textual prefill, diagnoses capability-relative knowing–doing gaps, and extracts steerable tool-identity directions (Sun et al., 2026; Cheng et al., 2026; Wu et al., 2026). Trajectory-level methods further decode tool dependencies and predict episode failure from agent states, or audit safety risks through observer representations (Sun and Kazakov, 2026; Ruan et al., 2026; Li et al., 2026). Closer to long-horizon control, From Actions to Understanding (Padhi et al., 2026) derives success/failure directions over agent trajectories, whereas TACT (Sui et al., 2026) steers behavioral drift axes at reasoning–action boundaries. REVEAL uses trajectory outcomes and local representation profiles to select interaction events, then derives steering directions from their target-model response transitions.
+5 Conclusion
+Long-horizon experience can be reused as local control within an agent’s existing representation space. REVEAL represents this experience as Agentic Latents, comprising anchored states and dynamic profiles, and uses the profiles to select response-transition contrasts for steering. Our results connect these controls to improved task execution and, on Terminal-Bench, more economical online interaction. This reuses frontier-model experience through the executing model’s own representations, without accessing frontier-model internals or updating target parameters.
+Limitations
+Our evaluations measure within-benchmark adaptation using outcome-labeled trajectories from the evaluation task collection; transfer to held-out tasks and new environments remains untested. Future work could evaluate explicit construction/evaluation splits and transfer across frontier sources. Event selection also depends on compatible pre-fitted Jacobian lenses and valid feedback–response anchors, excluding events with missing measurements. Alternative readouts and selection rules for incomplete interaction records could extend the settings in which Agentic Latents can be studied, while testing whether their control utility persists.
+AI use statement
+We used generative AI tools to assist with literature and citation checks, local editing to improve the clarity and readability of the manuscript, and LaTeX template migration and formatting. The authors reviewed and revised the outputs as needed at each stage and take full responsibility for the final text, claims, citations, and artifacts.
+References
+Arditi et al. (2024)
+A. Arditi, O. Obeso, A. Syed, D. Paleka, N. Panickssery, W. Gurnee, and N. Nanda
+Refusal in language models is mediated by a single direction.
+In Advances in Neural Information Processing Systems, A. Globerson, L. Mackey, D. Belgrave, A. Fan, U. Paquet, J. Tomczak, and C. Zhang (Eds.),
+Vol. 37, pp. 136037–136083.
+External Links: Document,
+Link
+Cited by: §4.1.
+Bartoszcze et al. (2025)
+L. Bartoszcze, S. Munshi, B. Sukidi, J. Yen, Z. Yang, D. Williams-King, L. Le, K. Asuzu, and C. Maple
+Representation engineering for large-language models: survey and research challenges.
+arXiv preprint arXiv:2502.17601.
+Cited by: §4.1.
+Belrose et al. (2023)
+N. Belrose, I. Ostrovsky, L. McKinney, Z. Furman, L. Smith, D. Halawi, S. Biderman, and J. Steinhardt
+Eliciting latent predictions from transformers with the Tuned Lens.
+arXiv preprint arXiv:2303.08112.
+External Links: Document,
+Link
+Cited by: §A.3.
+Cheng et al. (2026)
+Y. Cheng, C. Fan, M. JafariRaviz, K. Rezaei, and S. Feizi
+Model-adaptive tool necessity reveals the knowing-doing gap in LLM tool use.
+External Links: 2605.14038,
+Link
+Cited by: §4.2.
+Cui et al. (2007)
+W. Cui, J. Kannan, and H. J. Wang
+Discoverer: automatic protocol reverse engineering from network traces.
+In 16th USENIX Security Symposium,
+pp. 199–212.
+External Links: Link
+Cited by: §1.
+Gemma Team (2026)
+Gemma Team
+Gemma 4 technical report.
+External Links: 2607.02770,
+Link
+Cited by: §3.3.
+Gurnee et al. (2026)
+W. Gurnee, N. Sofroniew, A. Pearce, M. Piotrowski, I. Kauvar, R. Chen, A. Soligo, P. Bogdan, E. Ong, R. Wang, B. Thompson, D. Abrahams, S. Kantamneni, E. Ameisen, J. Batson, and J. Lindsey
+Verbalizable representations form a global workspace in language models.
+External Links: 2607.15495,
+Link
+Cited by: §A.1,
+§A.2,
+§2.3.
+Hendel et al. (2023)
+R. Hendel, M. Geva, and A. Globerson
+In-context learning creates task vectors.
+External Links: 2310.15916,
+Link
+Cited by: §4.1.
+Hsieh et al. (2023)
+C. Hsieh, C. Li, C. Yeh, H. Nakhost, Y. Fujii, A. Ratner, R. Krishna, C. Lee, and T. Pfister
+Distilling step-by-step! outperforming larger language models with less training data and smaller model sizes.
+External Links: 2305.02301,
+Link
+Cited by: §1.
+Li et al. (2026)
+J. Li, Y. Li, B. Zhang, R. Tang, and K. Huang
+TRACES: proactive safety auditing for multi-turn LLM agents via trajectory-state modeling.
+External Links: 2605.27690,
+Link
+Cited by: §4.2.
+Li et al. (2023)
+K. Li, O. Patel, F. Viégas, H. Pfister, and M. Wattenberg
+Inference-time intervention: eliciting truthful answers from a language model.
+In Advances in Neural Information Processing Systems, A. Oh, T. Naumann, A. Globerson, K. Saenko, M. Hardt, and S. Levine (Eds.),
+Vol. 36, pp. 41451–41530.
+External Links: Document,
+Link
+Cited by: §4.1.
+Li et al. (2025)
+X. Li, J. Jin, G. Dong, H. Qian, Y. Wu, J. Wen, Y. Zhu, and Z. Dou
+WebThinker: empowering large reasoning models with deep research capability.
+External Links: 2504.21776,
+Link
+Cited by: §3.1.
+Marks and Tegmark (2024)
+S. Marks and M. Tegmark
+The geometry of truth: emergent linear structure in large language model representations of true/false datasets.
+External Links: 2310.06824,
+Link
+Cited by: §4.1.
+Merrill et al. (2026)
+M. A. Merrill, A. G. Shaw, N. Carlini, B. Li, H. Raj, I. Bercovich, L. Shi, J. Y. Shin, T. Walshe, E. K. Buchanan, J. Shen, G. Ye, H. Lin, J. Poulos, M. Wang, M. Nezhurina, J. Jitsev, D. Lu, O. M. Mastromichalakis, Z. Xu, Z. Chen, Y. Liu, R. Zhang, L. L. Chen, A. Kashyap, J. Uslu, J. Li, J. Wu, M. Yan, S. Bian, V. Sharma, K. Sun, S. Dillmann, A. Anand, A. Lanpouthakoun, B. Koopah, C. Hu, E. Guha, G. H. S. Dreiman, J. Zhu, K. Krauth, L. Zhong, N. Muennighoff, R. Amanfu, S. Tan, S. Pimpalgaonkar, T. Aggarwal, X. Lin, X. Lan, X. Zhao, Y. Liang, Y. Wang, Z. Wang, C. Zhou, D. Heineman, H. Liu, H. Trivedi, J. Yang, J. Lin, M. Shetty, M. Yang, N. Omi, N. Raoof, S. Li, T. Y. Zhuo, W. Lin, Y. Dai, Y. Wang, W. Chai, S. Zhou, D. Wahdany, Z. She, J. Hu, Z. Dong, Y. Zhu, S. Cui, A. Saiyed, A. Kolbeinsson, J. Hu, C. M. Rytting, R. Marten, Y. Wang, A. Dimakis, A. Konwinski, and L. Schmidt
+Terminal-Bench: benchmarking agents on hard, realistic tasks in command line interfaces.
+External Links: 2601.11868,
+Link
+Cited by: §1,
+§1,
+§3.1.
+Nakano et al. (2022)
+R. Nakano, J. Hilton, S. Balaji, J. Wu, L. Ouyang, C. Kim, C. Hesse, S. Jain, V. Kosaraju, W. Saunders, X. Jiang, K. Cobbe, T. Eloundou, G. Krueger, K. Button, M. Knight, B. Chess, and J. Schulman
+WebGPT: browser-assisted question-answering with human feedback.
+External Links: 2112.09332,
+Link
+Cited by: §4.2.
+OpenAI (2025)
+OpenAI
+Gpt-oss-120b & gpt-oss-20b model card.
+External Links: 2508.10925,
+Link
+Cited by: §3.3.
+Padhi et al. (2026)
+T. Padhi, R. Kaur, K. Agarwal, A. D. Cobb, D. Elenius, M. Acharya, C. Samplawski, A. M. Berenbeim, N. D. Bastian, S. Jha, U. Kursuncu, and A. Roy
+From actions to understanding: conformal interpretability of temporal concepts in LLM agents.
+External Links: 2604.19775,
+Link
+Cited by: §4.2.
+Phan et al. (2025)
+L. Phan, A. Gatti, Z. Han, N. Li, J. Hu, H. Zhang, C. B. C. Zhang, M. Shaaban, J. Ling, S. Shi, et al.
+Humanity’s last exam.
+arXiv preprint arXiv:2501.14249.
+Cited by: §1,
+§3.1.
+Pres et al. (2024)
+I. Pres, L. Ruis, E. S. Lubana, and D. Krueger
+Towards reliable evaluation of behavior steering interventions in LLMs.
+External Links: 2410.17245,
+Link
+Cited by: §4.1.
+Qin et al. (2024a)
+Y. Qin, S. Hu, Y. Lin, W. Chen, N. Ding, G. Cui, Z. Zeng, X. Zhou, Y. Huang, C. Xiao, et al.
+Tool learning with foundation models.
+ACM Computing Surveys 57 (4), pp. 1–40.
+Cited by: §4.2.
+Qin et al. (2024b)
+Y. Qin, S. Liang, Y. Ye, K. Zhu, L. Yan, Y. Lu, Y. Lin, X. Cong, X. Tang, B. Qian, S. Zhao, L. Hong, R. Tian, R. Xie, J. Zhou, M. Gerstein, D. Li, Z. Liu, and M. Sun
+ToolLLM: facilitating large language models to master 16000+ real-world APIs.
+In International Conference on Learning Representations, B. Kim, Y. Yue, S. Chaudhuri, K. Fragkiadaki, M. Khan, and Y. Sun (Eds.),
+Vol. 2024, pp. 9695–9717.
+External Links: Link
+Cited by: §1,
+§1,
+§4.2.
+Qwen Team (2026)
+Qwen Team
+Qwen3.6-27B: flagship-level coding in a 27B dense model.
+External Links: Link
+Cited by: §3.3.
+Rimsky et al. (2024)
+N. Rimsky, N. Gabrieli, J. Schulz, M. Tong, E. Hubinger, and A. Turner
+Steering Llama 2 via contrastive activation addition.
+In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers),
+pp. 15504–15522.
+Cited by: §2.2,
+§3.2,
+§4.1.
+Ruan et al. (2026)
+K. Ruan, Z. Huang, Z. Zhou, Q. Wei, J. Lin, X. Wang, and H. Sun
+Doomed from the start: early abort of LLM agent episodes via a recall-controlled probe cascade.
+External Links: 2607.06503,
+Link
+Cited by: §4.2.
+Schick et al. (2023)
+T. Schick, J. Dwivedi-Yu, R. Dessi, R. Raileanu, M. Lomeli, E. Hambro, L. Zettlemoyer, N. Cancedda, and T. Scialom
+Toolformer: language models can teach themselves to use tools.
+In Advances in Neural Information Processing Systems, A. Oh, T. Naumann, A. Globerson, K. Saenko, M. Hardt, and S. Levine (Eds.),
+Vol. 36, pp. 68539–68551.
+External Links: Document,
+Link
+Cited by: §4.2.
+Shinn et al. (2023)
+N. Shinn, F. Cassano, A. Gopinath, K. Narasimhan, and S. Yao
+Reflexion: language agents with verbal reinforcement learning.
+In Advances in Neural Information Processing Systems, A. Oh, T. Naumann, A. Globerson, K. Saenko, M. Hardt, and S. Levine (Eds.),
+Vol. 36, pp. 8634–8652.
+External Links: Document,
+Link
+Cited by: §4.2.
+Sui et al. (2026)
+Y. Sui, Y. Chen, Y. Li, X. Jiang, Y. He, Y. Dong, X. He, T. Gao, and B. Hooi
+TACT: mitigating overthinking and overacting in coding agents via activation steering.
+External Links: 2605.05980,
+Link
+Cited by: §4.2.
+Sun et al. (2026)
+C. Sun, L. Liu, G. Yan, Z. Wang, and T. Weng
+LLM agents already know when to call tools – even without reasoning.
+External Links: 2605.09252,
+Link
+Cited by: §4.2.
+Sun and Kazakov (2026)
+T. Sun and D. Kazakov
+Tool-call dependency structure is linearly decodable in LLM agent residual streams.
+External Links: 2605.25310,
+Link
+Cited by: §4.2.
+Todd et al. (2024)
+E. Todd, M. Li, A. Sen Sharma, A. Mueller, B. Wallace, and D. Bau
+Function vectors in large language models.
+In International Conference on Learning Representations, B. Kim, Y. Yue, S. Chaudhuri, K. Fragkiadaki, M. Khan, and Y. Sun (Eds.),
+Vol. 2024, pp. 17282–17333.
+External Links: Link
+Cited by: §4.1.
+Turner et al. (2023)
+A. M. Turner, L. Thiergart, G. Leech, D. Udell, J. J. Vazquez, U. Mini, and M. MacDiarmid
+Steering language models with activation engineering.
+arXiv preprint arXiv:2308.10248.
+Cited by: §4.1.
+Wang et al. (2024)
+L. Wang, C. Ma, X. Feng, Z. Zhang, H. Yang, J. Zhang, Z. Chen, J. Tang, X. Chen, Y. Lin, et al.
+A survey on large language model based autonomous agents.
+Frontiers of computer science 18 (6), pp. 186345.
+Cited by: §4.2.
+Wehner et al. (2025)
+J. Wehner, S. Abdelnabi, D. Tan, D. Krueger, and M. Fritz
+Taxonomy, opportunities, and challenges of representation engineering for large language models.
+arXiv preprint arXiv:2502.19649.
+Cited by: §4.1.
+Wu et al. (2026)
+Z. Wu, Z. Wang, S. Cho, Y. Yang, A. Koshiyama, S. Bulathwela, and M. Perez-Ortiz
+Tool calling is linearly readable and steerable in language models.
+External Links: 2605.07990,
+Link
+Cited by: §4.2.
+Yao et al. (2023)
+S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao
+ReAct: synergizing reasoning and acting in language models.
+External Links: 2210.03629,
+Link
+Cited by: §4.2.
+Zou et al. (2023)
+A. Zou, L. Phan, S. Chen, J. Campbell, P. Guo, R. Ren, A. Pan, X. Yin, M. Mazeika, A. Dombrowski, S. Goel, N. Li, M. J. Byun, Z. Wang, A. Mallen, S. Basart, S. Koyejo, D. Song, M. Fredrikson, J. Z. Kolter, and D. Hendrycks
+Representation engineering: a top-down approach to AI transparency.
+External Links: 2310.01405,
+Link
+Cited by: §1,
+§4.1.
+Zou et al. (2026)
+J. Zou, R. Pan, R. Qiu, P. Lu, S. Diao, J. Jiang, H. Tong, T. Zhang, M. J. Buehler, J. He, and J. Zou
+Recursive multi-agent systems.
+External Links: 2604.25917,
+Link
+Cited by: §1.
+Zou et al. (2025)
+J. Zou, R. Qiu, G. Li, X. Yang, K. Tieu, P. Lu, K. Shen, H. Tong, Y. Choi, J. He, et al.
+Latent collaboration in multi-agent systems.
+arXiv preprint arXiv:2511.20639.
+Cited by: §1.
+Appendix A Jacobian-Lens Readout
+The verbal-accessibility component of Agentic Latents compares a boundary-state vocabulary readout with the content of the recorded response. This section develops the Jacobian-lens construction underlying that readout and distinguishes its role in event selection from the construction of REVEAL’s steering direction.
+A.1 From Local Perturbations to a Shared Readout
+Following Gurnee et al. (2026), consider the effect of perturbing a source residual state on downstream residual states. For a fixed calibration context cc, let zψ​(x′,c)z^{\psi}(x^{\prime};c) denote the residual state at the lens’s output layer, and define
+Dℓ;x′,xψ​(c)=∂zψ​(x′,c)∂hℓψ​(x,c)∈ℝdψ×dψ.D^{\psi}_{\ell;x^{\prime},x}(c)=\frac{\partial z^{\psi}(x^{\prime};c)}{\partial h^{\psi}_{\ell}(x;c)}\in\mathbb{R}^{d_{\psi}\times d_{\psi}}.
+(12)
+Write zψ=hℓoutψz^{\psi}=h^{\psi}_{\ell_{\mathrm{out}}}, where ℓout\ell_{\mathrm{out}} is the output-layer index of the fitted lens; the published construction considers final and penultimate output layers. A perturbation δ\delta at source position xx gives the first-order expansion
+zψ,δ​(x′,c)−zψ​(x′,c)=Dℓ;x′,xψ​(c)​δ+o⁡(‖δ‖2),x′≥x.z^{\psi,\delta}(x^{\prime};c)-z^{\psi}(x^{\prime};c)=D^{\psi}_{\ell;x^{\prime},x}(c)\delta+o(\|\delta\|_{2}),\qquad x^{\prime}\geq x.
+(13)
+Causal attention makes the derivative zero for x′<xx^{\prime}<x. The derivatives are evaluated on a fixed token sequence, so the expansion describes a forward computation without differentiating through future-token sampling.
+For a final-layer target, the corresponding logit derivative follows by the chain rule. Writing soutψ​(x′,c)=WUψ​Normψ⁡(zψ​(x′,c))s^{\psi}_{\mathrm{out}}(x^{\prime};c)=W^{\psi}_{\mathrm{U}}\operatorname{Norm}_{\psi}(z^{\psi}(x^{\prime};c)),
+∂soutψ​(x′,c)∂hℓψ​(x,c)=WUψ​D​Normψ⁡(zψ​(x′,c))​Dℓ;x′,xψ​(c).\frac{\partial s^{\psi}_{\mathrm{out}}(x^{\prime};c)}{\partial h^{\psi}_{\ell}(x;c)}=W^{\psi}_{\mathrm{U}}\,D\operatorname{Norm}_{\psi}\bigl(z^{\psi}(x^{\prime};c)\bigr)D^{\psi}_{\ell;x^{\prime},x}(c).
+(14)
+This identity separates residual transport from the output head. In particular, the normalization derivative depends on the context; averaging residual Jacobians is not the same operation as averaging logit derivatives.
+Let ℐc\mathcal{I}_{c} and 𝒪c\mathcal{O}_{c} be the valid source- and destination-position sets for context cc. Matching the official mean estimator22
+ 2
+ https://github.com/anthropics/jacobian-lens, we define the population lens by summing over causal destinations and averaging over source positions and contexts:
+Jℓψ=𝔼c​[1|ℐc|​∑x∈ℐc∑x′∈𝒪cx′≥xDℓ;x′,xψ​(c)].J^{\psi}_{\ell}=\mathbb{E}_{c}\!\left[\frac{1}{|\mathcal{I}_{c}|}\sum_{x\in\mathcal{I}_{c}}\sum_{\begin{subarray}{c}x^{\prime}\in\mathcal{O}_{c}\\
+x^{\prime}\geq x\end{subarray}}D^{\psi}_{\ell;x^{\prime},x}(c)\right].
+(15)
+For a calibration corpus 𝒟\mathcal{D}, the corresponding empirical estimator is
+J^ℓψ=1|𝒟|​∑c∈𝒟1|ℐc|​∑x∈ℐc∑x′∈𝒪cx′≥xDℓ;x′,xψ​(c).\widehat{J}^{\psi}_{\ell}=\frac{1}{|\mathcal{D}|}\sum_{c\in\mathcal{D}}\frac{1}{|\mathcal{I}_{c}|}\sum_{x\in\mathcal{I}_{c}}\sum_{\begin{subarray}{c}x^{\prime}\in\mathcal{O}_{c}\\
+x^{\prime}\geq x\end{subarray}}D^{\psi}_{\ell;x^{\prime},x}(c).
+(16)
+Here 𝒟\mathcal{D} is the lens-calibration corpus. The destination sum should not be replaced by a uniform mean over position pairs: that change generally reweights source positions. Source layers, output layer, position masks, and aggregation choices are properties of the fitted checkpoint.
+REVEAL loads the observer-compatible matrices published by Neuronpedia33
+ 3
+ https://huggingface.co/neuronpedia/jacobian-lens, which were fitted using the official library. We do not estimate Jacobians or refit a lens on REVEAL trajectories. In our evaluated setup, each target also serves as its own observer, so its VV measurements use its corresponding fitted lens. Lens fitting is an external prerequisite; REVEAL’s trajectory processing and online steering keep both the model and lens parameters fixed.
+A.2 Vocabulary Scores and the J-Space
+For the raw boundary state h=hℓψ​(Bt)h=h^{\psi}_{\ell}(B_{t}), the readout first transports hh, then applies the observer’s output normalization and unembedding:
+st,ℓψ=WUψ​Normψ⁡(J^ℓψ​h),pt,ℓJ,ψ=softmax⁡(st,ℓψ).s^{\psi}_{t,\ell}=W^{\psi}_{\mathrm{U}}\operatorname{Norm}_{\psi}(\widehat{J}^{\psi}_{\ell}h),\qquad p^{J,\psi}_{t,\ell}=\operatorname{softmax}(s^{\psi}_{t,\ell}).
+(17)
+The transported activation is a readout surrogate, not the reconstructed final state of this particular response. REVEAL uses the score ordering without treating the scores as calibrated probabilities of subsequent token occurrence.
+The role of normalization can be made explicit for bias-free RMS normalization. If Normψ⁡(z)=Γψ​z/dψ−1​‖z‖22+ϵN\operatorname{Norm}_{\psi}(z)=\Gamma_{\psi}z/\sqrt{d_{\psi}^{-1}\|z\|_{2}^{2}+\epsilon_{\mathrm{N}}}, with diagonal gain Γψ\Gamma_{\psi}, then
+st,ℓψ​(y)=⟨qℓ,yψ,h⟩dψ−1​‖J^ℓψ​h‖22+ϵN,qℓ,yψ=(J^ℓψ)⊤​Γψ⊤​(WUψ)⊤​ey,s^{\psi}_{t,\ell}(y)=\frac{\langle q^{\psi}_{\ell,y},h\rangle}{\sqrt{d_{\psi}^{-1}\|\widehat{J}^{\psi}_{\ell}h\|_{2}^{2}+\epsilon_{\mathrm{N}}}},\qquad q^{\psi}_{\ell,y}=(\widehat{J}^{\psi}_{\ell})^{\top}\Gamma_{\psi}^{\top}(W^{\psi}_{\mathrm{U}})^{\top}e_{y},
+(18)
+where eye_{y} is the vocabulary unit vector. The denominator is shared across tokens, so their order is determined by the inner products. This derivation requires the stated normalization form; Equation (17) retains the actual model head. Geometric RMS normalization in Appendix B is a separate operation and is not substituted into this readout.
+Gurnee et al. (2026) describe the J-space through sparse nonnegative combinations of token-indexed lens directions. Using the effective token directions above to incorporate the normalization gain, and suppressing the observer superscript, let N=|𝒱ψ|N=|\mathcal{V}_{\psi}| and Qℓ=[qℓ,1,…,qℓ,N]Q_{\ell}=[q_{\ell,1},\ldots,q_{\ell,N}]. For a sparsity budget kk, the analogous construction is
+𝒥ℓ,k={Qℓβ:β≥0,∥β∥0≤k},β⋆∈arg⁡minβ≥0,‖β‖0≤k∥h−Qℓβ∥22.\mathcal{J}_{\ell,k}=\{Q_{\ell}\beta:\beta\geq 0,\ \|\beta\|_{0}\leq k\},\qquad\beta^{\star}\in\mathop{\arg\min}_{\beta\geq 0,\ \|\beta\|_{0}\leq k}\|h-Q_{\ell}\beta\|_{2}^{2}.
+(19)
+This is a union of cones; the sparse representation need not be unique. REVEAL computes vocabulary ranks directly and does not solve this sparse reconstruction problem. Its Agentic Latents comprise anchored states and dynamic profiles, not a recovered J-space, and its steering directions come from raw target-model response-transition contrasts rather than token-lens vectors.
+A.3 Why This Readout Fits REVEAL
+REVEAL needs a descriptor of response-content accessibility before a response begins. A logit lens reads intermediate states with the output head directly, equivalent to the identity transport in Equation (17). This omits the transformation between the source layer and the output representation. A tuned lens learns affine maps to approximate the model’s final prediction distribution (Belrose et al., 2023). That objective addresses next-token prediction fidelity, rather than the accessibility of content distributed throughout a response. Here, YtY_{t} includes content throughout a recorded response, and VV asks how highly that content ranks at the boundary. The boundary state uses its causal prefix; YtY_{t} is obtained retrospectively solely for offline scoring. We therefore use the averaged-transport readout to characterize this broader content set.
+The lens operates only during offline profiling. Its VV score is paired with UU to match events with similar update size and content accessibility; CC and SS then identify contrasting dynamics. The resulting event indices determine which raw response transitions contribute to steering. Thus the lens affects the choice of evidence used to construct a direction, without defining that direction’s coordinates or adding a lens computation to online execution.
+A.4 Interpreting the Empirical Readout
+Our readout diagnostics distinguish relative rank from top-token recovery. Alongside VV, we compute
+Recall​@​50t,ℓ=1|Yt|∑y∈Yt𝟏{rankpt,ℓJ,ψ(y)≤50}.\operatorname{Recall@50}_{t,\ell}=\frac{1}{|Y_{t}|}\sum_{y\in Y_{t}}\mathbf{1}\{\operatorname{rank}_{p^{J,\psi}_{t,\ell}}(y)\leq 50\}.
+(20)
+Both statistics weight unique content token IDs equally. In task-balanced layer-band summaries of our HLE source-trajectory cohort (1,303 tasks), Qwen has late-layer V=0.635V=0.635 with Recall@50 of 1.4089%1.4089\%, while GPT-OSS has early-layer V=0.710V=0.710 with Recall@50 of 0.0245%0.0245\%. The respective supported bands are zero-based layers 43–62 and 0–7. This replay cohort is separate from the 500-question online evaluation. Above-chance average ranks can therefore coexist with low top-50 coverage. This supports interpreting VV as relative accessibility of recorded content, rather than recovery of the complete response. It also motivates using VV within an observer and layer convention instead of treating its absolute value as a model-independent quality score. These diagnostics characterize the chosen readout; they do not establish comparative superiority over alternative lenses.
+Appendix B Agentic Latents: Anchors and Dynamic Profiles
+Agentic Latents combine states at corresponding stages of interaction with profiles of their local dynamics. The anchors define which events can be compared; the profiles specify what is compared. We give the extraction conventions and derive two properties that explain the information retained by these measurements.
+B.1 Anchored States and Causal Prefixes
+For each model, anchors are mapped from response-content and generation-header spans in its chat serialization. At−1endA_{t-1}^{\mathrm{end}} is the last non-whitespace content token of the preceding response; BtB_{t} is the final generation-header token after feedback; AtstartA_{t}^{\mathrm{start}} and AtendA_{t}^{\mathrm{end}} are the first lexical and last non-whitespace content tokens of the current response. Structural chat markers are excluded from response endpoints. Correspondence refers to interaction roles, not equal token indices or shared hidden-state coordinates across models.
+Each anchor is evaluated with its recorded causal prefix. In particular, hℓψ​(Bt)h^{\psi}_{\ell}(B_{t}) includes feedback and the generation header but no token of the current response. The state at AtstartA_{t}^{\mathrm{start}} already includes the first lexical response token. Teacher forcing makes the recorded response available for extracting its later states and content set YtY_{t}, while causal attention prevents those later tokens from changing the boundary state. A one-token response may have coincident start and end anchors.
+The interval from At−1endA_{t-1}^{\mathrm{end}} to BtB_{t} includes new feedback, serialization, and a change of token position. Its displacement is therefore feedback-associated, not an isolated causal effect of the feedback text. The response anchors delimit the subsequent state change using the same reference point. Their endpoint average is a compact response summary whose fidelity is evaluated in Figure 3.
+B.2 Normalization and Geometric Interpretation
+For UU, CC, and SS, we independently RMS-normalize observer states without learned gains:
+h¯ℓψ​(x)=hℓψ​(x)dψ−1​‖hℓψ​(x)‖22+ϵ,ϵ>0.\bar{h}^{\psi}_{\ell}(x)=\frac{h^{\psi}_{\ell}(x)}{\sqrt{d_{\psi}^{-1}\|h^{\psi}_{\ell}(x)\|_{2}^{2}+\epsilon}},\qquad\epsilon>0.
+(21)
+This gives ‖h¯‖2≤dψ\|\bar{h}\|_{2}\leq\sqrt{d_{\psi}} and hence 0≤Ut,ℓ≤20\leq U_{t,\ell}\leq 2. It controls state scale without identifying coordinates across models. The J-lens reads raw boundary states, and steering directions are constructed from raw target states; neither operation uses Equation (21).
+For nonzero raw states a0,b0a_{0},b_{0} at the preceding endpoint and boundary, let a,ba,b be their normalized states and ρa=‖a‖2/dψ\rho_{a}=\|a\|_{2}/\sqrt{d_{\psi}}, ρb=‖b‖2/dψ\rho_{b}=\|b\|_{2}/\sqrt{d_{\psi}}. Expanding the squared displacement gives
+U2=ρa2+ρb2−2ρaρbcos(a0,b0).U^{2}=\rho_{a}^{2}+\rho_{b}^{2}-2\rho_{a}\rho_{b}\cos(a_{0},b_{0}).
+(22)
+When the stabilizer is negligible relative to both raw mean squares, ρa,ρb≈1\rho_{a},\rho_{b}\approx 1 and U2≈2​[1−cos⁡(a0,b0)]U^{2}\approx 2[1-\cos(a_{0},b_{0})]. Thus UU measures geometric change, not the usefulness of new information. The following decomposition explains why it is accompanied by retention and cross-cycle measurements.
+Proposition 1 (Complementary within- and cross-cycle geometry).
+Fix a layer ℓ\ell and suppress its index in UU, CC, SS, and uu. Let ut≠0u_{t}\neq 0, xtpre=h¯ℓψ​(At−1end)x_{t}^{\mathrm{pre}}=\bar{h}^{\psi}_{\ell}(A_{t-1}^{\mathrm{end}}), and wt​(X)=h¯ℓψ​(X)−xtprew_{t}(X)=\bar{h}^{\psi}_{\ell}(X)-x_{t}^{\mathrm{pre}} for a response anchor XX. Then
+wt​(X)=(1+ϵdψ​Ut2)​Ct​(X)​ut+wt⟂​(X),⟨wt⟂​(X),ut⟩=0.w_{t}(X)=\left(1+\frac{\epsilon}{d_{\psi}U_{t}^{2}}\right)C_{t}(X)u_{t}+w_{t}^{\perp}(X),\qquad\langle w_{t}^{\perp}(X),u_{t}\rangle=0.
+(23)
+For a nonzero update in the immediately succeeding cycle,
+‖ut+1−ut‖22dψ=Ut+12+Ut2−2​Ut​Ut+1​St.\frac{\|u_{t+1}-u_{t}\|_{2}^{2}}{d_{\psi}}=U_{t+1}^{2}+U_{t}^{2}-2U_{t}U_{t+1}S_{t}.
+(24)
+Equal update magnitudes can therefore accompany different response retention and cross-cycle directions.
+Proof.
+The orthogonal projection coefficient of wt​(X)w_{t}(X) onto utu_{t} is ⟨wt​(X),ut⟩/‖ut‖22\langle w_{t}(X),u_{t}\rangle/\|u_{t}\|_{2}^{2}. Substituting Ct​(X)=⟨wt​(X),ut⟩/(‖ut‖22+ϵ)C_{t}(X)=\langle w_{t}(X),u_{t}\rangle/(\|u_{t}\|_{2}^{2}+\epsilon) and ‖ut‖22=dψ​Ut2\|u_{t}\|_{2}^{2}=d_{\psi}U_{t}^{2} gives Equation (23). Expanding the squared difference between adjacent updates gives Equation (24). For an explicit example with dψ≥2d_{\psi}\geq 2, choose orthonormal e1,e2e_{1},e_{2} and 0<R<dψ0<R<\sqrt{d_{\psi}}. Set xtpre=R​e1x_{t}^{\mathrm{pre}}=Re_{1} and h¯ℓψ​(Bt)=R​e2\bar{h}^{\psi}_{\ell}(B_{t})=Re_{2}. If the response endpoint returns to R​e1Re_{1} and the next boundary is R​e2Re_{2}, then Ctend=0C_{t}^{\mathrm{end}}=0 and St=1S_{t}=1. If the response endpoint remains at R​e2Re_{2} and the next boundary returns to R​e1Re_{1}, then Ctend=2​R2/(2​R2+ϵ)C_{t}^{\mathrm{end}}=2R^{2}/(2R^{2}+\epsilon) and St=−1S_{t}=-1. Both cases have Ut=Ut+1=R​2/dψU_{t}=U_{t+1}=R\sqrt{2/d_{\psi}}. The chosen normalized radius is attainable under Equation (21) by raw vectors of norm R​ϵ/(1−R2/dψ)R\sqrt{\epsilon/(1-R^{2}/d_{\psi})}. These are examples of admissible measurement geometry, not claims about which continuations a particular model produces.
+The decomposition distinguishes retention along the update axis from changes in orthogonal directions. In particular,
+Ctend−Ctstart=⟨h¯ℓψ​(Atend)−h¯ℓψ​(Atstart),ut⟩‖ut‖22+ϵ.C_{t}^{\mathrm{end}}-C_{t}^{\mathrm{start}}=\frac{\left\langle\bar{h}^{\psi}_{\ell}(A_{t}^{\mathrm{end}})-\bar{h}^{\psi}_{\ell}(A_{t}^{\mathrm{start}}),u_{t}\right\rangle}{\|u_{t}\|_{2}^{2}+\epsilon}.
+(25)
+A decrease indicates displacement against that axis during the response, without implying that all feedback information has disappeared. At equal update magnitudes, Equation (24) becomes 2​Ut2​(1−St)2U_{t}^{2}(1-S_{t}): SS distinguishes temporal directions even when update sizes are unchanged. These properties explain why the empirical depth profiles need not move together.
+B.3 Verbal Accessibility as a Rank Statistic
+The response supplies a set YtY_{t} of unique non-structural content token IDs. Using a set avoids weighting a token repeatedly because it occurs many times. Let N=|𝒱ψ|N=|\mathcal{V}_{\psi}| and m=|Yt|m=|Y_{t}|. The score in Equation (7) averages how many vocabulary entries rank below each response token. This admits a precise pairwise interpretation.
+Proposition 2 (Ranking interpretation and chance reference).
+Assume N>1N>1 and 1≤m<N1\leq m<N, and consider a strict vocabulary ranking with fixed tie-breaking. Let AUCt,ℓ\operatorname{AUC}_{t,\ell} be the fraction of pairs (y,z)∈Yt×(𝒱ψ∖Yt)(y,z)\in Y_{t}\times(\mathcal{V}_{\psi}\setminus Y_{t}) in which yy ranks above zz. Then
+Vt,ℓ=(N−m)​AUCt,ℓ+(m−1)/2N−1.V_{t,\ell}=\frac{(N-m)\operatorname{AUC}_{t,\ell}+(m-1)/2}{N-1}.
+(26)
+Any strictly increasing transformation of the scores preserves VV. Under a uniformly random vocabulary permutation independent of YtY_{t},
+𝔼⁡[Vt,ℓ]=12,Var⁡(Vt,ℓ)=(N+1)​(N−m)12​m​(N−1)2.\mathbb{E}[V_{t,\ell}]=\tfrac{1}{2},\qquad\operatorname{Var}(V_{t,\ell})=\frac{(N+1)(N-m)}{12m(N-1)^{2}}.
+(27)
+Proof.
+For each yy, N−rank⁡(y)N-\operatorname{rank}(y) counts entries below it. Summing over YtY_{t} counts m⁡(N−m)​AUCt,ℓm(N-m)\operatorname{AUC}_{t,\ell} comparisons with its complement and exactly m⁡(m−1)/2m(m-1)/2 comparisons within YtY_{t}. Dividing by m⁡(N−1)m(N-1) gives Equation (26). Strictly increasing transformations preserve all pairwise orders. Under the stated null, the mm ranks are sampled without replacement from {1,…,N}\{1,\ldots,N\}. Their normalized mean has expectation 1/21/2. The population variance of (N−r)/(N−1)(N-r)/(N-1) is (N+1)/[12​(N−1)](N+1)/[12(N-1)]; multiplying by the finite-population factor (N−m)/[m⁡(N−1)](N-m)/[m(N-1)] gives the stated variance.
+This proposition shows that VV is invariant to a common positive score temperature and has a shared random-order reference. It does not imply that real token ranks are uniformly distributed: token frequency and task vocabulary can produce systematic preferences. Moreover, mm and NN affect the attainable range,
+m−12​(N−1)≤Vt,ℓ≤1−m−12​(N−1).\frac{m-1}{2(N-1)}\leq V_{t,\ell}\leq 1-\frac{m-1}{2(N-1)}.
+(28)
+If m=Nm=N, V=1/2V=1/2 identically. We therefore retain the observer and layer context when interpreting this relative-accessibility score. Neither an above-chance VV nor a high top-kk recall assigns correctness to a response.
+B.4 From Profiles to Event Comparisons
+The profiles serve different roles in REVEAL. Matching on standardized UU and VV seeks events with comparable update size and boundary accessibility of response content. Selection on absolute differences in CC and SS then identifies contrasting within-response and cross-cycle dynamics. The final rollout outcomes orient each contrast; large CC or SS is not intrinsically rewarded. A negative SS, for example, can accompany a correction that reverses an earlier update.
+The two propositions justify interpreting these quantities separately and establish what their numerical values measure. They do not identify the correctness of an intermediate action or remove every contextual difference between matched events. The matched raw target-state transitions supply the steering direction, whose behavioral utility is evaluated by online intervention. This keeps the descriptive role of Agentic Latents distinct from the experimental test of their use for control.
+B.5 Hierarchical Averaging of Response-Transition Contrasts
+For each task qq, let 𝒫q\mathcal{P}_{q} denote the retained successful–failed rollout pairs with nonempty selected event sets 𝒦p\mathcal{K}_{p}, and let 𝒬={q:𝒫q≠∅}\mathcal{Q}=\{q:\mathcal{P}_{q}\neq\varnothing\} denote the eligible tasks. For each (i,j)∈𝒦p(i,j)\in\mathcal{K}_{p}, event ii comes from the successful rollout and event jj from the failed rollout. Their response-transition summaries are computed from raw target-model states using Equation (10).
+For nonempty 𝒬\mathcal{Q}, hierarchical averaging gives
+v~ℓθ=1|𝒬|​∑q∈𝒬1|𝒫q|​∑p∈𝒫q1|𝒦p|​∑(i,j)∈𝒦p(rℓ,iθ−rℓ,jθ).\widetilde{v}^{\theta}_{\ell}=\frac{1}{|\mathcal{Q}|}\sum_{q\in\mathcal{Q}}\frac{1}{|\mathcal{P}_{q}|}\sum_{p\in\mathcal{P}_{q}}\frac{1}{|\mathcal{K}_{p}|}\sum_{(i,j)\in\mathcal{K}_{p}}\left(r^{\theta}_{\ell,i}-r^{\theta}_{\ell,j}\right).
+(29)
+Thus, selected event pairs receive equal weight within each rollout pair, rollout-pair means receive equal weight within each task, and task means receive equal weight across tasks. This prevents tasks with more eligible rollout pairs, or rollout pairs with more selected events, from receiving greater total weight solely because of their counts. Individual contrasts and intermediate means are not normalized; only the final nonzero aggregate is L2-normalized to obtain vℓθv^{\theta}_{\ell}.
+B.6 Validity and Missing Measurements
+Missing anchors are not interpolated. Near-zero updates are excluded from directional comparisons using the implementation’s numerical thresholds. Evaluating the same projection expression at BtB_{t} gives ‖ut,ℓ‖22/(‖ut,ℓ‖22+ϵ)\|u_{t,\ell}\|_{2}^{2}/(\|u_{t,\ell}\|_{2}^{2}+\epsilon), rather than exactly one. When ‖ut,ℓ‖22\|u_{t,\ell}\|_{2}^{2} is small, this shrinkage and the numerically unstable direction motivate excluding the event rather than interpreting its retention coefficient.
+SS uses immediately adjacent cycles in the same trajectory. A missing successor is not assigned zero, and missing cycles are not skipped to create an artificial pair. Events with an empty response-content set or unavailable lens readout are excluded from selection; VV is aggregated only over supported lens layers. These rules distinguish unavailable measurements from genuine zero values and preserve the temporal unit used in the comparisons.
+Appendix C Prompt-Reg Policy
+Prompt-Reg supplies the following fixed policy as additional agent instructions. It expresses feedback-related behavioral guidance in natural language without computing representation profiles or modifying activations.
+Prompt-Reg policy
+Feedback regulation policy:
+After every tool or environment response, incorporate the new evidence into the current task state and revise any assumption that it contradicts. Carry the resulting update into the next decision and action. When feedback shows that the current approach is ineffective, change the relevant part of the approach rather than repeating it without new justification.
+Prefer actions that directly reduce the remaining uncertainty or make verifiable progress. Reuse evidence already obtained, and avoid repeating checks or waiting for additional observations unless they are needed to decide the next action.
+Preserve valid constraints and accumulated evidence, as well as the task’s required response and tool-call format. Do not output this policy or an explicit reflection unless the task requires one.
+Appendix D Additional Analyses of Agentic Latents
+We examine response-summary fidelity, profile dynamics, and outcome-conditioned contrasts using the existing source-trajectory records: 89 Terminal-Bench tasks and 1,303 HLE questions, distinct from the 500-question online evaluation. Full-history replay measures at most 12 systematically spaced centers per trajectory, retaining adjacent cycles for SS. Missing measurements are excluded. We average events within trajectories and trajectories within tasks, weighting tasks equally. Pointwise task-bootstrap intervals use 1,000 resamples for the saved profiles and 2,000 for paired analyses (seed 0), conditional on the recorded trajectories and centers.
+D.1 Anchor Fidelity Across Response Lengths
+Dual endpoints reduce reconstruction error across response lengths. We stratify anchor fidelity by response-content length at layers 23, 22, and 8 for Qwen3.6-27B, Gemma-4-31B-IT, and GPT-OSS-20B, respectively (zero-indexed). Figure 7 compares the endpoint average and single anchors with the boundary-relative full-response mean on the same events. Mean relative error decreases in all 42 comparisons across 21 nonempty model–benchmark–length strata. Mean cosine similarity improves in 39 of these comparisons; the exceptions favor the end anchor for Qwen at 33–128 and 129–512 tokens and GPT-OSS at 129–512 tokens on HLE. Thus, the compact response-transition summary reduces reconstruction error across lengths, while its directional advantage depends on the stratum.
+Figure 7: Dual endpoints versus individual response anchors, stratified by response length. Positive values indicate higher cosine similarity or lower relative error against the full-response mean displacement. Bars show paired 95% task-bootstrap intervals; hollow markers denote strata with fewer than three tasks.
+D.2 Representation Dynamics on HLE
+Lower response-end retention persists on HLE despite different update profiles. Figure 8 extends the full-depth analysis to tool-assisted reasoning. Qwen’s update magnitude generally increases with depth, Gemma exhibits a middle-layer trough, and GPT-OSS’s update magnitude declines before a final-layer rise. Despite these differences, response-end retention is below response-start retention in 144/148 layers; the four exceptions occur in Gemma’s early layers. Verbal accessibility and cross-cycle consistency also follow distinct depth profiles. Together, the profiles distinguish update size, retention, accessibility, and consistency when comparing events.
+Figure 8: Full-depth HLE profiles with pointwise 95% task-bootstrap intervals. Dashed and solid CC curves mark response start and end, respectively. U/C/VU/C/V use 1,303 tasks; SS uses 1,091 with valid adjacent updates. Only horizontal depth is rescaled; VV excludes unsupported final layers.
+D.3 Retention Within a Response
+The same endpoint ordering can arise from different response dynamics. At the diagnostic layers used above, mean end-anchor retention is below start-anchor retention in all six model–benchmark groups (Figure 9). The intermediate paths nevertheless differ. On Terminal-Bench, retention at the final token is 0.1260.126–0.1570.157 below the last-bin mean; on HLE, it is 0.0070.007–0.0830.083 above it. Gemma shows the clearest HLE recovery, reaching Cend=0.394C^{\mathrm{end}}=0.394 after lower middle-response projections. Endpoint attenuation therefore does not imply uniform decay throughout generation. Distinct anchors preserve these stage-specific changes when local response transitions are compared.
+Figure 9: Within-response retention at layers 23/22/8 for Qwen/Gemma/GPT-OSS. Lines show 20 relative-position bin means; separate diamonds mark the response-start and response-end anchors. All recorded events with at least 20 content tokens are included. Shading and bars show 95% task-bootstrap intervals.
+The length criterion avoids empty bins and keeps the set of events identical across positions: 2,935/2,935/2,923 Terminal-Bench events and 9,524/9,062/9,254 HLE events for Qwen/Gemma/GPT-OSS. Single-token anchors remain distinct from bin means.
+D.4 Readout Rank and Content Coverage
+High relative content rank need not imply concentrated content recovery. Figure 10 compares VV with Recall@50, the fraction of unique response-content tokens among the top 50 vocabulary entries in the boundary J-lens readout. GPT-OSS reaches V=0.710V=0.710 in early HLE layers, but Recall@50 is only 0.0245%0.0245\%; the largest band-level recall across all groups is 1.59%1.59\%. Relative vocabulary rank and top-ranked content coverage thus capture different properties. In REVEAL, VV describes accessibility for matching events within each observer, rather than action correctness or recovery of the full response.
+Figure 10: Task-balanced VV and Recall@50 across early/middle/late depth bands on Terminal-Bench and HLE, using supported J-lens layers. Panels use separate linear scales; uniformly random vocabulary ranking has expected V=0.5V=0.5.
+Figure 11: Cross-model correlations of same-task success–failure contrasts before and after adjustment for response length and analysis-center count. E/M/L denote early/middle/late depth bands. Every panel uses the same 34 Terminal-Bench and 208 HLE tasks; Δ​U\Delta U provides the update-magnitude comparison.
+Throughout the band-level analyses, early/middle/late denote zero-based layers 0–21/22–42/43–63 for Qwen, 0–19/20–39/40–59 for Gemma, and 0–7/8–15/16–23 for GPT-OSS. Readout summaries exclude each model’s final layer, where the fitted lens is unavailable.
+D.5 Outcome-Conditioned Structure Across Observers
+Success–failure contrasts in cross-cycle consistency remain aligned across observers. For each task with successful and failed frontier-model rollouts, we subtract the two groups’ mean profiles and correlate these taskwise contrasts across models. Across 34 Terminal-Bench and 208 HLE tasks, Δ​S\Delta S correlations range from 0.7290.729 to 0.9770.977 and from 0.6840.684 to 0.8550.855, respectively (Figure 11). After rank-based adjustment for response length and analysis-center count, they remain 0.6090.609–0.9710.971 and 0.6880.688–0.8560.856. The sign of Δ​S\Delta S varies across tasks: successful rollouts do not uniformly have higher consistency. This supports comparing task-specific dynamics by contrast magnitude, as in REVEAL’s selection score, while using outcomes to orient the resulting contrasts.
+Paired analysis. We use known-outcome source trajectories with complete three-band U/SU/S profiles, average trajectories within each task/outcome class, and retain tasks shared by all observers. Adjustment regresses ranked profile contrasts on an intercept and four ranked covariates: each observer’s success–failure differences in mean log⁡(1+response characters)\log(1+\text{response characters}) and log⁡(1+analysis centers)\log(1+\text{analysis centers}). Character counts are trajectory means before transformation. Correlations use the residual ranks; bootstrap resamples refit ranks and regressions. All 18 adjusted Δ​S\Delta S intervals remain above zero. These task-level associations complement local-event selection; they do not establish its causal contribution.
+ Experimental support, please
+ view the build logs
+ for errors. Generated by
+ L
+ A
+ T
+ E
+ xml
+ .
+Instructions for reporting errors
+We are continuing to improve HTML versions of papers, and your feedback helps enhance accessibility and mobile
+ support. To report errors in the HTML that will help us improve conversion and rendering, choose any of the
+ methods listed below:
+Click the "Report Issue" (
+ ) button, located in the page header.
+Tip: You can select the relevant text first, to include it in your report.
+Our team has already identified the following issues. We appreciate your time reviewing and reporting rendering errors we
+ may not have found yet. Your efforts will help us improve the HTML versions for all readers, because disability
+ should not be a barrier to accessing research. Thank you for your continued support in championing open access for
+ all.
+Have a free development cycle? Help support accessibility at arXiv! Our collaborators at LaTeXML maintain a list of packages that need conversion, and welcome developer contributions.
+ We gratefully acknowledge support from our major funders,
+ member institutions, ,
+ and all contributors.
+ About ·
+ Help ·
+ Contact ·
+ Subscribe ·
+ Copyright ·
+ Privacy ·
+ Accessibility ·
+ Operational Status (opens in new tab)

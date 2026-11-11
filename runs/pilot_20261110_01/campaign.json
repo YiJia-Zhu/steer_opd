@@ -1,0 +1,310 @@
+{
+  "started_at": "2026-11-10T10:50:09.034998+00:00",
+  "pid": 3713602,
+  "status": "superseded",
+  "objective": "Single-seed short-sequence engineering pilot, not formal method evidence",
+  "training_updates_per_group": 100,
+  "seed": 42,
+  "runtime": {
+    "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+    "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+    "packages": {
+      "torch": "2.13.0+cu130",
+      "transformers": "5.16.1",
+      "vllm": "0.32.0",
+      "math-verify": "0.9.0",
+      "verl": "0.10.0.dev0"
+    }
+  },
+  "reused_initial_evaluation": {
+    "directory": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500",
+    "results": {
+      "student": {
+        "summary": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500/student.summary.json",
+        "output_sha256": "9e450bcf929dd3c50b7be5f0b9abe2def760efe00d927a7ee687876d42a0c7fd",
+        "avg_accuracy": 0.853
+      },
+      "teacher": {
+        "summary": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500/teacher.summary.json",
+        "output_sha256": "150e69ecbb871b28937cb69e448364ec123cc9f39487c444c01d5d36c1a7c1c7",
+        "avg_accuracy": 0.925
+      }
+    },
+    "model_weight_hashes_verified": true
+  },
+  "current_stage": "E3",
+  "stages": [
+    {
+      "name": "initial_math500",
+      "status": "reused",
+      "exit_code": 0,
+      "source_directory": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261108_01/initial_math500",
+      "verified_at": "2026-11-10T10:50:09.035690+00:00"
+    },
+    {
+      "name": "initial_dev",
+      "started_at": "2026-11-10T10:50:09.035842+00:00",
+      "gpus_requested": 2,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "2",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/initial_dev",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/evaluate_initial_pair.py",
+        "--output-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/initial_dev",
+        "--input",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/dev_pilot.jsonl",
+        "--n",
+        "1",
+        "--max-tokens",
+        "7168"
+      ],
+      "runtime": {
+        "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+        "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+        "packages": {
+          "torch": "2.13.0+cu130",
+          "transformers": "5.16.1",
+          "vllm": "0.32.0",
+          "math-verify": "0.9.0",
+          "verl": "0.10.0.dev0"
+        }
+      },
+      "exit_code": 0,
+      "finished_at": "2026-11-10T10:56:23.984243+00:00"
+    },
+    {
+      "name": "calibration_teacher",
+      "started_at": "2026-11-10T10:56:23.984827+00:00",
+      "gpus_requested": 1,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "1",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_teacher",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/generate_math.py",
+        "--model",
+        "/home/zhenning/data/hugggingface_datasets/JustRL-DeepSeek-1.5B",
+        "--input",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/calibration_candidates.jsonl",
+        "--output",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_teacher/answers.jsonl",
+        "--limit",
+        "512",
+        "--n",
+        "1",
+        "--max-tokens",
+        "7168",
+        "--correct-target",
+        "128",
+        "--skip-overlong"
+      ],
+      "runtime": {
+        "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+        "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+        "packages": {
+          "torch": "2.13.0+cu130",
+          "transformers": "5.16.1",
+          "vllm": "0.32.0",
+          "math-verify": "0.9.0",
+          "verl": "0.10.0.dev0"
+        }
+      },
+      "exit_code": 0,
+      "finished_at": "2026-11-10T11:08:49.665805+00:00"
+    },
+    {
+      "name": "calibration_student",
+      "started_at": "2026-11-10T11:08:49.666399+00:00",
+      "gpus_requested": 1,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "1",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_student",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/generate_math.py",
+        "--model",
+        "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+        "--input",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/data/math500_pilot_v2/calibration_candidates.jsonl",
+        "--output",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_student/answers.jsonl",
+        "--correct-ids-from",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_teacher/answers.jsonl",
+        "--limit",
+        "128",
+        "--n",
+        "1",
+        "--max-tokens",
+        "7168"
+      ],
+      "runtime": {
+        "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+        "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+        "packages": {
+          "torch": "2.13.0+cu130",
+          "transformers": "5.16.1",
+          "vllm": "0.32.0",
+          "math-verify": "0.9.0",
+          "verl": "0.10.0.dev0"
+        }
+      },
+      "exit_code": 0,
+      "finished_at": "2026-11-10T11:15:53.344890+00:00"
+    },
+    {
+      "name": "extract_vectors",
+      "started_at": "2026-11-10T11:15:53.345510+00:00",
+      "gpus_requested": 1,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "1",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/extract_vectors",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/extract_pilot_vectors.py",
+        "--teacher-answers",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_teacher/answers.jsonl",
+        "--student-answers",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/calibration_student/answers.jsonl",
+        "--output-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/vectors"
+      ],
+      "runtime": {
+        "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+        "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+        "packages": {
+          "torch": "2.13.0+cu130",
+          "transformers": "5.16.1",
+          "vllm": "0.32.0",
+          "math-verify": "0.9.0",
+          "verl": "0.10.0.dev0"
+        }
+      },
+      "exit_code": 0,
+      "finished_at": "2026-11-10T11:16:29.683382+00:00"
+    },
+    {
+      "name": "E0",
+      "started_at": "2026-11-10T11:16:29.684036+00:00",
+      "gpus_requested": 2,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "2",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/E0",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/launch_pilot.py",
+        "--group",
+        "E0",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/E0",
+        "--steps",
+        "100",
+        "--batch-size",
+        "16",
+        "--response-length",
+        "2048"
+      ],
+      "runtime": {
+        "python": "3.12.0 | packaged by Anaconda, Inc. | (main, Oct  2 2023, 17:29:18) [GCC 11.2.0]",
+        "prefix": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd",
+        "packages": {
+          "torch": "2.13.0+cu130",
+          "transformers": "5.16.1",
+          "vllm": "0.32.0",
+          "math-verify": "0.9.0",
+          "verl": "0.10.0.dev0"
+        }
+      },
+      "exit_code": 0,
+      "finished_at": "2026-11-10T11:54:37.179096+00:00"
+    },
+    {
+      "name": "E3",
+      "started_at": "2026-11-10T11:54:37.179683+00:00",
+      "gpus_requested": 2,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/run_on_idle_gpus.py",
+        "--count",
+        "2",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/E3",
+        "--wait-seconds",
+        "3600",
+        "--",
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "scripts/launch_pilot.py",
+        "--group",
+        "E3",
+        "--run-dir",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/E3",
+        "--steps",
+        "100",
+        "--batch-size",
+        "16",
+        "--response-length",
+        "2048",
+        "--steering-config",
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/pilot_20261110_01/vectors/E3.json"
+      ]
+    }
+  ],
+  "data_manifest_sha256": "92f7797d72a6f0d24b9dc8d7b7b93174c99292635356b52f2405091d2d9b4b8c",
+  "source_hashes": {
+    "src/steer_opd/__init__.py": "817c295ba78cec7d0b45c0b1248a9aaa70175c349d11e8f686286f7dc2577430",
+    "src/steer_opd/math_data.py": "c9373b66548efbe684ba80cdb7ff3455ca608e2b195c48a82cfaa2b20116bba8",
+    "src/steer_opd/r1_agent_loop.py": "5eaf2c881d1121c477c93ac3d463bbf951364d59af9d1e183e570154023f9ad3",
+    "src/steer_opd/reward.py": "74c69e2fe38daff5fb3d8d9d0f337bbab9527b34ea6a4b534bf8fedac0a6c8de",
+    "src/steer_opd/runtime.py": "f96be44492da2a7fcab5f92d2168576e99e2f6a78a07b03bb29506a9870b6cac",
+    "src/steer_opd/steering.py": "ae3db3d6e43ae862afb353eaf7ca64e8e9c9d9c326b9318d3ad68d88f8c07688",
+    "src/steer_opd/verl_extension.py": "6663f9a16bd2bf80ddf8ab1227e933b682fe7c5ff833be7ff1b5fc40d09a4ca9",
+    "scripts/download_assets.py": "c97d576b9c10aaf4450f3541f7cd7a6b8c06c76eecbc6fd3aa43631548493000",
+    "scripts/evaluate_initial_pair.py": "d39f6cb33b3ef68bb09413424ce3c2568a8c3d49a51b94312c46c8a26cd26ca6",
+    "scripts/export_pilot_parquet.py": "7f30608672aa3a7c82582f3aa1ec3f3d2c8f1a1000a4ff07edf5dc361127801d",
+    "scripts/extract_pilot_vectors.py": "8f3d98a71cf4d4489db1ca24a39e90d151cf51b06c8cfb29ae11f1bc73b20b0e",
+    "scripts/generate_math.py": "c26f25338d22e0c8d2834266f3dbe1984f7d36dd044004ec7065644fb1d56912",
+    "scripts/gpu_preflight.py": "ec2397f8cd4b9833b30ba111c48ce23476bee998ee347c36f2ed6266113224af",
+    "scripts/launch_pilot.py": "80b6d9315c024078d6c63f332400f659a0cde25f2a7c99eeec46bd1c659ee88a",
+    "scripts/prepare_math500_pilot.py": "b54c656af6f0ab9b977a8413ee9237ea34af942a1680bd44a38dbff1074f1ab4",
+    "scripts/run_on_idle_gpus.py": "107a735e5708408b77b1c0d6659724e430c7977f7afc19b9aa5fbadcfb1f32e6",
+    "scripts/run_pilot_campaign.py": "1099b49430bc964a151aa950a056f3848c810331b118e653e52870b14d0a3422",
+    "scripts/validate_package.py": "8b3d7c3c72e51306f0494869be306dfcfdb9cd2313d61c9bb85466ab211f7aac"
+  },
+  "teacher_dev_advantage": 0.1796875,
+  "formal_scaling_allowed_by_dev_advantage": true,
+  "superseded_at": "2026-11-10T12:16:10.587149+00:00",
+  "superseded_reason": "User reprioritized: cross-family overlap, then steering diagnostics, then OPD; retain active same-family stage as engineering control",
+  "active_stage_continues": "E3",
+  "future_same_family_stages_automatically_launched": false
+}

@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-11-07T16:56:20.961953+00:00",
+  "seed": 42,
+  "source": {
+    "path": "/local_nvme/data/zhenning/working_tmp/steer_opd/ref/ref_rep/Rethinking-OPD/datasets/dapo-math-17k.parquet",
+    "sha256": "039f3afd689c846985bd2bf58e55a2210a8b08a1a9e1f60dbc07107a5f341925",
+    "rows": 17917,
+    "git_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8"
+  },
+  "test": {
+    "path": "/home/zhenning/data/hugggingface_datasets/MATH-500/test.jsonl",
+    "sha256": "35dc41080a3680858b27fa7e0533d2d547825316fc5dafe5d316f4ccc5a06132",
+    "rows": 500
+  },
+  "normalization": "Unicode NFKC, collapse whitespace, strip",
+  "near_duplicate_rule": "casefold lexical 5-grams; >=8 distinct shorter shingles; Jaccard>=0.8 OR containment>=0.9",
+  "normalized_unique_source_questions": 17187,
+  "retained_unique_questions": 17162,
+  "exclusion_groups_by_reason": {
+    "conflicting_answers": 12,
+    "lexical_near_test_overlap": 9,
+    "exact_test_overlap": 4
+  },
+  "split_counts": {
+    "calibration_candidates": 1024,
+    "dev": 256,
+    "train": 15882,
+    "dev_pilot": 128,
+    "train_pilot": 2048
+  },
+  "files": {
+    "calibration_candidates.jsonl": {
+      "sha256": "57b33a98932fa7a076ab43063b4a2d39cbd68594ed84b82cd0a44af571c5a422",
+      "bytes": 548109
+    },
+    "dev.jsonl": {
+      "sha256": "d767bf9c3ed76042fbb7828c31e760e1a4dd8320da715cec4f8e8440e85cc154",
+      "bytes": 131336
+    },
+    "dev_pilot.jsonl": {
+      "sha256": "969cc0eb5bd8922afe32a378307881f3e5a63e41320019a5645aec430874cb39",
+      "bytes": 66147
+    },
+    "exclusions.jsonl": {
+      "sha256": "6894b2e3c76ece50b8e00712a7df0ad2367b91dc224ec48c8f4606c5e2f5d369",
+      "bytes": 4127
+    },
+    "math500.jsonl": {
+      "sha256": "72285bf8c4200475a4063ae6e28d85471b776928a39f3a720f29e722f7676dd1",
+      "bytes": 157785
+    },
+    "merged_duplicates.jsonl": {
+      "sha256": "89da6c04a2e1b12dd43b76d25f2f4ee62e9d76918e4d48f98afbc0bca8df93bb",
+      "bytes": 95458
+    },
+    "train.jsonl": {
+      "sha256": "736bc791c2021a9ed85e27097475469bf59cf466dd16e38c39fc0d8c220abdbf",
+      "bytes": 8360296
+    },
+    "train_pilot.jsonl": {
+      "sha256": "ed1bf9a8f146c1d100e79770bb521be26d97f54e992519b022ce35a3c42c7919",
+      "bytes": 1085171
+    }
+  },
+  "script_sha256": "b54c656af6f0ab9b977a8413ee9237ea34af942a1680bd44a38dbff1074f1ab4",
+  "limitations": [
+    "Lexical exclusion does not establish absence of semantic contamination.",
+    "Paper training Parquet is reused after test exclusions, deduplication and new splits.",
+    "Base-model pretraining or teacher RL overlap is not audited."
+  ]
+}

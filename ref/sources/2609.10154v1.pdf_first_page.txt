@@ -1,0 +1,87 @@
+CompassOPD: Cross-Family On-Policy Distillation via Within-Family
+Likelihood Shifts
+Naibin Gu1,2 , Qingyi Si3 , Chenxu Yang1,2 , Chuanyu Qin1,2 , Junhao Zhou1,2 ,
+Peng Fu1,2 * , Zheng Lin1,2 , Weiping Wang1
+1
+Institute of Information Engineering, Chinese Academy of Sciences, Beijing, China
+2
+School of Cyber Security, University of Chinese Academy of Sciences, Beijing, China
+3
+JD.COM
+{gunaibin,fupeng}@iie.ac.cn
+Abstract
+
+states that the student actually visits. This on-policy
+interaction supplies token-level learning signals
+while avoiding the distribution gap introduced by
+teacher-generated training data. By combining onpolicy exploration with dense token-level feedback,
+OPD has shown strong empirical gains on reasoning tasks (Yang et al., 2026a,b; Gu et al., 2026a).
+However, existing OPD methods have mainly
+been studied in scenarios where the teacher and
+student models belong to the same model family.1 Such models largely share training recipes
+and policy structures, with capability differences
+typically arising from model scale or post-training
+strategies (Li et al., 2026; Ma et al., 2026). In
+practice, the student’s model family may not provide a sufficiently strong teacher model, making it
+necessary to use stronger models from other families. Prior work has addressed the representational
+differences caused by different tokenizers through
+vocabulary or text-space alignment, enabling crossmodel likelihood comparison. Such alignment
+makes likelihood scores comparable over shared
+textual units (Sun et al., 2026; Niu et al., 2026;
+Wang et al., 2026), but leaves open whether the
+resulting supervision effectively transfers teacher
+capabilities across model families.
+We find that, despite vocabulary alignment, replacing a same-family teacher model with a crossfamily teacher model of similar capability does not
+preserve the benefits of OPD. Figure 1(a) shows
+that same-family OPD produces sustained improvements, whereas cross-family OPD plateaus quickly.
+Moreover, as shown in Figure 1(b), external teacher
+models with substantially different capabilities
+yield distilled student models with nearly identical performance. Thus, under cross-family OPD,
+improvements in teacher capability do not reliably
+translate into greater gains in student performance.
+
+arXiv:2609.10154v1 [cs.LG] 9 Sep 2026
+
+On-policy distillation (OPD) provides dense
+token-level supervision on student-generated
+trajectories. Although OPD performs strongly
+when teacher and student belong to the same
+model family, we find that its effectiveness degrades in cross-family settings even after tokenizer alignment, with substantially stronger
+external teachers offering little additional improvement. To understand this disconnect, we
+decompose the cross-family OPD signal into
+two components: an offset between a lowcapability teacher-family reference and the student, and the within-family log-likelihood shift
+from that reference to the strong teacher. Standard OPD transfers both components together,
+allowing the offset to dominate the update direction and obscure the changes associated
+with teacher capability improvements. We propose CompassOPD, which removes this offset and transfers the within-family shift, while
+a frozen student reference anchors updates to
+the student’s initial policy. Thus, both teacherside and student-side changes are measured
+within their respective model families. Experiments across three student families and multiple teacher families show that CompassOPD
+consistently outperforms standard cross-family
+OPD, improving average reasoning accuracy
+by up to 5.50 points. For an MoE teacher, we
+further construct the reference directly from the
+teacher checkpoint by reducing expert activation, eliminating the need for a separate reference checkpoint while retaining a 3.43-point
+gain over OPD.
+
+1
+
+Introduction
+
+On-policy distillation (OPD) has emerged as an
+effective paradigm for post-training large language
+models (Agarwal et al., 2024; Gu et al., 2026b; Lu
+and Lab, 2025). It samples trajectories from the
+student policy and uses the teacher’s token-level
+likelihoods to provide dense supervision along the
+*
+
+1
+We use “model family” to denote a release series, such
+as Qwen3, Qwen3.5, or Ministral-3. Different families often
+differ in vocabulary and training recipes.
+
+Corresponding author.
+
+1
+
+

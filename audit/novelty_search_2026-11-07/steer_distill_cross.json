@@ -1,0 +1,133 @@
+{
+  "key": "steer_distill_cross",
+  "query": "(all:\"distillation\" AND (all:\"steering vector\" OR all:\"activation steering\") AND (all:\"cross-family\" OR all:\"cross-model\" OR all:\"student\"))",
+  "requested_max": 100,
+  "retrieved_at": "2026-11-07T15:47:25.629897+00:00",
+  "status": 200,
+  "url": "https://export.arxiv.org/api/query?search_query=%28all%3A%22distillation%22+AND+%28all%3A%22steering+vector%22+OR+all%3A%22activation+steering%22%29+AND+%28all%3A%22cross-family%22+OR+all%3A%22cross-model%22+OR+all%3A%22student%22%29%29&max_results=100&sortBy=submittedDate&sortOrder=descending",
+  "total_results": 8,
+  "records": [
+    {
+      "id": "http://arxiv.org/abs/2610.40998v1",
+      "title": "Steering Vectors as a Training Signal in LLM Post-Training",
+      "summary": "Steering vectors (SVs) are residual-stream directions that shift the behavior of LLMs when added to hidden states at inference time. While prior work has mainly used SVs as post-hoc controls, we ask whether the same directions can also guide parameter updates during post-training. We study this question across supervised learning, including SFT and distillation, and reinforcement learning with verifiable rewards (RLVR). Our framework considers two intervention regimes: a hidden-state hook during teacher-forced supervised training, and an advantage-repair mechanism on wrong rollouts in GRPO. For each regime, we analyze three design axes, which are the steering direction, its placement, and the operation used to combine it with training. In supervised settings, SV injection improves over plain SFT and distillation, with gains scaling with the off-policy gap and reaching up to a $12\\%$ improvement when distilling from thinking-mode teachers. These gains hold across three random seeds. In RL settings, applying a correctness-contrast direction as advantage repair on wrong rollouts, including otherwise zero-gradient all-wrong groups, recovers a learning signal that transfers to held-out math benchmarks and acts as a composable auxiliary signal that adds to existing zero-variance remedies such as entropy-aware advantage shaping. We further identify three failure boundaries. In detail, code generation can break the direction, cross-family layer transfer can break the placement, and inference-time application on an SV-trained checkpoint can break the intervention regime. Together, these results establish steering vectors as a conditional but effective training signal for LLM post-training. Our code is available here.",
+      "published": "2026-10-29T21:28:51Z",
+      "updated": "2026-10-29T21:28:51Z",
+      "authors": [
+        "Tiejin Chen",
+        "Maunil Vyas",
+        "Huaiyuan Yao",
+        "Hua Wei"
+      ],
+      "version": "2610.40998v1",
+      "arxiv_id": "2610.40998"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.34005v1",
+      "title": "Steering the Teacher: Improving On-Policy Self-Distillation for Thinking Models",
+      "summary": "On-policy self-distillation (OPSD) trains a student on its own reasoning trajectories using token-level supervision from a reference-conditioned teacher initialized from the same model. However, access to the reference can induce teacher behaviors that undermine independent reasoning in thinking models, leading to reference hallucinations, where the student cites an unavailable reference to justify reasoning steps, and reconsideration suppression, where the teacher discourages verification and revision at uncertain steps. We introduce Steered-Teacher OPSD (ST-OPSD) to jointly address these failure modes through activation steering. ST-OPSD extracts two directions from model-generated reasoning trajectories and applies them to the teacher's hidden states during distillation target computation, suppressing reference-invoking behavior and encouraging reconsideration with marker-family calibration. The student learns from the resulting teacher distributions without being steered. Experiments on AIME and HMMT show that ST-OPSD improves accuracy over vanilla OPSD and other interventions while restoring reconsideration and reference-hallucination rates to base-model levels.",
+      "published": "2026-10-25T02:34:40Z",
+      "updated": "2026-10-25T02:34:40Z",
+      "authors": [
+        "Tiejin Chen",
+        "Xiaoou Liu",
+        "Hanyang Chen",
+        "Hua Wei"
+      ],
+      "version": "2610.34005v1",
+      "arxiv_id": "2610.34005"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.10657v1",
+      "title": "Beyond Owls: Subliminal Learning Can Transfer Learned Capabilities and Backdoors",
+      "summary": "In subliminal learning (SL), a teacher model passes on a trait to a student model by distillation on data semantically unrelated to the trait. So far, SL has been demonstrated for only a limited range of traits, including preferences for animals (e.g., owls) and malicious personas. These traits can also be elicited with simple prompts or with steering. Can SL transfer a wider range of traits, including more complex ones? If so, distillation might transfer subtle forms of misalignment (e.g., reward-seeking, scheming, and secret loyalties) without detection. To this end, we test whether SL can transfer a novel capability: predicting the outputs of a randomly initialized MLP. After distilling on unrelated text, the student achieves substantial performance on the task, while falling short of the teacher. We find that a directly optimized steering vector matches SL in distribution but generalizes worse out of distribution. Next, we test whether SL can transfer backdoors. We finetune the teacher to answer in French when the prompt contains a female name, then distill on number sequences containing neither names nor French. The student partially acquires the backdoor, responding in French on 23.5% of prompts with female names versus 0.0% with male names. Finally, we test whether SL can transfer a propensity to hack in an agentic chess environment. We finetune the student on number sequences from a steered hacker teacher. The student hacks in 58.3% of episodes, compared with 10.9% for the unfinetuned model. Thus, we show SL can transfer capabilities, backdoors, and hacking propensities. The amount of transfer is sensitive to the setup. In several experiments, it is made stronger by using logit distillation or by restricting LoRA to the attention layers.",
+      "published": "2026-10-07T16:42:55Z",
+      "updated": "2026-10-07T16:42:55Z",
+      "authors": [
+        "Jan Dubiński",
+        "Anna Sztyber-Betley",
+        "Jan Betley",
+        "Owain Evans"
+      ],
+      "version": "2610.10657v1",
+      "arxiv_id": "2610.10657"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.04907v1",
+      "title": "Why Subliminal Learning Needs So Much Data: A Noisy Inverse View through Steering Vector Recovery",
+      "summary": "Subliminal learning lets a student inherit a teacher's behavioral trait from semantically unrelated data, yet published demonstrations typically require tens of thousands of carrier examples. We ask where this data requirement comes from. Our testbed is subliminal steering: the teacher trait is a known residual-stream vector $Δ_T$, so transfer can be measured directly as parameter recovery. On identical carrier prefixes, we compare token-level (hard) NLL supervision with full-distribution (soft) KL supervision. At initialization the two objectives give nearly collinear gradients, and both align poorly with $Δ_T$. Under iterative optimization, however, they diverge: soft supervision recovers $Δ_T$ almost exactly from a few hundred carriers, while hard supervision stays well below it even with tens of thousands. We explain this gap by casting steering-vector distillation as a noisy linear inverse problem. Locally, the carrier task maps the trait through its Fisher matrix $F$, so gradients point toward $FΔ_T$ rather than $Δ_T$. Gradient descent then acts as a progressively less-damped inverse of $F$. With soft targets, this inverse restores low-curvature directions. With hard labels, it also amplifies the sampling noise in those same directions. The result is an optimal inversion depth that grows with the number of independent carriers. Experiments on Qwen2.5-7B and Gemma-2-9B confirm four predictions: the Fisher distortion of the initial gradient, recovery ordered from steep to flat directions, an optimal depth that shifts with data scale, and the finding that resampling completions from a fixed prompt pool works as well as adding new prompts. In this setting, large carrier datasets are needed less to reveal the trait than to suppress label noise amplified by Fisher inversion. Code is available at \\url{https://github.com/luoyuchenmlcv/subliminal-data}.",
+      "published": "2026-10-04T03:39:54Z",
+      "updated": "2026-10-04T03:39:54Z",
+      "authors": [
+        "Luoyu Chen",
+        "Xiaoyu Ding",
+        "Weiqi Wang",
+        "Chenhan Zhang",
+        "Zhiyi Tian",
+        "Jianhuan Huang",
+        "Shui Yu"
+      ],
+      "version": "2610.04907v1",
+      "arxiv_id": "2610.04907"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.38342v1",
+      "title": "Activation-Conditioned Self-Distillation",
+      "summary": "On-policy self-distillation uses a model as its own teacher to provide dense supervision for reasoning, often through reference-solution conditioning. Providing privileged information does not by itself ensure effective token-level supervision throughout long responses. We introduce Activation-Conditioned Self-Distillation (ACSD), which extracts a steering vector by contrasting activations of self-generated trajectories that reach verified correct answers within a generation budget with those of all remaining trajectories. A frozen copy of the base model applies this vector at each prediction position, and the student learns from its next-token distributions on student-generated prefixes. Outcome verification is used for direction construction and calibration; distillation requires neither problem-specific reference text nor teacher parameter updates. The distilled student is used alone at inference. On each of five models, ACSD achieves the highest mean accuracy over four mathematical benchmarks among the evaluated methods. On DeepSeek-R1-0528-Qwen3-8B, mean mathematical accuracy reaches 71.9\\% and LiveCodeBench v6 pass@12 reaches 70.9\\%, compared with 69.0\\% and 66.3\\% for the reference-conditioned OPSD baseline. Contrasts among correct trajectories also support distillation, and extracted directions can be reused across mathematical training datasets. On fixed student trajectories, ACSD maintains more stable late-position logit-update magnitudes than OPSD.",
+      "published": "2026-09-29T18:06:56Z",
+      "updated": "2026-09-29T18:06:56Z",
+      "authors": [
+        "Zhexi Lu",
+        "Subhajit Chaudhury",
+        "Tejaswini Pedapati",
+        "Keerthiram Murugesan",
+        "Lei Yu"
+      ],
+      "version": "2609.38342v1",
+      "arxiv_id": "2609.38342"
+    },
+    {
+      "id": "http://arxiv.org/abs/2609.16927v1",
+      "title": "Verbalizing Subliminal Learning Effects Using Text Optimization",
+      "summary": "Subliminal learning is a phenomenon in which a distillation dataset transmits traits from the teacher model that are not legibly encoded in the dataset itself. This introduces a new challenge for model development and creates new risks from data poisoning. In this work, we use text optimization to detect subliminal learning effects and describe them as legible prompts. Subliminal learning from a prompted teacher motivates our approach. We observe that this is a special case of context distillation and leverage this observation to show that, in theory, the prompted subliminal learning dataset identifies the teacher's prompt. We reduce recovering this prompt to a text optimization problem and present a method to approximately solve it. Our method, SALVE (Search-Aided Latent Verbalization), optimizes a soft prompt, queries the same model to verbalize it as text, and uses beam search to make the verbalization reliable. In the standard subliminal learning setting, SALVE reliably recovers legible prompts that name the teacher's trait, while common text optimization methods fail to do so. In addition, we find that there are settings in which SALVE recovers the teacher's trait from a dataset even when subliminal learning fails, but that modifying student training to improve context distillation can create subliminal learning effects. We lastly show that SALVE detects subliminal learning effects in three additional settings: (1) mixtures of subliminal learning data and unrelated data, (2) data generated when the teacher is biased via activation steering, and (3) subsets of real preference data selected via Logit-Linear Selection. Overall, our results deepen our understanding of subliminal learning and present SALVE as a method to proactively detect subliminal learning effects.",
+      "published": "2026-09-15T10:03:31Z",
+      "updated": "2026-09-15T10:03:31Z",
+      "authors": [
+        "Nathan Hu",
+        "Sanmi Koyejo",
+        "Christopher Potts"
+      ],
+      "version": "2609.16927v1",
+      "arxiv_id": "2609.16927"
+    },
+    {
+      "id": "http://arxiv.org/abs/2608.05734v1",
+      "title": "Subliminal Learning is Non-Semantic Distillation",
+      "summary": "Subliminal Learning (SL) is a surprising type of generalization displayed by modern language models. It allows the transfer of a bias or behavior from a teacher model to a student by distilling from seemingly unrelated or random synthetic data from the teacher. This presents challenges in ensuring AI systems remain predictable and are trained safely, as standard auditing of the input data would not catch the hidden subliminal signal. Here, we investigate several open questions as to the enabling mechanisms and drivers of SL. First is the nature of the process by which biases are encoded in the data. We find that by adding Gaussian noise to the weights of the teacher and student models, the magnitude of subliminal transfer is increased by a factor of 1.9 in Gemma and 1.3 in Llama, suggesting that non-semantic weight structures play a crucial role. We show that steering vectors can be applied to the teacher to produce subliminal data, in addition to prompting and finetuning as used in previous studies. Analysis of the activations of the student models that have been trained on steered and prompted data demonstrates that students inherit not just the semantic meaning of the teacher's bias, but also the type of intervention that was used to apply it: steered students imitate steering vectors, prompted students do not. Additionally, the gradients of steered subliminal data show a linear correlation with the teacher's steering vectors, showing promise for data auditing. More broadly, as synthetic data becomes central to frontier training pipelines, being able to see the latent signals hidden in training data becomes paramount.",
+      "published": "2026-08-06T08:18:13Z",
+      "updated": "2026-08-06T08:18:13Z",
+      "authors": [
+        "Ethan Hadley",
+        "Eren Gultepe"
+      ],
+      "version": "2608.05734v1",
+      "arxiv_id": "2608.05734"
+    },
+    {
+      "id": "http://arxiv.org/abs/2606.00995v3",
+      "title": "Subliminal Learning Is Steering Vector Distillation",
+      "summary": "Subliminal learning refers to a student language model acquiring a teacher's traits (e.g. a system-prompted preference for owls) when fine-tuned on the teacher's outputs, despite the outputs being semantically unrelated to those traits. It remains poorly understood how data without semantic meaning can transfer specific semantic traits. In this work, we show that subliminal learning is mediated by a single steering vector, i.e. a vector added to the model's activations. Across two open-source models, we find that the teacher's system prompt is well approximated by a steering vector, and that the student's behavior is driven by learning an aligned vector over fine-tuning. System prompts that are not well approximated by steering vectors are not subliminally learned. This is a special case of steering vector distillation, in which a student trained on the outputs of a steered teacher learns to imitate that steering. We demonstrate steering vector distillation on a range of semantic and random vectors. Adding a semantic vector to a model's activations can have both model-independent and model-specific (i.e. non-semantic) effects on its behavior, so generated data that is non-semantic can transmit a vector with semantic effects, enabling subliminal learning. This also explains why subliminal learning does not transfer between models. We find that adaptive optimizers are necessary for subliminal learning in language models: activation gradients on steered data carry a small but consistent component along the steering direction, and non-adaptive optimizers impede this by allowing outlier gradients to dominate.",
+      "published": "2026-05-31T04:22:44Z",
+      "updated": "2026-06-10T08:25:17Z",
+      "authors": [
+        "Camila Blank",
+        "Agam Bhatia",
+        "Senthooran Rajamanoharan",
+        "Arthur Conmy",
+        "Neel Nanda"
+      ],
+      "version": "2606.00995v3",
+      "arxiv_id": "2606.00995"
+    }
+  ]
+}
