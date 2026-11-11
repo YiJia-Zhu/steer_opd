@@ -1,0 +1,62 @@
+{
+  "checked_at": "2026-11-11T11:51:29.336955+00:00",
+  "models": [
+    {
+      "path": "assets/models/Qwen3-4B",
+      "exists": true,
+      "symlink": true,
+      "resolved": "/local_nvme/data/zhenning/model_weights/Qwen3-4B",
+      "layers": 36,
+      "weight_files": [
+        {
+          "file": "model-00001-of-00003.safetensors",
+          "bytes": 3957900840,
+          "header_and_data_length_match": true
+        },
+        {
+          "file": "model-00002-of-00003.safetensors",
+          "bytes": 3987450520,
+          "header_and_data_length_match": true
+        },
+        {
+          "file": "model-00003-of-00003.safetensors",
+          "bytes": 99630640,
+          "header_and_data_length_match": true
+        }
+      ],
+      "tokenizer_files_present": true
+    },
+    {
+      "path": "assets/models/Qwen3-1.7B-Base",
+      "exists": true,
+      "symlink": true,
+      "resolved": "/local_nvme/data/zhenning/huggingface_models/Qwen3-1.7B-Base",
+      "layers": 28,
+      "weight_files": [
+        {
+          "file": "model.safetensors",
+          "bytes": 3441185608,
+          "header_and_data_length_match": true
+        }
+      ],
+      "tokenizer_files_present": true
+    },
+    {
+      "path": "assets/models/Qwen3-1.7B-SFT",
+      "exists": false,
+      "symlink": false,
+      "resolved": "/local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Qwen3-1.7B-SFT"
+    }
+  ],
+  "data": {
+    "original_opd_path": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
+    "original_opd_rows": 30000,
+    "aime2025_link": "assets/data/AIME2025",
+    "aime2025_rows": 30,
+    "full_openthoughts3_link": "assets/data/OpenThoughts3-1.2M",
+    "full_openthoughts3_shards_present": 120
+  },
+  "remaining_required_model": "lllyx/Qwen3-1.7B-SFT",
+  "remaining_required_datasets": [],
+  "scope": "Read-only inventory and safetensors header/file-length checks; no model loading, weight-content hash comparison, GPU use or downloads."
+}

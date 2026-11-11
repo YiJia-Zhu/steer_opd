@@ -1,0 +1,505 @@
+{
+  "created_at": "2026-11-11T16:31:58.805691+00:00",
+  "scope": "CPU metadata/tokenizer checks only; no weights loaded or hashed",
+  "plan_sha256": "38a2e14c16ddfd18b56ee1894f76193196ddceb6a4b0bf4d65121dbd329609ed",
+  "gpu_tasks_launched": false,
+  "downloads": false,
+  "models": {
+    "Qwen3-4B": {
+      "path": "assets/models/Qwen3-4B",
+      "resolved_path": "/local_nvme/data/zhenning/model_weights/Qwen3-4B",
+      "model_type": "qwen3",
+      "layers": 36,
+      "hidden_size": 2560,
+      "output_vocab_size": 151936,
+      "tokenizer_vocab_size": 151669,
+      "output_rows_without_tokenizer_entry": 267,
+      "model_eos_id": 151645,
+      "generation_defaults": {
+        "eos_token_id": [
+          151645,
+          151643
+        ],
+        "pad_token_id": 151643,
+        "do_sample": true,
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20
+      },
+      "tokenizer_eos": "<|im_end|>",
+      "tokenizer_pad": "<|endoftext|>",
+      "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "config_sha256": "8ba006f74fecfaaeb392872a60f4a480e7ec9860153d2e1b769ec81f9a147f8a",
+      "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "weight_file_count": 3,
+      "weight_bytes": 8044982000
+    },
+    "Qwen3-1.7B-Base": {
+      "path": "assets/models/Qwen3-1.7B-Base",
+      "resolved_path": "/local_nvme/data/zhenning/huggingface_models/Qwen3-1.7B-Base",
+      "model_type": "qwen3",
+      "layers": 28,
+      "hidden_size": 2048,
+      "output_vocab_size": 151936,
+      "tokenizer_vocab_size": 151665,
+      "output_rows_without_tokenizer_entry": 271,
+      "model_eos_id": 151643,
+      "generation_defaults": {
+        "eos_token_id": 151643,
+        "pad_token_id": null,
+        "do_sample": false,
+        "temperature": null,
+        "top_p": null,
+        "top_k": null
+      },
+      "tokenizer_eos": "<|endoftext|>",
+      "tokenizer_pad": "<|endoftext|>",
+      "chat_template_sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5",
+      "config_sha256": "1bb33a92c3548fbc68b889b490e810440435253598835bd71dff0396060c12db",
+      "tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "weight_file_count": 1,
+      "weight_bytes": 3441185608
+    },
+    "Qwen3-0.6B": {
+      "path": "assets/models/Qwen3-0.6B",
+      "resolved_path": "/local_nvme/data/zhenning/model_weights/Qwen3-0.6B",
+      "model_type": "qwen3",
+      "layers": 28,
+      "hidden_size": 1024,
+      "output_vocab_size": 151936,
+      "tokenizer_vocab_size": 151669,
+      "output_rows_without_tokenizer_entry": 267,
+      "model_eos_id": 151645,
+      "generation_defaults": {
+        "eos_token_id": [
+          151645,
+          151643
+        ],
+        "pad_token_id": 151643,
+        "do_sample": true,
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20
+      },
+      "tokenizer_eos": "<|im_end|>",
+      "tokenizer_pad": "<|endoftext|>",
+      "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "config_sha256": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "tokenizer_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "weight_file_count": 1,
+      "weight_bytes": 1503300328
+    }
+  },
+  "comparisons": [
+    {
+      "models": [
+        "Qwen3-4B",
+        "Qwen3-1.7B-Base"
+      ],
+      "ordinary_vocab_equal": true,
+      "ordinary_vocab_size": 151643,
+      "normalized_merges_equal": true,
+      "normalizer_equal": true,
+      "pre_tokenizer_equal": true,
+      "decoder_equal": true,
+      "shared_tokens": 151665,
+      "shared_id_conflicts": [],
+      "teacher_only_tokens": {
+        "</think>": 151668,
+        "</tool_response>": 151666,
+        "<think>": 151667,
+        "<tool_response>": 151665
+      },
+      "other_only_tokens": {},
+      "sample_encodings": [
+        {
+          "text": "Solve 1 + 1.\nAnswer: 2",
+          "teacher_ids": [
+            50,
+            3948,
+            220,
+            16,
+            488,
+            220,
+            16,
+            624,
+            16141,
+            25,
+            220,
+            17
+          ],
+          "other_ids": [
+            50,
+            3948,
+            220,
+            16,
+            488,
+            220,
+            16,
+            624,
+            16141,
+            25,
+            220,
+            17
+          ]
+        },
+        {
+          "text": " leading space\n\tsecond line",
+          "teacher_ids": [
+            6388,
+            3550,
+            198,
+            197,
+            5569,
+            1555
+          ],
+          "other_ids": [
+            6388,
+            3550,
+            198,
+            197,
+            5569,
+            1555
+          ]
+        },
+        {
+          "text": "中文数学：二加二等于四。",
+          "teacher_ids": [
+            104811,
+            104552,
+            5122,
+            40820,
+            20929,
+            40820,
+            107106,
+            63703,
+            1773
+          ],
+          "other_ids": [
+            104811,
+            104552,
+            5122,
+            40820,
+            20929,
+            40820,
+            107106,
+            63703,
+            1773
+          ]
+        },
+        {
+          "text": "Let $x^2=4$. Therefore \\boxed{2}.",
+          "teacher_ids": [
+            10061,
+            400,
+            87,
+            61,
+            17,
+            28,
+            19,
+            12947,
+            15277,
+            1124,
+            79075,
+            90,
+            17,
+            7810
+          ],
+          "other_ids": [
+            10061,
+            400,
+            87,
+            61,
+            17,
+            28,
+            19,
+            12947,
+            15277,
+            1124,
+            79075,
+            90,
+            17,
+            7810
+          ]
+        },
+        {
+          "text": "unbelievable",
+          "teacher_ids": [
+            359,
+            31798,
+            23760
+          ],
+          "other_ids": [
+            359,
+            31798,
+            23760
+          ]
+        },
+        {
+          "text": "<think>\n</think>\n",
+          "teacher_ids": [
+            151667,
+            198,
+            151668,
+            198
+          ],
+          "other_ids": [
+            13708,
+            766,
+            397,
+            522,
+            26865,
+            397
+          ]
+        },
+        {
+          "text": "<|im_start|>assistant\n",
+          "teacher_ids": [
+            151644,
+            77091,
+            198
+          ],
+          "other_ids": [
+            151644,
+            77091,
+            198
+          ]
+        },
+        {
+          "text": "<tool_response>2</tool_response>",
+          "teacher_ids": [
+            151665,
+            17,
+            151666
+          ],
+          "other_ids": [
+            27,
+            14172,
+            9655,
+            29,
+            17,
+            522,
+            14172,
+            9655,
+            29
+          ]
+        }
+      ]
+    },
+    {
+      "models": [
+        "Qwen3-4B",
+        "Qwen3-0.6B"
+      ],
+      "ordinary_vocab_equal": true,
+      "ordinary_vocab_size": 151643,
+      "normalized_merges_equal": true,
+      "normalizer_equal": true,
+      "pre_tokenizer_equal": true,
+      "decoder_equal": true,
+      "shared_tokens": 151669,
+      "shared_id_conflicts": [],
+      "teacher_only_tokens": {},
+      "other_only_tokens": {},
+      "sample_encodings": [
+        {
+          "text": "Solve 1 + 1.\nAnswer: 2",
+          "teacher_ids": [
+            50,
+            3948,
+            220,
+            16,
+            488,
+            220,
+            16,
+            624,
+            16141,
+            25,
+            220,
+            17
+          ],
+          "other_ids": [
+            50,
+            3948,
+            220,
+            16,
+            488,
+            220,
+            16,
+            624,
+            16141,
+            25,
+            220,
+            17
+          ]
+        },
+        {
+          "text": " leading space\n\tsecond line",
+          "teacher_ids": [
+            6388,
+            3550,
+            198,
+            197,
+            5569,
+            1555
+          ],
+          "other_ids": [
+            6388,
+            3550,
+            198,
+            197,
+            5569,
+            1555
+          ]
+        },
+        {
+          "text": "中文数学：二加二等于四。",
+          "teacher_ids": [
+            104811,
+            104552,
+            5122,
+            40820,
+            20929,
+            40820,
+            107106,
+            63703,
+            1773
+          ],
+          "other_ids": [
+            104811,
+            104552,
+            5122,
+            40820,
+            20929,
+            40820,
+            107106,
+            63703,
+            1773
+          ]
+        },
+        {
+          "text": "Let $x^2=4$. Therefore \\boxed{2}.",
+          "teacher_ids": [
+            10061,
+            400,
+            87,
+            61,
+            17,
+            28,
+            19,
+            12947,
+            15277,
+            1124,
+            79075,
+            90,
+            17,
+            7810
+          ],
+          "other_ids": [
+            10061,
+            400,
+            87,
+            61,
+            17,
+            28,
+            19,
+            12947,
+            15277,
+            1124,
+            79075,
+            90,
+            17,
+            7810
+          ]
+        },
+        {
+          "text": "unbelievable",
+          "teacher_ids": [
+            359,
+            31798,
+            23760
+          ],
+          "other_ids": [
+            359,
+            31798,
+            23760
+          ]
+        },
+        {
+          "text": "<think>\n</think>\n",
+          "teacher_ids": [
+            151667,
+            198,
+            151668,
+            198
+          ],
+          "other_ids": [
+            151667,
+            198,
+            151668,
+            198
+          ]
+        },
+        {
+          "text": "<|im_start|>assistant\n",
+          "teacher_ids": [
+            151644,
+            77091,
+            198
+          ],
+          "other_ids": [
+            151644,
+            77091,
+            198
+          ]
+        },
+        {
+          "text": "<tool_response>2</tool_response>",
+          "teacher_ids": [
+            151665,
+            17,
+            151666
+          ],
+          "other_ids": [
+            151665,
+            17,
+            151666
+          ]
+        }
+      ]
+    }
+  ],
+  "packages": {
+    "torch": "2.13.0+cu130",
+    "transformers": "5.16.1",
+    "vllm": "0.32.0",
+    "verl": "0.10.0.dev0",
+    "pyarrow": "24.0.0",
+    "pytest": "9.1.0",
+    "tokenizers": "0.23.2"
+  },
+  "data": {
+    "opd_path": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
+    "opd_rows": 30000,
+    "opd_columns": [
+      "data_source",
+      "content",
+      "role",
+      "ability",
+      "ground_truth",
+      "style",
+      "index",
+      "split",
+      "__index_level_0__"
+    ],
+    "aime2025": {
+      "aime2025-I.jsonl": 15,
+      "aime2025-II.jsonl": 15
+    },
+    "math500_path_exists": true,
+    "new_disjoint_split_created": false
+  },
+  "known_package_issue": {
+    "runs_readme_exists": false
+  }
+}

@@ -2,112 +2,136 @@
 
 ## Execution Hold — Latest User Direction
 
-2026-11-11最新任务：先复现Rethinking Figure 8，再加入学生steer，对比accuracy
-和overlap；教师固定Qwen3-4B Non-thinking，学生为真正的Qwen3-1.7B-Base及
-作者Qwen3-1.7B-SFT，不能用普通Qwen3-1.7B代替。已授权这一任务的准备工作，
-C1及历史队列不恢复。用户指定`/home/zhenning/data/huggingface_datasets/AIME2025`，
-实查共30题。已提问澄清该限制仅指评测还是也包括SFT/校准/OPD；答复前不启动
-依赖该选择的下载或GPU任务。原图使用200K OpenThoughts3示范及另约30K OPD题，
-AIME训练改版须单独标注。配置与证据见`experiments/rethinking_figure8_20261111.json`
-及`docs/03_execution_plan.md`最新任务说明。下述暂停记录针对历史排程。
+2026-11-12最新成功标准澄清：首轮只检验steer相对同条件传统直接OPD的增量。
+用户自行查看论文SFT数字作近似参照，不要求本地SFT对照，也不将SFT起点或精确复现
+论文SFT成绩作为首轮条件。符合预期指：关闭steer后，同一固定前缀上的师生overlap
+提高，并且相同评测协议下accuracy提高；带hook即时指标另记。本轮不新增SFT训练/下载，
+不据此自动启动GPU；下方完整方案的后续强基线不阻塞这一先导。
 
-当前只整理文档、设计方案和只读核查。用户此前明确要求“先kill掉，先想好方案”，
-尚未恢复实验或模型/数据下载；不得据更早的“规划后直接运行”自动续跑。
-最近诊断已自然结束，停止记录在`runs/cross_family_steering_probe_20261110_02/user_stop_20261110.json`。
-已有产物保留；正式跨family训练收益尚未建立。
+2026-11-12最新任务：按用户修订的`docs/Steering_OPD_完整研究方案.md`同步其它Markdown。
+**只更新文档，实验、模型/数据下载继续暂停；不据任何旧计划自动恢复。**
+主计划摘要为`docs/01_research_plan.md`，工程验收为`docs/03_execution_plan.md`；
+本轮完整稿保留原文与hash，修改前快照见`audit/plan_integration_2026-11-12/`。
+
+最新主候选：同一冻结初始学生读取T/R文本的**方案2 T−R方向＋overlap单阈值门控**。
+门控仅`g_t=1[O_t<tau_O]`，不与熵差做AND/OR组合，不使用连续强度或可学习控制器。
+熵差保留为独立门控对照及诊断。方案1 T−S和R−S对照全部保留。
+
+生成与更新使用同一受控策略定义：生成当前token前先probe/门控，再从实际受控分布采样；
+学习前向重放历史干预。主评测无教师、无R、无steer、无在线门控。
+旧“普通rollout＋仅loss前向hook”、全位置默认主方法及前10步日程均已降为单独对照。
+兼容词表主目标采用全词表反向KL；原Rethinking Student Top-K16另列参考，不能混称原配方复现。
+
+用户此前已选：OpenThoughts3原30K题源中取100题OPD，AIME2025共30题仅评测。
+100题仍指OPD题池。最新设计要求方向题、OPD、dev与测试分开；完整稿建议方向题256–512，
+新增方向/dev题数及预算尚未冻结，不自动执行文本生成或扩大训练。
+此前50步、batch64/n4、LR1e-6是预算起点，首轮组数、在线门控开销和GPU预算仍待确认。
+本地SFT组及作者SFT下载继续暂缓；后续SFT强基线不构成恢复授权。
+
+当前机制配对候选：Qwen3-4B Non-thinking教师、真正Qwen3-1.7B-Base学生，R候选为
+Qwen3-0.6B。三者assets软链接已发现，revision、模式、能力差和新链路仍须验收。
+普通Qwen3-1.7B不能替代Base；模型文件存在不代表受控生成/梯度重放已实现。
+C1跨家族及C2/C3扩展暂停。当前没有正式新增训练收益结论。
+
+`experiments/`旧JSON/CSV及历史启动器仍描述此前loss-only/候选目标草案；本次仅同步Markdown，
+这些文件尚未迁移，不能作为新版主方法启动配置。恢复前必须重写配置、面板并验收。
+
+2026-11-12启动准备补查：已读取用户完整稿并检查现有代码/本地tokenizer。
+4B与1.7B-Base普通词元及规范化BPE规则一致，共同有定义词元151665个；教师多四个
+新增词元，EOS/模板有差异，不能仅凭151936行输出head认定原生完整支持完全相同。
+共同支持集协议仍需冻结。现有5项CPU语义测试通过，仅覆盖旧组件，未验收新受控链路。
+证据和下一步建议见`audit/steering_full_plan_readiness_2026-11-12/README.md`；
+没有加载权重、下载、GPU任务或新增数据划分，原暂停约定保持。
 
 ## Research Mission and Authoritative Documents
 
-核心问题：**能否用少量教师示范提取学生自己的激活方向，改善跨family教师—学生
-之间的OPD适配，并在撤去方向后仍保留学习收益？**
+2026-11-12首轮讨论补充：用户要求先说明第一个实验与Rethinking图8的对应关系。
+具体建议记录于`audit/steering_full_plan_readiness_2026-11-12/first_experiment_figure8_proposal.md`：
+普通Base OPD与T−S全位置steer两组，可先保留原Student Top-K16作Figure8配方参考；
+steer组生成和学习均注入，评测关闭。此为待冻结建议，未批准改动完整稿主目标/方向，
+不自动恢复GPU。以后全词表RKL主方法仍需匹配的普通RKL基线，不能直接沿用Top-K组替代。
 
-以实验结果决定范围，不预设steering有效。“同一教师、多个学生”只是可选对照，
-不是主问题或首轮硬要求；每次训练冻结教师，不等于所有实验必须共用一个教师。
-跨family在排查分词/实现/长度问题及约定预算后仍没有可靠收益，就回到Rethinking
-共享词表设置，研究更窄的OPD学习困难与冷启动成本。回退须重做对应实验，保留
-跨family负结果，不能只换措辞或继续宣称跨family有效；共享词表也无收益就接受负结果。
+核心问题：**教师有额外能力但学生难以通过OPD获得收益时，学生空间的教师同家族差分
+和按overlap触发的激活干预，能否改善训练后的独立学生能力？**
 
-- 方法和完整实验逻辑：`docs/01_research_plan.md`，覆盖方案1/2、概率接口、基线与规模控制。
-- 论文配对、数据与证据：`docs/02_paper_settings.md`。
-- 工程现状、验收和恢复：`docs/03_execution_plan.md`。
-- 近邻与新颖性边界：`docs/09_novelty_audit_cross_family_steering_opd.md`。
-- 导航：`docs/README.md`。旧探索Markdown已按用户要求收敛删除；删除清单在
-  `audit/docs_cleanup_2026-11-10/manifest.json`，不删除论文、原始证据、权重或run产物。
+研究两条轴：方向减谁（T−S/T−R/R−S），以及哪些回答位置注入（全位置/overlap/因果后段）。
+方向训练前一次提取并冻结，不把动态提取、多层路由扩为主轴。少量方向是否够用、是否减少
+独立SFT需求或更省总算力，均是待验证问题。同家族低相容先验证，跨家族为后续外部证据。
 
-每次有实质进展、失败或用户纠正时更新本文件和对应主文档。状态以实际日志、
-checkpoint和process/campaign记录为证；计划、启动、诊断完成不能写成方法有效。
+- 用户最新完整逻辑：`docs/Steering_OPD_完整研究方案.md`，保留原文。
+- 方法、矩阵与当前范围：`docs/01_research_plan.md`。
+- 固定论文版本、阅读范围与资产：`docs/02_paper_settings.md`。
+- 实现、配置迁移和恢复验收：`docs/03_execution_plan.md`。
+- 2026-11-07历史新颖性审计及新版本提示：`docs/09_novelty_audit_cross_family_steering_opd.md`。
+- 导航：`docs/README.md`。
+
+有实质进展、失败或用户纠正时更新本文件和对应主文档。计划、启动、即时诊断不等于方法有效。
 
 ### Model and Data Selection
 
-优先对应Rethinking OPD、Simple-OPD、CompassOPD实际师生连线和数据，不随意拼接或下载。
-
-- C1主要异构配对：Qwen3-30B-A3B-Instruct-2507 / Qwen3-0.6B参考→Granite4.1-3B；
-  Compass表2已有配对，原题源为OpenThoughts-114k教师SFT与DeepScaleR-Preview OPD。
-- F1回退：Qwen3-4B non-thinking→Qwen3-1.7B-Base，Rethinking §5.1的SFT修复设置；
-  对应OpenThoughts3题源，Base缺口先核实，不以Instruct替代。
-- C2为可选同family对照：Qwen3-30B→Qwen3-4B，Compass已有配对，DAPO-Math；非首轮硬要求。
-- C3为有主结果后再加的规模控制：Qwen3.5-4B / Qwen3.5-0.8B参考→Qwen3-4B，4B教师连线见Compass图1(b)。
-  新加Compass/steering组是本项目实验；同一广义Qwen谱系的代际变化不代替C1独立family证据。
-- 总参数、激活参数、文本主干和可训练参数分别报告。A3B不等于3B总参数。
-- 严格独立family的3B→3B可讨论Ministral-3-3B→Granite4.1-3B，但该连线是新配对，
-  教师优势及更弱同家族参考未落实，非首批，不自动新增下载。
-- JustRL→R1-1.5B是Rethinking/Simple共同配对，R1-7B→R1-1.5B为Rethinking机制对照。
-  若转向回退路线，可在它们上研究共享词表下的效果，不能把结果称为跨family证据。
-  Phi/Smol已移出正式主实验与baseline，旧结果仅供探索参考。
-- 已有Qwen30B/0.6B/4B、Qwen3.5-0.8B、R1/JustRL资产优先复用；Granite、Qwen3.5-4B
-  及共同SFT语料缺口先核实。普通Instruct不替代Base，普通8B不替代Simple的RL后8B。
-- MATH-500只作冻结测试。DAPO已有清理划分；本地DeepScaler40,315题与官方题集的等价性
-  待核验。OpenThoughts-114k与OpenThoughts3不同；现有30K OT3 OPD题不冒充200K SFT示范。
+- 本轮共享词表机制配对F1对应Rethinking §5.1：Qwen3-4B Non-thinking→Qwen3-1.7B-Base。
+  R=Qwen3-0.6B是本项目方向扩展候选，核对thinking、后训练来源及教师相对能力，不作先验保证。
+- C1独立家族候选：Qwen3-30B-A3B-Instruct-2507 / Qwen3-0.6B→Granite4.1-3B。
+  Compass表2有配对，OpenThoughts-114k共同SFT、DeepScaleR-Preview OPD；资产/词表接口未落实。
+- C2同教师→Qwen3-4B、C3 Qwen3.5-4B / 0.8B→Qwen3-4B仅为后续同家族/4B级控制，
+  不替代独立家族证据，不自动新增下载。
+- JustRL→R1-1.5B、R1-7B→R1-1.5B可作共享谱系机制对照，不算跨家族证据。
+  Phi/Smol不进入当前正式主面板。
+- 总参数、激活参数、文本主干、可训练参数分别报告。A3B不等于3B总参数。
+- 原版Base、RL后checkpoint、thinking版本不得以普通Instruct或普通同规模模型代替。
+- 原30K OpenThoughts3 OPD题集不等于200K SFT示范，也不同于OpenThoughts-114k。
+  本轮保留原题源、抽样ID、去重/长度规则及四份数据hash，AIME只评测不选型。
+- MATH-500、额外benchmark、更多学生需后续预算约定；本轮不自动加入。
 
 ### Method Boundaries
 
-1. 方案1：教师T和学生S0在校准题上生成文本；同一个冻结S0读取两类回答，
-   `v_total = mean(Phi_S0(x,y_T)-Phi_S0(x,y_S))`。不直接相减不同模型hidden states。
-   通常每题两次学生prefill，不能声称整套训练只需一次prefill。
-2. 方案2：同一S0再读取教师同家族弱参考R的回答，统一三文本池化/样本权重后构造
-   `v_cap=T-R`、`v_offset=R-S`及`v_total_triplet=v_cap+v_offset`。
-   单独方案2只需T/R两份文本，通常两次学生prefill；S自身回答用于方案1与偏移对照，
-   完整比较才读取三类文本。R对训练轨迹的概率评分只在使用Compass目标时需要。
-   这些方向是否有用由实验判断，不先认定为纯能力或纯风格。
-3. 每个学生独立提取自身方向；初始checkpoint改变后重新提取。先单方向，再2/4方向；
-   方向和层/强度最终按真实短程更新后的无hook dev收益选择，不按即时overlap最大选择。
-4. 普通学生rollout不加hook；仅早期loss前向加固定方向，hook保持到backward重算结束；
-   后续撤去并继续普通OPD，主评测与部署无hook。严格核对首回答预测位置t−1和mask。
-5. 异构tokenizer先做共同文本span/有效候选对齐。多token平均log-likelihood是评分，
-   不是整词概率；保留空格、验证UTF-8/round-trip、mask未对齐位置并报告覆盖。
-6. 普通学生采样不等于steered policy采样，不能将未修正的sampled reverse-KL/策略梯度
-   公式直接加hook。当前方法面板设计为显式有限候选RKL及Compass式(11)候选目标，
-   原版无hookspan采样基线另列；这些新训练接口尚待实现验证。
-7. 候选归一化目标、原论文目标及完整词表/文本KL分开命名。概率评分及teacher/reference
-   调用成本仍存在，方向发现只用文本不意味着整个系统是纯黑盒。
-8. 面板A比较原始学生的full SFT、LoRA、SV-SFT、方案1/2和随机；面板B共同SFT后比较
-   Vanilla、Compass与方向组合，锚点和方向均来自共同初始化。相同示范、合理调参、总成本公平。
+1. 三类回答由T/R/S0生成，但激活都由同一S0读取。每个学生/初始化独立提取方向。
+   单独T−R通常两次学生prefill，完整三方向需三类读取；不声称整套系统仅一次prefill。
+2. 三方向共用题目、过滤、层、池化及权重，原始`d_T-S=d_T-R+d_R-S`；单位归一化后不要求该等式。
+   激活差不自动消除家族偏移或分离纯能力/风格，需长度、格式、正确性等控制。
+3. `g_t`在采样当前token前由同一学生前缀上的T和probe分布计算，停止梯度。
+   probe当前步关闭注入，历史受控KV仍保留；禁止替换为整段完全无hook重放。
+4. 主方法rollout及学习重放均使用相同受控定义。hook在回答预测状态t−1，首位置在prompt边界；
+   排除无关prompt、padding和无效位，保留至backward重算结束。probe/正式缓存隔离且重放历史干预。
+5. 主loss为共同合法支持上的全词表RKL，g=0也接受监督。教师、门控、方向冻结；逐状态surrogate
+   不含状态访问分布完整导数，参数变化后的旧门控与陈旧策略须明确记录。Top-K近似需另定义验收。
+6. 主门控只用overlap，阈值训练侧校准/独立dev选择后固定。熵差单独对照，不组合；
+   后段阈值不读本条未来长度。随机/位置匹配在线只用过去，事后严格匹配仅为离线诊断。
+7. 方向/层/强度/阈值最终按真实短程学习后的无干预dev收益选择，不按即时overlap最大选择。
+   所有方向共同调参预算；主结果无教师、无R、无steer、无门控，带干预推理单独报告。
+8. 正式做三方向×三位置策略九格＋普通OPD，分阶段验收而非整矩阵同时开跑；补正/负/随机方向、
+   相同比例/位置随机门控、独立熵差及混杂控制。简单乱配全局均值的题目不改变方向，不算破坏对照。
+9. 原始起点和共同SFT起点分轨比较，SFT/LoRA/Compass使用同信息及合理调参预算；
+   本地SFT当前暂缓，不据论文曲线证明替代SFT。方向生成、搜索、在线教师和probe/重算全部计费。
+10. 不同tokenizer的span评分不等于共同完整候选分布。扩展A需验证分布对齐器；
+    扩展B用完整下一字节概率相交系数单阈值，不加熵差条件，span目标另表；
+    不把平均log-likelihood、候选归一化或字节指标称作原生完整KL/Top16 overlap。
 
 ### Literature Interpretation
 
-Rethinking/Simple已报OPD配对在兼容词表谱系内。Rethinking §8确实讨论Qwen→LLaMA
-的数据/tokenizer/架构混杂，未完成本文自己的异构实验；不要说它完全未提到cross-family。
-Simple GPT-5.5文本SFT后仍接75步OPD，逐token教师为原Qwen RL教师；这是跨family
-SFT→Qwen内部OPD。Overlap是相同学生前缀的top-k集合交集/k；共享质量、任务收益
-与范围必须同时报告。Rethinking梯度抵消与本项目低维相容假设均非已证实机制。
+Rethinking/Simple主要兼容词表实证不替代本项目跨家族证据。Rethinking §8确有跨家族
+混杂讨论；共享Top-K概率质量和overlap集合比例分开，梯度抵消未获直接机制验证。
+SV Training §4.1/4.3为teacher-forced训练hook，§5.1 GRPO为正确−错误方向评分修正advantage；
+不把后者说成前10步hidden hook。Compass似然分解不证明激活分解有相同消偏保证。
+完整稿新增Entropy-Aware OPD为待核对候选；不继承其未经本项目复核的公式/数值为既有证据。
+SCOUT已在本地固定2609.38360v1查到，题名为On the Off-Policy Teacher in On-Policy Distillation，
+不因输入稿的“未定位”说明删掉已有来源。历史新颖性审计不当成新受控方案已完成审计。
 
 ### TODO — Update with Evidence
 
-- [x] 按用户纠正重写主问题：跨family适配先试，效果不好时回退Rethinking设置；语言尽量简单。
-- [x] 收敛docs为总方案、论文证据、执行验收和新颖性审计，删除重复探索稿。
-- [x] 写清方案1、Compass启发的方案2、三文本分解、4B级规模控制与严格family限制。
-- [x] 写清目标/采样分布、原版与adapted、SFT/LoRA公平比较、成本和失败处理。
-- [ ] P0：讨论并冻结最小面板、资产/数据版本、预算与主要终点；当前不下载/运行。
-- [ ] P1：用户恢复后完成正式配对无干预overlap、共同事件覆盖和无辅助训练可学习性。
-- [ ] P2：正式配对的总差/增量/偏移与真实/随机/负方向诊断，验证新架构hook。
-- [ ] P3：真实短程更新后无hook选择，独立dev-confirm与撤去后的曲线。
-- [ ] P4：面板A/B强基线、原版span参考及同信息/成本比较。
-- [ ] 路线判断：用dev检查跨family真实学习收益；无收益时排查后回退F1/R1，不自动铺开多学生。
-- [ ] P5：仅在对应路线有依据后做重复seed/冻结测试；C2/C3为后续控制，主张限于实际范围。
+- [x] 依据2026-11-12最新完整稿同步项目Markdown，保留原文及修改前证据。
+- [x] 明确T−R主方向、overlap单门控、独立熵差及三乘三矩阵。
+- [x] 区分受控生成/重放主方案与旧loss-only、原论文Top-K目标和新全词表KL。
+- [x] 同步Markdown链接/结构及主方法语义检查；旧全量validator仍因原有`runs/README.md`缺失失败，不能宣称全量通过。
+- [ ] 冻结新增D_vec/dev规模、首轮面板、KL归约、资源与总预算；当前不运行/下载。
+- [ ] 恢复获准后迁移旧配置/矩阵，验收合法支持、T/R模式/能力与新概率接口。
+- [ ] 验收非零hook、当前步probe/正式KV隔离、采样行为概率和teacher-forcing重放一致性。
+- [ ] 最小闭环后补完整九格、随机/熵差对照及无干预dev确认。
+- [ ] 后续强基线、重复seed、冻结测试和外部家族验证；只按实际证据扩大主张。
 
 <!-- CROSS_FAMILY_RUN_STATUS_BEGIN -->
-执行状态：优先准备Rethinking Figure 8 + steer，数据使用范围等待澄清；没有新增GPU任务。
-跨family及历史下载/训练队列暂停，不自动续跑。已有产物保留。
+执行状态：2026-11-12仅同步Markdown；受控T−R＋overlap主方案尚未实现/获准启动。
+100题OPD及AIME2025仅评测约定保留，新增方向/dev预算和面板待冻结。所有实验/下载暂停。
 <!-- CROSS_FAMILY_RUN_STATUS_END -->
 
 ## Scope and Startup
@@ -118,7 +142,7 @@ Start with `README.md` and `docs/README.md`. Read `docs/01_research_plan.md`, `d
 
 ## Environments and Shared Assets
 
-Two existing Conda environments are available, verified on 2026-11-08. Select one for each stage:
+Select an environment for each stage and recheck dependencies before the new experiment:
 Add models/datasets or install packets/create env is allowed. But don't delete/modify dataset/models in /home/zhenning/data/huggingface_datasets or /home/zhenning/data/huggingface_models.
 
 ```bash
@@ -151,7 +175,7 @@ Models are stored under `/home/zhenning/data/huggingface_models/<model-name>`, w
 - `papers/`, `ref/`: core/reference PDFs, version manifests, and source snapshots.
 - `audit/`: retrieval evidence, source checksums, and validation reports.
 
-An initial training extension is implemented under `src/steer_opd/`, with semantic checks in `tests/test_training_semantics.py` and project launchers under `scripts/`. Read `docs/03_execution_plan.md` and `runs/README.md` for implementation status; the historical launchers are not launch configurations for the newly planned model pairs. Check individual `process.json` and `campaign.json` records before claiming a run is complete. Planned configurations are not experimental results.
+Training code is under `src/steer_opd/`, with semantic checks in `tests/test_training_semantics.py` and project launchers under `scripts/`. Read `docs/03_execution_plan.md` for the requirements of the new experiment; model, data, loss and hook behavior must be checked before launch. Check individual `process.json` and `campaign.json` records before claiming a run is complete. Planned configurations are not experimental results.
 
 ## Development and Validation
 

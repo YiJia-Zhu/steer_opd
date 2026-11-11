@@ -1,46 +1,29 @@
-# Steering能否改善OPD适配
+# 学生空间差分与overlap门控辅助OPD
 
-先研究跨family教师—学生的OPD适配：从少量教师示范提取学生自己的方向，
-检验它能否让学生学得更好，关掉方向后仍有收益。
-如果跨family没有可靠收益，就回到Rethinking的共享词表设置，研究更窄的学习困难
-与冷启动成本；两边都无收益时接受负结果。“同一教师、多个学生”只是后续可选对照。
+研究：强教师有额外能力，但学生难以利用其OPD监督时，能否从学生空间提取有用方向，
+在师生高概率候选不相容的位置干预，改善训练后的独立学生表现？
 
-**最新优先任务：Rethinking Figure 8 + steer。** 固定Qwen3-4B Non-thinking教师，
-对比Base→OPD、作者SFT→OPD与Base+steer→OPD的accuracy/overlap曲线。
-AIME2025的使用范围待澄清，尚未启动GPU或权重下载；跨family及历史队列继续暂停。
-具体设置见[执行说明](docs/03_execution_plan.md)。
+**2026-11-12主候选：教师同家族差分T−R＋overlap单阈值门控。**
+T/R/S回答均由同一个冻结初始学生读取；方向在训练前固定。生成和学习前向使用
+一致的受控策略，主评测完全去掉steering和门控。熵差作为独立对照，不与overlap组合。
 
-## 阅读入口
-
-| 文件 | 内容 |
+| 文档 | 内容 |
 |---|---|
-| [完整研究方案](docs/01_research_plan.md) | 方案1教师−学生方向、方案2教师−弱参考方向、分词/概率目标、强基线、等规模控制与统计 |
-| [论文设置与证据](docs/02_paper_settings.md) | Rethinking、Simple、Compass、SV的实际配对/数据/初始化，阅读边界与资产缺口 |
-| [执行与验收](docs/03_execution_plan.md) | 当前实现、环境、阶段配置、恢复条件与验证 |
-| [新颖性审计](docs/09_novelty_audit_cross_family_steering_opd.md) | 近邻与重合风险，保留原固定版本和来源 |
-| [AGENTS](AGENTS.md) | 常驻研究目标、约束、状态与TODO |
+| [用户最新完整稿](docs/Steering_OPD_完整研究方案.md) | 本轮逻辑来源，保留原文 |
+| [主计划摘要](docs/01_research_plan.md) | 三种方向、三种策略、OPD闭环、实验与结论边界 |
+| [论文与资产证据](docs/02_paper_settings.md) | 固定论文版本、原设置、阅读范围与资产缺口 |
+| [执行与验收](docs/03_execution_plan.md) | 缓存/probe/重放、概率接口、分阶段面板及预算 |
+| [新颖性审计](docs/09_novelty_audit_cross_family_steering_opd.md) | 原2026-11-07审计及新版本适用范围提示 |
+| [AGENTS](AGENTS.md) | 常驻状态、权限和方法边界 |
 
-## 方案范围
+保留方案1 T−S、主方案2 T−R、R−S对照，配合全回答位置/overlap动态/因果后段形成三乘三矩阵，
+先建立最小闭环再补齐。SFT替代、成本更低和跨家族效果均须实验支持。
 
-C1主实验对应Compass的Qwen3-30B-A3B-Instruct-2507/0.6B参考→Granite4.1-3B；
-C2同教师→Qwen3-4B仅作可选控制；C3的Qwen3.5-4B→Qwen3-4B在有主结果后再考虑。
-回退F1对应Qwen3-4B non-thinking→Qwen3-1.7B-Base，R1教师对照可辅助验证。
-Phi/Smol移出正式主线。
-缺失模型/语料仅列清单，不因模型公开或容易下载另换配对。
+当前先讨论Qwen3-4B Non-thinking→Qwen3-1.7B-Base，R候选Qwen3-0.6B。
+OpenThoughts3中100题仍仅指OPD题池；方向题和dev独立划分的新增预算尚未冻结。
+AIME2025的30题只评测。本地SFT对照/下载暂缓，C1及其他旧排程不自动启动。
 
-顺序：原始普通学生前缀诊断→真实/随机/负方向→短程更新后的无hook学习收益→
-完整OPD和SFT/LoRA/Compass比较。普通rollout无hook，只在早期loss前向干预。
-显式候选目标与原版span采样基线分开，不能将普通采样当steered policy采样。
-
-旧重复探索Markdown已删除，保留原论文、数据输入、run日志、checkpoint与审计证据。
-清理前哈希与新版去向见[清理记录](audit/docs_cleanup_2026-11-10/manifest.json)。
-现有R1工程验证不代表新配对可训练或方法已有效，历史状态见[runs记录](runs/README.md)。
-
-材料与计划可做CPU检查：
-
-```bash
-source scripts/runtime_env.sh
-CUDA_VISIBLE_DEVICES='' "$STEER_OPD_PYTHON" scripts/validate_package.py
-```
-
-该检查只验证文件、来源、链接与计划一致性，不验证模型质量或批准实验启动。
+**当前只更新文档，实验和下载继续暂停。** 现有模型/数据软链接优先复用。
+旧`experiments/` JSON/CSV及启动器描述此前loss-only草案，尚未迁移到新主方法，不能直接启动。
+本次同步保留用户完整稿及论文/来源证据；修改前快照与记录见
+[同步审计](audit/plan_integration_2026-11-12/manifest.json)。

@@ -1,0 +1,314 @@
+{
+  "id": "rethinking_figure8_20261111",
+  "status": "full_training_all_response_positions_proposal_awaiting_launch_confirmation",
+  "executable_launch_config": false,
+  "authority": "Latest user direction: defer the author-SFT comparison and use its paper as background; restate the current pilot details before starting.",
+  "source_audit": "audit/rethinking_figure8_2026-11-11/source_audit.json",
+  "paper": "2604.13016v2",
+  "official_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+  "teacher": {
+    "repo_id": "Qwen/Qwen3-4B",
+    "local_path": "assets/models/Qwen3-4B",
+    "mode": "non_thinking",
+    "enable_thinking": false
+  },
+  "groups": [
+    {
+      "id": "base_opd",
+      "initialization": "Qwen/Qwen3-1.7B-Base",
+      "steering": false,
+      "local_path": "assets/models/Qwen3-1.7B-Base"
+    },
+    {
+      "id": "base_steer_opd",
+      "initialization": "Qwen/Qwen3-1.7B-Base",
+      "steering": true,
+      "calibration_data": "same 100 OpenThoughts3 training prompts; initial teacher and Base responses",
+      "layer": 13,
+      "rho": 0.03,
+      "auxiliary_updates": 50,
+      "rollout_hook": false,
+      "evaluation_hook": false,
+      "layer_label": "14th of 28 decoder blocks; zero-based index 13, verify actual Base config",
+      "status": "proposed_not_launched",
+      "direction": "mean of initial Base pooled teacher-response activations minus initial Base pooled own-response activations",
+      "pooling": "equal weight per question; exclude structural/special tokens; within each pair use equal counts, at most 512 uniformly spaced content states; both representations from the same frozen Base",
+      "calibration_generation": {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "top_k": -1,
+        "max_response_tokens": 12288,
+        "teacher_enable_thinking": false,
+        "student_prompt_protocol": "verified Base native prompt/template; archive actual prompt tokens",
+        "filter": "report incomplete/degenerate pairs and usable count; never select using AIME accuracy"
+      },
+      "alpha": "rho * median_calibration_activation_norm / direction_norm; freeze after extraction",
+      "loss_integration": "Use original-fork candidate-ID surrogate as the reference; explicitly audit hook adaptation and distribution semantics. No silent replacement with pilot teacher-top-K forward KL or cross-tokenizer candidate KL.",
+      "local_path": "assets/models/Qwen3-1.7B-Base",
+      "previous_auxiliary_updates_proposal": 10,
+      "schedule_status": "throughout the proposed OPD pilot; no intermediate cutoff",
+      "direction_scheme": "scheme_1_teacher_minus_initial_student",
+      "injection_positions": "At the selected block, all valid response-token prediction states t-1 (includes final prompt state for the first answer token); exclude padding and invalid positions.",
+      "hook_forward_scope": "loss forward and matching backward recomputation only; ordinary rollout, teacher/reference scoring and evaluation forwards are unhooked"
+    }
+  ],
+  "data": {
+    "requested_root": "/home/zhenning/data/huggingface_datasets/AIME2025",
+    "questions": 30,
+    "interpretation": "AIME2025 is evaluation-only; OPD uses a 100-question subset of the original OpenThoughts3 OPD source.",
+    "question_pending": null,
+    "sft_original": "200K OpenThoughts3 math teacher responses; author released checkpoint available",
+    "opd_original": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
+    "opd_original_rows": 30000,
+    "no_test_to_train_assignment_without_clarification": true,
+    "opd_unique_questions": 100,
+    "opd_sampling_seed": 42,
+    "opd_selection": "After deduplication, AIME2025 overlap checks and original prompt-length eligibility, sample 100 eligible questions without replacement. Freeze IDs and preserve source text.",
+    "sft_initialization": "Deferred by user; no SFT checkpoint or SFT training corpus required for this pilot.",
+    "calibration": "Proposed: use the same 100 OPD prompt IDs for offline T/S0 generation and direction extraction; no AIME2025 questions; offline texts never replace live OPD rollouts.",
+    "eval_project_link": "assets/data/AIME2025"
+  },
+  "original_training": {
+    "global_prompt_batch_size": 64,
+    "mini_batch_size": 64,
+    "rollouts_per_prompt": 4,
+    "top_k": 16,
+    "top_k_strategy": "only_stu",
+    "reward_weight_mode": "student_p",
+    "adv_estimator": "token_reward_direct",
+    "policy_loss": "original fork PPO top-K surrogate; must audit numerical and gradient equivalence before launch",
+    "training_temperature": 1.0,
+    "teacher_temperature": 1.0,
+    "top_p": 1.0,
+    "repetition_penalty": 1.0,
+    "max_prompt_tokens": 1024,
+    "max_response_tokens": 7168,
+    "learning_rate": 1e-06,
+    "epochs": 1,
+    "extra_kl": false,
+    "loss_aggregation": "token-mean",
+    "shuffle": false,
+    "checkpoint_frequency": 20,
+    "builtin_validation_frequency": -1,
+    "original_gpu_setup": "8 x A800 80GB; any local execution changes must be recorded"
+  },
+  "evaluation": {
+    "benchmark": "AIME2025",
+    "source_files": [
+      {
+        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-I.jsonl",
+        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-I.jsonl",
+        "rows": 15,
+        "sha256": "b91b3c96f05d9635d2a0692b124ebe023c1ff59cb19c074275e6c4b349d0659e"
+      },
+      {
+        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-II.jsonl",
+        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-II.jsonl",
+        "rows": 15,
+        "sha256": "16a2dcfbbf9db1b11f8a69a3ba5e4cac73e3641b19a37e2307e9c12240bbed5e"
+      }
+    ],
+    "generations_per_question": 16,
+    "accuracy": "avg@16; mean correctness across per-question samples, not pass@16",
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "max_response_tokens": 31744,
+    "enable_thinking": false,
+    "stop_markers": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ],
+    "overlap": "sum of Top16 intersection counts / (16 * valid response prediction positions), on ordinary student prefixes, no hook",
+    "overlap_source_original": "training rollout metrics, not the standalone accuracy generator",
+    "figure_step_window": [
+      0,
+      50
+    ],
+    "rendering": "Two panels over proposed pilot steps 0–50: AIME2025 avg@16 and no-hook Overlap@16. Current two-group pilot compares ordinary OPD and scheme_1 with full-training loss-forward steering. Scheme_2 remains in the main plan; its first-panel inclusion is not frozen.",
+    "checkpoint_steps": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50
+    ]
+  },
+  "implementation_gates": [
+    "User review of the concrete 100-question/50-step proposal before downloads or GPU execution",
+    "verify exact Base and teacher lineage/revisions; existing ordinary 1.7B cannot substitute",
+    "verify templates/mode/stop handling separately for Base, SFT and teacher",
+    "original Student-Top-K student_p surrogate baseline; do not reuse pilot teacher-top-K forward_kl_topk_tail",
+    "alpha=0 exact loss/gradient agreement, prediction masks, packed remove-padding positions, backward recomputation",
+    "steering surrogate semantics explicitly audited; ordinary rollouts are not steered-policy samples",
+    "fixed steering configuration or independent dev selection; do not tune on AIME test curves",
+    "GPU admission and project-local process/caches/output paths"
+  ],
+  "state": {
+    "gpu_tasks_launched": false,
+    "model_weights_downloaded": false,
+    "curves_generated": false,
+    "cross_family_campaign_resumed": false
+  },
+  "proposed_pilot": {
+    "approval_status": "awaiting_user_review_before_downloads_or_gpu",
+    "unique_opd_questions": 100,
+    "trainer_steps_per_group": 50,
+    "prompt_batch_size": 64,
+    "rollouts_per_prompt": 4,
+    "prompt_visits_per_group": 3200,
+    "effective_passes_over_100_prompt_pool": 32,
+    "generated_training_responses_per_group": 12800,
+    "stream": "Repeat the frozen ordered 100-prompt pool cyclically to exactly 3200 prompt visits; same IDs/order across all groups. Avoid drop_last silently excluding the last 36 prompts. Generate fresh trajectories each step.",
+    "training_seed": 42,
+    "accuracy_evaluation_steps": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "accuracy_samples_per_checkpoint": 480,
+    "checkpoint_frequency": 10,
+    "overlap": "No-hook training rollout overlap every step, pre-update; label by the exact model state used. Record an initial value and endpoint on fresh ordinary rollouts; no steered overlap substituted.",
+    "further_extension": "Do not automatically extend to 200 steps; review the pilot first.",
+    "limitation": "Small repeated-prompt pilot. Compare the added value of steering over matched Base OPD only; it does not establish equivalence or superiority to SFT. Paper SFT results are contextual references from a different training setup.",
+    "active_groups": 2,
+    "generated_training_responses_all_groups": 25600,
+    "previous_early_only_proposal": {
+      "steering_steps": [
+        1,
+        10
+      ],
+      "ordinary_steps_after_steering": [
+        11,
+        50
+      ]
+    },
+    "intervention_schedule": "throughout all 50 trainer steps; rollout and evaluation are unhooked",
+    "steering_steps": [
+      1,
+      50
+    ],
+    "ordinary_steps_after_steering": []
+  },
+  "deviations_from_original": [
+    "100 unique OpenThoughts3 OPD prompts instead of approximately 30K",
+    "Repeat the same 100 prompts for 50 trainer steps (32 effective passes), instead of original one-pass data coverage; 0–50 display window",
+    "AIME2025 only instead of all three Figure 8 accuracy benchmarks",
+    "Offline checkpoint evaluation every 10 steps for pilot resolution instead of official save_freq20",
+    "Steering layer/strength/early duration are project additions; implementation adaptation must be labeled",
+    "Local device topology/runtime may differ and must be recorded; preserve global batch and mathematical baseline"
+  ],
+  "preparation_validation": {
+    "proposal_json": "valid",
+    "full_package_validator": "failed",
+    "reason": "scripts/validate_package.py requires runs/README.md, which is currently absent; no experiment has been launched."
+  },
+  "asset_inventory": {
+    "audit": "audit/rethinking_figure8_2026-11-11/current_assets.json",
+    "base_available": true,
+    "teacher_available": true,
+    "author_sft_available": false,
+    "datasets_available": true,
+    "remaining_required_model": null,
+    "download_executed_by_agent": false,
+    "author_sft_required_for_current_pilot": false,
+    "current_pilot_model_data_downloads_required": false
+  },
+  "deferred_groups": [
+    {
+      "id": "sft_opd",
+      "initialization": "lllyx/Qwen3-1.7B-SFT",
+      "steering": false,
+      "status": "deferred_by_user; not a current model download requirement"
+    }
+  ],
+  "research_framing": {
+    "question": "Can either of two student-space directions help OPD learn from teacher supervision, reducing or avoiding a separate cold-start SFT stage?",
+    "ordinary_student_evaluation": "The main method steers all valid response prediction positions during loss forwards throughout OPD; all rollout, diagnostic and evaluation forwards remain ordinary.",
+    "early_definition": "If tested, early means the first H OPD trainer steps. H=10 was a project pilot proposal, not a schedule prescribed by either cited paper.",
+    "schedule_status": "Main setting: all 50 proposed pilot trainer steps. Early-only H-step injection is a follow-up schedule ablation.",
+    "literature": [
+      {
+        "paper": "2610.40998v1",
+        "sections": [
+          "4.1",
+          "4.3"
+        ],
+        "mechanism": "Fixed student GT/teacher-response minus own-response direction during teacher-forced supervised/distillation training; evaluation without direction. No general first-10-step cutoff specified."
+      },
+      {
+        "paper": "2610.40998v1",
+        "sections": [
+          "5.1"
+        ],
+        "mechanism": "Frozen correct-minus-wrong direction scores rollouts; modify advantages on verifier-wrong rollouts, including all-wrong zero-variance GRPO groups. This is SV-Rescue, rather than direct activation injection for a first-H-step warmup."
+      },
+      {
+        "paper": "2604.13016v2",
+        "sections": [
+          "5.1"
+        ],
+        "mechanism": "Separate teacher-response SFT cold start before ordinary OPD."
+      },
+      {
+        "paper": "2604.13016v2",
+        "sections": [
+          "5.2"
+        ],
+        "mechanism": "Teacher-aligned prompt templates/content during OPD, rather than a fixed early-only intervention."
+      }
+    ],
+    "hypothesis_boundary": "Common motivation is improving usable training signals or compatibility. These sources neither prove that OPD failures are GRPO zero-variance failures nor establish that increasing overlap guarantees accuracy gains.",
+    "replacement_claim": "Reducing or replacing separate cold-start SFT is a hypothesis. The current no-SFT-control pilot can establish added value over matched ordinary OPD only."
+  },
+  "direction_schemes": [
+    {
+      "id": "scheme_1",
+      "direction": "mean(Phi_S0(x,y_T)-Phi_S0(x,y_S0))",
+      "required_text_sources": [
+        "teacher",
+        "initial_student"
+      ],
+      "injection": "shared full-training full-answer-prediction-position protocol",
+      "pilot_status": "included as base_steer_opd"
+    },
+    {
+      "id": "scheme_2",
+      "direction": "mean(Phi_S0(x,y_T)-Phi_S0(x,y_R))",
+      "required_text_sources": [
+        "teacher",
+        "teacher_family_weaker_reference"
+      ],
+      "injection": "same protocol as scheme_1; changing direction does not change its timing or mask",
+      "pilot_status": "retained in full research plan; inclusion in the first 100-question panel is not yet frozen",
+      "standalone_reference_logprob_requirement": false,
+      "additional_comparison": "Under matched triplet pooling and weights, offset=R-S0 and total_triplet=cap+offset; pure capability/style separation is unproven."
+    }
+  ],
+  "injection_policy": {
+    "active_baseline": "fixed all valid response prediction positions; g_t=1",
+    "direction_axis": "scheme_1 versus scheme_2 defines v; it is independent of injection gating",
+    "candidate_gate": {
+      "status": "discussion only; not implemented or scheduled",
+      "formula": "h_tilde[t-1] = h[t-1] + alpha * stop_gradient(g_t) * v",
+      "first_candidate": "g_t = indicator(unhooked_Overlap16_t < tau)",
+      "threshold": null,
+      "entropy_role": "auxiliary diagnostic first; entropy gap alone does not identify agreement or steer benefit",
+      "metric_policy": "Unhooked, same student-visible prefix, current update-before-training student/teacher distributions; freeze across forward/backward recomputation",
+      "loss_mask": "unchanged; gating selects injection positions rather than dropping OPD supervision",
+      "controls": [
+        "ordinary OPD",
+        "fixed all-position steering",
+        "overlap-gated steering",
+        "random-position gate with matched coverage, direction, layer and strength"
+      ],
+      "selection": "training/independent dev only; no AIME threshold tuning",
+      "cost": "Reuse cached unhooked top-K where available; account for added scoring or forward passes. Sparse vector addition does not by itself eliminate teacher/student model compute.",
+      "full_vocab_entropy_vs_topk_entropy": "name separately",
+      "evidence_boundary": "Low overlap or a large entropy gap is not proof that steering is needed; compare shared mass and no-hook learning gains."
+    }
+  }
+}

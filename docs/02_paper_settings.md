@@ -1,7 +1,21 @@
 # 论文设置、模型与数据证据
 
-更新：2026-11-11。本文记录定点阅读所得的设置，**没有独立复现论文成绩**。
+更新：2026-11-12。本文记录定点阅读所得的设置，**没有独立复现论文成绩**。
 研究设计以[完整方案](01_research_plan.md)为准；模型缺口不代表下载授权。
+
+## 0. 最新方案与来源边界
+
+按用户修订的[完整稿](Steering_OPD_完整研究方案.md)同步：主候选为T−R方向、
+overlap单阈值门控、生成/学习一致的受控策略；熵差独立对照，不与overlap组合。
+同家族低相容机制验证先于跨家族，主评测无steer/无门控。旧仅loss前向方案是单独变体。
+新方法面板使用兼容词表全词表反向KL；下文Rethinking原Student Top-K16等配方
+保留为论文事实，不因方法修改而改写，也不能把新面板称为原Figure 8完全复现。
+
+完整稿列出的Entropy-Aware OPD暂为候选相关工作/强基线，本项目尚未独立核对其
+固定版本公式与源码，不以该稿转述建立已复现证据。原稿称未定位SCOUT的说明
+不覆盖本地已有证据：固定2609.38360v1实际题名为
+《On the Off-Policy Teacher in On-Policy Distillation》，§3为SCOUT方法，来源仍保留。
+正文已核对范围以本文件、manifest及原审计为准，不把来源稿自述阅读深度算作本项目新增阅读。
 
 ## 1. 核心论文与阅读范围
 
@@ -10,7 +24,7 @@
 | Rethinking OPD | [2604.13016v2](https://arxiv.org/abs/2604.13016v2)、[本地正文](../papers/sources/2604.13016v2.txt) | §2–6、§8、附录A.2/B/C.1 | 共享词表机制、overlap、SFT冷启动、模板及长前缀局限 |
 | Simple-OPD | [2608.06802v1](https://arxiv.org/abs/2608.06802v1)、[本地正文](../ref/sources/2608.06802v1.txt) | §3–5、附录A/B.2、固定代码启动器 | 同教师CoT、LoRA warm-up、实际merge与OPD |
 | CompassOPD | [2609.10154v1](https://arxiv.org/abs/2609.10154v1)、[本地正文](../ref/sources/2609.10154v1.txt) | §2–5、式(6)–(11)、附录A.1–A.6 | 异构文本span、教师家族增量、学生锚点及原配对 |
-| SV Training | [2610.40998v1](https://arxiv.org/abs/2610.40998v1)、[本地正文](../papers/sources/2610.40998v1.txt) | §4.1/4.3、附录C.1及固定代码 | 同一学生编码教师/自身文本、方向提取和训练前向注入的直接先例 |
+| SV Training | [2610.40998v1](https://arxiv.org/abs/2610.40998v1)、[本地正文](../papers/sources/2610.40998v1.txt) | §4.1/4.3、§5.1、附录C.1及固定代码 | teacher-forced训练hook与GRPO advantage修正分别解释，不作为受控OPD已验证证据 |
 
 以上是方法/设置定点阅读，不将下载全文算作逐公式独立验证。PDF、官方快照、版本
 与哈希保持在[papers清单](../papers/manifest.json)和[ref清单](../ref/manifest.json)。
@@ -61,6 +75,15 @@ Qwen3-4B-Thinking-2507→Qwen3-0.6B thinking；另有JustRL→R1-1.5B。
 
 ## 3. 原论文模型、初始化与题源
 
+2026-11-11针对“冷启动”概念补充：SV Training §4.1/4.3的方向由同一学生读取
+参考/自身回答所得，固定后用于teacher-forced监督训练，评测不注入，正文没有
+规定仅前10步启用。其§5.1 GRPO是SV-Rescue：预先提取正确−错误轨迹方向，
+用投影分数对错误rollout修正advantage，包含all-wrong零方差组；不等同于在
+GRPO早期向hidden states直接加教师−学生方向。Rethinking §5.1为独立SFT
+阶段后再OPD，§5.2则在OPD期间改变模板/题源。可将它们联系为改善训练信号
+可用性的动机，但off-policy teacher forcing、GRPO零方差和OPD师生相容性
+是不同问题，不能直接转移其有效性结论。
+
 箭头均为教师→学生。是否“原配对”与是否“完整原配方复现”是两件事。
 
 | 原设置 | 实际连线 | 初始化与数据 | 用途 |
@@ -110,7 +133,10 @@ LR1e-5、1 epoch；小样本DAPO实验不等于200K OpenThoughts3复现。
 
 2026-11-11 Figure 8专项复核：本地普通`Qwen3-1.7B`不能替代Base。官方API可查询
 `Qwen/Qwen3-1.7B-Base`及作者发布的`lllyx/Qwen3-1.7B-SFT`，已检查共享模型目录
-尚未发现这两个checkpoint。作者README说明SFT来自Base和OpenThought3-Qwen3-4B；
+最初未发现这两个checkpoint；用户随后补齐软链接，最新实查Base已存在，目前仅
+未找到作者SFT。教师/Base的safetensors头及数据长度检查通过，详见
+[当前资产盘点](../audit/rethinking_figure8_2026-11-11/current_assets.json)。
+作者README说明SFT来自Base和OpenThought3-Qwen3-4B；
 复用发布初始化不能写成本地重做200K SFT。用户新指定的真实目录是
 `/home/zhenning/data/huggingface_datasets/AIME2025`（双g），I/II各15题。
 原Figure 8位于PDF第12页，上排分别为AIME24、AIME25、AMC23，横轴展示0–200步；
@@ -129,8 +155,10 @@ LR1e-5、1 epoch；小样本DAPO实验不等于200K OpenThoughts3复现。
 | Qwen3-30B-A3B-Instruct-2507、Qwen3-0.6B、Qwen3-4B、Qwen3.5-0.8B | 共享目录已有权重文件；新面板仍需模式/接口profiling |
 | R1-Distill-Qwen-1.5B/7B/14B及JustRL-1.5B | 已有；JustRL实际位于共享数据目录huggingface_datasets，来源/revision仍需对应 |
 | Granite4.1-3B、Qwen3.5-4B | 已检查位置未发现；C1/C3的明确缺口，当前不下载 |
-| Qwen3-1.7B-Base、Simple的RL后8B、4B-Thinking-2507 | 缺失，按实验必要性决定，不为覆盖论文一次性全补 |
-| DAPO原Parquet | 源码中17,917行；当前清理划分17,162题，cal1024/dev256/train15882 |
+| Qwen3-1.7B-Base | 已通过assets/models软链接复用；权重、配置、tokenizer存在 |
+| 作者lllyx/Qwen3-1.7B-SFT | 最近盘点未找到；用户已暂缓该对照，新主方案不因修改文档恢复下载 |
+| Simple的RL后8B、4B-Thinking-2507 | 未落实，非本轮必需，不为覆盖论文一次性全补 |
+| DAPO原Parquet | 源码中17,917行；新任务须重新核验去重及train/calibration/dev划分 |
 | OpenThoughts3_opd.parquet | 源码已有30,000行，不是200K教师SFT示范 |
 | DeepScaler/train.parquet | 源码已有40,315行，含deepscaler来源；与Compass官方题集等价性待核验 |
 | DeepMath_deduped.parquet | 源码已有14,116行，仅在对应分布实验时使用 |
@@ -147,7 +175,7 @@ LR1e-5、1 epoch；小样本DAPO实验不等于200K OpenThoughts3复现。
 
 | 工作 | 固定版本 | 已核对关系与边界 |
 |---|---|---|
-| ACSD | [2609.38342v1](https://arxiv.org/abs/2609.38342v1) | 教师侧方向+OPD；§3.2–3.4/成本，不是本项目学生loss方向 |
+| ACSD | [2609.38342v1](https://arxiv.org/abs/2609.38342v1) | 教师侧方向+OPD；§3.2–3.4/成本，本项目主候选干预学生受控生成与学习 |
 | ST-OPSD | [2610.34005v1](https://arxiv.org/abs/2610.34005v1) | 特权教师的减引用/增检查方向；§3.1–3.2 |
 | DIAL | [2610.31438v1](https://arxiv.org/abs/2610.31438v1) | 学生steering adapter+OPD；主干冻结、部署保留，§3.1–3.3 |
 | OPMD | [2610.14022v1](https://arxiv.org/abs/2610.14022v1) | 教师状态投影注入学生后再内化；核对§3.2，跨family已报扩展为SFT |

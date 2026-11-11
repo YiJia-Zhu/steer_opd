@@ -1,50 +1,60 @@
 # 单次运行记录
 
-状态：待填写。复制此模板后记录，不在结果出现前填预期数值。
+模板更新：2026-11-12。对应[当前执行计划](../docs/03_execution_plan.md)，待运行时复制填写。
+不要在结果出现前填入预期数值。主方法是T−R＋overlap单阈值，生成/更新受控定义一致，主评测无干预。
 
-## 配置
+## 角色、版本与轨道
 
-- 实验 ID / run ID / 日期：
-- 配对 C1/C2/C3/R1 / 面板A原始或B共同SFT / 方法组ID：
-- 教师完整模型名 / revision / 模式：
-- 教师家族参考R / revision / 模式（如使用）：
-- 学生完整模型名 / revision / 初始 checkpoint：
-- 总参数 / 文本主干参数 / 激活参数 / 可训练参数 / 等规模误差：
-- 冻结学生锚点pi_0 / 原论文对应 / 本项目扩展与adapted项：
-- 训练仓库 / commit / 环境：
-- GPU / dtype / 量化：
-- 学生和教师 tokenizer / native chat template：
-- 任务指令 / 输出格式：
-- 原生span采样或有限Candidate-RKL / K和位置数 / sum或mean评分：
-- 候选学生原始保留质量 / 有效候选数 / 位置与span覆盖 / 丢弃原因：
-- 候选文本是否互为前缀 / 教师分数不可累加为覆盖率的说明：
-- tokenizer、空格、UTF-8、EOS与稳定编码边界检查：
-- 蒸馏目标 / 归一化 / 学习率 / batch / seed：
+- run ID / 日期 / 当前阶段 / 明确的恢复与预算授权：
+- 师生配对 / 同家族或独立家族 / 兼容tokenizer或扩展路径：
+- T、R、S0完整repo ID / revision / thinking模式 / 后训练来源：
+- assets链接与实际路径 / 权重或配置校验范围：
+- 原始起点或共同SFT起点 / checkpoint / 冻结学生锚点（若使用）：
+- 总参数 / 激活参数 / 文本主干 / 可训练参数：
+- 原论文对应 / 本项目方法变更 / 源码commit / 环境版本：
+- GPU / dtype / 微批与并行 / 全局batch / 实际optimizer更新次数：
+- native模板 / 任务指令 / tokenizer映射 / 特殊与停止事件 / 合法输出支持：
 
-## 数据与向量
+## 数据与方向
 
-- 校准、正式 OPD、开发、测试 ID 文件与哈希：
-- 原始行数 / 独立题数 / 跨 split 去重 / AMC strict40 或 legacy83：
-- 教师示范筛选 / 验证器 / 覆盖率：
-- T/R/S各自文本缓存路径 / 完整三文本题目ID / 不完整或错误参考处理：
-- 同教师多学生是否共享同题和同一份T/R文本；共同校准与原生题源分别标记：
-- 激活读取层 / 位置 / pooling / mask：
-- 方案1/2 / v_total、v_cap、v_offset / 统一三文本池化与代数分解误差：
-- 向量文件 / 范数 / 校准样本数 / 随机方向种子：
-- 注入操作 / 层 / 精确位置 / 强度 / 实际扰动范数：
-- hook 启用阶段 / 辅助更新数 / 撤去安排：
-- gradient-checkpoint 重算与 packing mask 检查：
+- D_vec / D_opd / D_dev-select与confirm / D_test ID文件、hash和题目数：
+- 跨split去重 / 长度过滤 / 原论文30K题集对应 / 100题循环访问规则：
+- T/R/S0三文本缓存 / 完整、截断、退化、正确性及共同过滤集合：
+- 正文mask / pooling / 每题权重 / 三方向共同协议：
+- T−S、T−R、R−S原始范数、夹角、分解误差 / 归一化文件：
+- 单层block精确位置 / 0-based层号 / 校准激活尺度s_l / rho：
+- 随机或负方向 / 随机种子 / 层与强度选择预算 / 无干预dev选择依据：
+- 提取是否训练前一次冻结 / 初始化改变后是否重新提取：
 
-## 成本与评测
+## 门控、受控生成与学习
 
-- 更新数 / 学生生成 token / T、R、pi_0生成及评分 token分别计数：
-- T/R/S学生prefill调用数与token / 方向与SFT搜索预算 / 加载与merge成本：
-- 对齐预算口径（更新数、GPU-hours、教师 token）及不等价之处：
-- 校准搜索与正式训练分别的 GPU 时间 / 峰值显存：
-- 评测配置 / checkpoint / hook 是否关闭：
-- 任务指标 / 长度 / 重复 / 停止行为：
-- 截断率 / avg@n 或 pass@n / 种子 / 置信区间：
-- 共享词表原生Overlap或异构扩展指标（明确名称）/ 共享质量 / 粒度与熵口径：
-- 参数未更新时移除hook恢复检查；更新后H/H+1/H+20无hook结果分别记录：
-- 原始日志、逐题结果和 checkpoint 路径：
-- 与对照的差异 / 失败现象 / 下一步：
+- 策略：无注入 / 全位置 / overlap单阈值 / 因果后段 / 独立熵差 / 随机门控：
+- 主门控k=16 / tau_O / 校准前缀 / 初始触发率 / 固定阈值记录：
+- 独立熵差对照tau_H / 有符号及绝对熵差 / full-vocab或top-K熵口径：
+- 后段固定b的训练侧来源 / 在线随机匹配规则 / 实际匹配误差：
+- 是否无AND/OR组合 / 固定rho / 门控停止梯度 / 不裁剪loss位置：
+- probe是否仅当前步关闭 / 历史受控KV / probe与正式缓存隔离：
+- 预测状态t−1 / 首回答边界 / padding/packing与EOS mask：
+- 真实行为策略 / rollout温度与截断 / 采样token和行为log-prob保存位置：
+- g轨迹、token、prefix hash / 逐步与teacher-forcing重放一致性误差：
+- loss前向是否重放历史干预 / backward重算同mask / 参数更新与新鲜rollout：
+- 目标：full-vocab RKL / 原Student Top-K参考 / 统一近似 / span或byte扩展：
+- loss归约（逐题/逐token）/ 支持集与tail/归一化 / 数值与梯度校验：
+- 内循环次数 / 门控冻结局部近似 / 学习策略陈旧与修正：
+- 若为loss-only、rollout-only、滞后门控或末尾修复：独立命名与精确定义：
+
+## 评测、成本与证据
+
+- 关闭T/R/steer/在线门控的主评测checkpoint / 预先冻结解码协议：
+- avg@n、pass@1或pass@n定义 / 题目级配对区间 / 训练与评测seed：
+- 带干预推理结果（只作机制分析，单独列出）：
+- 固定相同前缀与自由轨迹的probe/受控/完全无hook分布：
+- Top-K集合overlap / 共享Top-K概率质量 / 全分布相交系数（分开命名）：
+- 有符号/绝对熵差、KL / 触发率与位置 / 每题注入数：
+- 回答长度 / 截断 / 重复 / 有效答案率：
+- 离线T/R/S生成及S0读取token / 搜索与SFT数据预算：
+- 在线T查询 / R或锚点评分（若用Compass）/ 学生probe及重算 / 训练token：
+- 墙钟时间 / GPU-hours / 峰值显存 / KV与批处理开销 / 评测成本：
+- 固定学习预算与固定实际计算预算的比较差异：
+- 日志、process/campaign退出状态、checkpoint及逐题结果路径：
+- 实测结论 / 失败与限制 / 下一步或停止理由：

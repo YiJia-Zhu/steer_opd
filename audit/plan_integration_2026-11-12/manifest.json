@@ -1,0 +1,118 @@
+{
+  "at": "2026-11-11T16:24:46.409560+00:00",
+  "input_document": "docs/Steering_OPD_完整研究方案.md",
+  "input_sha256": "38a2e14c16ddfd18b56ee1894f76193196ddceb6a4b0bf4d65121dbd329609ed",
+  "input_document_changed": false,
+  "before": [
+    {
+      "path": "AGENTS.md",
+      "sha256_before": "d255eaa3c6ecd75937a638d4aa5859604bb1eb6b54c54dc11e6487622a9a5e35"
+    },
+    {
+      "path": "README.md",
+      "sha256_before": "e2a99044362bbbbd6a55d4346f84eb1de05fcd73404e63611a970102873c9bc8"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256_before": "ca221dd8f52bf38cc9049cf657ce079cbae79a0105c7102d243a5fd16ebf01df"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256_before": "57551376194ee37d5cf93de31da523a72ccf0ce794ba060d3d93bf09d7e76511"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256_before": "67332743e98d5545f36b0d54e14b703e5b9ac5997a8185742dbdf0d3939b5a74"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256_before": "c8e2dfb3054046f6bcaff6e599488181c41fbb63bfec5b52d5748ad19557305d"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256_before": "6a346f6f5fa50a964d29691256ed1192d3b2fdd2e47dc817e616abdfda853fe6"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256_before": "b762d09cb91f4b186f8d24fb9f835fb3e566466b9ca993527fcf02ee788027e0"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256_before": "adba6dc5edf4c26132b9dc5e980575f916d5cd6823a4cbd6619f39fac8fff89f"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256_before": "677ffd6215fd254b2d4f732e188191301aaee003138d0322ecef71badad1c395"
+    },
+    {
+      "path": "scripts/validate_package.py",
+      "sha256_before": "24a82b05793d5aa261190ad5ac376910bef2ffff4ac11cde6c40fa410275d8b8"
+    }
+  ],
+  "scope": "Documentation/configuration planning only; no model, dataset download or GPU job authorized.",
+  "earlier_input_sha256": "d9c404980017a4843f062c353d45fac7cd34dab6be80ffff639c6c8847466e8b",
+  "input_snapshot": "audit/plan_integration_2026-11-12/input_latest.md",
+  "latest_user_scope": "Update other project Markdown using the revised source; leave the source and executable/code/configuration files unchanged.",
+  "modified_markdown": [
+    {
+      "path": "README.md",
+      "sha256_after": "fc85a066520ad0878cc9b1170eb84e767fd44bb653b13004e9e88968b58b8575",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/README.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256_after": "46fc03874770957fe7c789f1dd12ef401eb4f277bf7ca3eaa8a46fa175f46c25",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/AGENTS.md"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256_after": "dd1a41ebbbdc13d98a9387a245eeeecf30bba6bd4ceb11af160931da0d53af5c",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/docs/README.md"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256_after": "cd4e75f5fb739f0efaa78bcae26b576587f76544af48c06ea67dc2d7d955f1f4",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/docs/01_research_plan.md"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256_after": "1314afbca810ffc8f9f2e45808598671f7f98c6e9e21c1d4749020dc62d86079",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/docs/02_paper_settings.md"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256_after": "c900cfd1b873e0d1836e704b1c97057e959cf92bc21ab7308718e1aab6296486",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/docs/03_execution_plan.md"
+    },
+    {
+      "path": "docs/09_novelty_audit_cross_family_steering_opd.md",
+      "sha256_after": "701fefb79bfd78809d4981644df6bc19d098dfd4cc6a18fe7a303e3f8976f489",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/docs/09_novelty_audit_cross_family_steering_opd.md"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256_after": "038af136d37b86a47dc1d4e3f7f28f175817da93ccdf4fd7afe002da6015b6e9",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/experiments/run_record_template.md"
+    },
+    {
+      "path": "ref/README.md",
+      "sha256_after": "29e0e9c0407cd1709309dc93b1ab939002b0a5722f94aabeb1cebb9a992ba655",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/ref/README.md"
+    },
+    {
+      "path": "ref/archive/README.md",
+      "sha256_after": "114064ab1fc9e32c7cb31b5663f3a7d114fc23e600a05624d953b6dcb33a77bf",
+      "snapshot_before": "audit/plan_integration_2026-11-12/before/ref/archive/README.md"
+    }
+  ],
+  "decisions": {
+    "primary_direction": "T-R; retain T-S and R-S controls",
+    "primary_gate": "Overlap@16 threshold only; entropy gate independent, no combined gate",
+    "main_policy": "Controlled rollout and matching learning replay; loss-only demoted to named variant",
+    "objective": "Compatible-vocabulary full reverse KL, sequence-then-batch mean; original Student Top-K/token-mean reference remains separate",
+    "experiment_scope": "100 OPD prompts and AIME2025 evaluation preserved; separate direction/dev budget and first panel not frozen; local SFT deferred",
+    "historical_evidence": "Novelty audit body preserved with scope notice; SCOUT confirmed from existing local source; Entropy-Aware baseline pending project verification",
+    "config_scope": "No training code/JSON/CSV migrated or execution authorized."
+  },
+  "validation": "audit/plan_integration_2026-11-12/markdown_validation.json"
+}

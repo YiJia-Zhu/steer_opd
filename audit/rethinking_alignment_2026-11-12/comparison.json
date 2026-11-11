@@ -1,0 +1,1101 @@
+{
+  "checked_at": "2026-11-11T17:03:57.048248+00:00",
+  "reference_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+  "reference_worktree_changes": [
+    "?? verl/flash_attn-2.8.1+cu12torch2.8cxx11abiFALSE-cp312-cp312-linux_x86_64.whl"
+  ],
+  "paper_default_checks": [
+    {
+      "key": "algorithm.adv_estimator",
+      "reference": "token_reward_direct",
+      "project": "token_reward_direct",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "algorithm.grpo_outcome_weight",
+      "reference": 1.0,
+      "project": 1.0,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "algorithm.use_kl_in_reward",
+      "reference": false,
+      "project": false,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "data.shuffle",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.train_batch_size",
+      "reference": 64,
+      "project": 64,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.max_prompt_length",
+      "reference": 1024,
+      "project": 1024,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.max_response_length",
+      "reference": 7168,
+      "project": 7168,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.filter_overlong_prompts",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.truncation",
+      "reference": "error",
+      "project": "error",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "data.return_raw_chat",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.model.use_remove_padding",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.model.enable_activation_offload",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.model.enable_gradient_checkpointing",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.strategy",
+      "reference": "fsdp",
+      "project": "fsdp",
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr",
+      "reference": 1e-06,
+      "project": 1e-06,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.optimizer",
+      "reference": "AdamW",
+      "project": "AdamW",
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.betas",
+      "reference": [
+        0.9,
+        0.999
+      ],
+      "project": [
+        0.9,
+        0.999
+      ],
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.weight_decay",
+      "reference": 0.01,
+      "project": 0.01,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr_scheduler_type",
+      "reference": "constant",
+      "project": "constant",
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio",
+      "reference": 0.0,
+      "project": 0.0,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_mini_batch_size",
+      "reference": 64,
+      "project": 64,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_epochs",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.use_dynamic_bsz",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_max_token_len_per_gpu",
+      "reference": 32768,
+      "project": 32768,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ulysses_sequence_parallel_size",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.use_kl_loss",
+      "reference": false,
+      "project": false,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.loss_agg_mode",
+      "reference": "token-mean",
+      "project": "token-mean",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.entropy_coeff",
+      "reference": 0,
+      "project": 0.0,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.grad_clip",
+      "reference": 1.0,
+      "project": 1.0,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio",
+      "reference": 0.2,
+      "project": 0.2,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_low",
+      "reference": 0.2,
+      "project": 0.2,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_high",
+      "reference": 0.2,
+      "project": 0.2,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_c",
+      "reference": 3.0,
+      "project": 3.0,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.param_offload",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.optimizer_offload",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.forward_prefetch",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.model_dtype",
+      "reference": "fp32",
+      "project": "fp32",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.fsdp_config.param_offload",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.fsdp_config.model_dtype",
+      "reference": "fp32",
+      "project": "fp32",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.log_prob_use_dynamic_bsz",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.name",
+      "reference": "vllm",
+      "project": "vllm",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.temperature",
+      "reference": 1.0,
+      "project": 1.0,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.top_p",
+      "reference": 1,
+      "project": 1.0,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.top_k",
+      "reference": -1,
+      "project": -1,
+      "reference_source": "official inherited Hydra YAML",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.log_prob_use_dynamic_bsz",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.log_prob_top_k",
+      "reference": 16,
+      "project": 16,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.top_k_strategy",
+      "reference": "only_stu",
+      "project": "only_stu",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.reward_weight_mode",
+      "reference": "student_p",
+      "project": "student_p",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.teacher_temperature",
+      "reference": 1.0,
+      "project": 1.0,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.tensor_model_parallel_size",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.gpu_memory_utilization",
+      "reference": 0.8,
+      "project": 0.8,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.max_model_len",
+      "reference": 8192,
+      "project": 8192,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.max_num_batched_tokens",
+      "reference": 32768,
+      "project": 32768,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.n",
+      "reference": 4,
+      "project": 4,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.do_sample",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.max_tokens",
+      "reference": 7168,
+      "project": 7168,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.n",
+      "reference": 16,
+      "project": 16,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.temperature",
+      "reference": 0.7,
+      "project": 0.7,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.top_p",
+      "reference": 0.95,
+      "project": 0.95,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.repetition_penalty",
+      "reference": 1.0,
+      "project": 1.0,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.calculate_log_probs",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.enable",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.reward_kwargs.enable_format_reward",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.model.input_tokenizer",
+      "reference": null,
+      "project": null,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.model.use_remove_padding",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.model.fsdp_config.param_offload",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.model.dtype",
+      "reference": "fp32",
+      "project": "fp32",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "reward_model.micro_batch_size_per_gpu",
+      "reference": 24,
+      "project": 24,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "custom_reward_function.name",
+      "reference": "reward_func",
+      "project": "reward_func",
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.val_before_train",
+      "reference": false,
+      "project": false,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.log_val_generations",
+      "reference": 2,
+      "project": 2,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.n_gpus_per_node",
+      "reference": 8,
+      "project": 8,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.nnodes",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.save_freq",
+      "reference": 20,
+      "project": 20,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.test_freq",
+      "reference": -1,
+      "project": -1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.total_epochs",
+      "reference": 1,
+      "project": 1,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    },
+    {
+      "key": "trainer.is_plot",
+      "reference": true,
+      "project": true,
+      "reference_source": "official on_policy_distillation.sh",
+      "matches": true
+    }
+  ],
+  "evaluation_checks": [
+    {
+      "key": "max_tokens",
+      "reference": 31744,
+      "project": 31744,
+      "matches": true
+    },
+    {
+      "key": "temperature",
+      "reference": 0.7,
+      "project": 0.7,
+      "matches": true
+    },
+    {
+      "key": "top_p",
+      "reference": 0.95,
+      "project": 0.95,
+      "matches": true
+    },
+    {
+      "key": "n",
+      "reference": 16,
+      "project": 16,
+      "matches": true
+    },
+    {
+      "key": "enable_thinking",
+      "reference": false,
+      "project": false,
+      "matches": true
+    },
+    {
+      "key": "stop_markers",
+      "reference": [
+        "<|im_end|>",
+        "<|endoftext|>"
+      ],
+      "project": [
+        "<|im_end|>",
+        "<|endoftext|>"
+      ],
+      "matches": true
+    }
+  ],
+  "unexpected_differences": [],
+  "old_launcher_default_differences": [
+    {
+      "key": "algorithm.adv_estimator",
+      "before": "grpo",
+      "now": "token_reward_direct"
+    },
+    {
+      "key": "algorithm.grpo_outcome_weight",
+      "before": "not explicitly set",
+      "now": 1.0
+    },
+    {
+      "key": "algorithm.use_kl_in_reward",
+      "before": "False",
+      "now": false
+    },
+    {
+      "key": "data.shuffle",
+      "before": "True",
+      "now": false
+    },
+    {
+      "key": "data.train_batch_size",
+      "before": "args.batch_size",
+      "now": 64
+    },
+    {
+      "key": "data.max_response_length",
+      "before": "args.response_length",
+      "now": 7168
+    },
+    {
+      "key": "data.filter_overlong_prompts",
+      "before": "True",
+      "now": true
+    },
+    {
+      "key": "data.return_raw_chat",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.model.use_remove_padding",
+      "before": "False",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.model.enable_activation_offload",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.model.enable_gradient_checkpointing",
+      "before": "True",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.strategy",
+      "before": "fsdp2",
+      "now": "fsdp"
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr",
+      "before": "1e-6",
+      "now": 1e-06
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.optimizer",
+      "before": "not explicitly set",
+      "now": "AdamW"
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.betas",
+      "before": "not explicitly set",
+      "now": [
+        0.9,
+        0.999
+      ]
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.weight_decay",
+      "before": "not explicitly set",
+      "now": 0.01
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr_scheduler_type",
+      "before": "not explicitly set",
+      "now": "constant"
+    },
+    {
+      "key": "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio",
+      "before": "not explicitly set",
+      "now": 0.0
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_mini_batch_size",
+      "before": "args.batch_size",
+      "now": 64
+    },
+    {
+      "key": "actor_rollout_ref.actor.use_dynamic_bsz",
+      "before": "False",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.ppo_max_token_len_per_gpu",
+      "before": "not explicitly set",
+      "now": 32768
+    },
+    {
+      "key": "actor_rollout_ref.actor.ulysses_sequence_parallel_size",
+      "before": "not explicitly set",
+      "now": 1
+    },
+    {
+      "key": "actor_rollout_ref.actor.use_kl_loss",
+      "before": "not explicitly set",
+      "now": false
+    },
+    {
+      "key": "actor_rollout_ref.actor.loss_agg_mode",
+      "before": "not explicitly set",
+      "now": "token-mean"
+    },
+    {
+      "key": "actor_rollout_ref.actor.entropy_coeff",
+      "before": "not explicitly set",
+      "now": 0.0
+    },
+    {
+      "key": "actor_rollout_ref.actor.grad_clip",
+      "before": "not explicitly set",
+      "now": 1.0
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio",
+      "before": "not explicitly set",
+      "now": 0.2
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_low",
+      "before": "not explicitly set",
+      "now": 0.2
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_high",
+      "before": "not explicitly set",
+      "now": 0.2
+    },
+    {
+      "key": "actor_rollout_ref.actor.clip_ratio_c",
+      "before": "not explicitly set",
+      "now": 3.0
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.param_offload",
+      "before": "False",
+      "now": false
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.optimizer_offload",
+      "before": "False",
+      "now": false
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.forward_prefetch",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.actor.fsdp_config.model_dtype",
+      "before": "not explicitly set",
+      "now": "fp32"
+    },
+    {
+      "key": "actor_rollout_ref.ref.fsdp_config.param_offload",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.fsdp_config.model_dtype",
+      "before": "not explicitly set",
+      "now": "fp32"
+    },
+    {
+      "key": "actor_rollout_ref.ref.log_prob_use_dynamic_bsz",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu",
+      "before": "not explicitly set",
+      "now": 1
+    },
+    {
+      "key": "actor_rollout_ref.rollout.log_prob_use_dynamic_bsz",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.log_prob_top_k",
+      "before": "not explicitly set",
+      "now": 16
+    },
+    {
+      "key": "actor_rollout_ref.rollout.top_k_strategy",
+      "before": "not explicitly set",
+      "now": "only_stu"
+    },
+    {
+      "key": "actor_rollout_ref.rollout.reward_weight_mode",
+      "before": "not explicitly set",
+      "now": "student_p"
+    },
+    {
+      "key": "actor_rollout_ref.rollout.teacher_temperature",
+      "before": "not explicitly set",
+      "now": 1.0
+    },
+    {
+      "key": "actor_rollout_ref.rollout.gpu_memory_utilization",
+      "before": 0.35,
+      "now": 0.8
+    },
+    {
+      "key": "actor_rollout_ref.rollout.max_model_len",
+      "before": "1024 + args.response_length + 1",
+      "now": 8192
+    },
+    {
+      "key": "actor_rollout_ref.rollout.max_num_batched_tokens",
+      "before": "not explicitly set",
+      "now": 32768
+    },
+    {
+      "key": "actor_rollout_ref.rollout.n",
+      "before": 1,
+      "now": 4
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.do_sample",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.max_tokens",
+      "before": "not explicitly set",
+      "now": 7168
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.n",
+      "before": "not explicitly set",
+      "now": 16
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.temperature",
+      "before": "not explicitly set",
+      "now": 0.7
+    },
+    {
+      "key": "actor_rollout_ref.rollout.val_kwargs.top_p",
+      "before": "not explicitly set",
+      "now": 0.95
+    },
+    {
+      "key": "actor_rollout_ref.rollout.repetition_penalty",
+      "before": "not explicitly set",
+      "now": 1.0
+    },
+    {
+      "key": "actor_rollout_ref.rollout.calculate_log_probs",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "reward_model.enable",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "reward_model.reward_kwargs.enable_format_reward",
+      "before": "not explicitly set",
+      "now": false
+    },
+    {
+      "key": "reward_model.model.input_tokenizer",
+      "before": "not explicitly set",
+      "now": null
+    },
+    {
+      "key": "reward_model.model.use_remove_padding",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "reward_model.model.fsdp_config.param_offload",
+      "before": "not explicitly set",
+      "now": false
+    },
+    {
+      "key": "reward_model.model.dtype",
+      "before": "not explicitly set",
+      "now": "fp32"
+    },
+    {
+      "key": "reward_model.micro_batch_size_per_gpu",
+      "before": "not explicitly set",
+      "now": 24
+    },
+    {
+      "key": "custom_reward_function.name",
+      "before": "not explicitly set",
+      "now": "reward_func"
+    },
+    {
+      "key": "trainer.val_before_train",
+      "before": "False",
+      "now": false
+    },
+    {
+      "key": "trainer.log_val_generations",
+      "before": "not explicitly set",
+      "now": 2
+    },
+    {
+      "key": "trainer.n_gpus_per_node",
+      "before": 1,
+      "now": 8
+    },
+    {
+      "key": "trainer.save_freq",
+      "before": "min(20, args.steps)",
+      "now": 20
+    },
+    {
+      "key": "trainer.total_epochs",
+      "before": 100,
+      "now": 1
+    },
+    {
+      "key": "trainer.is_plot",
+      "before": "not explicitly set",
+      "now": true
+    },
+    {
+      "key": "data.train_files",
+      "before": "str(ROOT / 'data/math500_pilot_v2/train_pilot.parquet')",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/data/rethinking_figure8/train_opd_100_repeated.parquet"
+    },
+    {
+      "key": "data.val_files",
+      "before": "str(ROOT / 'data/math500_pilot_v2/dev_pilot.parquet')",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/data/rethinking_figure8/aime2025_eval.parquet"
+    },
+    {
+      "key": "data.apply_chat_template_kwargs.enable_thinking",
+      "before": "not explicitly set",
+      "now": false
+    },
+    {
+      "key": "actor_rollout_ref.model.path",
+      "before": "/home/zhenning/data/huggingface_models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Qwen3-1.7B-Base"
+    },
+    {
+      "key": "reward_model.model.path",
+      "before": "not explicitly set",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Qwen3-4B"
+    },
+    {
+      "key": "custom_reward_function.path",
+      "before": "not explicitly set",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/ref/ref_rep/Rethinking-OPD/verl/verl/utils/reward_score/ttrl_math/__init__.py"
+    },
+    {
+      "key": "trainer.logger",
+      "before": "[\"console\"]",
+      "now": [
+        "console"
+      ]
+    },
+    {
+      "key": "trainer.project_name",
+      "before": "steer_opd_math500",
+      "now": "steer_opd_rethinking"
+    },
+    {
+      "key": "trainer.experiment_name",
+      "before": "run_dir.name",
+      "now": "audit_preview"
+    },
+    {
+      "key": "trainer.default_local_dir",
+      "before": "str(run_dir / 'checkpoints')",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/audit/rethinking_alignment_2026-11-12/audit_preview/checkpoints"
+    },
+    {
+      "key": "trainer.validation_data_dir",
+      "before": "not explicitly set",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/audit/rethinking_alignment_2026-11-12/audit_preview/validation"
+    },
+    {
+      "key": "trainer.rollout_data_dir",
+      "before": "str(run_dir / 'rollouts')",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/audit/rethinking_alignment_2026-11-12/audit_preview/rollouts"
+    },
+    {
+      "key": "trainer.total_training_steps",
+      "before": "args.steps",
+      "now": 50
+    },
+    {
+      "key": "ray_kwargs.ray_init.address",
+      "before": "not explicitly set",
+      "now": "local"
+    },
+    {
+      "key": "ray_kwargs.ray_init.namespace",
+      "before": "not explicitly set",
+      "now": "steer_opd_audit_preview"
+    },
+    {
+      "key": "ray_kwargs.ray_init._temp_dir",
+      "before": "not explicitly set",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/.r"
+    },
+    {
+      "key": "ray_kwargs.ray_init.include_dashboard",
+      "before": "not explicitly set",
+      "now": false
+    },
+    {
+      "key": "ray_kwargs.ray_init.runtime_env.env_vars.PYTHONPATH",
+      "before": "not explicitly set",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/ref/ref_rep/Rethinking-OPD/verl:/local_nvme/data/zhenning/working_tmp/steer_opd/src:src"
+    },
+    {
+      "key": "hydra.run.dir",
+      "before": "str(run_dir / 'hydra')",
+      "now": "/local_nvme/data/zhenning/working_tmp/steer_opd/audit/rethinking_alignment_2026-11-12/audit_preview/hydra"
+    }
+  ],
+  "intentional_scope_exceptions": {
+    "dataset": "User chose 100 OT3 OPD questions instead of approximately 30K",
+    "steps": "50 trainer steps on a repeated 100-question pool is a user-budget proposal, not paper one-epoch coverage",
+    "evaluation": "AIME2025 only; original figure also reports AIME2024 and AMC2023",
+    "initialization": "Base and teacher selected for Figure8; active generic upstream shell instead defaults to R1/JustRL/DAPO",
+    "seed": "Explicit project seed42; upstream data.seed is null",
+    "template": "Explicit enable_thinking=False follows upstream README non-thinking instruction; Figure8 Base training prompt still needs token-level archival",
+    "logging": "Local console only, rather than automatic swanlab upload",
+    "ray": "Private local Ray namespace; no global ray stop/start shell",
+    "runtime": "Installed torch/Transformers/vLLM runtime differs from original setup and is not GPU-validated with the old fork"
+  },
+  "loss": {
+    "family": "rethinking_student_topk_reverse_kl_surrogate",
+    "backend": "original fork actor.compute_distillation_reward and compute_policy_loss_vanilla",
+    "newer_vendor_forward_kl_backend_used": false,
+    "paper_vs_code": "Paper defines renormalized subset KL; fork uses detached student_p-weighted native log-ratio rewards and clipped PPO surrogate. Preserve the fork, not a claimed exact gradient identity."
+  },
+  "sources": [
+    {
+      "path": "ref/ref_rep/Rethinking-OPD/on_policy_distillation.sh",
+      "sha256": "8377cb1b7bec6ebf380f8274623ce0188591ce90c95216ccd85b6d7aa36974a1"
+    },
+    {
+      "path": "ref/ref_rep/Rethinking-OPD/verl/verl/workers/actor/dp_actor.py",
+      "sha256": "ae706f1d20d3677bcd952fad8fb054180159747b4f2e61cab002f1328fd18d6f"
+    },
+    {
+      "path": "ref/ref_rep/Rethinking-OPD/verl/verl/trainer/ppo/core_algos.py",
+      "sha256": "d7a2796319d9de5e0672138ae131e458b82ae0e54e9e121e44d415ece9a24bc3"
+    },
+    {
+      "path": "ref/ref_rep/Rethinking-OPD/scripts/val/eval/gen_vllm.py",
+      "sha256": "bc0e5c4a49c93cbcfe81cac53ced292760d4ca506b0cfce26957d474c24b00af"
+    },
+    {
+      "path": "configs/rethinking_opd.json",
+      "sha256": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b"
+    }
+  ],
+  "execution_authorized": false,
+  "gpu_or_download_started": false,
+  "remaining": [
+    "Original fork dependencies are not GPU-validated with the installed newer runtime.",
+    "Controlled rollout and learning replay are not implemented in this backend; steering execution is blocked.",
+    "100-question repeated parquet, independent calibration/dev splits and EOS/tokenizer support checks remain pending."
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "at": "2026-11-11T16:55:23.188256+00:00",
+  "scope": "User authorized loss/config/code alignment against pinned Rethinking fork; GPU runs and downloads remain paused.",
+  "before": [
+    {
+      "path": "scripts/launch_pilot.py",
+      "sha256": "098e68e795585e9b34b6ee85d8d5e54ecd5cc357c7a890777558af6d8e97f4f4"
+    },
+    {
+      "path": "scripts/generate_math.py",
+      "sha256": "c26f25338d22e0c8d2834266f3dbe1984f7d36dd044004ec7065644fb1d56912"
+    },
+    {
+      "path": "src/steer_opd/math_data.py",
+      "sha256": "c9373b66548efbe684ba80cdb7ff3455ca608e2b195c48a82cfaa2b20116bba8"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "76d8a0a6d7d6a01043e94bbb48518783d5d30f8ab8148f9224a8721b68c6a641"
+    },
+    {
+      "path": "README.md",
+      "sha256": "fc85a066520ad0878cc9b1170eb84e767fd44bb653b13004e9e88968b58b8575"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "dd1a41ebbbdc13d98a9387a245eeeecf30bba6bd4ceb11af160931da0d53af5c"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "cd4e75f5fb739f0efaa78bcae26b576587f76544af48c06ea67dc2d7d955f1f4"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "1314afbca810ffc8f9f2e45808598671f7f98c6e9e21c1d4749020dc62d86079"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "0c61e9c4542d34d6aec6aecde4245436390211eccda941d2a8880d5ccad6071e"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "38a2e14c16ddfd18b56ee1894f76193196ddceb6a4b0bf4d65121dbd329609ed"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256": "677ffd6215fd254b2d4f732e188191301aaee003138d0322ecef71badad1c395"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256": "adba6dc5edf4c26132b9dc5e980575f916d5cd6823a4cbd6619f39fac8fff89f"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256": "6a346f6f5fa50a964d29691256ed1192d3b2fdd2e47dc817e616abdfda853fe6"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256": "b762d09cb91f4b186f8d24fb9f835fb3e566466b9ca993527fcf02ee788027e0"
+    }
+  ]
+}

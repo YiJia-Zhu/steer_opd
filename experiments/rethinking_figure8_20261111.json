@@ -1,119 +1,217 @@
 {
   "id": "rethinking_figure8_20261111",
-  "status": "awaiting_dataset_scope_clarification",
+  "updated": "2026-11-12",
+  "status": "reference_defaults_aligned_execution_paused",
   "executable_launch_config": false,
-  "authority": "Latest user request: first compare steering with SFT using Rethinking Figure 8, AIME2025 only, otherwise follow the original paper/code.",
-  "source_audit": "audit/rethinking_figure8_2026-11-11/source_audit.json",
-  "paper": "2604.13016v2",
-  "official_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
-  "teacher": {
-    "repo_id": "Qwen/Qwen3-4B",
-    "local_path": "/home/zhenning/data/huggingface_models/Qwen3-4B",
-    "mode": "non_thinking",
-    "enable_thinking": false
-  },
-  "groups": [
-    {
-      "id": "base_opd",
-      "initialization": "Qwen/Qwen3-1.7B-Base",
-      "steering": false
-    },
-    {
-      "id": "sft_opd",
-      "initialization": "lllyx/Qwen3-1.7B-SFT if original training is retained; otherwise a separately labeled AIME-only SFT checkpoint",
-      "steering": false
-    },
-    {
-      "id": "base_steer_opd",
-      "initialization": "Qwen/Qwen3-1.7B-Base",
-      "steering": true,
-      "calibration_data": null,
-      "layer": null,
-      "rho": null,
-      "auxiliary_updates": null,
-      "rollout_hook": false,
-      "evaluation_hook": false
-    }
-  ],
-  "data": {
-    "requested_root": "/home/zhenning/data/huggingface_datasets/AIME2025",
-    "questions": 30,
-    "interpretation": null,
-    "question_pending": "Does AIME2025-only apply to evaluation only, or to SFT/calibration/OPD as well?",
-    "sft_original": "200K OpenThoughts3 math teacher responses; author released checkpoint available",
-    "opd_original": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
-    "opd_original_rows": 30000,
-    "no_test_to_train_assignment_without_clarification": true
-  },
-  "original_training": {
-    "global_prompt_batch_size": 64,
-    "mini_batch_size": 64,
-    "rollouts_per_prompt": 4,
-    "top_k": 16,
-    "top_k_strategy": "only_stu",
+  "default_profile": "configs/rethinking_opd.json",
+  "reference_commit": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+  "authority": "Latest user authorized matching the Rethinking Student Top-K reverse-KL training recipe and other defaults; controlled steering remains the project method difference.",
+  "loss": {
+    "family": "rethinking_student_topk_reverse_kl_surrogate",
+    "topk": 16,
+    "selection": "student_top_k",
     "reward_weight_mode": "student_p",
     "adv_estimator": "token_reward_direct",
-    "policy_loss": "original fork PPO top-K surrogate; must audit numerical and gradient equivalence before launch",
-    "training_temperature": 1.0,
-    "teacher_temperature": 1.0,
-    "top_p": 1.0,
-    "repetition_penalty": 1.0,
-    "max_prompt_tokens": 1024,
-    "max_response_tokens": 7168,
-    "learning_rate": 1e-06,
-    "epochs": 1,
-    "extra_kl": false,
-    "loss_aggregation": "token-mean",
-    "shuffle": false,
-    "checkpoint_frequency": 20,
-    "builtin_validation_frequency": -1,
-    "original_gpu_setup": "8 x A800 80GB; any local execution changes must be recorded"
+    "update": "original fork clipped PPO surrogate",
+    "aggregation": "token-mean",
+    "full_vocabulary_kl_default": false,
+    "teacher_topk_forward_kl_default": false,
+    "exact_subset_kl_autograd_claim": false
+  },
+  "teacher": {
+    "repo_id": "Qwen/Qwen3-4B",
+    "local_path": "assets/models/Qwen3-4B",
+    "mode": "non_thinking"
+  },
+  "student": {
+    "repo_id": "Qwen/Qwen3-1.7B-Base",
+    "local_path": "assets/models/Qwen3-1.7B-Base"
+  },
+  "reference": {
+    "repo_id": "Qwen/Qwen3-0.6B",
+    "local_path": "assets/models/Qwen3-0.6B",
+    "role": "offline direction candidate, not used in vanilla teacher scoring"
+  },
+  "initial_panel_proposal": {
+    "groups": [
+      "ordinary_base_opd",
+      "T-S_all_response_positions"
+    ],
+    "steering_rollout_and_learning": true,
+    "controlled_backend_implemented": false,
+    "sft_deferred": true,
+    "not_a_complete_3_by_3_method_test": true
+  },
+  "full_method": {
+    "primary_direction": "T-R",
+    "direction_controls": [
+      "T-S",
+      "R-S"
+    ],
+    "primary_gate": "overlap_only",
+    "gate": "O_t < tau_O",
+    "entropy_gate": "independent_control",
+    "injection_policies": [
+      "all_response_positions",
+      "overlap_only",
+      "causal_suffix"
+    ],
+    "main_evaluation": "uncontrolled_student_only"
+  },
+  "data": {
+    "opd_source": "ref/ref_rep/Rethinking-OPD/datasets/OpenThoughts3_opd.parquet",
+    "opd_unique_questions": 100,
+    "sampling_seed": 42,
+    "processed_training_file": "data/rethinking_figure8/train_opd_100_repeated.parquet",
+    "processed_inputs_prepared": false,
+    "direction_questions": "256-512 proposed, not frozen; disjoint from OPD",
+    "dev_questions": "independent; size not frozen",
+    "test": "assets/data/AIME2025",
+    "test_questions": 30,
+    "test_not_for_selection": true
+  },
+  "pilot_budget_proposal": {
+    "trainer_steps": 50,
+    "global_prompt_batch": 64,
+    "rollouts_per_prompt": 4,
+    "prompt_visits": 3200,
+    "passes_over_100_questions": 32,
+    "training_responses_per_group": 12800,
+    "training_epochs_in_expanded_stream": 1,
+    "not_paper_30k_one_epoch_coverage": true
+  },
+  "paper_defaults": {
+    "algorithm.adv_estimator": "token_reward_direct",
+    "algorithm.grpo_outcome_weight": 1.0,
+    "algorithm.use_kl_in_reward": false,
+    "data.shuffle": false,
+    "data.train_batch_size": 64,
+    "data.max_prompt_length": 1024,
+    "data.max_response_length": 7168,
+    "data.filter_overlong_prompts": true,
+    "data.truncation": "error",
+    "data.return_raw_chat": true,
+    "actor_rollout_ref.model.use_remove_padding": true,
+    "actor_rollout_ref.model.enable_activation_offload": true,
+    "actor_rollout_ref.model.enable_gradient_checkpointing": true,
+    "actor_rollout_ref.actor.strategy": "fsdp",
+    "actor_rollout_ref.actor.optim.lr": 1e-06,
+    "actor_rollout_ref.actor.optim.optimizer": "AdamW",
+    "actor_rollout_ref.actor.optim.betas": [
+      0.9,
+      0.999
+    ],
+    "actor_rollout_ref.actor.optim.weight_decay": 0.01,
+    "actor_rollout_ref.actor.optim.lr_scheduler_type": "constant",
+    "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio": 0.0,
+    "actor_rollout_ref.actor.ppo_mini_batch_size": 64,
+    "actor_rollout_ref.actor.ppo_epochs": 1,
+    "actor_rollout_ref.actor.use_dynamic_bsz": true,
+    "actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu": 1,
+    "actor_rollout_ref.actor.ppo_max_token_len_per_gpu": 32768,
+    "actor_rollout_ref.actor.ulysses_sequence_parallel_size": 1,
+    "actor_rollout_ref.actor.use_kl_loss": false,
+    "actor_rollout_ref.actor.loss_agg_mode": "token-mean",
+    "actor_rollout_ref.actor.entropy_coeff": 0.0,
+    "actor_rollout_ref.actor.grad_clip": 1.0,
+    "actor_rollout_ref.actor.clip_ratio": 0.2,
+    "actor_rollout_ref.actor.clip_ratio_low": 0.2,
+    "actor_rollout_ref.actor.clip_ratio_high": 0.2,
+    "actor_rollout_ref.actor.clip_ratio_c": 3.0,
+    "actor_rollout_ref.actor.fsdp_config.param_offload": false,
+    "actor_rollout_ref.actor.fsdp_config.optimizer_offload": false,
+    "actor_rollout_ref.actor.fsdp_config.forward_prefetch": true,
+    "actor_rollout_ref.actor.fsdp_config.model_dtype": "fp32",
+    "actor_rollout_ref.ref.fsdp_config.param_offload": true,
+    "actor_rollout_ref.ref.fsdp_config.model_dtype": "fp32",
+    "actor_rollout_ref.ref.log_prob_use_dynamic_bsz": true,
+    "actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu": 1,
+    "actor_rollout_ref.rollout.name": "vllm",
+    "actor_rollout_ref.rollout.temperature": 1.0,
+    "actor_rollout_ref.rollout.top_p": 1.0,
+    "actor_rollout_ref.rollout.top_k": -1,
+    "actor_rollout_ref.rollout.log_prob_use_dynamic_bsz": true,
+    "+actor_rollout_ref.rollout.log_prob_top_k": 16,
+    "+actor_rollout_ref.rollout.top_k_strategy": "only_stu",
+    "+actor_rollout_ref.rollout.reward_weight_mode": "student_p",
+    "+actor_rollout_ref.rollout.teacher_temperature": 1.0,
+    "actor_rollout_ref.rollout.tensor_model_parallel_size": 1,
+    "actor_rollout_ref.rollout.gpu_memory_utilization": 0.8,
+    "actor_rollout_ref.rollout.max_model_len": 8192,
+    "actor_rollout_ref.rollout.max_num_batched_tokens": 32768,
+    "actor_rollout_ref.rollout.n": 4,
+    "actor_rollout_ref.rollout.val_kwargs.do_sample": true,
+    "+actor_rollout_ref.rollout.val_kwargs.max_tokens": 7168,
+    "actor_rollout_ref.rollout.val_kwargs.n": 16,
+    "actor_rollout_ref.rollout.val_kwargs.temperature": 0.7,
+    "actor_rollout_ref.rollout.val_kwargs.top_p": 0.95,
+    "actor_rollout_ref.rollout.repetition_penalty": 1.0,
+    "actor_rollout_ref.rollout.calculate_log_probs": true,
+    "reward_model.enable": true,
+    "+reward_model.reward_kwargs.enable_format_reward": false,
+    "reward_model.model.input_tokenizer": null,
+    "reward_model.model.use_remove_padding": true,
+    "reward_model.model.fsdp_config.param_offload": false,
+    "+reward_model.model.dtype": "fp32",
+    "reward_model.micro_batch_size_per_gpu": 24,
+    "custom_reward_function.name": "reward_func",
+    "trainer.val_before_train": false,
+    "trainer.log_val_generations": 2,
+    "trainer.n_gpus_per_node": 8,
+    "trainer.nnodes": 1,
+    "trainer.save_freq": 20,
+    "trainer.test_freq": -1,
+    "trainer.total_epochs": 1,
+    "trainer.is_plot": true
   },
   "evaluation": {
-    "benchmark": "AIME2025",
-    "source_files": [
-      {
-        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-I.jsonl",
-        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-I.jsonl",
-        "rows": 15,
-        "sha256": "b91b3c96f05d9635d2a0692b124ebe023c1ff59cb19c074275e6c4b349d0659e"
-      },
-      {
-        "path": "/home/zhenning/data/huggingface_datasets/AIME2025/aime2025-II.jsonl",
-        "resolved_path": "/local_nvme/data/zhenning/huggingface_datasets/AIME2025/aime2025-II.jsonl",
-        "rows": 15,
-        "sha256": "16a2dcfbbf9db1b11f8a69a3ba5e4cac73e3641b19a37e2307e9c12240bbed5e"
-      }
-    ],
-    "generations_per_question": 16,
-    "accuracy": "avg@16; mean correctness across per-question samples, not pass@16",
+    "n": 16,
     "temperature": 0.7,
     "top_p": 0.95,
-    "max_response_tokens": 31744,
+    "top_k": -1,
+    "max_tokens": 31744,
     "enable_thinking": false,
     "stop_markers": [
       "<|im_end|>",
       "<|endoftext|>"
     ],
-    "overlap": "sum of Top16 intersection counts / (16 * valid response prediction positions), on ordinary student prefixes, no hook",
-    "overlap_source_original": "training rollout metrics, not the standalone accuracy generator",
-    "figure_step_window": [
-      0,
-      200
-    ],
-    "rendering": "two panels: AIME2025 avg@16 accuracy and Overlap@16; all three groups; raw measurements retained; no fabricated or extrapolated curves"
+    "request_seed": null,
+    "grader": "rethinking_official_grade_answer_verl",
+    "metric": "avg@16",
+    "dataset": "assets/data/AIME2025"
   },
-  "implementation_gates": [
-    "exact Base and author-SFT lineage/revisions; existing ordinary 1.7B cannot substitute",
-    "resolve SFT/calibration/OPD/evaluation data scope",
-    "verify templates/mode/stop handling separately for Base, SFT and teacher",
-    "original Student-Top-K student_p surrogate baseline; do not reuse pilot teacher-top-K forward_kl_topk_tail",
-    "alpha=0 exact loss/gradient agreement, prediction masks, packed remove-padding positions, backward recomputation",
-    "steering surrogate semantics explicitly audited; ordinary rollouts are not steered-policy samples",
-    "fixed steering configuration or independent dev selection; do not tune on AIME test curves",
-    "GPU admission and project-local process/caches/output paths"
-  ],
+  "checkpoint_reporting": {
+    "save_freq": 20,
+    "proposed_evaluation_steps": [
+      0,
+      20,
+      40,
+      50
+    ],
+    "last_checkpoint": true,
+    "original_builtin_validation_disabled": true
+  },
+  "intentional_exceptions": {
+    "dataset": "User chose 100 OT3 OPD questions instead of approximately 30K",
+    "steps": "50 trainer steps on a repeated 100-question pool is a user-budget proposal, not paper one-epoch coverage",
+    "evaluation": "AIME2025 only; original figure also reports AIME2024 and AMC2023",
+    "initialization": "Base and teacher selected for Figure8; active generic upstream shell instead defaults to R1/JustRL/DAPO",
+    "seed": "Explicit project seed42; upstream data.seed is null",
+    "template": "Explicit enable_thinking=False follows upstream README non-thinking instruction; Figure8 Base training prompt still needs token-level archival",
+    "logging": "Local console only, rather than automatic swanlab upload",
+    "ray": "Private local Ray namespace; no global ray stop/start shell",
+    "runtime": "Installed torch/Transformers/vLLM runtime differs from original setup and is not GPU-validated with the old fork"
+  },
+  "verification": {
+    "comparison": "audit/rethinking_alignment_2026-11-12/comparison.json",
+    "hydra_preview": "audit/rethinking_alignment_2026-11-12/preview/launch.json",
+    "controlled_generation_and_replay_validated": false,
+    "tokenizer_and_stop_protocol_frozen": false,
+    "gpu_runtime_validated": false
+  },
   "state": {
+    "gpu_execution_authorized": false,
+    "asset_download_authorized": false,
     "gpu_tasks_launched": false,
     "model_weights_downloaded": false,
     "curves_generated": false,

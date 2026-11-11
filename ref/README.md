@@ -1,6 +1,12 @@
 # 同问题工作与 Steering 方法近邻
 
-主线仍是 [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf) 与 [Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf)。当前主比较包括四篇同问题工作与五篇方法近邻，共九篇参考论文。
+2026-11-12：当前方法按[用户最新完整稿](../docs/Steering_OPD_完整研究方案.md)与
+[主计划](../docs/01_research_plan.md)定义：T−R主方向、overlap单阈值门控，生成与
+学习重放采用一致受控策略，熵差独立对照，主评测无干预。下面仅是已有固定文献目录，
+不表示已实现新版方法或完成对应新颖性复核。Entropy-Aware OPD在新稿中提出，待
+本项目核对固定版本与公式；尚不计入本目录的九篇已归档参考。
+
+核心来源包括 [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf)、[Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) 与 [CompassOPD](2609.10154v1_compass_opd.pdf)。当前已归档比较包括四篇同问题工作与五篇方法近邻，共九篇参考论文。
 
 ## 解决相同或重叠问题的工作
 

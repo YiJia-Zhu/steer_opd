@@ -80,12 +80,13 @@
     "selection": "Actual short updates followed by no-hook dev gains; not max hooked overlap"
   },
   "objectives": {
-    "vanilla_method_panel": "Explicit finite-candidate reverse KL",
+    "vanilla_method_panel": "Pinned Rethinking Student Top-K16, student_p log-ratio reward and PPO surrogate; reverse-KL family",
     "compass_method_panel": "Explicit finite-candidate reverse KL to p0 * exp((ell_T-ell_R)/beta), adapted from Compass Eq.11",
     "paper_reference": "Native no-hook span sampled baselines; not conflated with candidate objective",
-    "rollout_policy": "ordinary_student_no_hook",
+    "rollout_policy": "controlled student with matching training replay for steering methods; implementation pending",
     "teacher_span_score": "mean main, sum robustness",
-    "full_vocab_kl_claim": false
+    "full_vocab_kl_claim": false,
+    "cross_tokenizer_default": "pending separate aligned-event implementation; do not apply native token-ID RKL silently"
   },
   "required_groups": [
     "E0",
@@ -105,7 +106,7 @@
     "microsoft/Phi-3.5-mini-instruct",
     "HuggingFaceTB/SmolLM3-3B"
   ],
-  "next_step": "Review cross-family small experiment and fallback budget; keep GPU jobs and downloads paused",
+  "next_step": "CPU configuration alignment complete; controlled rollout/replay, data/special-token checks and GPU runtime remain pending; experiments/downloads paused",
   "shared_teacher_calibration_panel": {
     "panels": [
       "C1",
@@ -121,7 +122,7 @@
   },
   "research_question": "Can student-space steering from a small teacher demonstration set improve cross-family teacher-student OPD adaptation, with gains retained after removing steering?",
   "scope_policy": {
-    "primary": "Try cross-family OPD adaptation first; do not assume steering works",
+    "primary": "Shared-vocabulary Rethinking pair mechanism test first; cross-family extension later if supported",
     "fallback": "After checking implementation/tokenization/length and bounded dev experiments, use Rethinking shared-vocabulary settings if cross-family gains are not reliable",
     "fixed_teacher_multiple_students": "Optional follow-up control, not the main question or a prerequisite",
     "claim_rule": "If only the fallback works, report shared-vocabulary scope only; preserve cross-family negative results; if neither works, report no benefit",
@@ -155,6 +156,9 @@
   },
   "branch_objectives": {
     "cross_family": "Candidate method ablations and separately labeled native span references",
-    "rethinking_fallback": "Reproduce original no-hook Rethinking reference; use a shared-vocabulary explicit top-K objective for matched steering ablations, label deviations; no cross-tokenizer or weak-reference requirement"
-  }
+    "rethinking_fallback": "Pinned original Student Top-K16 reverse-KL surrogate; all direction/gating variants must share it; source-keyed defaults in configs/rethinking_opd.json"
+  },
+  "default_profile": "configs/rethinking_opd.json",
+  "latest_alignment": "audit/rethinking_alignment_2026-11-12/comparison.json",
+  "configuration_status": "defaults_aligned_but_method_backend_not_implemented"
 }
