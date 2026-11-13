@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "steer-opd-easysteer-plugin"
+version = "0.1.0"
+description = "General-plugin registration for the steer_opd Slerp algorithm"
+requires-python = ">=3.10"
+
+[project.entry-points."vllm.general_plugins"]
+steer_opd_static = "steer_opd.easysteer_plugin:register"
+
+[tool.setuptools]
+packages = []

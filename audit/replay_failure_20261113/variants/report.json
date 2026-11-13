@@ -1,0 +1,1219 @@
+{
+  "job": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/jobs/steer_0001_rollout.json",
+  "experimental_updates": 0,
+  "elapsed_seconds": 5.562209669034928,
+  "rows": [
+    {
+      "key": "018_0",
+      "tokens": 5934,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 5934,
+      "mean_logp_error": 0.06815926280564903,
+      "max_logp_error": 2.1807985305786133,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 6.106162592142895e-05,
+      "topk_plus_complement_forward_max_kl": 0.17611236477649655,
+      "topk_plus_complement_reverse_mean_kl": 6.562381411904147e-05,
+      "topk_plus_complement_reverse_max_kl": 0.1806674726070981,
+      "conditional_topk_forward_mean_kl": 5.233048615186325e-05,
+      "conditional_topk_forward_max_kl": 0.15514986900761824,
+      "conditional_topk_reverse_mean_kl": 6.281484497064533e-05,
+      "conditional_topk_reverse_max_kl": 0.1879319999021376,
+      "worst_positions": [
+        {
+          "position": 5928,
+          "conditional_forward_kl": 0.15514986900761824
+        },
+        {
+          "position": 5929,
+          "conditional_forward_kl": 0.09184625952905554
+        },
+        {
+          "position": 5927,
+          "conditional_forward_kl": 0.03469054409283518
+        },
+        {
+          "position": 5930,
+          "conditional_forward_kl": 0.015158670211869252
+        },
+        {
+          "position": 5933,
+          "conditional_forward_kl": 0.0037168872102198366
+        },
+        {
+          "position": 2,
+          "conditional_forward_kl": 0.0031861667486867695
+        },
+        {
+          "position": 3,
+          "conditional_forward_kl": 0.0019162714267590402
+        },
+        {
+          "position": 0,
+          "conditional_forward_kl": 0.0010157897648581434
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.6335307322442532,
+          "max_logp_error": 1.03108549118042,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.1761102807754571,
+          "topk_plus_complement_forward_max_kl": 0.1761102807754571,
+          "topk_plus_complement_reverse_mean_kl": 0.1806656667964352,
+          "topk_plus_complement_reverse_max_kl": 0.1806656667964352,
+          "conditional_topk_forward_mean_kl": 0.1551499019854473,
+          "conditional_topk_forward_max_kl": 0.1551499019854473,
+          "conditional_topk_reverse_mean_kl": 0.18793204253547888,
+          "conditional_topk_reverse_max_kl": 0.18793204253547888,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.1551499019854473
+            }
+          ]
+        },
+        {
+          "backend": "None",
+          "cached_last": true,
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5967384539544582,
+          "max_logp_error": 1.022289752960205,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.15369284577717515,
+          "topk_plus_complement_forward_max_kl": 0.15369284577717515,
+          "topk_plus_complement_reverse_mean_kl": 0.15919801558210767,
+          "topk_plus_complement_reverse_max_kl": 0.15919801558210767,
+          "conditional_topk_forward_mean_kl": 0.13806026647012232,
+          "conditional_topk_forward_max_kl": 0.13806026647012232,
+          "conditional_topk_reverse_mean_kl": 0.16687479503944302,
+          "conditional_topk_reverse_max_kl": 0.16687479503944302,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.13806026647012232
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.6335307322442532,
+          "max_logp_error": 1.03108549118042,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.1761102807754571,
+          "topk_plus_complement_forward_max_kl": 0.1761102807754571,
+          "topk_plus_complement_reverse_mean_kl": 0.1806656667964352,
+          "topk_plus_complement_reverse_max_kl": 0.1806656667964352,
+          "conditional_topk_forward_mean_kl": 0.1551499019854473,
+          "conditional_topk_forward_max_kl": 0.1551499019854473,
+          "conditional_topk_reverse_mean_kl": 0.18793204253547888,
+          "conditional_topk_reverse_max_kl": 0.18793204253547888,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.1551499019854473
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "cached_last": true,
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5967384539544582,
+          "max_logp_error": 1.022289752960205,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.15369284577717515,
+          "topk_plus_complement_forward_max_kl": 0.15369284577717515,
+          "topk_plus_complement_reverse_mean_kl": 0.15919801558210767,
+          "topk_plus_complement_reverse_max_kl": 0.15919801558210767,
+          "conditional_topk_forward_mean_kl": 0.13806026647012232,
+          "conditional_topk_forward_max_kl": 0.13806026647012232,
+          "conditional_topk_reverse_mean_kl": 0.16687479503944302,
+          "conditional_topk_reverse_max_kl": 0.16687479503944302,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.13806026647012232
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.42483530193567276,
+          "max_logp_error": 0.9217543601989746,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.08139560673063839,
+          "topk_plus_complement_forward_max_kl": 0.08139560673063839,
+          "topk_plus_complement_reverse_mean_kl": 0.08503722594165852,
+          "topk_plus_complement_reverse_max_kl": 0.08503722594165852,
+          "conditional_topk_forward_mean_kl": 0.056705070224471965,
+          "conditional_topk_forward_max_kl": 0.056705070224471965,
+          "conditional_topk_reverse_mean_kl": 0.06660321870008665,
+          "conditional_topk_reverse_max_kl": 0.06660321870008665,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.056705070224471965
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "cached_last": true,
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.4469900019466877,
+          "max_logp_error": 0.9884133338928223,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0925259622381916,
+          "topk_plus_complement_forward_max_kl": 0.0925259622381916,
+          "topk_plus_complement_reverse_mean_kl": 0.09656413600322412,
+          "topk_plus_complement_reverse_max_kl": 0.09656413600322412,
+          "conditional_topk_forward_mean_kl": 0.06589882816612298,
+          "conditional_topk_forward_max_kl": 0.06589882816612298,
+          "conditional_topk_reverse_mean_kl": 0.07798925082356517,
+          "conditional_topk_reverse_max_kl": 0.07798925082356517,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.06589882816612298
+            }
+          ]
+        },
+        {
+          "backend": "no_bf16_reduced_precision_reduction",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.6335307322442532,
+          "max_logp_error": 1.03108549118042,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.1761102807754571,
+          "topk_plus_complement_forward_max_kl": 0.1761102807754571,
+          "topk_plus_complement_reverse_mean_kl": 0.1806656667964352,
+          "topk_plus_complement_reverse_max_kl": 0.1806656667964352,
+          "conditional_topk_forward_mean_kl": 0.1551499019854473,
+          "conditional_topk_forward_max_kl": 0.1551499019854473,
+          "conditional_topk_reverse_mean_kl": 0.18793204253547888,
+          "conditional_topk_reverse_max_kl": 0.18793204253547888,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.1551499019854473
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "024_1",
+      "tokens": 1946,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 1946,
+      "mean_logp_error": 0.03883103988768928,
+      "max_logp_error": 0.9015207290649414,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 0.0002508702588753121,
+      "topk_plus_complement_forward_max_kl": 0.03224370733875416,
+      "topk_plus_complement_reverse_mean_kl": 0.00025314794204296805,
+      "topk_plus_complement_reverse_max_kl": 0.035691169859900104,
+      "conditional_topk_forward_mean_kl": 0.0002755165880218788,
+      "conditional_topk_forward_max_kl": 0.032476672022164144,
+      "conditional_topk_reverse_mean_kl": 0.0002781652782055852,
+      "conditional_topk_reverse_max_kl": 0.03635709087195394,
+      "worst_positions": [
+        {
+          "position": 825,
+          "conditional_forward_kl": 0.032476672022164144
+        },
+        {
+          "position": 163,
+          "conditional_forward_kl": 0.004918445589291586
+        },
+        {
+          "position": 935,
+          "conditional_forward_kl": 0.004911692149865435
+        },
+        {
+          "position": 717,
+          "conditional_forward_kl": 0.004822740974291497
+        },
+        {
+          "position": 954,
+          "conditional_forward_kl": 0.0033247463786459965
+        },
+        {
+          "position": 1543,
+          "conditional_forward_kl": 0.003301329399097921
+        },
+        {
+          "position": 828,
+          "conditional_forward_kl": 0.002967653337941741
+        },
+        {
+          "position": 583,
+          "conditional_forward_kl": 0.0029446868283512853
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.31637858785688877,
+          "max_logp_error": 0.6435575485229492,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.03224552040063332,
+          "topk_plus_complement_forward_max_kl": 0.03224552040063332,
+          "topk_plus_complement_reverse_mean_kl": 0.03569328814292572,
+          "topk_plus_complement_reverse_max_kl": 0.03569328814292572,
+          "conditional_topk_forward_mean_kl": 0.032478643673461816,
+          "conditional_topk_forward_max_kl": 0.032478643673461816,
+          "conditional_topk_reverse_mean_kl": 0.036359398066855224,
+          "conditional_topk_reverse_max_kl": 0.036359398066855224,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.032478643673461816
+            }
+          ]
+        },
+        {
+          "backend": "None",
+          "cached_last": true,
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.3901012372225523,
+          "max_logp_error": 0.7877106666564941,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.05261590041943232,
+          "topk_plus_complement_forward_max_kl": 0.05261590041943232,
+          "topk_plus_complement_reverse_mean_kl": 0.05900350504580455,
+          "topk_plus_complement_reverse_max_kl": 0.05900350504580455,
+          "conditional_topk_forward_mean_kl": 0.05326904415137443,
+          "conditional_topk_forward_max_kl": 0.05326904415137443,
+          "conditional_topk_reverse_mean_kl": 0.060525071933667074,
+          "conditional_topk_reverse_max_kl": 0.060525071933667074,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.05326904415137443
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.31637858785688877,
+          "max_logp_error": 0.6435575485229492,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.03224552040063332,
+          "topk_plus_complement_forward_max_kl": 0.03224552040063332,
+          "topk_plus_complement_reverse_mean_kl": 0.03569328814292572,
+          "topk_plus_complement_reverse_max_kl": 0.03569328814292572,
+          "conditional_topk_forward_mean_kl": 0.032478643673461816,
+          "conditional_topk_forward_max_kl": 0.032478643673461816,
+          "conditional_topk_reverse_mean_kl": 0.036359398066855224,
+          "conditional_topk_reverse_max_kl": 0.036359398066855224,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.032478643673461816
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "cached_last": true,
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.3901012372225523,
+          "max_logp_error": 0.7877106666564941,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.05261590041943232,
+          "topk_plus_complement_forward_max_kl": 0.05261590041943232,
+          "topk_plus_complement_reverse_mean_kl": 0.05900350504580455,
+          "topk_plus_complement_reverse_max_kl": 0.05900350504580455,
+          "conditional_topk_forward_mean_kl": 0.05326904415137443,
+          "conditional_topk_forward_max_kl": 0.05326904415137443,
+          "conditional_topk_reverse_mean_kl": 0.060525071933667074,
+          "conditional_topk_reverse_max_kl": 0.060525071933667074,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.05326904415137443
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.03685576654970646,
+          "max_logp_error": 0.10596799850463867,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0007290143465403525,
+          "topk_plus_complement_forward_max_kl": 0.0007290143465403525,
+          "topk_plus_complement_reverse_mean_kl": 0.0007113432050009395,
+          "topk_plus_complement_reverse_max_kl": 0.0007113432050009395,
+          "conditional_topk_forward_mean_kl": 0.0007345077335856667,
+          "conditional_topk_forward_max_kl": 0.0007345077335856667,
+          "conditional_topk_reverse_mean_kl": 0.000716853990703344,
+          "conditional_topk_reverse_max_kl": 0.000716853990703344,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0007345077335856667
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "cached_last": true,
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.11058866418898106,
+          "max_logp_error": 0.2371058464050293,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.003268091966448587,
+          "topk_plus_complement_forward_max_kl": 0.003268091966448587,
+          "topk_plus_complement_reverse_mean_kl": 0.003147360220342318,
+          "topk_plus_complement_reverse_max_kl": 0.003147360220342318,
+          "conditional_topk_forward_mean_kl": 0.00337430924650868,
+          "conditional_topk_forward_max_kl": 0.00337430924650868,
+          "conditional_topk_reverse_mean_kl": 0.0032439051046477914,
+          "conditional_topk_reverse_max_kl": 0.0032439051046477914,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.00337430924650868
+            }
+          ]
+        },
+        {
+          "backend": "no_bf16_reduced_precision_reduction",
+          "position": 825,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.23609101213514805,
+          "max_logp_error": 0.5060615539550781,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.01649776452685285,
+          "topk_plus_complement_forward_max_kl": 0.01649776452685285,
+          "topk_plus_complement_reverse_mean_kl": 0.01788503729086881,
+          "topk_plus_complement_reverse_max_kl": 0.01788503729086881,
+          "conditional_topk_forward_mean_kl": 0.01677248915732068,
+          "conditional_topk_forward_max_kl": 0.01677248915732068,
+          "conditional_topk_reverse_mean_kl": 0.018309741544993492,
+          "conditional_topk_reverse_max_kl": 0.018309741544993492,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.01677248915732068
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "029_0",
+      "tokens": 4539,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 4539,
+      "mean_logp_error": 0.07890789689796854,
+      "max_logp_error": 2.0117908716201782,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 0.001312889161466611,
+      "topk_plus_complement_forward_max_kl": 0.4362168125189915,
+      "topk_plus_complement_reverse_mean_kl": 0.0012944593828327468,
+      "topk_plus_complement_reverse_max_kl": 0.4117168923272787,
+      "conditional_topk_forward_mean_kl": 0.0013131464712321924,
+      "conditional_topk_forward_max_kl": 0.4364561944408379,
+      "conditional_topk_reverse_mean_kl": 0.001294674308837818,
+      "conditional_topk_reverse_max_kl": 0.41190305647415426,
+      "worst_positions": [
+        {
+          "position": 2765,
+          "conditional_forward_kl": 0.4364561944408379
+        },
+        {
+          "position": 1470,
+          "conditional_forward_kl": 0.43495704382495803
+        },
+        {
+          "position": 1220,
+          "conditional_forward_kl": 0.3049179632198218
+        },
+        {
+          "position": 2689,
+          "conditional_forward_kl": 0.29785535693346965
+        },
+        {
+          "position": 1980,
+          "conditional_forward_kl": 0.28530920195010656
+        },
+        {
+          "position": 2413,
+          "conditional_forward_kl": 0.276039229084966
+        },
+        {
+          "position": 1817,
+          "conditional_forward_kl": 0.26439436084526524
+        },
+        {
+          "position": 2432,
+          "conditional_forward_kl": 0.19961347587960923
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5131366308778524,
+          "max_logp_error": 1.4270563125610352,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.43622441426023567,
+          "topk_plus_complement_forward_max_kl": 0.43622441426023567,
+          "topk_plus_complement_reverse_mean_kl": 0.411722915223232,
+          "topk_plus_complement_reverse_max_kl": 0.411722915223232,
+          "conditional_topk_forward_mean_kl": 0.4364637856235641,
+          "conditional_topk_forward_max_kl": 0.4364637856235641,
+          "conditional_topk_reverse_mean_kl": 0.411909038658889,
+          "conditional_topk_reverse_max_kl": 0.411909038658889,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.4364637856235641
+            }
+          ]
+        },
+        {
+          "backend": "None",
+          "cached_last": true,
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5102901477366686,
+          "max_logp_error": 1.4185104370117188,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.4340405912888018,
+          "topk_plus_complement_forward_max_kl": 0.4340405912888018,
+          "topk_plus_complement_reverse_mean_kl": 0.40999738318849543,
+          "topk_plus_complement_reverse_max_kl": 0.40999738318849543,
+          "conditional_topk_forward_mean_kl": 0.4342798860112294,
+          "conditional_topk_forward_max_kl": 0.4342798860112294,
+          "conditional_topk_reverse_mean_kl": 0.4101861886591165,
+          "conditional_topk_reverse_max_kl": 0.4101861886591165,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.4342798860112294
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5131366308778524,
+          "max_logp_error": 1.4270563125610352,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.43622441426023567,
+          "topk_plus_complement_forward_max_kl": 0.43622441426023567,
+          "topk_plus_complement_reverse_mean_kl": 0.411722915223232,
+          "topk_plus_complement_reverse_max_kl": 0.411722915223232,
+          "conditional_topk_forward_mean_kl": 0.4364637856235641,
+          "conditional_topk_forward_max_kl": 0.4364637856235641,
+          "conditional_topk_reverse_mean_kl": 0.411909038658889,
+          "conditional_topk_reverse_max_kl": 0.411909038658889,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.4364637856235641
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "cached_last": true,
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5102901477366686,
+          "max_logp_error": 1.4185104370117188,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.4340405912888018,
+          "topk_plus_complement_forward_max_kl": 0.4340405912888018,
+          "topk_plus_complement_reverse_mean_kl": 0.40999738318849543,
+          "topk_plus_complement_reverse_max_kl": 0.40999738318849543,
+          "conditional_topk_forward_mean_kl": 0.4342798860112294,
+          "conditional_topk_forward_max_kl": 0.4342798860112294,
+          "conditional_topk_reverse_mean_kl": 0.4101861886591165,
+          "conditional_topk_reverse_max_kl": 0.4101861886591165,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.4342798860112294
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.1117781437933445,
+          "max_logp_error": 0.23905467987060547,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.014129937629782619,
+          "topk_plus_complement_forward_max_kl": 0.014129937629782619,
+          "topk_plus_complement_reverse_mean_kl": 0.014607369707410167,
+          "topk_plus_complement_reverse_max_kl": 0.014607369707410167,
+          "conditional_topk_forward_mean_kl": 0.014137628240649468,
+          "conditional_topk_forward_max_kl": 0.014137628240649468,
+          "conditional_topk_reverse_mean_kl": 0.014615042908956695,
+          "conditional_topk_reverse_max_kl": 0.014615042908956695,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.014137628240649468
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "cached_last": true,
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.11095297709107399,
+          "max_logp_error": 0.2713136672973633,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.017979557873319504,
+          "topk_plus_complement_forward_max_kl": 0.017979557873319504,
+          "topk_plus_complement_reverse_mean_kl": 0.018638226804525572,
+          "topk_plus_complement_reverse_max_kl": 0.018638226804525572,
+          "conditional_topk_forward_mean_kl": 0.017989660873400478,
+          "conditional_topk_forward_max_kl": 0.017989660873400478,
+          "conditional_topk_reverse_mean_kl": 0.018648945907258224,
+          "conditional_topk_reverse_max_kl": 0.018648945907258224,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.017989660873400478
+            }
+          ]
+        },
+        {
+          "backend": "no_bf16_reduced_precision_reduction",
+          "position": 2765,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.5131366308778524,
+          "max_logp_error": 1.4270563125610352,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.43622441426023567,
+          "topk_plus_complement_forward_max_kl": 0.43622441426023567,
+          "topk_plus_complement_reverse_mean_kl": 0.411722915223232,
+          "topk_plus_complement_reverse_max_kl": 0.411722915223232,
+          "conditional_topk_forward_mean_kl": 0.4364637856235641,
+          "conditional_topk_forward_max_kl": 0.4364637856235641,
+          "conditional_topk_reverse_mean_kl": 0.411909038658889,
+          "conditional_topk_reverse_max_kl": 0.411909038658889,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.4364637856235641
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "033_3",
+      "tokens": 434,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 434,
+      "mean_logp_error": 0.036843790854350966,
+      "max_logp_error": 0.39669036865234375,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 0.00033793575025353246,
+      "topk_plus_complement_forward_max_kl": 0.02540616292509726,
+      "topk_plus_complement_reverse_mean_kl": 0.0003388742152898184,
+      "topk_plus_complement_reverse_max_kl": 0.025836212961353022,
+      "conditional_topk_forward_mean_kl": 0.00039124716597527937,
+      "conditional_topk_forward_max_kl": 0.033753220884659194,
+      "conditional_topk_reverse_mean_kl": 0.0003895853055166019,
+      "conditional_topk_reverse_max_kl": 0.0330079686559407,
+      "worst_positions": [
+        {
+          "position": 69,
+          "conditional_forward_kl": 0.033753220884659194
+        },
+        {
+          "position": 254,
+          "conditional_forward_kl": 0.003410470104794246
+        },
+        {
+          "position": 9,
+          "conditional_forward_kl": 0.0029767464546761402
+        },
+        {
+          "position": 91,
+          "conditional_forward_kl": 0.0027519987854578
+        },
+        {
+          "position": 0,
+          "conditional_forward_kl": 0.0027271118066038644
+        },
+        {
+          "position": 238,
+          "conditional_forward_kl": 0.00202516570649599
+        },
+        {
+          "position": 214,
+          "conditional_forward_kl": 0.0019095457158852672
+        },
+        {
+          "position": 210,
+          "conditional_forward_kl": 0.0017828218612384577
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.05392575263977051,
+          "max_logp_error": 0.10271835327148438,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0020086382882392785,
+          "topk_plus_complement_forward_max_kl": 0.0020086382882392785,
+          "topk_plus_complement_reverse_mean_kl": 0.002017854307779397,
+          "topk_plus_complement_reverse_max_kl": 0.002017854307779397,
+          "conditional_topk_forward_mean_kl": 0.0028168600362032193,
+          "conditional_topk_forward_max_kl": 0.0028168600362032193,
+          "conditional_topk_reverse_mean_kl": 0.002808547483528562,
+          "conditional_topk_reverse_max_kl": 0.002808547483528562,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0028168600362032193
+            }
+          ]
+        },
+        {
+          "backend": "None",
+          "cached_last": true,
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.04970830678939819,
+          "max_logp_error": 0.09530019760131836,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.001194369222377018,
+          "topk_plus_complement_forward_max_kl": 0.001194369222377018,
+          "topk_plus_complement_reverse_mean_kl": 0.0011961174192478487,
+          "topk_plus_complement_reverse_max_kl": 0.0011961174192478487,
+          "conditional_topk_forward_mean_kl": 0.0017277474893469826,
+          "conditional_topk_forward_max_kl": 0.0017277474893469826,
+          "conditional_topk_reverse_mean_kl": 0.001726881915131817,
+          "conditional_topk_reverse_max_kl": 0.001726881915131817,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0017277474893469826
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.05392575263977051,
+          "max_logp_error": 0.10271835327148438,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0020086382882392785,
+          "topk_plus_complement_forward_max_kl": 0.0020086382882392785,
+          "topk_plus_complement_reverse_mean_kl": 0.002017854307779397,
+          "topk_plus_complement_reverse_max_kl": 0.002017854307779397,
+          "conditional_topk_forward_mean_kl": 0.0028168600362032193,
+          "conditional_topk_forward_max_kl": 0.0028168600362032193,
+          "conditional_topk_reverse_mean_kl": 0.002808547483528562,
+          "conditional_topk_reverse_max_kl": 0.002808547483528562,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0028168600362032193
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "cached_last": true,
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.04970830678939819,
+          "max_logp_error": 0.09530019760131836,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.001194369222377018,
+          "topk_plus_complement_forward_max_kl": 0.001194369222377018,
+          "topk_plus_complement_reverse_mean_kl": 0.0011961174192478487,
+          "topk_plus_complement_reverse_max_kl": 0.0011961174192478487,
+          "conditional_topk_forward_mean_kl": 0.0017277474893469826,
+          "conditional_topk_forward_max_kl": 0.0017277474893469826,
+          "conditional_topk_reverse_mean_kl": 0.001726881915131817,
+          "conditional_topk_reverse_max_kl": 0.001726881915131817,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0017277474893469826
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.06635928153991699,
+          "max_logp_error": 0.10814952850341797,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0014414808302400802,
+          "topk_plus_complement_forward_max_kl": 0.0014414808302400802,
+          "topk_plus_complement_reverse_mean_kl": 0.0014383010317193076,
+          "topk_plus_complement_reverse_max_kl": 0.0014383010317193076,
+          "conditional_topk_forward_mean_kl": 0.002074551318529064,
+          "conditional_topk_forward_max_kl": 0.002074551318529064,
+          "conditional_topk_reverse_mean_kl": 0.0020769155685075535,
+          "conditional_topk_reverse_max_kl": 0.0020769155685075535,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.002074551318529064
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "cached_last": true,
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.020533204078674316,
+          "max_logp_error": 0.06181621551513672,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.00020025736042927005,
+          "topk_plus_complement_forward_max_kl": 0.00020025736042927005,
+          "topk_plus_complement_reverse_mean_kl": 0.00020005947534292804,
+          "topk_plus_complement_reverse_max_kl": 0.00020005947534292804,
+          "conditional_topk_forward_mean_kl": 0.00025173051359756967,
+          "conditional_topk_forward_max_kl": 0.00025173051359756967,
+          "conditional_topk_reverse_mean_kl": 0.00025029082400047215,
+          "conditional_topk_reverse_max_kl": 0.00025029082400047215,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.00025173051359756967
+            }
+          ]
+        },
+        {
+          "backend": "no_bf16_reduced_precision_reduction",
+          "position": 69,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.030335351824760437,
+          "max_logp_error": 0.09540319442749023,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0003866451761405333,
+          "topk_plus_complement_forward_max_kl": 0.0003866451761405333,
+          "topk_plus_complement_reverse_mean_kl": 0.0003858827195010921,
+          "topk_plus_complement_reverse_max_kl": 0.0003858827195010921,
+          "conditional_topk_forward_mean_kl": 0.0003153495349250122,
+          "conditional_topk_forward_max_kl": 0.0003153495349250122,
+          "conditional_topk_reverse_mean_kl": 0.00031166433527174886,
+          "conditional_topk_reverse_max_kl": 0.00031166433527174886,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0003153495349250122
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "062_2",
+      "tokens": 829,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 829,
+      "mean_logp_error": 0.04205379590281215,
+      "max_logp_error": 0.5904710292816162,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 0.0002711960963272029,
+      "topk_plus_complement_forward_max_kl": 0.03429790268441443,
+      "topk_plus_complement_reverse_mean_kl": 0.0002658003671806464,
+      "topk_plus_complement_reverse_max_kl": 0.02932612299083615,
+      "conditional_topk_forward_mean_kl": 0.00029057260550979856,
+      "conditional_topk_forward_max_kl": 0.03429958011497837,
+      "conditional_topk_reverse_mean_kl": 0.00028537840535102394,
+      "conditional_topk_reverse_max_kl": 0.029327712934574098,
+      "worst_positions": [
+        {
+          "position": 210,
+          "conditional_forward_kl": 0.03429958011497837
+        },
+        {
+          "position": 211,
+          "conditional_forward_kl": 0.007855927954626685
+        },
+        {
+          "position": 13,
+          "conditional_forward_kl": 0.004759948279277273
+        },
+        {
+          "position": 0,
+          "conditional_forward_kl": 0.004117607065845906
+        },
+        {
+          "position": 326,
+          "conditional_forward_kl": 0.003496784810726512
+        },
+        {
+          "position": 615,
+          "conditional_forward_kl": 0.0031190526088339895
+        },
+        {
+          "position": 327,
+          "conditional_forward_kl": 0.0028721039138546126
+        },
+        {
+          "position": 786,
+          "conditional_forward_kl": 0.001995865459276344
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.08809158951044083,
+          "max_logp_error": 0.2984004020690918,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.004602581204602888,
+          "topk_plus_complement_forward_max_kl": 0.004602581204602888,
+          "topk_plus_complement_reverse_mean_kl": 0.00445399816799403,
+          "topk_plus_complement_reverse_max_kl": 0.00445399816799403,
+          "conditional_topk_forward_mean_kl": 0.004602679727274333,
+          "conditional_topk_forward_max_kl": 0.004602679727274333,
+          "conditional_topk_reverse_mean_kl": 0.004454105141655018,
+          "conditional_topk_reverse_max_kl": 0.004454105141655018,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.004602679727274333
+            }
+          ]
+        },
+        {
+          "backend": "None",
+          "cached_last": true,
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.09316931292414665,
+          "max_logp_error": 0.316436767578125,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0008839629627923006,
+          "topk_plus_complement_forward_max_kl": 0.0008839629627923006,
+          "topk_plus_complement_reverse_mean_kl": 0.0008369469074392707,
+          "topk_plus_complement_reverse_max_kl": 0.0008369469074392707,
+          "conditional_topk_forward_mean_kl": 0.0008835499453285194,
+          "conditional_topk_forward_max_kl": 0.0008835499453285194,
+          "conditional_topk_reverse_mean_kl": 0.0008365433946112824,
+          "conditional_topk_reverse_max_kl": 0.0008365433946112824,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0008835499453285194
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.08809158951044083,
+          "max_logp_error": 0.2984004020690918,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.004602581204602888,
+          "topk_plus_complement_forward_max_kl": 0.004602581204602888,
+          "topk_plus_complement_reverse_mean_kl": 0.00445399816799403,
+          "topk_plus_complement_reverse_max_kl": 0.00445399816799403,
+          "conditional_topk_forward_mean_kl": 0.004602679727274333,
+          "conditional_topk_forward_max_kl": 0.004602679727274333,
+          "conditional_topk_reverse_mean_kl": 0.004454105141655018,
+          "conditional_topk_reverse_max_kl": 0.004454105141655018,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.004602679727274333
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "cached_last": true,
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.09316931292414665,
+          "max_logp_error": 0.316436767578125,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.0008839629627923006,
+          "topk_plus_complement_forward_max_kl": 0.0008839629627923006,
+          "topk_plus_complement_reverse_mean_kl": 0.0008369469074392707,
+          "topk_plus_complement_reverse_max_kl": 0.0008369469074392707,
+          "conditional_topk_forward_mean_kl": 0.0008835499453285194,
+          "conditional_topk_forward_max_kl": 0.0008835499453285194,
+          "conditional_topk_reverse_mean_kl": 0.0008365433946112824,
+          "conditional_topk_reverse_max_kl": 0.0008365433946112824,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0008835499453285194
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.027200698852539062,
+          "max_logp_error": 0.12601852416992188,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.00030395246957305006,
+          "topk_plus_complement_forward_max_kl": 0.00030395246957305006,
+          "topk_plus_complement_reverse_mean_kl": 0.0003079096027708173,
+          "topk_plus_complement_reverse_max_kl": 0.0003079096027708173,
+          "conditional_topk_forward_mean_kl": 0.0003039710832889158,
+          "conditional_topk_forward_max_kl": 0.0003039710832889158,
+          "conditional_topk_reverse_mean_kl": 0.0003079285923320292,
+          "conditional_topk_reverse_max_kl": 0.0003079285923320292,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.0003039710832889158
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "cached_last": true,
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.04367469996213913,
+          "max_logp_error": 0.18246662616729736,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.004117791648381374,
+          "topk_plus_complement_forward_max_kl": 0.004117791648381374,
+          "topk_plus_complement_reverse_mean_kl": 0.003951941667584145,
+          "topk_plus_complement_reverse_max_kl": 0.003951941667584145,
+          "conditional_topk_forward_mean_kl": 0.004118002808243388,
+          "conditional_topk_forward_max_kl": 0.004118002808243388,
+          "conditional_topk_reverse_mean_kl": 0.003952152145277435,
+          "conditional_topk_reverse_max_kl": 0.003952152145277435,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.004118002808243388
+            }
+          ]
+        },
+        {
+          "backend": "no_bf16_reduced_precision_reduction",
+          "position": 210,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": true,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.08809158951044083,
+          "max_logp_error": 0.2984004020690918,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.004602581204602888,
+          "topk_plus_complement_forward_max_kl": 0.004602581204602888,
+          "topk_plus_complement_reverse_mean_kl": 0.00445399816799403,
+          "topk_plus_complement_reverse_max_kl": 0.00445399816799403,
+          "conditional_topk_forward_mean_kl": 0.004602679727274333,
+          "conditional_topk_forward_max_kl": 0.004602679727274333,
+          "conditional_topk_reverse_mean_kl": 0.004454105141655018,
+          "conditional_topk_reverse_max_kl": 0.004454105141655018,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.004602679727274333
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failed_keys": [
+    "018_0",
+    "024_1",
+    "029_0",
+    "033_3",
+    "062_2"
+  ]
+}

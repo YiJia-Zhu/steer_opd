@@ -73,6 +73,8 @@ def install_bank_steering(worker, bank):
     model = runner.get_model()
     if bank["method"]["gate"] != "all":
         raise ValueError("Causal gates must use the controlled reference backend")
+    if bank["method"].get("operator", "additive") != "additive":
+        raise ValueError("Slerp needs the explicit static engine adapter")
     per_question = bank["method"]["granularity"] == "per_question"
     question_ids = bank["valid_ids"] if per_question else [None]
     deltas = {qid: {layer: value.to(device="cuda", dtype=torch.bfloat16)

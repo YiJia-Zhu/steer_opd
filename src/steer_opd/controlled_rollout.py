@@ -41,6 +41,8 @@ def next_distribution(model, token_ids, cache, controller=None, inject=False):
 
 
 def gate_decision(method, position, probe=None, teacher=None, *, random_draw=None, gate_history=None):
+    if method.gate == "static_overlap":
+        raise ValueError("Static overlap needs a frozen source mask; use the static scoring/engine entrypoint")
     metrics = {}
     if method.gate == "all":
         return True, metrics
@@ -71,13 +73,17 @@ def gate_decision(method, position, probe=None, teacher=None, *, random_draw=Non
     return sh - th > method.entropy_threshold, metrics
 
 
-def controlled_step(student, teacher, tokens, student_cache, teacher_cache, controller, method, position, draw, gate_history=None):
+def controlled_step(student, teacher, tokens, student_cache, teacher_cache, controller, method, position, draw, gate_history=None,
+                    *, record_probe=False):
     q, teacher_cache = next_distribution(teacher, tokens, teacher_cache)
     probe, probe_cache = None, None
-    if method.online_gate:
+    if method.online_gate or record_probe:
         # Both branches start from the identical controlled history. The probe's
         # upper-layer KV never enters the official branch after a triggered gate.
         probe, probe_cache = next_distribution(student, tokens, fork_cache(student_cache))
+        if not method.online_gate:
+            del probe_cache
+            probe_cache = None
     inject, metrics = gate_decision(method, position, probe, q, random_draw=draw, gate_history=gate_history)
     if method.online_gate and not inject:
         p, student_cache = probe, probe_cache
@@ -100,7 +106,8 @@ def rebuild_history(model, row, controller=None):
 
 
 def generate_response(student, teacher, request, controller, method, *, max_tokens, support_size, k,
-                      stop_ids, progress=None, save_progress=None, save_every=32, audit_full=False):
+                      stop_ids, progress=None, save_progress=None, save_every=32, audit_full=False,
+                      record_probe=False):
     """One request, resumable at token boundaries. No parameter update or graph."""
     device = student.lm_head.weight.device
     sampling = torch.Generator(device=device).manual_seed(request["seed"])
@@ -132,7 +139,8 @@ def generate_response(student, teacher, request, controller, method, *, max_toke
             tokens = [state["token_ids"][-1]] if state["token_ids"] else request["prompt_token_ids"]
             p, q, student_cache, teacher_cache, inject, metrics, probe = controlled_step(
                 student, teacher, tokens, student_cache, teacher_cache, controller, method,
-                len(state["token_ids"]), float(torch.rand((), generator=gating)), state["gate_history"])
+                len(state["token_ids"]), float(torch.rand((), generator=gating)), state["gate_history"],
+                record_probe=record_probe)
             if controller is None:
                 inject = False
             if len(p) != support_size or len(q) != support_size:

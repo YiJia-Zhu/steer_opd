@@ -116,3 +116,39 @@ def test_runtime_tuning_preserves_existing_generation_job_and_scientific_paramet
     evaluation = json.loads((tmp_path / "jobs/eval_steer_0010.json").read_text())
     assert "max_num_seqs" not in evaluation and evaluation["logprobs"] is None
     assert evaluation["max_tokens"] == 31744 and evaluation["top_p"] == 0.95
+
+
+def test_paired_plots_run_after_fresh_and_cached_rollouts_with_new_job_only_probe_capture(tmp_path, monkeypatch):
+    from steer_opd.method_config import Method
+    module = script("run_figure8_campaign")
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    campaign = module.Campaign.__new__(module.Campaign)
+    campaign.run = tmp_path
+    campaign.cfg = {"seed": 42, "vllm_gpu_memory_utilization": .75, "shared_vocabulary_size": 151665,
+        "student_topk_source": "rollout", "supervision_top_k": 16, "teacher": "teacher",
+        "steering_method": Method(layers=(0,), gate="all").to_dict(), "generation_backend": "hf_batched"}
+    model, output = tmp_path / "model", tmp_path / "steer/steps/0001/rollouts"
+    requests = [{"key": str(i), "prompt_token_ids": [1, 2], "seed": i} for i in range(4)]
+    launches, plots = [], []
+    def stage(name, command):
+        launches.append(name)
+        output.mkdir(parents=True, exist_ok=True)
+        (output / "complete.json").write_text("{}")
+    campaign.stage = stage
+    campaign.cpu_stage = lambda name, command, **kw: plots.append((name, command, kw))
+    monkeypatch.setattr(module, "prepare_generation_manifest", lambda out, job: (job, "hash", []))
+    for _ in range(2):
+        campaign.generate("steer_0001_rollout", model, requests, output, 7168, 1., 1.)
+    assert launches == ["steer_0001_rollout"]
+    assert len(plots) == 2
+    assert all(p[1][0] == "scripts/plot_token_overlap_gates.py" and p[1][-2:] == ["--count", "3"] for p in plots)
+    assert all(p[2] == {"required": False} for p in plots)
+    path = tmp_path / "jobs/steer_0001_rollout.json"
+    job = json.loads(path.read_text())
+    assert job["record_comparison_probe"] is True
+    del job["record_comparison_probe"]
+    path.write_text(json.dumps(job))
+    campaign.generate("steer_0001_rollout", model, requests, output, 7168, 1., 1.)
+    assert "record_comparison_probe" not in json.loads(path.read_text())
+    campaign.plot_rollout_comparison("branch_backend_rollout", output, job)
+    assert len(plots) == 3

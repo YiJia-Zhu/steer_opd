@@ -16,7 +16,7 @@ def file_sha256(path):
     return sha.hexdigest()
 
 
-def make_bank(pooled, method, identity, fixed_scales=None):
+def make_bank(pooled, method, identity, fixed_scales=None, *, allow_zero_directions=False):
     """Average raw differences before normalization; identical pair set per layer."""
     valid = {key: record for key, record in pooled.items() if record["usable"]}
     if not valid:
@@ -28,14 +28,14 @@ def make_bank(pooled, method, identity, fixed_scales=None):
         differences = {qid: value["layers"][key]["pools"][0] - value["layers"][key]["pools"][1]
                        for qid, value in valid.items()}
         for difference in differences.values():
-            if not torch.isfinite(difference).all() or (difference.norm() < 1e-8 and method.granularity == "global"):
+            if not torch.isfinite(difference).all() or (difference.norm() < 1e-8 and method.granularity == "global" and not allow_zero_directions):
                 raise ValueError("Degenerate per-question direction; do not amplify noise")
         scale = (torch.as_tensor(fixed_scales[key]).float() if fixed_scales is not None else
                  torch.cat([n for value in valid.values() for n in value["layers"][key]["norms"]]).median())
         if not torch.isfinite(scale) or scale <= 0:
             raise ValueError("Invalid frozen activation scale")
         global_difference = torch.stack(list(differences.values())).mean(0)
-        if global_difference.norm() < 1e-8 and method.granularity == "global":
+        if global_difference.norm() < 1e-8 and method.granularity == "global" and not allow_zero_directions:
             raise ValueError("Degenerate global direction")
         layers[key] = {"direction": global_difference, "scale": scale}
         for qid, difference in differences.items():
@@ -50,7 +50,8 @@ def make_bank(pooled, method, identity, fixed_scales=None):
     return bank
 
 
-def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None):
+def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None,
+                 operator=None, alpha=None, layers=None):
     method = bank["method"]
     if method["granularity"] == "global":
         records, assigned = bank["layers"], "global"
@@ -65,6 +66,15 @@ def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None):
             offset = 1 + method["seed"] % (len(ids) - 1)
             assigned = ids[(ids.index(question_id) + offset) % len(ids)]
         records = bank["per_question"][assigned]
+    if layers is not None:
+        if not layers or len(set(layers)) != len(layers) or any(str(layer) not in records for layer in layers):
+            raise ValueError("Requested layers missing from direction bank")
+        records = {str(layer): records[str(layer)] for layer in layers}
+    operator = operator or method.get("operator", "additive")
+    alpha = method.get("alpha") if alpha is None else alpha
+    from steer_opd.operators import validate_operator
+    strength = (rho if rho is not None else method["rho"]) if operator == "additive" else alpha if alpha is not None else float("nan")
+    validate_operator(operator, strength)
     rho = method["rho"] if rho is None else rho
     control = control or method.get("direction_control", "positive")
     seed = method["seed"] if seed is None else seed
@@ -82,9 +92,15 @@ def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None):
             direction = torch.randn(direction.shape, generator=generator)
         elif control == "negative":
             direction = -direction
-        vectors[int(key)] = (rho / math.sqrt(len(records))) * value["scale"] * direction / direction.norm()
-    vector_id = digest({"bank_id": bank["bank_id"], "assigned": assigned, "rho": rho,
-                        "control": control, "seed": seed})
+        vectors[int(key)] = (direction / direction.norm() if operator == "slerp" else
+                            (rho / math.sqrt(len(records))) * value["scale"] * direction / direction.norm())
+    identity = {"bank_id": bank["bank_id"], "assigned": assigned, "rho": rho,
+                "control": control, "seed": seed}
+    if operator == "slerp":
+        identity.update(operator=operator, alpha=alpha)
+    if layers is not None:
+        identity["selected_layers"] = list(layers)
+    vector_id = digest(identity)
     return vectors, vector_id
 
 

@@ -101,7 +101,9 @@ def controller_for(model, vector_path, row=None):
         vectors, vector_id = bank_vectors(payload, row.get("id") if row else None)
         if row and row.get("vector_id") != vector_id:
             raise ValueError("Rollout vector identity mismatch")
-        return CompositeSteeringController(model, vectors)
+        operator = payload["method"].get("operator", "additive")
+        return CompositeSteeringController(model, vectors, operator=operator,
+            alpha=payload["method"]["alpha"] if operator == "slerp" else 1.0)
     return SteeringController(find_decoder_layer(model, payload["layer"]), payload["delta"], 1.0)
 
 
@@ -149,6 +151,8 @@ def project_logits(model, hidden, full_vocab=False):
     # Avoid BF16 rounding of large logits before log-softmax (RL consistency).
     flat = hidden.reshape(-1, hidden.shape[-1])
     weight = model.lm_head.weight
+    if flat.device != weight.device:
+        flat = flat.to(weight.device)
     if not full_vocab:
         weight = weight[:getattr(model, "_opd_vocab_size", weight.shape[0])]
     if torch.is_grad_enabled() and (flat.requires_grad or weight.requires_grad):
@@ -169,7 +173,16 @@ def score_hidden(model, hidden, k=16, candidates=None, chunk=128, sampled=None, 
         logits = project_logits(model, hidden[start:start + chunk], full_vocab=True)
         support = getattr(model, "_opd_vocab_size", logits.shape[-1])
         raw_lp = logits.log_softmax(-1)
-        lp = logits[:, :support].log_softmax(-1)
+        supported = logits[:, :support]
+        valid_ids = getattr(model, "_opd_valid_output_ids", None)
+        if valid_ids is not None:
+            valid = getattr(model, "_opd_valid_output_mask", None)
+            if valid is None or valid.shape != (support,) or valid.device != logits.device:
+                valid = torch.zeros(support, dtype=torch.bool, device=logits.device)
+                valid[torch.as_tensor(valid_ids, device=logits.device)] = True
+                model._opd_valid_output_mask = valid
+            supported = supported.masked_fill(~valid, -1e30)
+        lp = supported.log_softmax(-1)
         if include_entropy:
             entropies.append((-(lp.exp() * lp).sum(-1)).cpu())
         if candidates is None:

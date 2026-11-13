@@ -1,0 +1,17 @@
+{
+  "changed_documents_including_new_protocol": 16,
+  "production_source_and_old_configs_verified_unchanged": 74,
+  "historical_grid_unchanged": true,
+  "nonzero_candidates": 192,
+  "scheme_count": 8,
+  "candidates_per_scheme": 24,
+  "gates": [
+    "all",
+    "static_overlap"
+  ],
+  "new_relative_links_checked": 25,
+  "whitespace_check": "passed",
+  "current_application": "zero_update_fixed_source_prefix_replay",
+  "future_learning_phase": "not_selected",
+  "new_gpu_or_training": false
+}

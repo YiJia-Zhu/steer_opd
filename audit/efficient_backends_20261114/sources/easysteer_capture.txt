@@ -1,0 +1,314 @@
+
+                
+                  
+
+
+  
+    
+      
+      
+    
+  
+  
+
+
+
+Hidden-state capture¶
+
+
+easysteer.hidden_states extracts intermediate activations from a running vLLM
+engine for analysis, training data and steering-vector extraction. Capture works
+without enabling steering.
+
+
+Engine requirements¶
+
+
+Capture requires the V2 GPU model runner, which vLLM 0.29 selects by default.
+Models or features that fall back to V1, and standalone multimodal encoder
+runners, cannot use capture. Steering and capture currently require token-ID
+prompts; prompt embeddings are not supported.
+
+
+
+from vllm import LLM
+import easysteer.hidden_states as hs
+
+llm = LLM(model="Qwen/Qwen2.5-1.5B-Instruct", tensor_parallel_size=1)
+# Capture chooses its execution path automatically. Admission skips
+# prefix-cache reads when necessary to compute selected prompt rows.
+
+
+
+
+The client helper requires a single worker. Tensor-parallel capture returns
+per-rank shards and is rejected rather than merging them implicitly. Capture
+also depends on the engine being able to discover the model's decoder layers
+or MoE gates; test new model architectures before relying on their activations.
+
+
+Capture a batch¶
+
+
+One call captures a batch of prompts and returns a labelled
+CaptureResult. For prompt-only analysis,
+max_tokens=1 runs the prompt forward pass without subsequent decode steps:
+
+
+
+tokenizer = llm.get_tokenizer()
+prompts = []
+for content in ["What is steering?", "Explain PCA."]:
+    messages = [{"role": "user", "content": content}]
+    prompt_ids = tokenizer.apply_chat_template(
+        messages, tokenize=True, return_dict=False, add_generation_prompt=True,
+    )
+    prompt = {"prompt_token_ids": prompt_ids}
+    prompts.append(prompt)
+result = hs.capture(
+    llm,
+    prompts=prompts,
+    max_tokens=1,          # 1 = prompt-only forward pass
+    layers=[10, 11, 12],   # true layer ids; None = all hooked layers
+    dtype="float16",       # engine-side storage dtype (optional)
+)
+
+
+
+
+Key arguments (full signature in the API reference):
+
+
+
+
+
+Argument
+Meaning
+
+
+
+
+
+
+max_tokens
+Tokens to generate; 1 captures only the prompt forward pass.
+
+
+
+
+layers
+Layer-id subset (None = all). Layers are keyed by true layer id everywhere, never positional index.
+
+
+
+
+dtype
+Engine-side storage dtype: "float16", "bfloat16", "float32", "float64", "int32" or "int64". None preserves the model output dtype.
+
+
+
+
+select
+Global SelectSpec (or wire dict) choosing which rows to keep.
+
+
+
+
+per_prompt_selects
+One SelectSpec or wire dict per prompt, overriding the global selection (None entries keep the global one). The list length must match prompts.
+
+
+
+
+stream
+"hidden_states" (default), "router_logits" (MoE), or "attention_heads" (before the attention output projection).
+
+
+
+
+steering
+SteeringSpec or per-prompt list, as in LLM.generate(). Captured values include steering; use False to disable it even when the engine has a default.
+
+
+
+
+**generate_kwargs
+Forwarded into SamplingParams (e.g. temperature).
+
+
+
+
+
+Select rows¶
+
+
+Pass a SelectSpec to collect only the rows needed for analysis. It shares
+steering's selection rules:
+select each phase independently, combine includes by union, and subtract
+exclusions. For one representation per prompt, select its last token:
+
+
+
+from vllm.capture import SelectSpec
+
+# Keep only the last prompt token of each sample
+result = hs.capture(llm, prompts,
+                    select=SelectSpec(prompt_positions=[-1]))
+
+
+
+
+The helper returns selected rows without engine-side reduction. It does not
+accept positions or reduce arguments: express positions in SelectSpec, then
+reduce the returned tensors if needed. With max_tokens=1, generation-only
+selectors have no decode-forward rows to capture. Use a longer generation when
+selecting decode rows. An empty selection returns no layers and empty sample
+views.
+
+
+Read captured rows¶
+
+
+Rows are grouped by their owning request via engine labels and ordered by sequence
+position — the only correct grouping under continuous batching.
+
+
+
+result.layer_ids          # sorted true layer ids
+result.rows(12)           # Tensor(total_rows, dim) for layer 12, all samples
+result.sample(0)          # {layer_id: Tensor(rows, dim)} for sample 0
+result.sample_positions(0)  # absolute sequence positions of sample 0's rows
+result.sample_token_ids(0)  # input token ids of sample 0's rows
+result.outputs            # the vLLM RequestOutput list, prompt order
+result.layouts            # per-layer component widths and attention head layout
+result.to_nested()        # legacy shape: [sample][layer_pos] tensors
+
+
+
+
+result.meta(layer) exposes the raw row labels (req_ids / positions / token_ids);
+result.labelled tells you whether per-sample views are available.
+
+
+MoE router logits¶
+
+
+Pass stream="router_logits" to hs.capture() on an MoE model to capture per-token
+router logits instead of hidden states (used e.g. by the
+SteerMoE replication).
+
+
+Attention head outputs¶
+
+
+stream="attention_heads" captures attention aggregation outputs before the
+output projection, with the same selection and per-sample views:
+
+
+
+from vllm.capture import SelectSpec
+
+heads = hs.capture(
+    llm, prompts, layers=[10], stream="attention_heads",
+    select=SelectSpec(prompt_positions=[-1]), steering=False,
+)
+layout = heads.layouts[10]
+head_outputs = heads.sample(0)[10].reshape(
+    -1, layout["num_heads"], layout["head_size"],
+)
+
+
+
+
+The stored tensors remain two-dimensional (rows, width). The layout records
+width = num_heads * head_size, where num_heads is the query head count and
+head_size is the value-output dimension per head. Neither KV head counts nor
+the model's residual hidden size should be used to infer this layout.
+
+
+This stream supports standard decoder MHA/GQA with tensor_parallel_size=1;
+MLA, encoder attention, and cross-attention are not exposed as head outputs.
+It shares capture's graph and prefix-cache policy. These activations feed the
+ITI extractor.
+
+
+Multimodal inputs¶
+
+
+Multimodal prompts use the same list of input dictionaries as LLM.generate,
+including prompt and multi_modal_data; capture preserves their cache salts.
+
+
+Graph execution¶
+
+
+Eligible FULL-graph batches use a separate CUDA graph that records activations.
+This path requires one worker, no LoRA or speculative decoding, and steering
+either disabled or running in_graph. Other batches that need captured rows
+run eagerly; steps with no selected rows keep ordinary model execution.
+The first eligible batch records the capture graph. One component/layer
+combination stays cached across capture() calls; changing the selected token
+positions, storage dtype or reduction does not require recording it again.
+Changing components or layers replaces that cached graph. Ordinary model graphs
+do not contain capture operations.
+
+
+Prefix caching¶
+
+
+KV blocks do not contain the intermediate activations skipped by a prefix
+hit. Request admission therefore sets skip_reading_prefix_cache=True when
+the effective selection requires those prompt rows. Generation-only selection,
+the last prompt token, and other selections proven unaffected by prefix hits
+can reuse cached blocks. Per-prompt overrides participate in this decision.
+
+
+This policy applies both to hs.capture() and to requests submitted through the
+same engine after a successful start_capture RPC. Cache writes remain enabled
+under the ordinary cache key, so subsequent matching requests can reuse them;
+capture does not add a random salt. Existing steering fingerprints still isolate
+different interventions. If capture starts after a request has already reused
+selected prompt rows, fetching that incomplete capture raises an error. The check
+uses the stream's selection and any per-request override; selections confined to
+uncached rows can still be captured. Existing requests are checked when they
+first run in a batch after capture starts, so a completed request awaiting worker
+cleanup does not affect the new stream.
+
+
+If steering fails for a request, fetching its captured rows also reports that
+failure. Other requests remain available through a fetch restricted to their
+request IDs; clearing the stream removes its retained rows and errors.
+
+
+Compatibility wrappers¶
+
+
+get_all_hidden_states_generate and get_moe_router_logits_generate are thin
+wrappers over capture(). The hidden-state wrapper returns
+(hidden_states, outputs), with nested [sample][layer] tensors by default or
+concatenated [layer] tensors when split_by_samples=False. The router-logit
+wrapper returns (router_logits, outputs), with a {layer_id: tensor} dictionary
+by default or one such dictionary per sample when split_by_samples=True.
+
+
+Prefer capture() for new code: it preserves true layer IDs and per-sample
+metadata. In particular, pass the CaptureResult directly to the vector
+extractors when capturing a layer subset; converting to a plain nested list
+loses the mapping from list positions to true layer IDs. The embed-task variants
+(get_all_hidden_states, get_moe_router_logits) and the vllm.hidden_states
+alias package were removed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              

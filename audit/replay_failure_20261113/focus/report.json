@@ -1,0 +1,144 @@
+{
+  "job": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/jobs/steer_0001_rollout.json",
+  "experimental_updates": 0,
+  "elapsed_seconds": 2.2561768158338964,
+  "rows": [
+    {
+      "key": "018_0",
+      "tokens": 5934,
+      "method": "rollout_topk_plus_complement_and_conditional_kl",
+      "passed": false,
+      "full_vocabulary_kl": false,
+      "positions": 5934,
+      "mean_logp_error": 0.06815926280564903,
+      "max_logp_error": 2.1807985305786133,
+      "threshold_mean_kl": 0.005,
+      "threshold_max_kl": 0.03,
+      "topk_plus_complement_forward_mean_kl": 6.106162592142895e-05,
+      "topk_plus_complement_forward_max_kl": 0.17611236477649655,
+      "topk_plus_complement_reverse_mean_kl": 6.562381411904147e-05,
+      "topk_plus_complement_reverse_max_kl": 0.1806674726070981,
+      "conditional_topk_forward_mean_kl": 5.233048615186325e-05,
+      "conditional_topk_forward_max_kl": 0.15514986900761824,
+      "conditional_topk_reverse_mean_kl": 6.281484497064533e-05,
+      "conditional_topk_reverse_max_kl": 0.1879319999021376,
+      "worst_positions": [
+        {
+          "position": 5928,
+          "conditional_forward_kl": 0.15514986900761824
+        },
+        {
+          "position": 5929,
+          "conditional_forward_kl": 0.09184625952905554
+        },
+        {
+          "position": 5927,
+          "conditional_forward_kl": 0.03469054409283518
+        },
+        {
+          "position": 5930,
+          "conditional_forward_kl": 0.015158670211869252
+        },
+        {
+          "position": 5933,
+          "conditional_forward_kl": 0.0037168872102198366
+        },
+        {
+          "position": 2,
+          "conditional_forward_kl": 0.0031861667486867695
+        },
+        {
+          "position": 3,
+          "conditional_forward_kl": 0.0019162714267590402
+        },
+        {
+          "position": 0,
+          "conditional_forward_kl": 0.0010157897648581434
+        }
+      ],
+      "prefix_variants": [
+        {
+          "backend": "None",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.6335307322442532,
+          "max_logp_error": 1.03108549118042,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.1761102807754571,
+          "topk_plus_complement_forward_max_kl": 0.1761102807754571,
+          "topk_plus_complement_reverse_mean_kl": 0.1806656667964352,
+          "topk_plus_complement_reverse_max_kl": 0.1806656667964352,
+          "conditional_topk_forward_mean_kl": 0.1551499019854473,
+          "conditional_topk_forward_max_kl": 0.1551499019854473,
+          "conditional_topk_reverse_mean_kl": 0.18793204253547888,
+          "conditional_topk_reverse_max_kl": 0.18793204253547888,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.1551499019854473
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.FLASH_ATTENTION",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.6335307322442532,
+          "max_logp_error": 1.03108549118042,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.1761102807754571,
+          "topk_plus_complement_forward_max_kl": 0.1761102807754571,
+          "topk_plus_complement_reverse_mean_kl": 0.1806656667964352,
+          "topk_plus_complement_reverse_max_kl": 0.1806656667964352,
+          "conditional_topk_forward_mean_kl": 0.1551499019854473,
+          "conditional_topk_forward_max_kl": 0.1551499019854473,
+          "conditional_topk_reverse_mean_kl": 0.18793204253547888,
+          "conditional_topk_reverse_max_kl": 0.18793204253547888,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.1551499019854473
+            }
+          ]
+        },
+        {
+          "backend": "SDPBackend.MATH",
+          "position": 5928,
+          "method": "rollout_topk_plus_complement_and_conditional_kl",
+          "passed": false,
+          "full_vocabulary_kl": false,
+          "positions": 1,
+          "mean_logp_error": 0.42483530193567276,
+          "max_logp_error": 0.9217543601989746,
+          "threshold_mean_kl": 0.005,
+          "threshold_max_kl": 0.03,
+          "topk_plus_complement_forward_mean_kl": 0.08139560673063839,
+          "topk_plus_complement_forward_max_kl": 0.08139560673063839,
+          "topk_plus_complement_reverse_mean_kl": 0.08503722594165852,
+          "topk_plus_complement_reverse_max_kl": 0.08503722594165852,
+          "conditional_topk_forward_mean_kl": 0.056705070224471965,
+          "conditional_topk_forward_max_kl": 0.056705070224471965,
+          "conditional_topk_reverse_mean_kl": 0.06660321870008665,
+          "conditional_topk_reverse_max_kl": 0.06660321870008665,
+          "worst_positions": [
+            {
+              "position": 0,
+              "conditional_forward_kl": 0.056705070224471965
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failed_keys": [
+    "018_0"
+  ]
+}

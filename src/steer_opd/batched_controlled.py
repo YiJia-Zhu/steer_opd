@@ -37,20 +37,35 @@ def require_memory(additional):
 
 
 class BatchedController:
-    def __init__(self, model, vectors):
+    def __init__(self, model, vectors, *, operator="additive", alpha=1.0, record_perturbations=False):
+        from steer_opd.operators import validate_operator
+        validate_operator(operator, alpha)
+        if not vectors or any(value.ndim != 2 or not torch.isfinite(value).all() for value in vectors.values()):
+            raise ValueError("Batched vectors must be finite [batch,hidden] tensors")
         self.mask = None
         self.indices = None
         self.handles = []
+        self.perturbations = {}
         self.nonzero_rows = torch.stack([value.float().norm(dim=-1)>0 for value in vectors.values()]).any(0).tolist()
         for layer, delta in vectors.items():
-            def hook(module, args, output, delta=delta):
+            def hook(module, args, output, delta=delta, layer_index=layer):
                 if self.mask is None:
                     return output
                 hidden = output[0] if isinstance(output, tuple) else output
                 values = delta if self.indices is None else delta[self.indices]
                 if hidden.shape[:2] != self.mask.shape or hidden.shape[0] != values.shape[0]:
                     raise ValueError("Batched steering shape mismatch")
-                changed = hidden + self.mask.to(hidden.dtype)[..., None] * values.to(hidden)[:, None, :]
+                if operator == "additive":
+                    delta = values.to(hidden)[:, None, :]
+                    if alpha != 1:
+                        delta = delta * alpha
+                    changed = hidden + self.mask.to(hidden.dtype)[..., None] * delta
+                else:
+                    from steer_opd.operators import slerp
+                    changed = torch.where(self.mask[..., None], slerp(hidden, values[:, None, :], alpha), hidden)
+                if record_perturbations:
+                    self.perturbations[layer_index] = ((changed.float()-hidden.float()).norm(dim=-1) /
+                        hidden.float().norm(dim=-1).clamp_min(1e-8)).detach()
                 return (changed, *output[1:]) if isinstance(output, tuple) else changed
             self.handles.append(model.model.layers[layer].register_forward_hook(hook))
 
@@ -93,14 +108,19 @@ def forward_rows(model, tokens, cache, attention_mask, controller=None, injectio
 
 
 def batched_step(student, teacher, tokens, student_cache, teacher_cache, attention_mask,
-                 controller, method, positions, draws, histories, active):
+                 controller, method, positions, draws, histories, active, *, record_probe=False):
     if tokens.shape[1] != 1:
         raise ValueError("Batched gate step requires one pending token per request; prefill history separately")
     q, teacher_cache = forward_rows(teacher, tokens, teacher_cache, attention_mask)
     probe = probe_cache = None
-    if method.online_gate:
+    if method.online_gate or record_probe:
         require_memory(cache_bytes(student_cache))
         probe, probe_cache = forward_rows(student, tokens, fork_cache(student_cache), attention_mask)
+        if not method.online_gate:
+            # Diagnostic only: the original formal branch still starts from
+            # its unchanged cache and runs at its original batch shape.
+            del probe_cache
+            probe_cache = None
     decisions, metrics = [], []
     for index, position in enumerate(positions):
         if not active[index]:
@@ -116,7 +136,7 @@ def batched_step(student, teacher, tokens, student_cache, teacher_cache, attenti
         decisions.append(bool(effective))
         metrics.append(metric)
     mask = torch.tensor(decisions, device=tokens.device, dtype=torch.bool)
-    if probe is None:
+    if not method.online_gate:
         injection = torch.zeros_like(tokens, dtype=torch.bool)
         injection[:, -1] = mask
         p, student_cache = forward_rows(student, tokens, student_cache, attention_mask, controller, injection)

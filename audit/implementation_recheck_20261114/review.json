@@ -1,0 +1,188 @@
+{
+  "checked_at": "2026-11-14T00:34:05.509211+08:00",
+  "scope": "CPU/source audit only; no GPU generation/scoring/training",
+  "execution_hold": "awaiting_user_approval",
+  "execution_blockers": [
+    "md_section_12_2_full_first_byte_probability_metric_not_implemented",
+    "supported_easysteer_gpu_environment_and_parity_not_validated"
+  ],
+  "optimizer_updates": 0,
+  "automatic_opd": false,
+  "conditions": [
+    [
+      "T-R",
+      "all",
+      "global"
+    ],
+    [
+      "T-R",
+      "all",
+      "per_question"
+    ],
+    [
+      "T-R",
+      "static_overlap",
+      "global"
+    ],
+    [
+      "T-R",
+      "static_overlap",
+      "per_question"
+    ],
+    [
+      "T-S",
+      "all",
+      "global"
+    ],
+    [
+      "T-S",
+      "all",
+      "per_question"
+    ],
+    [
+      "T-S",
+      "static_overlap",
+      "global"
+    ],
+    [
+      "T-S",
+      "static_overlap",
+      "per_question"
+    ]
+  ],
+  "scheme_count": 8,
+  "bank_count": 4,
+  "operator": "slerp",
+  "alpha": 0.1,
+  "layers": [
+    26
+  ],
+  "student_layer_count": 36,
+  "held_prepared_jobs": 5,
+  "config_manual_sequence_limits": [],
+  "engine_constructors": [
+    {
+      "file": "scripts/figure8_generate.py",
+      "line": 77,
+      "manual_sequence_limits": [],
+      "keywords": [
+        "model",
+        "dtype",
+        "tensor_parallel_size",
+        "gpu_memory_utilization",
+        "max_model_len",
+        "enforce_eager",
+        "enable_prefix_caching",
+        "enable_chunked_prefill",
+        "generation_config",
+        "seed",
+        "hf_overrides",
+        "max_logprobs",
+        "disable_log_stats",
+        null
+      ]
+    },
+    {
+      "file": "scripts/run_static_overlap_screen.py",
+      "line": 172,
+      "manual_sequence_limits": [],
+      "keywords": [
+        "model",
+        "dtype",
+        "tensor_parallel_size",
+        "max_model_len",
+        "gpu_memory_utilization",
+        "logprobs_mode",
+        "max_logprobs",
+        "generation_config",
+        "worker_cls",
+        null
+      ]
+    }
+  ],
+  "expected_md_metric": "full_native_support_next_byte_probability_sum_min",
+  "actual_configured_metric": "compass_aligned_byte_top16_overlap",
+  "md_metric_implemented": false,
+  "metric_semantics_evidence": {
+    "file": "src/steer_opd/compass_alignment.py",
+    "function": "aligned_metrics",
+    "formula": "len(common)/16 over full-token byte events"
+  },
+  "all_stages_use_vllm_easysteer": false,
+  "complete_markdown_reproduction": false,
+  "backends": {
+    "reference_generation": "vllm",
+    "unsteered_source_generation": "vllm",
+    "T_Ref_probability_scoring": "HF",
+    "S0_activation_extraction": "HF",
+    "eight_scheme_and_baseline_selected": "easysteer"
+  },
+  "active_runtime": {
+    "vllm": "0.32.0",
+    "supported_easysteer_api_file_exists": false,
+    "screen_python": null
+  },
+  "missing_checkpoint_roles": [
+    "teacher"
+  ],
+  "changed_previously_audited_python_files": [],
+  "full_byte_metric_requires": [
+    "full-support aggregation including explicit EOS/control categories",
+    "same-text boundary and position mapping",
+    "source/candidate byte probability cache integration",
+    "select-only calibration and immutable masks",
+    "discrimination and space/control mass reporting"
+  ],
+  "future_training_objective": "not selected in this zero-update panel; old Student Top16 unchanged; sampled-span target is separate",
+  "remaining_acceptance": [
+    "supported EasySteer environment",
+    "GPU no-hook/source replay and Slerp/selector parity",
+    "EasySteer perturbation logging",
+    "checkpoint content hash binding",
+    "full cross-tokenizer training integration and later research controls"
+  ],
+  "source_sha256": {
+    "scripts/figure8_generate.py": "78ee66ce8a46193fe7fe9be6758f5e1ae52fe1ac9c905023a6d59f97fdcf301b",
+    "scripts/prepare_compass_banks.py": "fc86cc87e8a3e80b4d349fb1653b0d1201777f58923a8f07a8521c13b2e30227",
+    "scripts/run_compass_static_panel.py": "60070d046d75128b0fccd9172878431c86b58fc4cdd3f05fc164d11c0031d20c",
+    "scripts/run_static_overlap_screen.py": "2a6bdc43d21b1357faddc3429e14d342f8211d95e0ce2436f749dd9edb3d3cbc",
+    "scripts/score_compass_sources.py": "e2311d660ccce8682b47983829212c7211126ebe9a469c94f747b98844bdbf53",
+    "src/steer_opd/compass_alignment.py": "501fbf0ad4667d08b2444b15eba3782c38714a911bcd8814c810e0723b544ba0",
+    "src/steer_opd/compass_banks.py": "31caf3017ec31cdf29e8d29e731f03d7968681735c159cdbb0542040c45b2859",
+    "src/steer_opd/compass_campaign.py": "8980b49b2a1e8be749e123da40c71bb33ecd331d9b397733e82303e0f0fa50cc",
+    "src/steer_opd/compass_job.py": "7a2347236d37f464a6d61fd6b220db347c56098a7a7b5c3ea7a50a5500e745b6",
+    "src/steer_opd/compass_scoring.py": "46c769d2c58d84ddfe4e04845b2e03839eb37915aa014594ed2c27cafbb0c6f5",
+    "src/steer_opd/easysteer_plugin.py": "8d425c70bddffc94fe0004d8e86a364f98245212e7cda9331870ff582da9464a",
+    "src/steer_opd/easysteer_static.py": "542feea97c45684818f030b246355a4ed0a2725f6ac4c374a60fe94c4ab13674",
+    "src/steer_opd/easysteer_worker.py": "bc325f5fee1f542e537e38d95c15f93a1ebbdd130f4542721c6b7b0baf018dcb",
+    "src/steer_opd/execution_policy.py": "e87f014394e548bd06eea216b3a63a73528130a257ba1b33192431ec95575e5c",
+    "src/steer_opd/static_masks.py": "0ac8b87d787f39a7514a30c0fbee4d3a67b6817d2f9933aae1915798babb6237",
+    "src/steer_opd/static_plotting.py": "a481dc90b1e074a050033480a637ae56be7004dd96ede851f79fa0189d32c4f8",
+    "src/steer_opd/static_screen.py": "8129e0823b5fd642be0b7eaa33f6645869b6fe026def09fc927798be8e364e00",
+    "tests/test_compass_alignment.py": "02a2d21aa4381fd53dc76056718344fc3f1617ab1a2d97ded48544f3bf9f32dc",
+    "tests/test_execution_policy.py": "446a1d1cda26434b26ac82a3d8cac1dc3b3ce25dc34a134906a29e2702025dd2",
+    "tests/test_generation_runtime.py": "a02e3a665ca7241bd9ad9f61d16c91faf340231f89bfbc8c87a8703e82925bdf"
+  },
+  "gpu_started": false,
+  "new_model_generations": 0,
+  "new_model_scores": 0,
+  "parameter_updates": 0,
+  "cpu_tests": {
+    "scope": "tests/",
+    "passed": 200,
+    "skipped": 1,
+    "warnings": 25,
+    "seconds": 13.72,
+    "exit_code": 0,
+    "log": "cpu_tests.log",
+    "full_byte_metric_validated": false
+  },
+  "legacy_configs_unchanged": 7,
+  "local_links_checked": 9,
+  "missing_links": [],
+  "record_sha256": {
+    "TODO.md": "7c44be9071004de6c9e6d49e9ddaffdf007af365bce0c19beefef446bb0f5e8e",
+    "AGENTS.md": "ddc922b4efc280c7cc87c37ffa26873475fced825a76511d650b33bafad16050",
+    "docs/17_implementation_recheck_20261113.md": "47354fcca38b172536d98efb3f60067388fc3c70c4a169134c2e8d1135a337fe"
+  }
+}

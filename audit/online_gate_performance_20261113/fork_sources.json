@@ -1,0 +1,29 @@
+{
+  "commit": "7837b07d21c0ddffd043a30001f2c5654290aec7",
+  "files": [
+    {
+      "path": "vllm/v1/worker/gpu_model_runner.py",
+      "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/v1/worker/gpu_model_runner.py",
+      "sha256": "3970d7b764f80847842e10fc20f0e3f4f3da84cd97d042bb92db6e99147337e2",
+      "bytes": 343117
+    },
+    {
+      "path": "vllm/model_hooks/steering/worker_manager.py",
+      "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/steering/worker_manager.py",
+      "sha256": "d7089a6d1d5c665b702ff59ad6314df92e99096659b4a26816cba2535c53c7a9",
+      "bytes": 12523
+    },
+    {
+      "path": "vllm/model_hooks/selection/runtime.py",
+      "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/selection/runtime.py",
+      "sha256": "08429ab32b4e37b2b3a3dfd42148373d0e65af4fa954f60b51e646077780d70f",
+      "bytes": 8153
+    },
+    {
+      "path": "vllm/model_executor/models/qwen3.py",
+      "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_executor/models/qwen3.py",
+      "sha256": "6ade9b12f4c7a4d670fe2e4dd778049bbe0a94fe2ba61a149d9706587a280e28",
+      "bytes": 12609
+    }
+  ]
+}

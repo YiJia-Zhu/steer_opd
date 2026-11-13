@@ -1,0 +1,35 @@
+{
+  "checked_at": "2026-11-13T10:34:25.783463+00:00",
+  "changed_production_code_or_configs": [],
+  "protected_file_count": 74,
+  "checked_local_links": 35,
+  "missing_links": [],
+  "grid_count": 192,
+  "unique_grid_count": 192,
+  "gpu_started": false,
+  "new_search_started": false,
+  "training_started": false,
+  "validation_scope": "documentation_links_grid_and_protected_hashes; no model or test execution",
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "df7b1d496ed816d003080461d81c1aabf82d58b07242557d7a9b2a78c4c4299b",
+      "before_sha256": "c193cbae2f5655cd79d9db6e68e2a88228c866cfa93336c093452d48103ac899"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "55158ea351c03eb07852f3540ee1c030c2f1047ee656d3ab94e1e8f9e0d398a1",
+      "before_sha256": "e91710631c9b297c486e21310e94c81a363448ca505284f5c2117a15bbad970d"
+    },
+    {
+      "path": "docs/10_overlap_parameter_search.md",
+      "sha256": "0ea94c3703ffe1a0dd1a159e68360b6bbdb3a31c6d05978255f37115ea8111cb",
+      "before_sha256": "fb6ba8f98d2cdd546a92358d6ba2df2acb4ac8d5a3a639b7d0e67586ee260c75"
+    },
+    {
+      "path": "audit/static_overlap_continuation_20261113/README.md",
+      "sha256": "99575d70f7c60b4e2e274fefe100dbe74a274d7592f066ae275b39f6a2b838fd",
+      "before_sha256": null
+    }
+  ]
+}

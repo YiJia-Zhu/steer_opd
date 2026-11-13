@@ -10,6 +10,7 @@ import torch
 
 from steer_opd.resumable_core import ROOT, atomic_json, emit, read_json, require_gpu
 from steer_opd.generation_runtime import prepare_generation_manifest
+from steer_opd.execution_policy import require_execution_allowed
 from steer_opd.rollout_topk import commit_topk_response, extract_topk, attach_token_entropy
 
 
@@ -18,6 +19,7 @@ def main():
     parser.add_argument("--job", required=True)
     args = parser.parse_args()
     job = read_json(args.job)
+    require_execution_allowed(job)
     out = ROOT / job["output"]
     out.mkdir(parents=True, exist_ok=True)
     job, job_hash, pending = prepare_generation_manifest(out, job)
@@ -27,7 +29,16 @@ def main():
     if job.get("method"):
         from steer_opd.direction_bank import validate_request_vectors
         validate_request_vectors(ROOT / job["vector"], pending)
-    require_gpu()
+    parallel_size = job.get("tensor_parallel_size", 1)
+    if parallel_size == 1:
+        require_gpu()
+    else:
+        from steer_opd.compass_scoring import require_scoring_gpus
+        from steer_opd.runtime import verify_runtime
+        verify_runtime()
+        require_scoring_gpus()
+        if torch.cuda.device_count() != parallel_size:
+            raise ValueError("Generation tensor parallelism differs from admitted GPU count")
     os.environ["VLLM_USE_V2_MODEL_RUNNER"] = "0"
     os.environ["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
     # Installed nvcc 13.2 and runtime headers 13.0 cannot build FlashInfer's
@@ -64,7 +75,7 @@ def main():
             "mode": 0, "cudagraph_mode": "FULL_DECODE_ONLY",
         }
     llm = LLM(
-        model=str(ROOT / job["model"]), dtype="bfloat16", tensor_parallel_size=1,
+        model=str(ROOT / job["model"]), dtype="bfloat16", tensor_parallel_size=parallel_size,
         gpu_memory_utilization=job.get("gpu_memory_utilization", 0.75),
         max_model_len=max_len, enforce_eager=not use_graph,
         enable_prefix_caching=False, enable_chunked_prefill=False,
@@ -96,6 +107,7 @@ def main():
         repetition_penalty=1.0, max_tokens=job["max_tokens"], stop_token_ids=stop_ids,
         seed=r["seed"], logprobs=job.get("logprobs", 0), output_kind=RequestOutputKind.FINAL_ONLY,
         min_tokens=job.get("benchmark_min_tokens", 0),
+        allowed_token_ids=job.get("allowed_token_ids"),
     ) for r in pending]
     request_ids = llm.enqueue([{"prompt_token_ids": r["prompt_token_ids"]} for r in pending],
                               params, use_tqdm=False)

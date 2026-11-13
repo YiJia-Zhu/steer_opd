@@ -1,0 +1,2197 @@
+{
+  "artifact_kind": "selected_search_spec_not_campaign_config",
+  "selected_at": "2026-11-13T04:08:52.839527+00:00",
+  "status": "planned_not_started",
+  "opd_updates_per_candidate": 0,
+  "scheme_axes": {
+    "direction": [
+      "T-S",
+      "T-R"
+    ],
+    "gate": [
+      "all",
+      "static_overlap"
+    ],
+    "granularity": [
+      "global",
+      "per_question"
+    ]
+  },
+  "scheme_count": 8,
+  "operators": {
+    "additive": {
+      "strength_parameter": "rho",
+      "strengths": [
+        0.01,
+        0.1,
+        0.3,
+        0.5
+      ]
+    },
+    "slerp": {
+      "strength_parameter": "alpha",
+      "strengths": [
+        0.01,
+        0.1,
+        0.3,
+        0.5
+      ]
+    }
+  },
+  "layer_depths": [
+    0.5,
+    0.75,
+    1.0
+  ],
+  "layers_per_candidate": 1,
+  "layer_index_by_block_count": {
+    "28": [
+      13,
+      20,
+      27
+    ],
+    "32": [
+      15,
+      23,
+      31
+    ],
+    "40": [
+      19,
+      29,
+      39
+    ]
+  },
+  "nonzero_candidate_count": 192,
+  "baseline": "shared_zero_strength_no_hook",
+  "implementation_status": {
+    "additive": "existing path; new grid needs validation",
+    "slerp": "not yet implemented in project rollout/replay",
+    "final_layer": "needs activation and scale extraction plus validation",
+    "static_overlap": "planned label; current Method gate=overlap remains historical dynamic probe",
+    "easysteer": "known positions supported upstream; local adapter not yet validated"
+  },
+  "candidates": [
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-S",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "all",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "global",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "additive",
+      "strength_parameter": "rho",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.01,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.1,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.3,
+      "layer_depths": [
+        1.0
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.5
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        0.75
+      ]
+    },
+    {
+      "direction": "T-R",
+      "gate": "static_overlap",
+      "granularity": "per_question",
+      "operator": "slerp",
+      "strength_parameter": "alpha",
+      "strength": 0.5,
+      "layer_depths": [
+        1.0
+      ]
+    }
+  ],
+  "supersedes": "audit/selected_overlap_grid_20261113/grid.json (historical pre-static proposal retained)",
+  "mask_policy": {
+    "kind": "static_overlap",
+    "source": "completed_unsteered_student_rollout_then_batched_teacher_scoring_same_prefix",
+    "comparison": "source_overlap16 < frozen_threshold",
+    "recompute_after_steer": false,
+    "source_identity_required": true,
+    "future_learning_phase": "not_selected",
+    "current_application": "zero_update_fixed_source_prefix_replay"
+  }
+}

@@ -2,6 +2,8 @@ from contextlib import contextmanager, ExitStack
 
 import torch
 
+from steer_opd.operators import transform, validate_operator
+
 
 def prediction_mask(response_mask):
     """A response token at t is predicted by the state at t-1.
@@ -29,11 +31,16 @@ def response_prediction_mask(prefix_length, response_length, gates=None, *, devi
 
 
 class SteeringController:
-    """One fixed additive vector, enabled explicitly across forward AND backward."""
+    """One fixed vector/operator, enabled across forward AND backward."""
 
-    def __init__(self, layer, vector, alpha):
+    def __init__(self, layer, vector, alpha, *, operator="additive"):
+        validate_operator(operator, float(alpha))
+        if vector.ndim != 1 or not torch.isfinite(vector).all():
+            raise ValueError("Steering vector must be a finite one-dimensional tensor")
         self.vector = vector.detach().clone()
         self.alpha = float(alpha)
+        self.operator = operator
+        self.nonzero = bool(torch.count_nonzero(self.vector))
         self.mask = None
         self.enabled = False
         self.injected_forwards = 0
@@ -48,10 +55,14 @@ class SteeringController:
         if hidden.shape[-1] != self.vector.numel():
             raise RuntimeError("Steering vector width does not match the student")
         self.injected_forwards += 1
-        if self.alpha == 0:
+        if self.alpha == 0 or not self.nonzero:
             return output
-        delta = self.vector.to(device=hidden.device, dtype=hidden.dtype) * self.alpha
-        steered = hidden + self.mask.to(device=hidden.device, dtype=hidden.dtype).unsqueeze(-1) * delta
+        if self.operator == "additive":
+            delta = self.vector.to(device=hidden.device, dtype=hidden.dtype) * self.alpha
+            steered = hidden + self.mask.to(device=hidden.device, dtype=hidden.dtype).unsqueeze(-1) * delta
+        else:
+            changed = transform(hidden, self.vector, self.alpha, self.operator)
+            steered = torch.where(self.mask.to(device=hidden.device).unsqueeze(-1), changed, hidden)
         return (steered, *output[1:]) if isinstance(output, tuple) else steered
 
     @contextmanager
@@ -73,8 +84,8 @@ class SteeringController:
 class CompositeSteeringController:
     """Each block uses its own direction and scale; one shared prediction mask."""
 
-    def __init__(self, model, vectors):
-        self.controllers = [SteeringController(find_decoder_layer(model, layer), vector, 1.0)
+    def __init__(self, model, vectors, *, operator="additive", alpha=1.0):
+        self.controllers = [SteeringController(find_decoder_layer(model, layer), vector, alpha, operator=operator)
                             for layer, vector in vectors.items()]
 
     @property

@@ -1,0 +1,51 @@
+{
+  "id": "compass_static_eight_review_20261113",
+  "stage": "static_overlap_screen",
+  "optimizer_updates": 0,
+  "teacher": "assets/models/Qwen3.5-35B-A3B",
+  "reference": "assets/models/Qwen3.5-0.8B",
+  "student": "assets/models/Qwen3-4B",
+  "teacher_tokenizer_revision": "59d61f3ce65a6d9863b86d2e96597125219dc754",
+  "tokenizer_paths": {
+    "teacher": "audit/compass_span_adapter_20261113/teacher_metadata",
+    "reference": "assets/models/Qwen3.5-0.8B",
+    "student": "assets/models/Qwen3-4B"
+  },
+  "question_source": "data/figure8_shared_top16_v2_20261112/opd.json",
+  "data_dir": "data/compass_static_eight_20261113",
+  "run_dir": "runs/compass_static_eight_review_20261113",
+  "seed": 42,
+  "enable_thinking": false,
+  "alpha": 0.1,
+  "layers": [
+    26
+  ],
+  "metric": "compass_aligned_byte_top16_overlap",
+  "metric_scope": "diagnostic_only_top16_whole_token_byte_events_differs_from_md12_2_first_byte_full_mass",
+  "alignment_basis": "CompassOPD Appendix A.4 independent implementation; requested official code URL not yet located",
+  "select_fraction": 0.7,
+  "minimum_split_questions": 8,
+  "confirm_top_n": 2,
+  "gate_target_rate": 0.2,
+  "max_prompt_tokens": 1024,
+  "reference_max_tokens": 12288,
+  "reference_temperature": 0.7,
+  "reference_top_p": 0.95,
+  "source_max_tokens": 7168,
+  "teacher_gpus": 2,
+  "student_score_batch_size": 4,
+  "teacher_score_batch_size": 1,
+  "reference_score_batch_size": 4,
+  "gpu_memory_utilization": 0.75,
+  "decode_cuda_graph": true,
+  "logit_chunk_size": 128,
+  "screen_backend": "easysteer",
+  "screen_python": null,
+  "gpu_wait_seconds": 0,
+  "automatic_opd": false,
+  "execution_hold": "awaiting_user_approval",
+  "execution_blockers": [
+    "md_section_12_2_full_first_byte_probability_metric_not_implemented",
+    "supported_easysteer_gpu_environment_and_parity_not_validated"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-11-13T10:47:40.758017+00:00",
+  "protected_file_count": 74,
+  "changed_production_code_configs": [],
+  "local_links_checked": 76,
+  "missing_links": [],
+  "student_layer_mapping": [
+    17,
+    26,
+    35
+  ],
+  "maximal_distinct_path_new_counts": [
+    16,
+    4,
+    6,
+    14
+  ],
+  "maximal_distinct_path_nonzero_total": 40,
+  "shared_zero_baselines": 1,
+  "proposal_status": "suggested_not_executed",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "6ce14e66500ab480fd2e2cd6ee4c118c6af3f10ef0f8a63519d6fd32e649fb17"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "5ece9c9033f4557a4f098816864cccc9d398577e2609cbaf70f4f6265f60b891"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "6dbac416c4eae0911d2ae9ada793964d8ad5296b1a788de2098f7bad4ccfcc61"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "361de4f0eb3b7e42fd279c5a5f65901d420d7e53162ddd17babca74fc66094c5"
+    },
+    {
+      "path": "docs/10_overlap_parameter_search.md",
+      "sha256": "55f76bfdb341a6da062c2183178fd5220749699917997c093db1ff749c724de2"
+    },
+    {
+      "path": "docs/12_static_overlap_protocol.md",
+      "sha256": "fcdb91883dd40d1a21cdf833b9bb2f2688e41c6839ed44860b38e4bb623b332e"
+    },
+    {
+      "path": "docs/13_next_pair_greedy_search_proposal.md",
+      "sha256": "75b1112d55ee98ca967a439da14514d47c6f3b75933d438a6e4c80c01c6d7f96"
+    }
+  ],
+  "gpu_started": false
+}

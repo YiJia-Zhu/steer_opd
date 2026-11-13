@@ -1,0 +1,40 @@
+{
+  "checked_at": "2026-11-13T10:31:13.037169+08:00",
+  "source_conversation": "/home/zhenning/.codex/sessions/2026/11/12/rollout-2026-11-12T00-28-02-01a1cb70-1339-7a60-8465-ce39061b7686.jsonl",
+  "panel": {
+    "status": "failed_resumable",
+    "error": "RuntimeError('Selection trial failed: /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01; inspect its actual failure')",
+    "updated_at": 1794535860.965521
+  },
+  "trial": {
+    "status": "failed_resumable",
+    "phase": "steer_0001_train",
+    "exit_code": 1,
+    "attempt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_train_1794535830176309739",
+    "updated_at": 1794535860.6976652,
+    "error": "RuntimeError('Stage steer_0001_train failed; inspect /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_train_1794535830176309739/stdout.log; artifacts retained')",
+    "supervisor_pid": 3785262,
+    "supervisor_start_ticks": 175370311
+  },
+  "rollouts": 256,
+  "teacher_scores": 256,
+  "committed_updates": 0,
+  "diagnostic_updates": 0,
+  "replay_passed": 251,
+  "replay_failed": [
+    "018_0",
+    "024_1",
+    "029_0",
+    "033_3",
+    "062_2"
+  ],
+  "root_cause": "unresolved",
+  "resumed": false,
+  "thresholds_unchanged": {
+    "mean_kl": 0.005,
+    "max_kl": 0.03
+  },
+  "production_code_changed": false,
+  "root_campaign_stale_running": true,
+  "gpu_snapshot": "0, 64641 MiB, 0 %\n1, 64641 MiB, 0 %\n2, 0 MiB, 0 %\n3, 64641 MiB, 0 %\n4, 64639 MiB, 0 %\n5, 64641 MiB, 0 %\n6, 64641 MiB, 0 %\n7, 63111 MiB, 0 %\n"
+}

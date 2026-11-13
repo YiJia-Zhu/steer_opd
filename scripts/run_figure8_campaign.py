@@ -95,6 +95,15 @@ class Campaign:
     def report_progress(self):
         self.cpu_stage("update_report", ["scripts/figure8_report.py", "--config", self.config_path], required=False)
 
+    def plot_rollout_comparison(self, name, output, job):
+        """Save the first three paired traces before any learning can fail."""
+        import re
+        if not re.fullmatch(r".+_\d{4}_rollout", name) or not (output / "complete.json").exists():
+            return
+        self.cpu_stage(f"{name}_overlap_comparison", ["scripts/plot_token_overlap_gates.py",
+            "--rollouts", relative(output), "--output", relative(output.parent / "token_overlap_comparison"),
+            "--count", str(min(3, len(job["requests"])))], required=False)
+
     def stage(self, name, command):
         # A killed supervisor may leave its admitted child (or idle waiter)
         # alive. Adopt that exact attempt before launching any duplicate update.
@@ -224,12 +233,25 @@ class Campaign:
             if not capture_logits:
                 raise ValueError("EOS override is only for numerical full-logit acceptance")
             job["ignore_eos"] = True
+        if name.endswith("_rollout") and job.get("backend") in (
+                "hf_batched_causal_gate", "hf_cached_causal_gate_reference"):
+            # Preserve existing generation manifests and unfinished historical
+            # responses. Only new jobs enable the additional diagnostic probe.
+            old_path = output / "job.json"
+            existing_path = self.run / "jobs" / f"{name}.json"
+            old_job = (read_json(old_path)["job"] if old_path.exists() else
+                       read_json(existing_path) if existing_path.exists() else None)
+            if old_job is None:
+                job["record_comparison_probe"] = True
+            elif "record_comparison_probe" in old_job:
+                job["record_comparison_probe"] = old_job["record_comparison_probe"]
         job = default_scheduler_job(job)
         if (output / "complete.json").exists():
             if job.get("save_rollout_top_k"):
                 _, _, pending = prepare_generation_manifest(output, job)
                 if pending:
                     raise ValueError("Completed rollout is missing committed responses")
+            self.plot_rollout_comparison(name, output, job)
             return
         path = self.run / "jobs" / f"{name}.json"
         if path.exists():
@@ -242,6 +264,7 @@ class Campaign:
         script = {"hf_cached_causal_gate_reference": "scripts/figure8_generate_controlled.py",
                   "hf_batched_causal_gate": "scripts/figure8_generate_batched.py"}.get(job.get("backend"), "scripts/figure8_generate.py")
         self.stage(name, [script, "--job", str(path)])
+        self.plot_rollout_comparison(name, output, job)
 
     def hf_stage(self, name, stage, group=None, step=None):
         command = ["scripts/figure8_stage.py", "--config", self.config_path, "--stage", stage]

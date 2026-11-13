@@ -1,5 +1,21 @@
 # Steering OPD方法分支与零更新第一步
 
+最新跨tokenizer实现见[Compass式接口与8方案](16_compass_alignment_eight_way.md)，已CPU验收，GPU运行和官方仓库源码对照仍待完成。
+
+后续代码已更新：[静态mask/Slerp与EasySteer适配](15_static_mask_slerp_implementation.md)已接入新入口并通过CPU验收。
+旧overlap保持动态语义；新版EasySteer GPU fork和新配对概率接口仍未验收。以下旧实现快照按各自记录时点理解。
+
+## 2026-11-13最新：静态overlap取代动态逐步门控
+
+当前使用普通无SV源rollout→同前缀教师批量概率评分→一次性冻结idx/mask，注入后不重新判定。
+当前零更新搜索在同一源回答前缀重放比较，保留8方案、两种算子、4强度及3单层，共192非零候选和共同基线。
+规则与应用阶段边界见[静态协议](12_static_overlap_protocol.md)，网格见[下一步实验](10_overlap_parameter_search.md)。
+历史动态代码/结果保留，不再要求采样前probe、在线教师回调或动态引擎改造作为当前主线前置条件。
+本次只同步文档：静态适配、Slerp及EasySteer迁移仍待实现/验收；未改生产代码或旧配置，未启动GPU。
+后续同回答学习前向注入与静态位置二次生成分别列明，未自动选择训练阶段或新增rollout。
+
+下面代码选项和旧阶段状态属于实现快照；当前门控定义以静态协议为准。
+
 2026-11-13最新能力与完整面板见[实施协议](08_full_scheme_execution.md)。已新增批量精确门控、自适应拆分、
 匹配随机、阶段/目标、共同激活池和选参/多seed等；本文以下HF逐请求/未编排状态为当时快照。
 新GPU路径尚待验收，EasySteer精确在线门控未移植；用户已恢复运行授权。
@@ -18,7 +34,7 @@
 | 粒度 | granularity | global：原始差分先平均；per_question：保留本题方向 |
 | 提取者 | extractor | initial：S0固定；current：本轮起始学生 |
 | 刷新 | refresh_interval | current默认每轮；大于1为显式周期刷新变体 |
-| 注入 | gate | all、overlap单阈值、独立signed-entropy单阈值、固定概率random、因果late |
+| 历史已实现注入 | gate | all、动态overlap、独立signed-entropy、random、late；新静态mask适配另见第4节 |
 | 方向控制 | direction_control | positive、negative、等范数random |
 | 题目控制 | vector_assignment | own、other_question（确定性错配，无同题自映射） |
 | 层与强度 | layers、rho | 各层自身提取；多层rho/sqrt(m)匹配名义总强度 |
@@ -75,50 +91,32 @@ select按逐题等权DeltaOverlap选前2名，confirm包含这些冻结候选、
 比较不同方向轴时应共用`fixed_activation_scales`和共同文本/过滤预算；未指定该项时各独立run单独估计并记录。
 方向文件与pooled中间产物保留，模型/Adam/RNG仍按已有原子提交恢复；不删除共享模型/数据或外部进程。
 
-## 4. 两种生成后端
+## 4. 静态mask后端路线与历史实现
 
-**全位置分支：vLLM。** 原第一步/旧v2仍走原单全局向量路径；新增bank支持多层和按请求选本题向量。
-整批请求一次enqueue，max_num_seqs与token调度预算不手动压低。
-全局bank保留decode CUDA Graph；逐题bank当前禁用decode图以正确绑定每请求向量，仍由vLLM连续调度。
-这是实现选择，尚未测出吞吐收益，不声称新逐题bank已GPU验收。
-
-**在线/随机/后段门控：HF cached参考后端。** 学生与教师同驻一张GPU，按请求生成并各自复用KV。
-只有overlap/entropy需要当前步未注入probe；触发时正式前向从同一旧KV出发，不接收probe上层KV。
-不触发时复用probe输出，避免重复学生前向。支持限定为append-only DynamicLayer缓存，其他缓存明确拒绝。
-本后端优先提供可检查的因果语义，目前不是vLLM规模的批处理实现，长序列/整批吞吐待测。
-
-门控面板的普通OPD也使用相同HF后端/采样器、无SV/无probe，以免把后端差异误当成steering收益。
-全位置面板两组都用vLLM。第一步仅诊断入口不生成OPD轨迹，不受这一训练后端选择影响。
-
-教师在采样前产生的同前缀分数直接保存，之后CPU阶段整理为训练分数/overlap，不重复教师前向。
-损失的Top16来自实际受控分布；门控probe的Top16另存，二者不混用。
-逐token保存实际gate mask及probe指标，重放按同一向量/mask做因果前向，hook贯穿backward重算；
-未触发位置仍计算完整既定OPD损失。门控/方向/候选/教师均停止梯度。
-
-门控生成每32 token保存采样RNG、gate RNG与已发生轨迹/概率；恢复时只重建一次已记录受控历史KV。
-每份完整回答仍先提交Top16 tensor、再提交绑定hash的JSON，避免中断时留下“答案完整但概率缺失”。
+当前规范改为源学生普通rollout→教师批量评分→计算固定idx，见[静态协议](12_static_overlap_protocol.md)。
+同源前缀诊断使用固定mask的批量因果前向，无需采样前probe/教师回调；固定mask调度适配尚未完成。
+现有Method的gate=overlap仍运行动态probe逻辑，不能只将新配置写成overlap就声称静态迁移完成。
+生产代码和旧配置本次没有修改，下面区分已核对接口与实际接入状态。
 
 ### 4.1 EasySteer可以按位置注入；HF是当前实现选择
 
 官方[Steering指南](https://github.com/ZJU-REAL/EasySteer/blob/baecd9698f32aadef68b41536f3db477b513a0d7/docs/user-guide/steering.md)
 及[API字段](https://github.com/ZJU-REAL/EasySteer/blob/baecd9698f32aadef68b41536f3db477b513a0d7/docs/api-reference/steering-specs.md)
-明确支持`ApplySpec(generation_positions=[...])`、窗口和逐请求spec。
-已知注入位置不要求HF；全位置、预定后段/随机位置及固定mask均可由这种位置选择语言表达。
-单向量direct可使用其in_graph路径，位置筛选本身不意味着必须关闭CUDA Graph。
-这是EasySteer的vLLM fork接口，不能直接当成当前上游0.32环境已经可用的参数。
+支持逐请求ApplySpec的generation_positions、prompt_positions和窗口；已知静态idx可在提交请求前绑定。
+加法direct可走图内路径，不需要外部教师逐token交互。首回答预测仍须映射到最后prompt状态，后续按t−1对齐。
+当前本地上游vLLM0.32和旧EasySteer环境并不等于已验收的新fork；迁移、逐题绑定及Slerp须另验。
 
-门控指标与注入位置的映射须区分两个场景：固定前缀诊断可以从已保存overlap得到该前缀的mask；
-自由生成中的精确在线门控则必须在实际受控历史上，每步取得学生无本步注入的probe及教师分布。
-旧无hook轨迹或前一checkpoint的overlap不能直接复用于改变后的前缀。
-当前公开spec在请求admission时固定，`set_default_steering`只影响新请求；
-未查到可直接接外部教师逐步overlap的现成API。迁移精确在线gate还需引擎调度/采样前决策与KV分支管理。
-不能把事后位置列表或冻结旧mask默认为主方案的在线门控。
-首回答预测对应最后prompt状态，后续位置须按t−1对齐引擎行，不把答案序号直接用作hook行号。
+EasySteer这里适用于按已知mask再生成；当前固定前缀零更新诊断可用HF批量重放，不必新增二次自由生成。
+若只对已经完成的源回答做学习前向注入，则属于learning-only，训练仍需要带梯度实现，
+不能将EasySteer推理注入接口当成HF/训练器学习前向已接通的证据。
+二次生成的mask即使来自源回答，仍只是固定位置计划；新回答前缀改变时不动态刷新overlap。
 
-吞吐瓶颈不在向量加法。当前HF入口逐请求运行；精确在线门控还让教师评分进入逐token生成关键路径，
-并在触发位置增加学生正式前向。普通OPD已有教师评分，在线取得并保存的分数应复用，不能重复计成另一遍。
-EasySteer可以改善执行/批处理，但不会消除这些依赖。没有正式模型门控吞吐对照，暂不报提速倍数。
-官方文档/源码证据见[审计](../audit/vllm_steering_gate_docs_2026-11-12/README.md)。本次未迁移后端或运行GPU。
+### 4.2 历史动态参考后端（当前不采用）
+
+旧hf_batched_causal_gate在每步计算教师分布和当前步无注入probe，触发后从相同历史做正式学生前向，隔离probe上层KV。
+已有动态轨迹的mask/probe/正式概率、RNG和恢复文件保留原义，不重写为静态结果。
+它是正确性参考和历史耗时对象，不再要求先移植精确动态gate才能执行当前静态网格。
+[历史接口审计](../audit/vllm_steering_gate_docs_2026-11-12/README.md)与[实际耗时](11_online_gate_acceleration.md)仍供追溯。
 
 ## 5. 配置与训练验收
 

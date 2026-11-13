@@ -1,0 +1,86 @@
+[
+  {
+    "name": "sv_acts.py",
+    "url": "https://raw.githubusercontent.com/tiejin98/sv_training/198fdbd917e9d7234f734aa8eb754faa408bd2e6/sv_training/acts.py",
+    "file": "audit/efficient_backends_20261114/sources/sv_acts.py",
+    "bytes": 5005,
+    "sha256": "65b58862a0452707a998b68ee98e443254cf333cdd70e284039396f896267497"
+  },
+  {
+    "name": "sv_vectors.py",
+    "url": "https://raw.githubusercontent.com/tiejin98/sv_training/198fdbd917e9d7234f734aa8eb754faa408bd2e6/sv_training/vectors.py",
+    "file": "audit/efficient_backends_20261114/sources/sv_vectors.py",
+    "bytes": 4947,
+    "sha256": "dcdbecc5d2f367705672037557ff25acd1b5b4ccc46534c36ad1462bd30c7a39"
+  },
+  {
+    "name": "sv_train.py",
+    "url": "https://raw.githubusercontent.com/tiejin98/sv_training/198fdbd917e9d7234f734aa8eb754faa408bd2e6/sv_training/train.py",
+    "file": "audit/efficient_backends_20261114/sources/sv_train.py",
+    "bytes": 8113,
+    "sha256": "ab13572fd01365289213b6aec21219e1ed1c944d83eccdf49bad7726a686c4af"
+  },
+  {
+    "name": "sv_generate.py",
+    "url": "https://raw.githubusercontent.com/tiejin98/sv_training/198fdbd917e9d7234f734aa8eb754faa408bd2e6/sv_training/generate.py",
+    "file": "audit/efficient_backends_20261114/sources/sv_generate.py",
+    "bytes": 2953,
+    "sha256": "25ebfeae1e6b6bb5cb92b2e3f8055857551c6691f99cc8792a2b54f73c35e0e0"
+  },
+  {
+    "name": "easy_capture_api.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer/baecd9698f32aadef68b41536f3db477b513a0d7/easysteer/capture/api.py",
+    "file": "audit/efficient_backends_20261114/sources/easy_capture_api.py",
+    "bytes": 12689,
+    "sha256": "2196214cec6224ae98e2605d0ba71aac49bc9e5c5a18655ab8721c761d79f936"
+  },
+  {
+    "name": "easy_capture_planning.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer/baecd9698f32aadef68b41536f3db477b513a0d7/easysteer/capture/planning.py",
+    "file": "audit/efficient_backends_20261114/sources/easy_capture_planning.py",
+    "bytes": 6888,
+    "sha256": "786c4eff4da5b2c6889ae541a9d2ae7faebdcdd3d3789f38955cf9cf2d54445f"
+  },
+  {
+    "name": "easy_diffmean.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer/baecd9698f32aadef68b41536f3db477b513a0d7/easysteer/extraction/diffmean.py",
+    "file": "audit/efficient_backends_20261114/sources/easy_diffmean.py",
+    "bytes": 4069,
+    "sha256": "c18267572dc12c44f414c24d4ddf7f2294d513ae2b93cf7cb4114911a73c61ef"
+  },
+  {
+    "name": "easy_streaming.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer/baecd9698f32aadef68b41536f3db477b513a0d7/easysteer/extraction/streaming.py",
+    "file": "audit/efficient_backends_20261114/sources/easy_streaming.py",
+    "bytes": 16932,
+    "sha256": "178d546d6d4611b8a6366039534f29f82aa5c0f3977a912f4f6223ace98cfe06"
+  },
+  {
+    "name": "verl_opd_README.md",
+    "url": "https://raw.githubusercontent.com/volcengine/verl/61adb0c7eb90730306e7794c2bf248331211e657/examples/on_policy_distillation_trainer/README.md",
+    "file": "audit/efficient_backends_20261114/sources/verl_opd_README.md",
+    "bytes": 1500,
+    "sha256": "a874027dd7c00eb9b93344df41f3a8499e9a1f1b70a1d4032326781d6519ee68"
+  },
+  {
+    "name": "verl_teacher.py",
+    "url": "https://raw.githubusercontent.com/volcengine/verl/61adb0c7eb90730306e7794c2bf248331211e657/verl/experimental/teacher_loop/teacher_model.py",
+    "file": "audit/efficient_backends_20261114/sources/verl_teacher.py",
+    "bytes": 10442,
+    "sha256": "371cf5075aa9b008c6e7084355ab01971328f9eba6e598b8ea5748d398edb729"
+  },
+  {
+    "name": "verl_distillation_losses.py",
+    "url": "https://raw.githubusercontent.com/volcengine/verl/61adb0c7eb90730306e7794c2bf248331211e657/verl/trainer/distillation/fsdp/losses.py",
+    "file": "audit/efficient_backends_20261114/sources/verl_distillation_losses.py",
+    "bytes": 10114,
+    "sha256": "00e3702f008c1ddc409d659eb43bad24e0584b38cd647e7c021afca1ec2ad563"
+  },
+  {
+    "name": "nemo_opd.md",
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/RL/5d28fc3c87f48026879ef52ab304391660b9a601/docs/about/algorithms/on-policy-distillation.md",
+    "file": "audit/efficient_backends_20261114/sources/nemo_opd.md",
+    "bytes": 2610,
+    "sha256": "4628411e481f8eccebac913d1880a9dd873ac731569dbc79d4aae362002186b6"
+  }
+]

@@ -19,6 +19,8 @@ def run_job(job):
     if job["temperature"] != 1 or job["top_p"] != 1:
         raise ValueError("Controlled reference backend currently requires temperature=top_p=1")
     method = Method(**{**job["method"], "layers": tuple(job["method"]["layers"])})
+    if method.operator != "additive" or method.gate == "static_overlap":
+        raise ValueError("Use run_static_overlap_screen.py for Slerp or frozen static masks")
     out = ROOT / job["output"]
     job, job_hash, pending = prepare_generation_manifest(out, job)
     if job.get("vector"):
@@ -47,7 +49,8 @@ def run_job(job):
             row, scores = generate_response(student, teacher, request, controller, method,
                 max_tokens=job["max_tokens"], support_size=job["support_size"], k=job["save_rollout_top_k"],
                 stop_ids=stop_ids, progress=progress,
-                save_progress=lambda state: atomic_torch(progress_path, {"binding": binding, "state": state}))
+                save_progress=lambda state: atomic_torch(progress_path, {"binding": binding, "state": state}),
+                record_probe=job.get("record_comparison_probe", False))
         finally:
             if controller:
                 controller.detach()

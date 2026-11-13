@@ -1,5 +1,25 @@
 # 逐token注入对照的留档与复用
 
+## 2026-11-13最新：静态overlap取代动态逐步门控
+
+当前使用普通无SV源rollout→同前缀教师批量概率评分→一次性冻结idx/mask，注入后不重新判定。
+当前零更新搜索在同一源回答前缀重放比较，保留8方案、两种算子、4强度及3单层，共192非零候选和共同基线。
+规则与应用阶段边界见[静态协议](12_static_overlap_protocol.md)，网格见[下一步实验](10_overlap_parameter_search.md)。
+历史动态代码/结果保留，不再要求采样前probe、在线教师回调或动态引擎改造作为当前主线前置条件。
+本次只同步文档：静态适配、Slerp及EasySteer迁移仍待实现/验收；未改生产代码或旧配置，未启动GPU。
+后续同回答学习前向注入与静态位置二次生成分别列明，未自动选择训练阶段或新增rollout。
+
+## 当前新增的静态mask字段与对比图
+
+源记录需绑定mask_kind=static_overlap、source_response_id、source_checkpoint/hash、源token/hash、
+学生/教师原生Top16来源与hash、完整输出支持、k、阈值精确值、逐位置O_src、requested_mask/actual_mask、
+零向量原因、预测idx到引擎行的映射及应用阶段。方向、算子、层、强度及注入后的概率另存，不覆盖源O_src。
+旧动态probe不能当作整段无SV源概率。改变checkpoint或源回答时重算来源和mask。
+固定前缀静态搜索默认前3条图使用整段无SV源蓝线、固定mask注入后橙线、实际mask散点和差值。
+原动态蓝线含历史干预，只是本步probe；历史图标签保持不变，不能重命名成静态基线。
+同源前缀允许离线精确次数/位置bin匹配随机对照；二次自由生成范围以外默认无注入，并记录覆盖率。
+这些字段为当前保存要求，静态写入/读取适配尚未验收，不将旧schema描述当作新字段已经产出的证据。
+
 2026-11-13补充：用户已授权完整队列，见[执行协议](08_full_scheme_execution.md)。新轨迹统计schema2除教师自身Top16，
 还持久保存教师对学生Top16的原生log-prob和实际采样token的教师分数（若可用），避免清理训练scores后丢失这些概率。
 Compass额外的R/S0候选及采样token分数另存`auxiliary_token_statistics/`，不随临时scores清理。
@@ -11,7 +31,7 @@ S0公共三文本池保留R的逐token激活，复用已有T/S激活；当前学
 
 ## 1. 完整方案中的“逐token”
 
-第7.3–7.5节比较的是注入开关g_t：全位置、overlap单阈值、因果后段、独立有符号熵差，
+当前比较注入开关g_t：全位置、源回答静态overlap单阈值；后段和独立静态有符号熵差另列对照，
 并要求注入率/绝对位置分布匹配的随机对照。同一轨迹/对应学习使用固定方向，记录mask供重放。
 只干预回答预测状态，包括最后一个prompt状态对首回答token的预测；不对全部题干位置加向量。
 这与“每个token提取一个SV”不同。随机概率分支已有；自动在线位置匹配控制器仍待实现，
@@ -58,7 +78,7 @@ CPU复用入口是`steer_opd.extraction.load_token_activation_cache`，验证SHA
 教师文件路径/hash明确绑定；无hook基线和带hook条件各存一份。rho=0时g_t仍可为True，但条件记录的扰动幅度为0。
 记录标记`current_step_probe=false`：这是固定Base token历史下当前条件的完整重放，不能冒充受控历史上的当前步probe。
 
-## 4. 后续训练轨迹
+## 4. 历史训练轨迹接口（新静态来源字段见本文顶部）
 
 - `rollouts/<key>.json`显式保存逐token`steering_mask`、token序列、首预测绝对位置、方向绑定/生成job hash。
 - `rollouts/topk/<key>.pt`保存原生Top16、采样logp及完整支持熵；HF门控还保存教师分数、probe候选/熵。

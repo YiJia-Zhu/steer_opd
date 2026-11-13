@@ -1,5 +1,21 @@
 # 单次运行记录
 
+## 最新静态overlap记录项（2026-11-13）
+
+当前采用普通源rollout→同前缀教师批量评分→冻结idx，详见[静态协议](../docs/12_static_overlap_protocol.md)。
+当前8方案192候选为0更新固定源前缀重放；后续训练阶段需填写实际选择，不默认沿用历史both流程。
+
+- mask_kind=static_overlap；源question/response ID、源checkpoint/hash及源prompt/回答token/hash：
+- 学生原始Top16来源/hash、教师批量评分来源/hash、k、合法输出支持及tau_O精确值：
+- 每位置O_src、requested_mask、actual_mask、零向量说明与预测idx→引擎行映射：
+- 应用阶段：固定前缀诊断 / 同源回答learning-only / 静态mask二次生成；对应目标和行为/学习条件：
+- 当前网格：T−S/T−R × all/static_overlap × global/per_question；additive/slerp、强度、单层比例和实际索引：
+- 同源基线/固定mask注入后Top16和overlap、前3条曲线/散点/差值、PNG/SVG/CSV/PDF/hash：
+- 是否刷新源checkpoint/源回答；二次生成的新前缀评分、mask覆盖率和源范围外不注入记录：
+- 静态适配/Slerp/EasySteer映射验收与真实运行状态；旧动态probe仅列历史，不重命名成静态基线：
+
+以下旧模板中的动态probe/both字段仅在实际采用历史动态路径时填写；静态流程未使用的字段标不适用。
+
 模板更新：2026-11-12。对应[主计划](../docs/01_research_plan.md)及[执行计划](../docs/03_execution_plan.md)。
 完整主线2–2–2为T−R、overlap单门控、当前学生在线逐题；各备选按实际配置填写，不预填预期收益。
 现有首轮T−S/全位置/全局固定仍按原运行记录，不用本模板改写已发生的实验条件。

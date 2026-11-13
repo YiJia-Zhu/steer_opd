@@ -1,0 +1,19 @@
+A.4 Cross-Tokenizer Alignment
+For each student-generated response, we score the same text
+with the strong teacher and the teacher-family reference.
+Token sequences across models are monotonically aligned according
+to shared text boundaries.
+For one-to-one token matches, we use the corresponding token
+log-likelihood directly.
+For text segments represented by different numbers of tokens,
+we construct a common span and average the token log-likelihoods
+within that span to reduce scale differences associated with
+tokenizer granularity.
+For CompassOPD, the teacher-family shift is computed from the
+aligned teacher and reference scores and assigned to every student
+token within the corresponding span.
+The student-reference displacement is computed directly at each
+student token position.
+Positions where consistent text boundaries cannot be formed are
+excluded by an alignment mask and do not contribute to the loss.
+Standard cross-family OPD and CompassOPD use the same alignment

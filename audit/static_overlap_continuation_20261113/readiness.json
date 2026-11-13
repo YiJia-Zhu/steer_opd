@@ -1,0 +1,51 @@
+{
+  "checked_at": "2026-11-13T10:32:45.782663+00:00",
+  "saved_conversation": "/home/zhenning/.codex/sessions/2026/11/13/rollout-2026-11-13T10-21-36-01a1d2b5-db99-7792-962b-552e321044f9.jsonl",
+  "scope": "read_only_source_and_cache_audit_plus_documentation; no production code or GPU",
+  "grid": {
+    "candidates": 192,
+    "unique": 192,
+    "parameter_updates": 0
+  },
+  "cache": {
+    "common_questions": 55,
+    "activation_questions": 55,
+    "activation_layers": [
+      6,
+      10,
+      13,
+      16,
+      20
+    ],
+    "pool_files_hash_checked": 55,
+    "pool_hash_mismatches": [],
+    "old_dev_select": 16,
+    "old_dev_confirm": 16,
+    "common_old_dev_intersection": [],
+    "calibration_student_logprobs": null,
+    "calibration_student_temperature": 0.7,
+    "calibration_student_top_p": 0.95,
+    "student_reference_records_with_rollout_topk": 0
+  },
+  "status_files": {
+    "runs/full_scheme_20261112/campaign.json": {
+      "status": "running",
+      "phase": "learning_selection_tr_l20_6_rho0p01",
+      "updated_at": 1794525573.21253
+    },
+    "runs/full_scheme_20261112/panel_status.json": {
+      "status": "failed_resumable",
+      "updated_at": 1794535860.965521,
+      "error": "RuntimeError('Selection trial failed: /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01; inspect its actual failure')"
+    },
+    "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/campaign.json": {
+      "status": "failed_resumable",
+      "phase": "steer_0001_train",
+      "updated_at": 1794535860.6976652,
+      "error": "RuntimeError('Stage steer_0001_train failed; inspect /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_train_1794535830176309739/stdout.log; artifacts retained')"
+    }
+  },
+  "protected_file_count": 74,
+  "changed_since_static_document_sync": [],
+  "note": "No inference, training, new mask, new diagnostic split, or new candidate result was produced."
+}

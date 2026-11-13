@@ -1,7 +1,52 @@
 # 面向低相容师生的门控 Steering OPD
 
-当前队列说明：[完整方案实施与恢复](docs/08_full_scheme_execution.md)。新实验状态在`runs/full_scheme_20261112/`，
-主入口为`scripts/run_full_scheme.py --execute`；下文暂停和未实现的叙述保留为历史，最新能力边界以新协议与真实日志为准。
+**当前执行状态：待用户同意。** 实验已列入[TODO](TODO.md)，本轮只复核代码和CPU；不启动GPU。
+[最新一致性复核](docs/17_implementation_recheck_20261113.md)确认八方案结构已接，但跨词表门控与完整稿§12.2不同，尚未完整复现。
+下一轮8组/基线默认EasySteer且无自动HF降级；T/Ref评分及SV提取仍是HF，本地EasySteer GPU尚未验收。
+
+**跨tokenizer流程已接入：** [Compass式span对齐与8方案入口](docs/16_compass_alignment_eight_way.md)包含T/Ref原生评分、4份bank、静态mask及select/confirm编排。
+官方仓库尚未定位，本轮按论文A.4独立实现；overlap为明确命名的项目字节续写指标。已CPU准备100题，预检缺35B教师权重，无GPU结果。
+
+**2026-11-13下一配对已确定：T=Qwen3.5-35B-A3B、Ref=Qwen3.5-0.8B、S=Qwen3-4B。**
+**第一轮已选定：固定Slerp alpha=0.1、75%单层，完整比较8方案＋共同无SV基线。**
+新学生36层，75%对应0-based26。[本轮规格](docs/14_slerp_eight_scheme_screen.md)先做同源前缀零更新选方案。
+静态mask与Slerp代码已接入，独立评分入口默认CPU准备；[EasySteer适配和验收状态](docs/15_static_mask_slerp_implementation.md)
+区分接口代码与尚未部署的GPU fork。新配对已接Compass式接口和显式项目指标，当前8项尚未运行；旧gate=overlap保留动态语义。
+[40配置建议](docs/13_next_pair_greedy_search_proposal.md)和192候选池保留为参考，不自动扩展本轮范围。
+新配对须先验收跨tokenizer的可比概率事件；下述28层/55有效题及旧缓存说明属于上一配对。
+
+**当前阶段：固定Slerp0.1、75%层26的八方案零更新筛选准备。** 以[本轮规格](docs/14_slerp_eight_scheme_screen.md)和[复核记录](docs/17_implementation_recheck_20261113.md)为准。
+普通无SV学生源rollout完成后，教师在同前缀批量评分并冻结mask；所有候选复用位置表，注入后不重判。
+当前配置带execution_hold与前置缺口清单，CPU准备记录在runs/compass_static_eight_review_20261113。
+此前40/192配置不自动执行；其历史协议保留在[候选池](docs/10_overlap_parameter_search.md)。
+结果交用户检查，后续learning-only或静态mask二次生成的训练阶段尚未选定。
+
+**历史实施状态（代码更新前的续接核对）：** 当时静态mask适配、Slerp和新搜索入口尚待实现验收；最新状态见上方代码说明。
+当前源码`gate=overlap`仍是历史动态门控，旧入口不能直接执行新的192候选规格。
+已有55题公共T/R/S激活包含第13、20层，第27层需补提取；这55题与旧32题dev前缀没有交集，
+旧学生参考回答也未保存原生Top16。新逐题搜索的数据准备边界见[续接核对](audit/static_overlap_continuation_20261113/README.md)。
+
+旧动态候选首步rollout已完成256条，后续学习重放失败，正式更新0；候选和面板为`failed_resumable`。
+核对时未发现其生成、训练或监督进程，顶层`campaign.json`的`running`是旧记录。
+本次续接只核对源码/缓存并补文档，未改生产代码、旧配置或产物，也未启动GPU和新搜索。
+
+| 当前入口 | 用途 |
+|---|---|
+| [跨tokenizer的8方案流程](docs/16_compass_alignment_eight_way.md) | 原生T/Ref评分、span、项目指标、新配置与权重/源码核对边界 |
+| [静态代码实现](docs/15_static_mask_slerp_implementation.md) | 固定mask/Slerp/批量评分、EasySteer插件、CPU验证及GPU未验收边界 |
+| [本轮8方案筛选](docs/14_slerp_eight_scheme_screen.md) | 固定Slerp0.1、75%第26层、8方案＋基线与静态实现状态 |
+| [新配对与贪婪搜索建议](docs/13_next_pair_greedy_search_proposal.md) | 已确定模型、36层映射、40配置建议及跨tokenizer前置接口 |
+| [静态overlap协议](docs/12_static_overlap_protocol.md) | mask来源、固定前缀比较、后续应用阶段与EasySteer边界 |
+| [192候选搜索](docs/10_overlap_parameter_search.md) | 已固定参数、共同数据、排名、绘图与实施顺序 |
+| [文档导航](docs/README.md) | 当前协议和历史记录索引 |
+| [仓库约定](AGENTS.md) | 最新范围、资源与研究记录要求 |
+
+以下保留此前动态方案和旧实验的说明，反映各自记录时点；当前状态与范围以上文为准。
+
+## 历史队列与研究说明
+
+历史完整队列说明：[完整方案实施与恢复](docs/08_full_scheme_execution.md)。旧实验状态在`runs/full_scheme_20261112/`，
+旧入口为`scripts/run_full_scheme.py --execute`，包含后续学习阶段；不能用它启动当前静态零更新搜索。
 
 **2026-11-12最新授权：恢复完整方案的实现、验收和分阶段实验。** 新任务在`runs/full_scheme_20261112/`，
 与下文旧暂停记录分开。优先一张空闲GPU，首次检查所有卡均被占用，precheck已排队等待。

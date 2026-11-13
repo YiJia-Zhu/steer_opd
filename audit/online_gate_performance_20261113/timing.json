@@ -1,0 +1,70 @@
+{
+  "backend": "hf_batched_causal_gate",
+  "trial": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01",
+  "method": {
+    "direction": "T-R",
+    "granularity": "per_question",
+    "extractor": "current",
+    "refresh_interval": 1,
+    "layers": [
+      20,
+      6
+    ],
+    "rho": 0.01,
+    "gate": "overlap",
+    "overlap_threshold": 0.37500000000000006,
+    "entropy_threshold": null,
+    "random_probability": null,
+    "start_token": null,
+    "matching_bin_width": 256,
+    "vector_assignment": "own",
+    "direction_control": "positive",
+    "seed": 42
+  },
+  "started_at_utc": "2026-11-12T23:21:55.332354+00:00",
+  "finished_at_utc": "2026-11-13T02:10:25.558825+00:00",
+  "subprocess_wall_seconds": 10110.226471,
+  "generation_loop_seconds": 10105.880349817919,
+  "responses": 256,
+  "questions": 55,
+  "tokens": 337427,
+  "injected_tokens": 50529,
+  "gate_rate": 0.1497479454815412,
+  "output_tokens_per_wall_second": 33.374821124716625,
+  "memory_split_events": 31,
+  "oom_events": 15,
+  "preventive_pressure_events": 16,
+  "repack_events": 24,
+  "teacher_online_scoring_included": true,
+  "prior_first_gpu_wait_seconds": 18035,
+  "complete_opd_step": false,
+  "committed_updates": 0,
+  "matching_vllm_gate_performance_baseline_available": false,
+  "new_gpu_work_executed": false,
+  "sources": [
+    {
+      "path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_rollout_1794525712965473006/process.json",
+      "sha256": "019d423c7e38fee5fcde2ee409599f3fe24ef86d715f0d38bad3770feb8ef29a"
+    },
+    {
+      "path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/steer/steps/0001/rollouts/complete.json",
+      "sha256": "52aee389b0c3cf1d2732e03568d925fa62448a429202fbd1bf9e0086a4e23e97"
+    },
+    {
+      "path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/steer/steps/0001/rollouts/batch_schedule.json",
+      "sha256": "a5b66188c0cdb132c1f740c5202992bc085b4732b796c34a5c190e8fe7a23543"
+    },
+    {
+      "path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_rollout_1794525712965473006/stdout.log",
+      "sha256": "7fa7f71e6763a9731ffb564fccf8199a09cb70e01d2cdf30679cdbcf1fb526a3"
+    },
+    {
+      "path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/steer/steps/0001/rollouts/runtime.json",
+      "sha256": "216e34f630500f0d76ff9c12ed3de8e1e4ae43bb519d0ad31f6924685af1c692"
+    },
+    {
+      "path": "audit/overlap_answer_20261113.json",
+      "sha256": "046e4c33afcd6a4eae1591067d4590894a0150ae8ebdc5851dbe8e8d004ceba0"
+    }
+  ]
+}

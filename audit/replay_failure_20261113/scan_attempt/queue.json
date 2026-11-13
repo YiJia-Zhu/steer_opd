@@ -1,0 +1,15 @@
+{
+  "pid": 4133240,
+  "start_ticks": 176489967,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "audit/replay_failure_20261113/diagnose.py",
+    "--job",
+    "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/jobs/steer_0001_rollout.json",
+    "--output",
+    "audit/replay_failure_20261113/scan"
+  ],
+  "created_at": "2026-11-13T02:26:09.827840+00:00",
+  "status": "launched",
+  "child_pid": 4133350
+}

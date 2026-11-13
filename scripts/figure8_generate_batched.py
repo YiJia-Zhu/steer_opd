@@ -51,6 +51,8 @@ def capacity(student, teacher, job, pending):
 
 def run_batch(student, teacher, tokenizer, requests, job, job_hash, output, bank):
     method = Method(**{**job["method"], "layers": tuple(job["method"]["layers"])})
+    if method.operator != "additive" or method.gate == "static_overlap":
+        raise ValueError("Use run_static_overlap_screen.py for Slerp or frozen static masks")
     device = student.lm_head.weight.device
     states, samplers, gaters, bindings = [], [], [], []
     for request in requests:
@@ -149,7 +151,8 @@ def run_batch(student, teacher, tokenizer, requests, job, job_hash, output, bank
                 p, q, student_cache, teacher_cache, injected, metrics, probe = batched_step(student, teacher, tokens,
                     student_cache, teacher_cache, attention, controller, method,
                     [len(state["token_ids"]) for state in states], draws,
-                    [state["gate_history"] for state in states], active)
+                    [state["gate_history"] for state in states], active,
+                    record_probe=job.get("record_comparison_probe", False))
                 if p.shape[1] != job["support_size"] or q.shape != p.shape or not torch.isfinite(p).all() or not torch.isfinite(q).all():
                     raise ValueError("Invalid batched policy distribution/support")
                 pv, pi = p.topk(job["save_rollout_top_k"])

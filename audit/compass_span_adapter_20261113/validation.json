@@ -1,0 +1,113 @@
+{
+  "checked_at": "2026-11-13T15:03:47.050537+00:00",
+  "basis": "CompassOPD A.4 independent implementation; official repository URL not located",
+  "metric": "compass_aligned_byte_top16_overlap",
+  "metric_is_upstream_compass_or_native_id_overlap": false,
+  "changed_existing_code": [
+    "src/steer_opd/direction_bank.py",
+    "src/steer_opd/easysteer_static.py",
+    "src/steer_opd/resumable_core.py",
+    "src/steer_opd/static_masks.py",
+    "src/steer_opd/static_plotting.py",
+    "src/steer_opd/static_screen.py",
+    "scripts/figure8_generate.py",
+    "scripts/run_static_overlap_screen.py",
+    "scripts/score_static_teacher.py"
+  ],
+  "new_code_sha256": {
+    "src/steer_opd/compass_alignment.py": "501fbf0ad4667d08b2444b15eba3782c38714a911bcd8814c810e0723b544ba0",
+    "src/steer_opd/compass_banks.py": "31caf3017ec31cdf29e8d29e731f03d7968681735c159cdbb0542040c45b2859",
+    "src/steer_opd/compass_campaign.py": "1be14b6e6447486b1b7bbe78d9a48c235d5949dd564fb81281267402464e7604",
+    "src/steer_opd/compass_job.py": "7a2347236d37f464a6d61fd6b220db347c56098a7a7b5c3ea7a50a5500e745b6",
+    "src/steer_opd/compass_scoring.py": "46c769d2c58d84ddfe4e04845b2e03839eb37915aa014594ed2c27cafbb0c6f5",
+    "scripts/score_compass_sources.py": "8c91c6e48cb1347866e21a518857946cd36b653ef64e99cd349aeed77857c264",
+    "scripts/prepare_compass_banks.py": "5a94e464da65fb8f6a39671cad2fadc296ac165433fdcc83f540c5c4ee159ed7",
+    "scripts/run_compass_static_panel.py": "78f5d010313c9b1b18a2889b25b2f400835bf3006e25deb62027bd10087f18b8",
+    "tests/test_compass_alignment.py": "4d2831140ac905e4c17df701d5cbdffa1050219fa4c9939e46b06462f115e90d"
+  },
+  "changed_existing_code_sha256": {
+    "src/steer_opd/direction_bank.py": "04075764764ea6057e4d6e5320fcc2e8fb65e7abd981abc2dcda0912a10df699",
+    "src/steer_opd/easysteer_static.py": "542feea97c45684818f030b246355a4ed0a2725f6ac4c374a60fe94c4ab13674",
+    "src/steer_opd/resumable_core.py": "f7776d761a7570d011415dd3a94fe6f886c33c905b84a3eb795bc20ed01017f6",
+    "src/steer_opd/static_masks.py": "0ac8b87d787f39a7514a30c0fbee4d3a67b6817d2f9933aae1915798babb6237",
+    "src/steer_opd/static_plotting.py": "a481dc90b1e074a050033480a637ae56be7004dd96ede851f79fa0189d32c4f8",
+    "src/steer_opd/static_screen.py": "8129e0823b5fd642be0b7eaa33f6645869b6fe026def09fc927798be8e364e00",
+    "scripts/figure8_generate.py": "db3f7790bf592ad535e2aa77702efbdcf508dbc12e293c9fb99f0844ce7701b3",
+    "scripts/run_static_overlap_screen.py": "1edf3d9a1ee672ce099e40d7d7e242190ca530290fba67ad9122cfadc94fcd0e",
+    "scripts/score_static_teacher.py": "06814c4c6441798365beb8f99a2b5642e493cd72888df7937385c942f84418da"
+  },
+  "old_config_count_unchanged": 7,
+  "new_config_sha256": "57b904221be08dae063365ca994021326c5083d95d0bb6bc8ac1614807b7386f",
+  "prepared_training_questions": 100,
+  "original_ids_and_contents_preserved": true,
+  "scheme_count": 8,
+  "bank_count": 4,
+  "current_preflight": {
+    "status": "missing_assets",
+    "config_hash": "98c656e1acdafe5ab792f4353670eadfcf5bf94e10e9c42a6f3d4b5237b5f2c3",
+    "missing_assets": [
+      {
+        "role": "teacher",
+        "reason": "checkpoint_weights_missing",
+        "path": "assets/models/Qwen3.5-35B-A3B"
+      }
+    ],
+    "parameter_updates": 0,
+    "automatic_opd": false,
+    "training_questions_prepared": 100,
+    "nonzero_scheme_count": 8,
+    "native_supports": {
+      "student": {
+        "mapped_tokens": 151669,
+        "support_size": 151669,
+        "mapping_sha256": "145980efdfb01c53b3f7ae954c2a305dc6ec9081bcfb3ef844cab642632bd007"
+      },
+      "teacher": {
+        "mapped_tokens": 248077,
+        "support_size": 248077,
+        "mapping_sha256": "63c71e09abe4f3dd8136e921bae930667e07bb9aa16b81560a76a0d1be369ec1"
+      },
+      "reference": {
+        "mapped_tokens": 248077,
+        "support_size": 248077,
+        "mapping_sha256": "63c71e09abe4f3dd8136e921bae930667e07bb9aa16b81560a76a0d1be369ec1"
+      }
+    },
+    "stages": [
+      "T_Ref_S_texts",
+      "common_S0_banks",
+      "unsteered_source_top16",
+      "native_T_Ref_span_scores",
+      "select_threshold",
+      "all_eight_fixed_mask_scores",
+      "frozen_confirm",
+      "user_review"
+    ]
+  },
+  "local_links_checked": 102,
+  "missing_links": [],
+  "full_cpu_tests": {
+    "passed": 186,
+    "skipped": 1,
+    "warnings": 25,
+    "seconds": 13.31,
+    "stage": "final full suite after metadata/plotting review",
+    "log": "audit/compass_span_adapter_20261113/cpu_tests_final.log"
+  },
+  "final_targeted_tests": {
+    "passed": 44,
+    "seconds": 9.47
+  },
+  "gpu_started": false,
+  "new_reference_responses_generated": 0,
+  "new_pair_schemes_scored": 0,
+  "parameter_updates": 0,
+  "local_easysteer_gpu_engine_validated": false,
+  "official_repository_comparison_complete": false,
+  "previous_full_cpu_tests": {
+    "passed": 185,
+    "skipped": 1,
+    "seconds": 12.91,
+    "stage": "before final metadata/plotting review"
+  }
+}

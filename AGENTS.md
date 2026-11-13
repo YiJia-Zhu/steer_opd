@@ -1,5 +1,194 @@
 # Repository Guidelines
 
+## Latest Efficiency Research — Defer Ablations, Consider Capture and verl
+
+2026-11-14用户要求后续消融先不急，先查steer提取和高效OPD。仅调研/文档，不安装或运行环境，不改生产代码，不启动GPU/新生成评分/训练；执行锁保持。
+核对SV Training官方acts.py仍HF逐题提取所有层；ACSD/ST-OPSD论文主要用固定/预算/选定位置降低成本，不能推断其有更快专用引擎。
+EasySteer官方已有capture指定层/位置及DiffMean/streaming提取，前端baecd969对应项目固定fork7837b07d；提取不一定HF，当前项目尚未接该capture路径。
+捕获没有服务端mean归约，正文capture可能跳过prefix-cache读取，helper单worker；仅选层不自动截断后层。当前HF已只跑前27个block，需同协议比较，不承诺倍数。
+Compass明确verl训练、vLLM采样和教师评分；未来优先考虑verl FSDP训练并迁T/Ref无梯度评分到vLLM。推理引擎不替代梯度更新，默认teacher-topk损失不等于原Student Top16或跨tokenizer span目标。
+详见docs/18_efficient_steer_opd_backends_20261114.md、audit/efficient_backends_20261114/；TODO已加效率准备项，后续消融不自动推进。
+
+## Latest Recheck — 2026-11-14, No Experiment Execution
+
+用户再次要求记录TODO、先核查实现，下一步明确同意后执行；execution_hold与既有blockers均保留，当前不启动GPU或新模型生成/评分/训练。
+已重新读取拥有源码与配置：8组/4bank、Slerp0.1/层26/36层学生、全部5份准备job的hold一致；当前LLM调用与job没有人工seq上限。
+接受的完整字节sum(min)仍未实现/接入，当前仍Top16完整token字节交集。不能称MD已完整复现，也不能把通过旧诊断CPU测试说成字节指标通过。
+生成走vLLM，T/Ref评分和方向提取仍HF；八组默认EasySteer但受支持fork/GPU未验收。源概率一致性、扰动、权重内容hash和完整OPD仍有缺口。
+新的只读审计audit/implementation_recheck_20261114/；与11月13日审计相比已核对Python源码无变化，旧配置/冻结job保持。本次仅补TODO/文档/审计和CPU回归。
+
+## Latest Metric Agreement — Full Next-Byte Probability Overlap
+
+2026-11-14用户接受完整原生支持的下一字节概率聚合及sum(min)作为跨tokenizer静态门控定义，并用Compass span评分检查区分度；不等于授权GPU执行。
+当前新面板仍0更新，执行锁保留；旧Student Top16训练配方尚未自动替换为sampled-span训练。Top16诊断缓存不能充当完整字节概率。
+vLLM0.32 max_logprobs默认20且可改/-1；当前生成显式20、EasySteer评分显式16，仅影响返回候选上限，与max_num_seqs独立；新版fork实际行为仍须验收。
+
+## Latest Recheck — Hold Experiments and Match the Actual Markdown
+
+2026-11-13用户要求将本实验记入TODO，下一步明确同意后才执行；当前只做代码/文档/CPU复核，无GPU/模型生成/评分/训练或完整权重下载。
+TODO.md为当前待执行清单；configs/compass_static_eight_20261113.json已execution_hold=awaiting_user_approval，并保留尚未解决的execution_blockers；锁传播到全部新阶段job，在模型/GPU/执行写入之前检查。
+固定T=35B-A3B、Ref=0.8B、S=Qwen3-4B、Slerp0.1/层26，8组＋基线、0更新。旧40/192网格仅历史参考。
+当前生成实际用普通vLLM；T/Ref概率和SV提取仍HF，不能称为全程vLLM/EasySteer。下轮8组/基线默认选择EasySteer且无自动HF降级，但fork本地GPU未部署/验收。
+新配置拒绝手工序列/CUDA Graph尺寸上限，当前LLM调用未传max_num_seqs；resolved_max_num_seqs仅记录引擎值，HF batch_size不是vLLM并发上限。
+重要差异：用户完整稿12.2路径B要求全概率下一字节聚合及sum(min)，现compass_aligned_byte_top16_overlap是Top16完整token字节交集，不能称一致复现；须补指标后才进入正式实验。
+EasySteer扰动量尚未记录，源概率与重放的一致性仍需GPU验收；完整OPD/跨tokenizer训练/后续控制面板尚未在新配对复现。
+旧CPU准备run/config冻结保留；新待执行目录runs/compass_static_eight_review_20261113。详见docs/17_implementation_recheck_20261113.md及audit/implementation_recheck_20261113/。
+本轮项目tests/全套CPU200 passed/1 skipped，相关路径65 passed；包含各独立入口的执行锁和序列上限拒绝检查，未使用GPU。
+
+## Latest Implementation — Compass-Style Cross-Tokenizer Eight-Way Pipeline
+
+2026-11-13用户要求参考CompassOPD代码仓库。论文v1/公开检索未定位官方仓库，已请求URL；本轮按附录A.4独立实现，不冒称源码移植。
+共同UTF-8字节边界span、T/Ref原生批量概率评分、span平均logp/家族差分广播已接入；学生实际采样token保留，控制/EOS/不可对齐位置显式mask。
+门控/排名指标明确为项目适配compass_aligned_byte_top16_overlap：共同span起点的Top16续写字节交集/16，再广播到学生span；不是原生token-ID overlap或完整概率输运。
+新入口scripts/run_compass_static_panel.py及configs/compass_static_eight_20261113.json覆盖参考文本→4份bank→源Top16→T/Ref分数→阈值→全8组select→冻结confirm；全部0更新，仍Slerp0.1/层26。
+35B官方tokenizer/config元数据固定59d61f3ce65a6d9863b86d2e96597125219dc754；T/Ref映射相同，各248077，S151669，各自原生定义支持，不复用151665。
+已CPU准备原100题的新prompt及70/30训练侧select/confirm，实际有效数需参考/激活/对齐过滤后报告；不能称独立dev或沿用旧55题。
+默认HF批量参考后端，EasySteer可显式选择独立解释器；新版GPU fork仍未部署/验收，无吞吐倍数，不自动降级或恢复旧训练。
+CPU全套186 passed/1 skipped，覆盖真实tokenizer、实际Qwen3.5 dense/MoE缩小文本架构（Torch参考核）和8组；新35B模型GPU路径未验收。
+预检runs/compass_static_eight_20261113/preflight.json为missing_assets，已查路径缺35B完整权重；仅下载元数据，无GPU、新生成/评分或OPD。
+权威更新docs/16_compass_alignment_eight_way.md、audit/compass_span_adapter_20261113/；官方仓库源码逐项核对仍待用户URL。
+
+## Latest Implementation — Static Masks, Slerp and EasySteer Adapter
+
+2026-11-13用户明确要求修改代码，覆盖此前仅文档范围；已实现静态mask、Slerp单条/批量前向和独立评分入口，无GPU/OPD。
+新入口scripts/run_static_overlap_screen.py默认CPU准备，--execute仍须空闲GPU准入；教师仅批量缓存评分，无在线probe/教师/KV双分支。
+新static_overlap标签已有代码；旧overlap保留动态语义，旧生成/campaign入口拒绝新静态/Slerp配置，避免误执行。
+EasySteer固定fork API已接项目steer_opd_slerp插件和逐请求selector；首预测prompt末位、后续t−1，空mask显式False。
+插件仅split模式，无full-graph Slerp kernel；入口元数据只安装项目.runtime/easysteer-plugin，不改共享环境。
+CPU全套165 passed/1 skipped，后续局部88 passed；真实固定上游API/selector CPU契约通过。
+当前.venv-opd仍是普通vLLM0.32，新版EasySteer GPU引擎未部署/验收，无速度倍数，不能称本地迁移完成。
+新配对共同概率事件计算器仍未实现，原生token-ID适配拒绝异构映射；35B教师权重在已查路径仍缺。
+本轮保持Slerp0.1、75%层26、8方案＋基线，尚无新模型8组评分。最新代码状态docs/15_static_mask_slerp_implementation.md，审计audit/static_mask_slerp_implementation_20261113/。
+
+## Latest Selection — Slerp 0.1 at 75%, Compare All Eight Schemes First
+
+2026-11-13用户选定第一轮只固定Slerp alpha0.1、75%单层，完整比较T−S/T−Ref × all/static_overlap × global/per_question的8方案及共同无SV基线。
+教师Qwen3.5-35B-A3B、Ref Qwen3.5-0.8B、学生Qwen3-4B；36层的75%对应0-based26，第27个block输出。
+本轮先做冻结S0、同源前缀零更新选方案，8组全部保留；不自动执行此前40配置建议/192全网格或进入OPD。
+权威规格docs/14_slerp_eight_scheme_screen.md及experiments/next_pair_slerp_scheme_screen_20261113.json；后者不是可执行campaign配置。
+静态位置规则已在文档确定，但生产代码gate=overlap仍为旧动态probe，Slerp/静态适配尚未接入，不能声称已完成代码改造或8组运行。
+新配对的跨tokenizer指标/教师权重仍须核验，旧151665支持/阈值和1.7B缓存不直接复用。
+
+## Latest Next Pair — Qwen3.5 Teachers and Qwen3-4B Student
+
+2026-11-13用户确定下一配对T=Qwen3.5-35B-A3B、Ref=Qwen3.5-0.8B、S=Qwen3-4B，并询问贪婪搜索顺序。
+学生本地36层，50%/75%/100%映射0-based17/26/35；旧1.7B向量/尺度/概率/阈值不直接复用。
+本地Ref与S词表ID映射不同，35B教师tokenizer尚未验收；不能直接沿用旧token-ID Overlap@16/151665支持或把学生ID喂给教师。
+新配对须先定义并验收同文本前缀的共同概率事件；方向两端仍由同一个新学生读取。
+docs/13_next_pair_greedy_search_proposal.md提出8方案×2算子粗筛16项→选层增4→选强度增6→8方案回查增最多14，合计最多40非零配置及共同基线。
+加法/Slerp各保留一条路径，若方案换出可再局部回查最多10项；此顺序是建议，用户尚未最终选定，不伪称已运行。
+本次只记录新配对/建议及本地元数据，无代码/旧配置修改、无GPU；旧192为完整候选池和历史规格，旧55题是旧配对有效数。
+
+## Latest Decision — Static Overlap Replaces Dynamic Token Gates
+
+2026-11-13用户明确“使用静态overlap”“相关文档也改成静态overlap，动态的开销太大”。
+当前：普通学生rollout保存原生Top16→教师在同源前缀批量概率评分→O_src→冻结g_static=1[O_src<tau]。
+应用后不重判idx，不要求采样前probe/在线教师回调或动态KV分支改造。SV粒度/刷新与mask静态性分开。
+8方案改为T−S/T−R × all/static_overlap × global/per_question；两种算子各0.01/0.1/0.3/0.5，单层50%/75%/100%，仍192非零候选及共同基线。
+当前只做同源前缀零更新比较，蓝线整段无SV源基线、橙线固定mask前向，默认前3条图/散点/差值。
+已完成源回答不能被事后注入改变；后续learning-only与静态mask二次生成分开定义，用户尚未选择时不自动开启任一训练阶段。
+learning-only行为/学习条件不同，现代码要求显式candidate_rkl；二次生成需自己的行为/教师概率，不能套源前缀分数。
+EasySteer固定位置selector可表达已知mask；首预测在prompt末状态，t−1映射/逐题绑定/Slerp/本地迁移仍须验收。
+本次仅同步文档/新规格，生产源码和旧配置不改、无GPU/新搜索。旧gate=overlap代码仍是动态实现，static_overlap仅计划标签。
+旧动态图/耗时/失败结果保留原义：256条2:48:30、5条重放失败、正式更新0；不冒充新静态结果。
+当前权威协议docs/12_static_overlap_protocol.md；搜索docs/10_overlap_parameter_search.md；审计audit/static_overlap_protocol_20261113/。
+此节覆盖以下历史动态主线/引擎前置要求，历史记录和真实代码状态不重写。
+
+## Latest Continuation — Static Search Cache Readiness
+
+2026-11-13续接指定保存对话后仅核对源码/缓存并补文档，生产代码/旧配置74份hash与静态同步时一致，无GPU/新搜索。
+公共T/R/S池55题、55份池文件hash匹配，现有层6/10/13/16/20；27仍需补提取。
+旧16+16题独立dev与55题公共池无交集，不能直接用于本题逐题SV的8方案；新搜索须准备共同训练题源前缀并预先冻结训练侧select/confirm。
+旧学生参考文本temperature0.7/top_p0.95且logprobs=None，无原生Top16；可保留作方向文本，不能冒充新源概率缓存。
+根README已补当前静态入口、旧动态入口的阶段边界；证据audit/static_overlap_continuation_20261113/。
+旧候选和面板仍failed_resumable，核对时无对应监督/生成/训练进程；顶层running为旧字段，正式更新0。
+
+## Latest Review — Online Gate Cost and Engine Modification Route
+
+2026-11-13用户询问动态overlap门控耗时及能否修改EasySteer源码。已核对旧256条rollout起止07:21:55→10:10:25，
+子进程10110.226秒（2:48:30），内部生成10105.880秒；337427token、33.375token/s，教师在线评分已包含。
+实际50529次注入（14.9748%）；31次显存拆批含15次OOM/16次预防压力，另24次重组批。首次等卡5:00:35另计。
+这是旧双层T−R自由生成，不是新单层固定前缀网格或完整OPD步；后续重放失败、正式更新0。
+源码可改：runner采样前增加probe/教师/gate/正式分支；GPU动态mask和request映射；上层当前slot临时KV提交/丢弃。
+新单层候选可复用注入点及之前计算，触发后只跑上层；末层输出注入只需重算最终norm/lm_head。
+末层固定token前缀可批量评估；自由生成仍依赖实际新token，不能预固定另一轨迹idx。
+先统一HF批量门控/同步/分段复用并验收，匹配性能基准后再引擎迁移；加法/Slerp保持同协议。
+本次只存源码/时间审计并补计划，未修改生产生成/训练代码或环境、未开GPU；未有提速倍数或迁移完成结果。
+证据audit/online_gate_performance_20261113/；路线docs/11_online_gate_acceleration.md，已链接下一步192候选协议。
+
+## Latest Selection — Eight Schemes, Additive/Slerp, Single Layers
+
+2026-11-13用户固定：T−S/T−R × all/overlap × global/per_question完整8方案；每个方案都扫加法与Slerp。
+加法rho与Slerp alpha均[0.01,0.1,0.3,0.5]；全部单层，深度50%/75%/100%，共192个非零候选及共用0基线。
+28层落地13/20/27，32层15/23/31，40层19/29/39；沿用十进制四舍五入、0.5向上。
+100%为最后block输出、最终norm之前，提取与注入同点，不混用归一化后的hidden_states[-1]。
+新选择覆盖下方历史40%/50%/60%/75%、rho0.03及多层提案；下一步完整协议docs/10_overlap_parameter_search.md。
+本次只写计划与清单，未开搜索/GPU、未改旧配置/生成训练代码。当前主项目仅加法，Slerp尚待接入和验收。
+已有13/20激活按checkpoint/文本/过滤身份复用；27需补三角色提取和尺度，所有组共用实际有效交集。
+先做S0零更新固定前缀overlap筛选，默认前3条对比图；结果供用户检查，不能把选定网格当作自动开训练的指令。
+旧5条重放失败未解决、正式更新0；新算子及最后层路径必须验收，不能沿用旧加法结果冒充。
+参数清单、CAA末层扫描源码及哈希见audit/selected_overlap_grid_20261113/。
+
+## Latest Clarification — Relative Layer Depths Across Models
+
+2026-11-13用户要求层候选跨模型按百分比换算。主候选40%/50%/60%/75%，组合见docs/10_overlap_parameter_search.md。
+约定：十进制四舍五入p×L得到1-based block序号，再减1并限制到0..L−1；0.5向上，不用Python银行家舍入。
+28层对应[10,13,16,20]，32层[12,15,18,23]，40层[15,19,23,29]。
+配置支持steering_method.layer_depths，读取学生config.json实际层数，落地后仍为原Method/bank绝对索引格式。
+同时给layers时必须匹配；取整碰撞拒绝，不能去重后仍称原多层组合。相同比例仅是统一搜索坐标，各模型独立选优。
+CPU73 passed/2 warnings；证据audit/relative_layer_depths_20261113/。未开新搜索/GPU，旧配置与产物不改。
+
+## Latest Task — Default Comparison Plots and Eight-Way Search Proposal
+
+2026-11-13用户要求后续默认画逐token对比图，并准备T−S/T−R × 全位置/overlap门控 × 全局/逐题的8格搜索，
+先给注入强度及层集合候选由用户挑选。本次没有启动新搜索或恢复失败训练。
+绘图默认comparison，正式rollout完成后、评分/训练前自动CPU画原清单前3条，恢复缓存时同样补图。
+蓝线为保留历史的当前步无注入probe、橙线为正式策略、红点为实际mask，下方为差值；不是全程无SV独立生成。
+新HF批量/参考job保存record_comparison_probe；全位置额外无梯度probe与正式KV隔离，旧job/断点协议不变。
+历史vLLM无probe时明确缺少配对数据，不能伪造；拟议8格统一后端。新增全位置记录路径仍须GPU验收。
+CPU67 passed/2 warnings，真实旧3条用无comparison参数的默认CLI出图，原回答hash不变；无新GPU工作。
+候选rho=[0.01,0.03,0.1,0.3]（共同0基线）；0-based层集合=[[10],[13],[16],[20],[10,16],[13,20],[10,13,20]]。
+尚未冻结网格，详见docs/10_overlap_parameter_search.md。优先中层并复用现有55题公共激活；
+论文Fig2/附录B/表8仅作为候选先验，SFT的alpha不能直接当作本项目rho。
+审计audit/default_comparison_search_proposal_20261113/。原5条重放失败、正式更新0的状态保持事实不变。
+
+## Latest Overlap Reading — 2026-11-13
+
+对当前T−R/overlap/当前逐题方向的首批256条轨迹，CPU读取实际保存的probe/正式策略/教师Top16，
+共55个不同训练题、337427个预测位置。保持同一实际受控历史，只比较当前步无注入probe与正式策略：
+全位置token加权Overlap@16为58.461256%→58.474685%，+0.013429个百分点；
+50529个实际注入位置为28.932766%→29.022443%，+0.089676个百分点，实际注入率14.974795%。
+题目等权增量+0.011300个百分点（47题升、7题降、1题不变），这只是即时分布变化。
+其中5条轨迹仍未通过既定学习重放检查，本读数暂不能作为已验收的有效性结论；正式更新仍0。
+前置T−S/all/S0-global固定前缀双层候选的select/confirm题目等权增量分别−0.051164/−0.041310个百分点，
+该前置扫描未显示正向增强。不同方法/前缀/聚合方式分别报告，不能把即时增量称为撤去hook后的学习收益。
+证据audit/overlap_answer_20261113.json和同名Markdown；本次未启动GPU、未更新实验权重。
+
+逐token图已按原清单前3条回答000_0/000_1/000_2生成（同题ot3-10473、seed42/43/44）。
+蓝线为门控前probe Overlap@16，红色散点为实际mask，灰虚线为阈值约0.375；逐点核验阈值与mask一致。
+输出runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/analysis/first3_token_overlap/，含PNG/SVG/CSV、3页PDF和来源hash。
+绘图脚本scripts/plot_token_overlap_gates.py，只读CPU处理，不平滑、不截断、不重新推理。
+
+对比版逐token图已另存analysis/first3_token_overlap_comparison/（同一候选目录下），保留原单线图。
+蓝线为保留历史、当前步无注入probe；橙线为实际门控后overlap，下方为两者差值（百分点），散点仍标原始实际mask。
+前3条000_0/000_1/000_2均值分别49.038462→49.038462%、66.411482→66.419329%、66.948198→66.948198%。
+第1条0处overlap变化、第2条49处、第3条2处且平均抵消。CSV逐点与原图数据一致，3页PDF/PNG/SVG已验。
+这不等于全程无SV独立生成；当前候选只有steer组，尚无与这3条配套的全程无SV生成对照。
+本次只读CPU画图，没有新增模型推理或更新。
+
+## Latest Continuation Review — 2026-11-13
+
+接续“明确 Steering_OPD 实验下一步”时核对：首个T−R候选第1步rollout在10:10:25完成256/256条，
+GPU子进程墙钟2:48:30，教师评分256/256。10:11:00训练在第73条（018_0）重放检查失败退出；
+只有此前72条临时梯度累积，尚未optimizer.step/提交checkpoint，正式更新仍0，50步面板未启动。
+当前panel_status与候选campaign为failed_resumable，监督器不存活；顶层campaign的running是旧记录。
+本次仅新增只读GPU诊断和文档：全部256条复核，251通过、5条失败（018_0/024_1/029_0/033_3/062_2）。
+切换注意力内核、显式mask、缓存末步与FP32重放均未使失败集合全部通过，根因仍未确认；
+不能仅凭平均KL小归因于无害数值误差。既定mean0.005/max0.03阈值未放宽，生成/训练代码和配置未修改，
+原回答/评分/方向保留，未重启已失败训练；恢复前须解决一致性问题并验收，不应直接原命令重复失败。
+实际在线门控后端为hf_batched_causal_gate，先probe/教师分布，再决定正式注入，未接入EasySteer。
+证据audit/replay_failure_20261113/README.md、status.json和scan/report.json；本节覆盖下方09:52/09:57运行快照。
+
 ## Current Full-Panel Implementation — 2026-11-13
 
 2026-11-13 09:52进度核对：已取得GPU2，precheck零更新select/confirm、多层扫描、T/R/S公共池、Base-dev选型评测完成。
@@ -317,21 +506,21 @@ EasySteer官方0.29/V2的direct可映射末prompt状态+全部generation状态�
    单位归一化后不要求等式；全局对照先平均原始差分再归一化，不平均单位方向冒充同协议。
 4. 每题本轮向量停止梯度，沿rollout与学习重放固定，不穿过提取过程反传，不在一个更新里偷偷换方向。
    保存提取checkpoint/文本hash与实际向量；同题多rollout复用，同题不同轮保留不同版本。
-5. 主门控只用g=1[Overlap@16<tau_O]，在采样前停止梯度；probe仅当前步无注入、保留历史受控KV。
-   正式分支从同一旧KV出发，probe上层缓存不污染正式结果，不用整段完全无hook分布替代probe。
-6. 生成与学习重放同题向量及历史mask，首回答预测状态t−1在prompt边界，排除无关prompt/padding，
-   hook保留至backward重算结束；batch/packing不能串题或串向量。g=0也有OPD监督。
+5. 当前门控为源无SV rollout完成后批量教师评分生成的静态mask，g_static=1[O_src<tau]；
+   注入后不动态重判。源版本/hash/输出支持和预测idx绑定，更新学生或源回答变化时刷新。
+6. 当前零更新搜索在同源前缀固定mask前向；首回答预测在prompt末状态，后续t−1对齐，屏蔽padding。
+   后续同回答learning-only或静态mask二次生成分别定义，未选择时不自动切换；新轨迹须自己的概率与评分。
 7. 基础目标沿用Student Top-K16/student_p/token_reward_direct/PPO及token-mean。
-   loss支持取实际受控学生Top16，门控支持取probe Top16；冻结候选/教师/向量/门控，理论与源码口径分开。
+   loss支持取实际受控学生Top16，静态门控取无SV源Top16；阶段不同必须显式目标，不能直接沿用同策略声明；冻结候选/教师/向量/门控，理论与源码口径分开。
 8. 当前先按0更新的固定前缀即时overlap调层/强度并交用户检查；
    后续学习方案仍须真实短程更新后的无干预dev收益验证，各方向等调参预算。
-   熵差仅独立对照，不与overlap做AND/OR；后段不读本条最终长度，在线随机匹配只用过去。
+   熵差仅独立对照，不与overlap做AND/OR；后段不读本条最终长度，静态随机对照可在已知源mask范围离线匹配。
 9. 主结果只测无教师/无R/无向量/无门控学生。逐题方向含训练参考信息，同文本及T/R两源基线匹配信息；
-   记录参考生成、当前学生重读、bootstrap、在线教师/probe/重算、学习与评测全部成本。
+   记录参考生成、当前学生重读、bootstrap、源教师批量评分/固定mask前向/必要时二次生成、学习与评测全部成本。
 10. 同数据全局vsS0逐题缓存隔离粒度，S0逐题缓存vs当前学生重提隔离刷新。
     逐题本题/其他题向量控制有效；全局均值两侧集合/权重不变时打乱题目配对不改变方向。
 11. 不同tokenizer先验收共同动作/span接口；平均log-likelihood不是整词概率，字节门控不是原生Top16。
-    纯文本教师只能供方向文本，不能原样运行在线概率门控；跨家族主张限于实际配对证据。
+    纯文本教师只能供方向文本，不能直接提供静态overlap所需的token概率评分；跨家族主张限于实际配对证据。
 
 ### Literature Interpretation
 
@@ -353,7 +542,7 @@ Entropy-Aware/桥接等候选不继承核心稿全部阅读声明；SCOUT本地�
 - [x] 在文档中定义每题参考、向量、提取checkpoint及rollout/mask的版本化恢复契约。
 - [x] 保留已有首轮配置/授权与原RKL配方，不将新方案冒充当前运行，不更改用户核心稿。
 - [ ] 新版实施：逐题缓存与重提接口、batch/题目绑定、提取无梯度及断点一致性。
-- [ ] 新版实施：probe/正式KV隔离、动态门控与同题向量因果重放验收。
+- [ ] 新版实施：源rollout静态mask绑定、固定位置/Slerp/首预测映射与阶段目标验收。
 - [ ] 冻结新增面板、参考文本、dev选型与总成本预算，再形成独立执行记录。
 - [ ] 根据无干预学习收益逐项消融，在线无增量时收敛缓存/全局版本。
 - [ ] 后续强基线、重复seed与外部家族验证，按实际证据限定主张。

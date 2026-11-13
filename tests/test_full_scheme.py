@@ -48,7 +48,8 @@ def test_asymmetric_phases_require_explicit_state_objective_and_cutoff_is_shared
 
 
 @pytest.mark.parametrize("gate", ["all", "overlap", "matched_random", "matched_position_random"])
-def test_batched_official_cache_matches_full_recorded_intervention_replay(gate):
+@pytest.mark.parametrize("record_probe", [False, True])
+def test_batched_official_cache_matches_full_recorded_intervention_replay(gate, record_probe):
     student, teacher = model(3), model(4)
     deltas = torch.randn(2, 16) * .3
     controller = BatchedController(student, {0: deltas})
@@ -63,19 +64,52 @@ def test_batched_official_cache_matches_full_recorded_intervention_replay(gate):
             _, sc = forward_rows(student, prefix[:, :1], None, attention[:, :1])
             _, tc = forward_rows(teacher, prefix[:, :1], None, attention[:, :1])
             for step in range(4):
-                p, q, sc, tc, inject, _, _ = batched_step(student, teacher, tokens, sc, tc, attention,
-                    controller, method, [step, step], [.2, .8], histories, [True, True])
+                p, q, sc, tc, inject, _, probe = batched_step(student, teacher, tokens, sc, tc, attention,
+                    controller, method, [step, step], [.2, .8], histories, [True, True], record_probe=record_probe)
                 masks.append(inject)
                 replay_mask = torch.zeros_like(prefix, dtype=torch.bool)
                 replay_mask[:, 1:] = torch.tensor(masks, dtype=torch.bool).T
                 expected, _ = forward_rows(student, prefix, None, attention, controller, replay_mask)
                 torch.testing.assert_close(p, expected, atol=3e-6, rtol=3e-6)
+                if method.online_gate or record_probe:
+                    probe_mask = replay_mask.clone()
+                    probe_mask[:, -1] = False
+                    expected_probe, _ = forward_rows(student, prefix, None, attention, controller, probe_mask)
+                    torch.testing.assert_close(probe, expected_probe, atol=3e-6, rtol=3e-6)
+                else:
+                    assert probe is None
                 next_ids = p.argmax(-1, keepdim=True)
                 tokens = next_ids
                 prefix = torch.cat([prefix, next_ids], dim=1)
                 attention = torch.cat([attention, torch.ones(2, 1, dtype=torch.bool)], dim=1)
     finally:
         controller.detach()
+
+
+@pytest.mark.parametrize("with_vector", [False, True])
+def test_all_position_diagnostic_probe_preserves_sampled_tokens_and_behavior_probabilities(with_vector):
+    outputs = []
+    vector = torch.arange(16).float()*.02
+    method = Method(layers=(0,), gate="all")
+    request = {"key": "sample", "id": "q1", "seed": 20, "prompt_token_ids": [1, 2]}
+    for record_probe in [False, True]:
+        student, teacher = model(3), model(4)
+        controller = CompositeSteeringController(student, {0: vector}) if with_vector else None
+        try:
+            row, scores = generate_response(student, teacher, request, controller, method,
+                max_tokens=5, support_size=47, k=16, stop_ids=set(), record_probe=record_probe)
+            outputs.append((row, scores))
+        finally:
+            if controller:
+                controller.detach()
+    assert outputs[0][0]["token_ids"] == outputs[1][0]["token_ids"]
+    assert outputs[0][0]["steering_mask"] == outputs[1][0]["steering_mask"]
+    for field in ["ids", "logps", "sampled_logps", "teacher_logps"]:
+        torch.testing.assert_close(outputs[0][1][field], outputs[1][1][field], atol=0, rtol=0)
+    assert "probe_topk_ids" not in outputs[0][1]
+    assert outputs[1][1]["probe_topk_ids"].shape == (5, 16)
+    if not with_vector:
+        torch.testing.assert_close(outputs[1][1]["probe_topk_logps"], outputs[1][1]["logps"], atol=0, rtol=0)
 
 
 def test_batched_generate_commits_native_topk_and_teacher_scoring(tmp_path, monkeypatch):
@@ -126,7 +160,8 @@ def test_explicit_baseline_objectives_have_real_finite_student_gradients(objecti
     assert sum(float(p.grad.float().square().sum()) for p in student.parameters() if p.grad is not None) > 0
 
 
-def test_batched_partial_resume_with_different_request_lengths_preserves_rng_and_policies(tmp_path, monkeypatch):
+@pytest.mark.parametrize("record_probe", [False, True])
+def test_batched_partial_resume_with_different_request_lengths_preserves_rng_and_policies(tmp_path, monkeypatch, record_probe):
     spec = importlib.util.spec_from_file_location("_batched_resume", ROOT / "scripts/figure8_generate_batched.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -139,7 +174,7 @@ def test_batched_partial_resume_with_different_request_lengths_preserves_rng_and
     requests = [{"key": "a", "id": "q1", "seed": 20, "prompt_token_ids": [1, 2]},
                 {"key": "b", "id": "q2", "seed": 21, "prompt_token_ids": [3, 4, 5]}]
     job = {"method": Method(layers=(0,)).to_dict(), "max_tokens": 34, "support_size": 47,
-           "save_rollout_top_k": 16, "teacher": "teacher", "model": "student"}
+           "save_rollout_top_k": 16, "teacher": "teacher", "model": "student", "record_comparison_probe": record_probe}
     full, resumed = {}, {}
     monkeypatch.setattr(module, "commit_topk_response", lambda directory, row, score: full.update({row["key"]: (row, score)}))
     module.run_batch(model(1), model(2), Tokenizer(), requests, job, "hash", tmp_path / "full", None)
@@ -157,6 +192,8 @@ def test_batched_partial_resume_with_different_request_lengths_preserves_rng_and
     for key in ["a", "b"]:
         assert full[key][0]["token_ids"] == resumed[key][0]["token_ids"]
         torch.testing.assert_close(full[key][1]["logps"], resumed[key][1]["logps"], atol=3e-6, rtol=3e-6)
+        if record_probe:
+            torch.testing.assert_close(full[key][1]["probe_topk_logps"], resumed[key][1]["probe_topk_logps"], atol=3e-6, rtol=3e-6)
 
 
 def test_panel_declares_common_backend_and_keeps_first_pair_and_objectives_separate():

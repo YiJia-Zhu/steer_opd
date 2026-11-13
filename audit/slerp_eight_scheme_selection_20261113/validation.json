@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-11-13T11:21:59.459818+00:00",
+  "scheme_count": 8,
+  "common_baseline_count": 1,
+  "all_eight_axis_combinations_present": true,
+  "fixed_operator": "slerp",
+  "fixed_alpha": 0.1,
+  "fixed_layer_depth": 0.75,
+  "fixed_layer": 26,
+  "source_static_mask_recomputed_after_candidate": false,
+  "protected_production_files_unchanged": 74,
+  "changed_production_files": [],
+  "local_links_checked": 87,
+  "missing_links": [],
+  "spec_sha256": "08adee8cbee14270a16c2742ce8e95464876a9e91d01a65921c7f3e9b045f375",
+  "validation_scope": "specification and documentation only; not implementation or model-path acceptance",
+  "gpu_started": false,
+  "candidates_run": 0
+}
