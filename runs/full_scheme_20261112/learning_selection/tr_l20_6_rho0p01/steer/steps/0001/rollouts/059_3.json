@@ -1,0 +1,4057 @@
+{
+  "key": "059_3",
+  "id": "ot3-07786",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    641,
+    264,
+    21495,
+    400,
+    47,
+    30465,
+    3,
+    448,
+    400,
+    6480,
+    76778,
+    48,
+    54876,
+    279,
+    14840,
+    10605,
+    315,
+    57960,
+    4044,
+    393,
+    3,
+    323,
+    57960,
+    4044,
+    431,
+    3,
+    31796,
+    518,
+    400,
+    50,
+    12947,
+    1416,
+    279,
+    10198,
+    25857,
+    315,
+    57960,
+    55114,
+    11405,
+    49,
+    3,
+    702,
+    264,
+    23033,
+    315,
+    220,
+    16,
+    19,
+    9961,
+    11,
+    1477,
+    279,
+    24632,
+    3204,
+    3082,
+    315,
+    57960,
+    55114,
+    393,
+    30465,
+    12947,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 59,
+  "seed": 281,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "3d9543bb5498e6f5f25740d326613730e7c31467a6dc3375b46ab56d888786d2",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    1249,
+    11625,
+    419,
+    3491,
+    11,
+    582,
+    1184,
+    311,
+    1477,
+    279,
+    24632,
+    3204,
+    3082,
+    315,
+    21495,
+    17767,
+    47,
+    30465,
+    57758,
+    2661,
+    429,
+    279,
+    10198,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    57758,
+    702,
+    264,
+    23033,
+    315,
+    220,
+    16,
+    19,
+    9961,
+    382,
+    16,
+    13,
+    3070,
+    16250,
+    2685,
+    279,
+    38918,
+    25,
+    1019,
+    256,
+    481,
+    38031,
+    17767,
+    47,
+    30465,
+    57758,
+    374,
+    374,
+    436,
+    346,
+    642,
+    448,
+    17767,
+    6480,
+    284,
+    61717,
+    59,
+    4292,
+    256,
+    481,
+    576,
+    14840,
+    10605,
+    315,
+    1124,
+    11520,
+    4044,
+    393,
+    57758,
+    323,
+    1124,
+    11520,
+    4044,
+    431,
+    57758,
+    31796,
+    518,
+    17767,
+    50,
+    59,
+    4292,
+    256,
+    481,
+    576,
+    10198,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    57758,
+    702,
+    264,
+    23033,
+    315,
+    220,
+    16,
+    19,
+    9961,
+    382,
+    17,
+    13,
+    3070,
+    1592,
+    70971,
+    25,
+    1019,
+    256,
+    481,
+    8704,
+    17767,
+    6480,
+    284,
+    61717,
+    59,
+    701,
+    1124,
+    11520,
+    55114,
+    393,
+    30465,
+    57758,
+    374,
+    54343,
+    448,
+    5091,
+    311,
+    279,
+    1555,
+    17767,
+    47,
+    48,
+    59,
+    4292,
+    256,
+    481,
+    576,
+    14840,
+    10605,
+    315,
+    1124,
+    11520,
+    4044,
+    393,
+    57758,
+    323,
+    1124,
+    11520,
+    4044,
+    431,
+    57758,
+    686,
+    3367,
+    518,
+    279,
+    29199,
+    509,
+    1950,
+    17767,
+    39,
+    57758,
+    315,
+    1124,
+    11520,
+    55114,
+    393,
+    30465,
+    59,
+    3593,
+    18,
+    13,
+    3070,
+    35,
+    24308,
+    279,
+    40453,
+    315,
+    279,
+    16338,
+    372,
+    25857,
+    25,
+    1019,
+    256,
+    481,
+    576,
+    23033,
+    315,
+    279,
+    10198,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    57758,
+    374,
+    220,
+    16,
+    19,
+    9961,
+    11,
+    773,
+    279,
+    10578,
+    374,
+    220,
+    22,
+    9961,
+    382,
+    19,
+    13,
+    3070,
+    10253,
+    279,
+    7420,
+    315,
+    264,
+    5126,
+    576,
+    13173,
+    25,
+    1019,
+    256,
+    481,
+    576,
+    2355,
+    315,
+    1459,
+    17767,
+    47,
+    57758,
+    448,
+    5091,
+    311,
+    279,
+    10198,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    57758,
+    374,
+    2661,
+    553,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    11405,
+    1124,
+    50853,
+    9256,
+    284,
+    8575,
+    61,
+    17,
+    198,
+    257,
+    1124,
+    921,
+    256,
+    481,
+    8704,
+    17767,
+    6480,
+    284,
+    61717,
+    59,
+    701,
+    582,
+    614,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    11405,
+    1124,
+    50853,
+    9256,
+    284,
+    61717,
+    61,
+    17,
+    198,
+    257,
+    1124,
+    2533,
+    20,
+    13,
+    3070,
+    34,
+    2437,
+    372,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    59,
+    1648,
+    1019,
+    256,
+    481,
+    576,
+    10198,
+    25857,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    57758,
+    702,
+    264,
+    10578,
+    315,
+    220,
+    22,
+    9961,
+    11,
+    773,
+    279,
+    6010,
+    504,
+    17767,
+    47,
+    57758,
+    311,
+    17767,
+    50,
+    57758,
+    320,
+    8206,
+    374,
+    279,
+    10198,
+    3057,
+    315,
+    1124,
+    11520,
+    55114,
+    11405,
+    49,
+    59,
+    593,
+    374,
+    220,
+    22,
+    9961,
+    382,
+    21,
+    13,
+    3070,
+    47866,
+    279,
+    12030,
+    25,
+    1019,
+    256,
+    481,
+    576,
+    3082,
+    315,
+    1124,
+    11520,
+    55114,
+    393,
+    30465,
+    57758,
+    646,
+    387,
+    16588,
+    1667,
+    279,
+    14806,
+    369,
+    279,
+    3082,
+    315,
+    458,
+    374,
+    436,
+    346,
+    642,
+    21495,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    1124,
+    1318,
+    90,
+    8726,
+    92,
+    284,
+    1124,
+    37018,
+    90,
+    16,
+    15170,
+    17,
+    92,
+    1124,
+    15136,
+    61717,
+    61,
+    17,
+    1124,
+    15136,
+    1124,
+    15940,
+    11520,
+    4044,
+    393,
+    340,
+    257,
+    1124,
+    921,
+    256,
+    481,
+    8704,
+    279,
+    14840,
+    10605,
+    3367,
+    518,
+    279,
+    29199,
+    509,
+    1950,
+    11,
+    279,
+    3082,
+    646,
+    387,
+    43799,
+    311,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    1124,
+    1318,
+    90,
+    8726,
+    92,
+    284,
+    1124,
+    37018,
+    90,
+    16,
+    15170,
+    17,
+    92,
+    1124,
+    15136,
+    61717,
+    61,
+    17,
+    1124,
+    15136,
+    1124,
+    15940,
+    11520,
+    4044,
+    393,
+    340,
+    257,
+    1124,
+    921,
+    256,
+    481,
+    16246,
+    429,
+    279,
+    10198,
+    25857,
+    10578,
+    374,
+    220,
+    22,
+    9961,
+    11,
+    582,
+    646,
+    990,
+    279,
+    2097,
+    429,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    1124,
+    15940,
+    11520,
+    4044,
+    393,
+    8,
+    284,
+    1124,
+    37018,
+    90,
+    22,
+    15170,
+    6480,
+    532,
+    257,
+    1124,
+    921,
+    256,
+    481,
+    576,
+    24632,
+    3204,
+    3082,
+    374,
+    16994,
+    979,
+    1124,
+    11520,
+    4044,
+    393,
+    284,
+    220,
+    24,
+    15,
+    24884,
+    43298,
+    59,
+    701,
+    7086,
+    510,
+    257,
+    1124,
+    9640,
+    257,
+    1124,
+    1318,
+    90,
+    8726,
+    92,
+    284,
+    1124,
+    37018,
+    90,
+    16,
+    15170,
+    17,
+    92,
+    1124,
+    15136,
+    320,
+    17,
+    1124,
+    15136,
+    220,
+    22,
+    29776,
+    17,
+    1124,
+    15136,
+    1124,
+    15940,
+    7,
+    24,
+    15,
+    24884,
+    43298,
+    8,
+    284,
+    1124,
+    37018,
+    90,
+    16,
+    15170,
+    17,
+    92,
+    1124,
+    15136,
+    220,
+    19,
+    24,
+    1124,
+    15136,
+    220,
+    16,
+    284,
+    220,
+    17,
+    19,
+    13,
+    20,
+    1124,
+    1318,
+    90,
+    9961,
+    92,
+    61,
+    17,
+    198,
+    257,
+    1124,
+    2533,
+    44500,
+    11,
+    279,
+    24632,
+    3204,
+    3082,
+    315,
+    1124,
+    11520,
+    55114,
+    393,
+    30465,
+    57758,
+    374,
+    1124,
+    11520,
+    79075,
+    90,
+    19,
+    17,
+    11035,
+    8,
+    9961,
+    29456,
+    13,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    }
+  ],
+  "sampled_logps": [
+    -3.08988881111145,
+    -0.4574480354785919,
+    -0.23073063790798187,
+    -0.004519605077803135,
+    -0.009203863330185413,
+    -0.16022592782974243,
+    -0.37736570835113525,
+    -0.0003240775258745998,
+    -1.9515362977981567,
+    -0.0007863528444431722,
+    -0.06979116052389145,
+    -0.00041309406515210867,
+    -7.402622577501461e-05,
+    -0.0003960540343541652,
+    -0.18328385055065155,
+    -0.2576219439506531,
+    -0.5949483513832092,
+    -2.658331868587993e-05,
+    -0.18722327053546906,
+    -0.15689244866371155,
+    -0.6117794513702393,
+    -0.999667763710022,
+    -0.15701940655708313,
+    -0.005869059823453426,
+    -0.00031585473334416747,
+    -0.8172831535339355,
+    -0.0007190502947196364,
+    -0.00012706902634818107,
+    -0.003024529432877898,
+    -0.00019810620869975537,
+    -0.0005896736984141171,
+    -0.004319860599935055,
+    -0.00013863079948350787,
+    -0.00383653468452394,
+    -0.0003232433518860489,
+    -0.0016582560492679477,
+    -0.0003890234511345625,
+    -0.00043525759247131646,
+    -0.0003149013500660658,
+    -2.539283514022827,
+    -1.7576522827148438,
+    -0.001832593115977943,
+    -0.1192222610116005,
+    -1.7787723541259766,
+    -0.0002113357331836596,
+    -0.003215620992705226,
+    -0.8289719820022583,
+    -0.46639013290405273,
+    -0.025664979591965675,
+    -0.07721911370754242,
+    -0.020842693746089935,
+    -2.7977757453918457,
+    -0.0001711698860162869,
+    -0.0040761493146419525,
+    -6.8662193370983e-05,
+    -3.707340147229843e-05,
+    -0.1729479879140854,
+    -0.03904712200164795,
+    -3.6954811548639555e-06,
+    -2.109982233378105e-05,
+    -1.5497195136049413e-06,
+    -0.08430416882038116,
+    -0.00036793138133361936,
+    -0.009635016322135925,
+    -0.0007535954937338829,
+    -0.0010002615163102746,
+    -0.002348286332562566,
+    -0.007792786229401827,
+    -1.4305104514278355e-06,
+    -3.576278118089249e-07,
+    -0.10570564866065979,
+    -0.6249916553497314,
+    -0.022024327889084816,
+    -0.00046588058467023075,
+    -0.014243955723941326,
+    -7.521823135903105e-05,
+    -1.6689286894688848e-06,
+    -0.00014840454969089478,
+    -9.560128091834486e-05,
+    -6.12716976320371e-05,
+    -7.510157047363464e-06,
+    -2.8013790142722428e-05,
+    -2.0265373677830212e-05,
+    -0.0001429217227268964,
+    -0.00018892886873800308,
+    -0.011395132169127464,
+    -9.131014667218551e-05,
+    -0.15321475267410278,
+    -0.00017617580306250602,
+    -0.003459779778495431,
+    -0.16703113913536072,
+    -1.0847986231965479e-05,
+    -2.50339189733495e-06,
+    -0.02801654487848282,
+    -0.0071647376753389835,
+    -0.011323118582367897,
+    -6.317892984952778e-05,
+    -0.0002615109842736274,
+    -2.5987286790041253e-05,
+    -0.00011205045302631333,
+    -0.0002422039397060871,
+    -1.0847986231965479e-05,
+    -5.936446541454643e-05,
+    -0.004397484473884106,
+    -0.00045313104055821896,
+    -0.006207708735018969,
+    -0.0009028411004692316,
+    -0.0007438276661559939,
+    -8.463501580990851e-05,
+    -3.6000557884108275e-05,
+    -0.0001867835089797154,
+    -1.4728295803070068,
+    -0.0003833036171272397,
+    -4.887569048150908e-06,
+    -1.0728830375228426e-06,
+    -1.92633056640625,
+    -1.175105094909668,
+    -0.0005967028555460274,
+    -5.364403477869928e-06,
+    -4.529942543740617e-06,
+    -0.0062383925542235374,
+    -0.28670790791511536,
+    -0.12162087857723236,
+    -0.15849719941616058,
+    -0.0032397424802184105,
+    -8.332382276421413e-05,
+    -0.1892995536327362,
+    -4.172316494077677e-06,
+    -1.5900160074234009,
+    -5.1616290875244886e-05,
+    -0.9782720804214478,
+    -0.03387719765305519,
+    -1.8000440832111053e-05,
+    -2.1576648578047752e-05,
+    -0.003221681108698249,
+    -2.0340328216552734,
+    -2.215099573135376,
+    -0.002299642888829112,
+    -2.3841855067985307e-07,
+    -0.053888000547885895,
+    -2.3764841556549072,
+    -0.4313546121120453,
+    -0.20321564376354218,
+    -0.0047572762705385685,
+    -0.007060695439577103,
+    -0.023149704560637474,
+    -1.311301275563892e-06,
+    0.0,
+    -0.031160220503807068,
+    -1.8084697723388672,
+    -0.2151753157377243,
+    -0.00970231182873249,
+    -0.00430229352787137,
+    -4.410734163684538e-06,
+    -5.483612312673358e-06,
+    -7.986703712958843e-05,
+    -3.397406908334233e-05,
+    -6.6756979322235566e-06,
+    -3.576272320060525e-06,
+    -5.590759246842936e-05,
+    -2.586808113846928e-05,
+    -0.00019202772818971425,
+    -0.00011240804451517761,
+    -1.765110731124878,
+    -1.9923075437545776,
+    -0.027549294754862785,
+    -0.6389786601066589,
+    -4.086960792541504,
+    -0.00024863966973498464,
+    -0.00025769727653823793,
+    -1.47882080078125,
+    -1.010270357131958,
+    -0.014393552206456661,
+    -0.10316571593284607,
+    -0.25275442004203796,
+    -1.1086402082582936e-05,
+    -4.660974445869215e-05,
+    -0.20245271921157837,
+    -0.0001629458274692297,
+    -0.39145490527153015,
+    -0.5527158975601196,
+    -1.6212332411669195e-05,
+    -1.0728830375228426e-06,
+    0.0,
+    -3.256438970565796,
+    -1.449388861656189,
+    -0.020610684528946877,
+    -1.0600552558898926,
+    -0.10462139546871185,
+    -0.01636112853884697,
+    -0.001987150404602289,
+    -0.0005690624238923192,
+    -1.2993727978027891e-05,
+    -0.11520734429359436,
+    -1.311301275563892e-06,
+    -3.576278118089249e-07,
+    -0.0002294515579706058,
+    -0.020474396646022797,
+    -0.8147529363632202,
+    -0.009824494831264019,
+    -0.0009704885887913406,
+    -9.715084888739511e-05,
+    -4.410734163684538e-06,
+    -0.3742230236530304,
+    -5.23315102327615e-05,
+    -1.7881377516459906e-06,
+    -2.4437606043647975e-05,
+    -0.00024256148026324809,
+    -1.3112935448589269e-05,
+    -9.16677454370074e-05,
+    -6.198863957251888e-06,
+    -0.021432459354400635,
+    -2.7656173188006505e-05,
+    -2.145764938177308e-06,
+    -0.00010227633902104571,
+    -0.1321614533662796,
+    -0.0019594295881688595,
+    -0.02663770318031311,
+    -0.0012053137179464102,
+    -2.6482911109924316,
+    -0.9152646064758301,
+    -0.001932302606292069,
+    -8.940656698541716e-06,
+    -0.6841540336608887,
+    -8.4638240878121e-06,
+    -1.1920928244535389e-07,
+    0.0,
+    -0.4652053713798523,
+    -0.06702055782079697,
+    -4.219385147094727,
+    -5.61460001335945e-05,
+    -0.032201264053583145,
+    -0.00035041390219703317,
+    -0.06653237342834473,
+    -0.000442407006630674,
+    -0.0001958416833076626,
+    -3.576278118089249e-07,
+    -1.1920928244535389e-07,
+    -3.099436753473128e-06,
+    -0.4070263206958771,
+    -0.1997344046831131,
+    -1.311301275563892e-06,
+    -0.0198319423943758,
+    -0.00011121608258690685,
+    -0.7943819761276245,
+    -2.5987286790041253e-05,
+    -0.01045535784214735,
+    -2.7418097943154862e-06,
+    -1.1920928244535389e-07,
+    -0.0009675112669356167,
+    -0.002273238729685545,
+    -9.059865078597795e-06,
+    -0.0004236992390360683,
+    -0.0003327769518364221,
+    -1.2993727978027891e-05,
+    -3.802703940891661e-05,
+    -0.009637967683374882,
+    -0.00024291902082040906,
+    -0.00021395778458099812,
+    -0.044078558683395386,
+    -0.6198596358299255,
+    -8.237022848334163e-05,
+    -0.6554296612739563,
+    -0.0012515101116150618,
+    -2.3603161025675945e-05,
+    -0.0016235039802268147,
+    -4.0531076592742465e-06,
+    -0.8930296897888184,
+    -0.002298810286447406,
+    -0.001740013831295073,
+    -4.72280216217041,
+    -0.09394573420286179,
+    -0.6150142550468445,
+    -0.40253686904907227,
+    -5.495397272170521e-05,
+    -0.8188519477844238,
+    -4.291525328881107e-06,
+    -3.576272320060525e-06,
+    -0.0016644446877762675,
+    -0.0380706787109375,
+    -0.00016389934171456844,
+    -0.04050353169441223,
+    -0.0335143618285656,
+    -0.5696279406547546,
+    -0.023890366777777672,
+    -0.03711889684200287,
+    -1.2359848022460938,
+    -1.883488948806189e-05,
+    -0.8662241101264954,
+    -0.9297523498535156,
+    -0.16676096618175507,
+    -3.099436753473128e-06,
+    -1.1920928244535389e-07,
+    -5.960462772236497e-07,
+    -9.536738616588991e-07,
+    -0.039557501673698425,
+    -0.012355925515294075,
+    -1.2993727978027891e-05,
+    -0.01759222522377968,
+    -9.452849917579442e-05,
+    -0.33366695046424866,
+    -0.00269431178458035,
+    -2.658331868587993e-05,
+    -0.0063102999702095985,
+    -2.0265558760002023e-06,
+    -3.576278118089249e-07,
+    -0.09189499169588089,
+    -3.576278118089249e-07,
+    0.0,
+    0.0,
+    -6.883764266967773,
+    -0.0016694430960342288,
+    -0.005706092808395624,
+    -0.5875821113586426,
+    -0.3540087938308716,
+    -0.015774348750710487,
+    -4.2437604861333966e-05,
+    -0.00011562632425921038,
+    -0.317114919424057,
+    -0.03351724147796631,
+    -0.019259240478277206,
+    -0.00104301399551332,
+    -4.053033626405522e-05,
+    -2.3841855067985307e-07,
+    0.0,
+    -0.01107108686119318,
+    -0.015585054643452168,
+    -0.10634338110685349,
+    -0.005767608527094126,
+    -4.5298504119273275e-05,
+    -2.861018856492592e-06,
+    -2.5987286790041253e-05,
+    -0.0003002431185450405,
+    -4.23184028477408e-05,
+    -1.3947389561508317e-05,
+    -0.25625789165496826,
+    -0.03980783745646477,
+    -0.05869308114051819,
+    -0.034654177725315094,
+    -0.00031585473334416747,
+    -0.00021181246847845614,
+    -7.462222856702283e-05,
+    -1.2003086805343628,
+    -0.6220056414604187,
+    -0.3089737892150879,
+    -0.5823577046394348,
+    -0.07145204395055771,
+    -0.29692205786705017,
+    -0.8167911171913147,
+    -0.001903866184875369,
+    -8.844937838148326e-05,
+    -1.6433930397033691,
+    -0.05489686131477356,
+    -0.003918589558452368,
+    -0.6071826219558716,
+    -0.4704962968826294,
+    -0.005850097630172968,
+    -0.12431888282299042,
+    -0.6987621188163757,
+    -0.20641447603702545,
+    -0.07822125405073166,
+    -0.0019041041377931833,
+    -4.887569048150908e-06,
+    -2.1934269170742482e-05,
+    -0.013670277781784534,
+    -0.0004895919119007885,
+    -0.0015874415403231978,
+    -9.393251093570143e-05,
+    -0.051280420273542404,
+    -0.20770826935768127,
+    -0.01320698019117117,
+    -0.001858056872151792,
+    -0.10776693373918533,
+    -7.390948667307384e-06,
+    -1.1920928244535389e-07,
+    0.0,
+    -0.915245532989502,
+    -0.0269880760461092,
+    -0.09009367227554321,
+    -1.57902193069458,
+    -8.344646857949556e-07,
+    0.0,
+    0.0,
+    -0.10168175399303436,
+    -0.14466771483421326,
+    -0.012681321240961552,
+    -0.005015173926949501,
+    -1.7881377516459906e-06,
+    -9.536738616588991e-07,
+    -0.21438230574131012,
+    -4.410734163684538e-06,
+    -6.186770770000294e-05,
+    -0.011625166051089764,
+    -3.576278118089249e-07,
+    -0.6546223163604736,
+    -0.0004198861715849489,
+    -0.004931666888296604,
+    -0.22048422694206238,
+    -0.34165483713150024,
+    -0.0007893307483755052,
+    -0.002034024568274617,
+    -0.0002585315378382802,
+    -0.08958806842565536,
+    -0.004929413087666035,
+    -1.1920928244535389e-07,
+    -1.0371154530730564e-05,
+    -4.768370445162873e-07,
+    -0.0008085080771706998,
+    -0.2526620030403137,
+    -1.2755313036905136e-05,
+    -2.3841855067985307e-07,
+    -1.1920928244535389e-07,
+    -4.529942543740617e-06,
+    -0.004453977569937706,
+    -4.017272294731811e-05,
+    -3.576278118089249e-07,
+    -9.536738616588991e-07,
+    -0.0008395960903726518,
+    -1.9788545614574105e-05,
+    -0.0014382981462404132,
+    -0.0008693729760125279,
+    -0.00038938093348406255,
+    -0.0056902095675468445,
+    -7.986990567587782e-06,
+    -0.001979655120521784,
+    -8.344646857949556e-07,
+    -0.016545232385396957,
+    -0.11020991206169128,
+    -1.3923579454421997,
+    -2.565904378890991,
+    -8.380061626667157e-05,
+    -0.01335990708321333,
+    -0.05398976802825928,
+    -0.0070288535207509995,
+    -0.012784544378519058,
+    -0.060531605035066605,
+    -0.06763496994972229,
+    -0.5617901086807251,
+    -0.3723568916320801,
+    -3.766942609217949e-05,
+    -1.0728830375228426e-06,
+    -0.04229052737355232,
+    -0.00023731753753963858,
+    0.0,
+    -0.16216669976711273,
+    -3.524700164794922,
+    -2.145125150680542,
+    -0.026410052552819252,
+    -1.2172671556472778,
+    -0.00016282663273159415,
+    -0.467268168926239,
+    -0.00403981888666749,
+    -1.0609570381348021e-05,
+    -7.152531907195225e-06,
+    -0.10932654142379761,
+    -1.3368085622787476,
+    -2.690951347351074,
+    -0.5419808626174927,
+    -1.1252861022949219,
+    -0.4059293568134308,
+    -0.8407350182533264,
+    -0.00798970926553011,
+    -1.5497195136049413e-06,
+    -1.1920928244535389e-07,
+    -2.0265558760002023e-06,
+    -5.006777428206988e-06,
+    -7.510157047363464e-06,
+    -1.156323378381785e-05,
+    -2.3841855067985307e-07,
+    -3.576278118089249e-07,
+    -5.769562994828448e-05,
+    -2.932505594799295e-05,
+    -0.06335099041461945,
+    -0.002918035024777055,
+    -0.001004667836241424,
+    -0.007636402267962694,
+    -4.351044481154531e-05,
+    -0.01710660010576248,
+    -1.0728830375228426e-06,
+    -0.0002087136817863211,
+    -0.00011264643399044871,
+    -0.16090087592601776,
+    -0.1281871348619461,
+    -0.0002787916746456176,
+    -0.033598512411117554,
+    -0.0018398514948785305,
+    -0.013552209362387657,
+    -0.08472023159265518,
+    -0.5147431492805481,
+    -0.02003655955195427,
+    -0.017841212451457977,
+    -0.08658481389284134,
+    -1.3470558769768104e-05,
+    -6.198863957251888e-06,
+    -1.156689167022705,
+    -0.0016598032088950276,
+    0.0,
+    -0.7923980355262756,
+    -1.5077455043792725,
+    -0.1964685469865799,
+    -0.7653776407241821,
+    -0.5638567805290222,
+    -1.5849668979644775,
+    -0.0008504349971190095,
+    -0.00028355870745144784,
+    -0.00030155404238030314,
+    -0.0015893458621576428,
+    -0.03400533273816109,
+    -0.13873204588890076,
+    -0.02377571165561676,
+    -0.02746625803411007,
+    -0.04552492871880531,
+    -2.1849262714385986,
+    -7.152531907195225e-06,
+    -2.1963579654693604,
+    -1.4305104514278355e-06,
+    -2.3841855067985307e-07,
+    -1.9073468138230965e-06,
+    -1.4305104514278355e-06,
+    -0.5039525032043457,
+    -0.35802555084228516,
+    -0.008922823704779148,
+    -0.004184775985777378,
+    -0.001536618685349822,
+    -0.002755299676209688,
+    -0.0021714221220463514,
+    -0.07054296135902405,
+    -0.00711680157110095,
+    -0.04321354255080223,
+    -1.2282768487930298,
+    -0.07943349331617355,
+    -1.762289047241211,
+    -0.0900564193725586,
+    -1.0251946150674485e-05,
+    -1.5497195136049413e-06,
+    -0.3275285065174103,
+    -0.021376218646764755,
+    -1.0728830375228426e-06,
+    -1.9344977140426636,
+    -0.12269604206085205,
+    -0.009558270685374737,
+    -0.02014732174575329,
+    -2.738412857055664,
+    -0.8864486813545227,
+    -1.0728830375228426e-06,
+    -0.2891760468482971,
+    -6.556489552167477e-06,
+    -0.1746666580438614,
+    -0.00011693747364915907,
+    -0.7980655431747437,
+    -0.006550980266183615,
+    -0.21725888550281525,
+    -1.1324817933200393e-05,
+    -9.298280929215252e-06,
+    -1.9073468138230965e-06,
+    -0.006942909676581621,
+    -0.01379174180328846,
+    -2.5239508152008057,
+    -0.25472941994667053,
+    -7.152531907195225e-06,
+    -3.576278118089249e-07,
+    -4.529942543740617e-06,
+    -2.0265558760002023e-06,
+    -0.0006049233488738537,
+    -0.038308195769786835,
+    -8.344646857949556e-07,
+    -0.00027616979787126184,
+    -0.00018380382971372455,
+    -2.861018856492592e-06,
+    -0.0011651878012344241,
+    -9.63164638960734e-05,
+    -3.933898824470816e-06,
+    -0.00010024998482549563,
+    -2.5152843591058627e-05,
+    -0.00014768941036891192,
+    -8.344646857949556e-07,
+    -7.92710343375802e-05,
+    -1.0371154530730564e-05,
+    -5.656193256378174,
+    -1.2224769592285156,
+    -0.048009276390075684,
+    -0.012659545056521893,
+    -0.06303361803293228,
+    -0.0032314248383045197,
+    -0.13573241233825684,
+    -0.00023707917716819793,
+    -0.31954413652420044,
+    -0.00038366109947673976,
+    -0.525346040725708,
+    -0.1904093474149704,
+    -0.0005340342177078128,
+    -0.002986140549182892,
+    -9.536738616588991e-07,
+    -1.5258672647178173e-05,
+    -1.9073468138230965e-06,
+    -0.024423081427812576,
+    -0.0007938570925034583,
+    -0.08462527394294739,
+    -0.00018010901112575084,
+    -1.4305104514278355e-06,
+    -6.139089964563027e-05,
+    -3.540453326422721e-05,
+    -2.145764938177308e-06,
+    -2.3841855067985307e-07,
+    -5.960462772236497e-07,
+    -9.417489309271332e-06,
+    -0.0023437668569386005,
+    -1.7791942358016968,
+    -0.05158897861838341,
+    -0.04582103714346886,
+    -0.00029380773776210845,
+    -0.0006280356901697814,
+    -0.0701417401432991,
+    -0.00014602071314584464,
+    -0.057978998869657516,
+    -0.059069372713565826,
+    -0.0010110987350344658,
+    -0.00022671037004329264,
+    -0.00012158608296886086,
+    -0.07583491504192352,
+    -0.027910709381103516,
+    -1.1920922133867862e-06,
+    -0.1267431229352951,
+    -9.07141511561349e-05,
+    -4.529942543740617e-06,
+    -1.3708974620385561e-05,
+    -0.00013720047718379647,
+    -1.9430925021879375e-05,
+    -0.00017736769223120064,
+    -0.007161423563957214,
+    -2.0203492641448975,
+    -0.0001426833332516253,
+    -3.886147169396281e-05,
+    -0.004864287097007036,
+    -1.0847986231965479e-05,
+    -6.6756979322235566e-06,
+    -6.01988795096986e-05,
+    -0.0014759134501218796,
+    -8.916457591112703e-05,
+    -6.794906312279636e-06,
+    -1.9311717551317997e-05,
+    -7.152555099310121e-07,
+    -0.00014399446081370115,
+    -3.9934315282152966e-05,
+    -0.13782896101474762,
+    -0.0075075626373291016,
+    -5.018585216021165e-05,
+    -0.0022033003624528646,
+    -1.8663275241851807,
+    -4.0150580406188965,
+    -0.2365494966506958,
+    -1.4682730436325073,
+    -0.08786218613386154,
+    -0.4879368841648102,
+    -0.16432179510593414,
+    -0.009250872768461704
+  ],
+  "text": "To solve this problem, we need to find the smallest possible area of triangle \\(PQR\\) given that the circumcircle of \\(\\triangle PSR\\) has a diameter of 14 cm.\n\n1. **Understand the Geometry:**\n   - Triangle \\(PQR\\) is isosceles with \\(PR = PQ\\).\n   - The bisectors of \\(\\angle P\\) and \\(\\angle R\\) intersect at \\(S\\).\n   - The circumcircle of \\(\\triangle PSR\\) has a diameter of 14 cm.\n\n2. **Key Insight:**\n   - Since \\(PR = PQ\\), \\(\\triangle PQR\\) is symmetric with respect to the line \\(PQ\\).\n   - The bisectors of \\(\\angle P\\) and \\(\\angle R\\) will meet at the orthocenter \\(H\\) of \\(\\triangle PQR\\).\n\n3. **Determine the Radius of the Circumcircle:**\n   - The diameter of the circumcircle of \\(\\triangle PSR\\) is 14 cm, so the radius is 7 cm.\n\n4. **Use the Power of a Point Theorem:**\n   - The power of point \\(P\\) with respect to the circumcircle of \\(\\triangle PSR\\) is given by:\n     \\[\n     PS \\cdot SP = PR^2\n     \\]\n   - Since \\(PR = PQ\\), we have:\n     \\[\n     PS \\cdot SP = PQ^2\n     \\]\n\n5. **Circumcircle of \\(\\triangle PSR\\):**\n   - The circumcircle of \\(\\triangle PSR\\) has a radius of 7 cm, so the distance from \\(P\\) to \\(S\\) (which is the circumcenter of \\(\\triangle PSR\\)) is 7 cm.\n\n6. **Calculate the Area:**\n   - The area of \\(\\triangle PQR\\) can be calculated using the formula for the area of an isosceles triangle:\n     \\[\n     \\text{Area} = \\frac{1}{2} \\times PQ^2 \\times \\sin(\\angle P)\n     \\]\n   - Since the bisectors meet at the orthocenter, the area can be simplified to:\n     \\[\n     \\text{Area} = \\frac{1}{2} \\times PQ^2 \\times \\sin(\\angle P)\n     \\]\n   - Given that the circumcircle radius is 7 cm, we can use the fact that:\n     \\[\n     \\sin(\\angle P) = \\frac{7}{PR}\n     \\]\n   - The smallest possible area is achieved when \\(\\angle P = 90^\\circ\\), giving:\n     \\[\n     \\text{Area} = \\frac{1}{2} \\times (2 \\times 7)^2 \\times \\sin(90^\\circ) = \\frac{1}{2} \\times 49 \\times 1 = 24.5 \\text{ cm}^2\n     \\]\n\nThus, the smallest possible area of \\(\\triangle PQR\\) is \\(\\boxed{42}\\) cm².",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 87,
+  "rollout_topk": "topk/059_3.pt",
+  "rollout_topk_hash": "69edb52f442227c8085e99fd59233cca60ec417e6efdfb9c0e3b21b4f00c6d62"
+}

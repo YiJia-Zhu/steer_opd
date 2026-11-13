@@ -1,0 +1,27 @@
+[
+  {
+    "path": "vllm/model_hooks/steering/algorithms/direct.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/steering/algorithms/direct.py",
+    "sha256": "57ee468a31345441ae3edfdd1638c035a51a54cbc336870eb72ac9722a427482"
+  },
+  {
+    "path": "vllm/model_hooks/steering/controllers/hidden_states.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/steering/controllers/hidden_states.py",
+    "sha256": "41a545104f2db27b7c0a1cf2179586fe5d623694033c9ffd103ce00f12ac9ed4"
+  },
+  {
+    "path": "vllm/model_hooks/steering/graph/policy.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/steering/graph/policy.py",
+    "sha256": "b0a7854389faf4ca43efd012af814dc1b5c4a672ffdf1b37ef0730fe26583dd1"
+  },
+  {
+    "path": "vllm/model_hooks/steering/api.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/steering/api.py",
+    "sha256": "af4a2c1c013f7d78f734965c5a44c03b0df92bd40bd8152db23c0ec31ee71c58"
+  },
+  {
+    "path": "vllm/model_hooks/selection/spec.py",
+    "url": "https://raw.githubusercontent.com/ZJU-REAL/EasySteer-vllm-v1/7837b07d21c0ddffd043a30001f2c5654290aec7/vllm/model_hooks/selection/spec.py",
+    "sha256": "7f274d5df375252da9d3898b2b637667201bff51a152356606646a33ebc29f26"
+  }
+]

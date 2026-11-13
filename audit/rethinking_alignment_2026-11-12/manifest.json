@@ -58,5 +58,121 @@
       "path": "experiments/stage_matrix.csv",
       "sha256": "b762d09cb91f4b186f8d24fb9f835fb3e566466b9ca993527fcf02ee788027e0"
     }
-  ]
+  ],
+  "completed_at": "2026-11-11T17:21:03.130436+00:00",
+  "status": "reference_recipe_alignment_complete_experiments_paused",
+  "after": [
+    {
+      "path": "scripts/launch_pilot.py",
+      "sha256": "42d026ad708d60b2d7e7bbcb1c98cdfb1fe65feafd8cef9db74976e5bd9f12d8"
+    },
+    {
+      "path": "scripts/generate_math.py",
+      "sha256": "4dee91a5e065fc24a481126a7171e2574765c82001741113d55b1de0061208f6"
+    },
+    {
+      "path": "src/steer_opd/math_data.py",
+      "sha256": "4bf182e86b17d615b399e93cd1378638259a17bbd19f46bbac9f6fd44e55cdf3"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "54d6d612e61c1d1e855d53089c49ae7df3dd671ad10a71709a4d969d81bce32c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e0298a175e2d5aad2472aadcf39ddad7f974537552d39807e1ea859b2f43e239"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "173360265c0d7b1123a08bb849d9dc1cc9fa517861fe2a82feb68792bec14e59"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "4bfade21cf46dea8a7a7c27b114cd72d99e40169ad053a61434ed46f3a8073bc"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "e540baead5da160c6db917ed35733a180b36a6a46e29878ce2d415e199ab87b2"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "6b7f5f65eec438f9b3f9a82c80848e5b514a6bde19743c3b5ad5b529531b8ef4"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "853192e56368fe042a628d42387f7588ea6469efd2ce2a58ca079029a48411c2"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256": "75394011019e61fb7c51327ab0be84127129149970bcb6cc359debecb72e7d0b"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256": "db4b9ba25baf20ff8184fe22b983aeb3d78bbd50857651b71b3ac47b89f15eaf"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256": "3f65def54bb40ea7b4faf4308aa9d6da3d2dcbc33797769082d5357340fa2526"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256": "5d306aecab62a1134193cfa390a6e7bcf03bbfa25ecb9e535c405a7e2418cf26"
+    },
+    {
+      "path": "configs/rethinking_opd.json",
+      "sha256": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b"
+    },
+    {
+      "path": "src/steer_opd/rethinking_protocol.py",
+      "sha256": "8c6b6278dfef01019b6d662c26e55d313b4e27d6413a119820df21b263089e76"
+    },
+    {
+      "path": "scripts/audit_rethinking_alignment.py",
+      "sha256": "92c9df85d3e2077a51af199d391110980cb6e0d4ea6c0a452865dbdb84dbbe42"
+    },
+    {
+      "path": "tests/test_rethinking_protocol.py",
+      "sha256": "fa430248f48bc53341bcf119bf174ea33fd2252da05eab45f742051afe227651"
+    },
+    {
+      "path": "scripts/validate_package.py",
+      "sha256": "4f327a8cc64fcb65b6d103a689419b9879ac43122a2464e78b12fa22d6e4eac0"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "a1eec2989b0a65a48e9ab94f5600b1d0420375dcba914fb7ac22cd17538e1dc0"
+    },
+    {
+      "path": "audit/rethinking_alignment_2026-11-12/README.md",
+      "sha256": "f9eea697ec51d8eb3e4273fd61d241e84e6dd5685bfc57e25a9d8df50ba69f43"
+    }
+  ],
+  "verification": {
+    "comparison": "audit/rethinking_alignment_2026-11-12/comparison.json",
+    "training_default_checks": 79,
+    "evaluation_checks": 6,
+    "unexpected_differences": 0,
+    "cpu_tests": {
+      "passed": 10,
+      "exit_code": 0,
+      "record": "audit/rethinking_alignment_2026-11-12/cpu_validation.json",
+      "log": "audit/rethinking_alignment_2026-11-12/cpu_tests.log",
+      "known_warning": "multiprocess ResourceTracker teardown RLock AttributeError; exit code remains 0"
+    },
+    "final_static_checks": "audit/rethinking_alignment_2026-11-12/final_validation.json",
+    "cpu_preview": "audit/rethinking_alignment_2026-11-12/preview_final/launch.json",
+    "full_package": {
+      "exit_code": 1,
+      "record": "audit/rethinking_alignment_2026-11-12/package_validation.json",
+      "reason": "Missing historical concurrent snapshot 12_cross_family_research_contract.md; historical hashes were not relaxed."
+    }
+  },
+  "remaining": [
+    "Controlled rollout/replay backend remains unimplemented and steering execution is blocked.",
+    "New data splits, token/EOS protocol, GPU dependency compatibility and experiment resumption remain pending.",
+    "The pinned generic shell plus inherited Hydra defaults are the audited source; Figure8-specific template archival is still required."
+  ],
+  "gpu_training_started": false,
+  "data_generation_started": false,
+  "downloads_started": false
 }

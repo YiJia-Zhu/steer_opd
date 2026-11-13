@@ -1,0 +1,433 @@
+{
+  "key": "022_3",
+  "id": "ot3-00722",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    3838,
+    374,
+    279,
+    7192,
+    1372,
+    315,
+    1290,
+    42446,
+    448,
+    7546,
+    3108,
+    28316,
+    429,
+    646,
+    387,
+    14122,
+    1667,
+    279,
+    17228,
+    315,
+    264,
+    5792,
+    18491,
+    6113,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 22,
+  "seed": 133,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "74753688914d2f407f41562a6e053183559e8b5881be3c23541470ea3b9f6de0",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    74305,
+    741,
+    74305,
+    64245,
+    741,
+    74305,
+    2822,
+    74305,
+    741,
+    61012,
+    7980,
+    741,
+    61012,
+    7980,
+    15290,
+    39827,
+    340,
+    61012,
+    7980,
+    2822,
+    74305,
+    741,
+    74305,
+    64245,
+    741,
+    74305,
+    2822,
+    74305,
+    64245,
+    741,
+    74305,
+    741,
+    74305,
+    2822,
+    74305,
+    741,
+    74305,
+    64245,
+    2822,
+    74305,
+    64245,
+    741,
+    74305,
+    64245,
+    64245,
+    2822,
+    74305,
+    64245,
+    64245,
+    741,
+    74305,
+    64245,
+    741,
+    74305,
+    64245,
+    64245,
+    368,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.125
+    }
+  ],
+  "sampled_logps": [
+    -6.058390140533447,
+    -2.086467981338501,
+    -0.03525001183152199,
+    -13.912864685058594,
+    -1.6927207708358765,
+    -0.0394093319773674,
+    -3.347198247909546,
+    -0.022034239023923874,
+    -1.4447094202041626,
+    -9.616559028625488,
+    -0.21085764467716217,
+    -0.2604588270187378,
+    -0.27499938011169434,
+    -0.0629439577460289,
+    -7.551390171051025,
+    -4.7481794357299805,
+    -0.43201467394828796,
+    -0.35307571291923523,
+    -0.006460968870669603,
+    -1.881408929824829,
+    -0.6568251252174377,
+    -0.30696338415145874,
+    -0.5747717022895813,
+    -0.34618768095970154,
+    -0.09637872129678726,
+    -0.09382147341966629,
+    -0.39914584159851074,
+    -0.042887311428785324,
+    -2.6814448833465576,
+    -0.15140530467033386,
+    -0.15394800901412964,
+    -0.9662240743637085,
+    -0.0864141508936882,
+    -0.6931861639022827,
+    -0.04840005934238434,
+    -1.164811134338379,
+    -0.18928435444831848,
+    -0.19710655510425568,
+    -1.8056968450546265,
+    -0.02402176894247532,
+    -0.8649559020996094,
+    -0.17851676046848297,
+    -0.04884256795048714,
+    -1.829392671585083,
+    -3.1808319091796875,
+    -1.1252363920211792,
+    -0.012946950271725655,
+    -0.1621134728193283,
+    -0.6654641628265381,
+    -0.6103762984275818,
+    -0.015622376464307308,
+    -0.10082680732011795,
+    -2.0332765579223633,
+    -0.0055965641513466835,
+    -0.25258588790893555,
+    -1.4643912315368652,
+    -2.286990165710449,
+    -0.10903743654489517
+  ],
+  "text": ".getBoundingClientRect()\n.getBoundingClientRectFullScreen()\n.getBoundingClientRect()\n\n.getBoundingClientRect()\n.getOwnPropertyNames()\n.getOwnPropertyNames(document.cookie)\n.getOwnPropertyNames()\n\n.getBoundingClientRect()\n.getBoundingClientRectFullScreen()\n.getBoundingClientRect()\n\n.getBoundingClientRectFullScreen()\n.getBoundingClientRect()\n.getBoundingClientRect()\n\n.getBoundingClientRect()\n.getBoundingClientRectFullScreen()\n\n.getBoundingClientRectFullScreen()\n.getBoundingClientRectFullScreenFullScreen()\n\n.getBoundingClientRectFullScreenFullScreen()\n.getBoundingClientRectFullScreen()\n.getBoundingClientRectFullScreenFullScreen()",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 51,
+  "rollout_topk": "topk/022_3.pt",
+  "rollout_topk_hash": "bedf1fcc8aa411026bec0b3f2f92868ee19f020f3d09ea06edfad07278eb354e"
+}

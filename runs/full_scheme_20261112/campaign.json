@@ -1,0 +1,14 @@
+{
+  "status": "running",
+  "phase": "learning_selection_tr_l20_6_rho0p01",
+  "supervisor_pid": 3105250,
+  "supervisor_start_ticks": 173440124,
+  "updated_at": 1794525573.21253,
+  "command": [
+    "scripts/run_figure8_campaign.py",
+    "--config",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/configs/selection_tr_l20_6_rho0p01.json"
+  ],
+  "device": "cpu",
+  "max_gpus": 1
+}

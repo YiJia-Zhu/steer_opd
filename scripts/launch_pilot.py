@@ -59,6 +59,7 @@ def main():
               "protocol": profile["protocol"], "reference_commit": actual_commit,
               "group": args.group, "preview_only": not args.execute,
               "execution_blockers": blockers, "runtime_gpu_validated": False,
+              "controlled_steering_backend_implemented": False,
               "command": command, "hydra_overrides": values,
               "source_python_root": profile["reference"]["python_root"],
               "scope_exceptions": profile["scope_exceptions"]}

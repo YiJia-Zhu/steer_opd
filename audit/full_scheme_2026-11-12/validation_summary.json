@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-11-12T18:02:34.001181+00:00",
+  "cpu_tests": {
+    "passed": 128,
+    "skipped": 1,
+    "warnings": 10,
+    "seconds": 6.36,
+    "command": "source scripts/runtime_env.sh; CUDA_VISIBLE_DEVICES='' \"$STEER_OPD_PYTHON\" -m pytest -q tests",
+    "evidence": "cpu_tests.log",
+    "rerun_in_this_snapshot": false
+  },
+  "source_integrity": {
+    "files": 79,
+    "changed_since_test_manifest": [],
+    "ast_files": 79,
+    "evidence": "source_manifest.json"
+  },
+  "input_fingerprints": "input_fingerprints.json",
+  "new_gpu_acceptance": {
+    "status": "not_run",
+    "reason": "all8 GPUs occupied; precheck waits for an idle GPU"
+  },
+  "new_parameter_updates": 0,
+  "new_experiment_efficacy": "not_established",
+  "package_validation": {
+    "status": "failed",
+    "evidence": "package_validation.log",
+    "reason": "missing historical snapshot audit/docs_cleanup_2026-11-10/concurrent_source_snapshots/12_cross_family_research_contract.md"
+  },
+  "runtime_evidence": "runtime_status.json",
+  "quota_evidence": "storage_quota_latest.json",
+  "unimplemented_extensions": [
+    "EasySteer exact online teacher-interactive gate",
+    "local SFT comparison",
+    "cross-tokenizer training panel"
+  ],
+  "panel_preview_only": {
+    "prospective_formal_runs": 55,
+    "methods": 49,
+    "formal_maximum_updates": 3400,
+    "learning_selection_maximum_trials": 9,
+    "evidence": "panel_preview.json"
+  }
+}

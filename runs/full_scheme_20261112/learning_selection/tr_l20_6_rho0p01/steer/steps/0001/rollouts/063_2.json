@@ -1,0 +1,612 @@
+{
+  "key": "063_2",
+  "id": "ot3-23240",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    32,
+    21495,
+    448,
+    17228,
+    4930,
+    15,
+    11,
+    15,
+    15087,
+    11,
+    4930,
+    19,
+    11,
+    15,
+    15087,
+    11,
+    323,
+    4930,
+    17,
+    11,
+    18,
+    15087,
+    374,
+    1640,
+    17433,
+    304,
+    264,
+    12671,
+    13,
+    576,
+    12671,
+    88184,
+    264,
+    1555,
+    400,
+    88,
+    28,
+    18085,
+    35093,
+    3,
+    518,
+    1378,
+    3501,
+    11,
+    2176,
+    315,
+    892,
+    525,
+    304,
+    279,
+    1156,
+    93286,
+    13,
+    576,
+    1555,
+    10238,
+    20913,
+    1493,
+    1378,
+    3501,
+    702,
+    3084,
+    57960,
+    26888,
+    90,
+    17,
+    15,
+    92,
+    12947,
+    3555,
+    374,
+    279,
+    897,
+    315,
+    400,
+    76,
+    3,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 63,
+  "seed": 296,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "39bb32ca161457b01561bbc9d016843ecd86b2890fe25a8f1cd3dd8ac9774aa0",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    10020,
+    81555,
+    79029,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    198,
+    1491,
+    66702,
+    30400,
+    66702,
+    271,
+    1491,
+    62,
+    88781,
+    124785,
+    57026,
+    198,
+    1491,
+    88781,
+    124785,
+    57026,
+    198,
+    1491,
+    88781,
+    124785,
+    57026,
+    198,
+    1491,
+    88781,
+    124785,
+    57026,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    }
+  ],
+  "sampled_logps": [
+    -10.258333206176758,
+    -3.6878833770751953,
+    -10.36686897277832,
+    -11.384668350219727,
+    -6.525157451629639,
+    -4.557923316955566,
+    -3.453871726989746,
+    -4.0794453620910645,
+    -0.8215761184692383,
+    -0.13037866353988647,
+    -0.09037012606859207,
+    -0.08108053356409073,
+    -0.8225001096725464,
+    -0.016120100393891335,
+    -0.015750879421830177,
+    -0.009640446864068508,
+    -0.014583305455744267,
+    -0.2834981381893158,
+    -0.008482379838824272,
+    -0.007311846129596233,
+    -0.00420424435287714,
+    -0.006331859156489372,
+    -0.17303352057933807,
+    -0.006521490402519703,
+    -0.003610284999012947,
+    -0.0027237955946475267,
+    -0.0043168929405510426,
+    -0.11405304819345474,
+    -0.0064814588986337185,
+    -0.0020617435220628977,
+    -0.0016230279579758644,
+    -0.0028287656605243683,
+    -0.08046520501375198,
+    -0.00454594986513257,
+    -0.0016370717203244567,
+    -0.001261034864000976,
+    -0.002032121177762747,
+    -0.0526990070939064,
+    -0.0029791281558573246,
+    -0.0012032896047458053,
+    -0.001086002797819674,
+    -0.0014016337227076292,
+    -0.05014999583363533,
+    -0.0023004752583801746,
+    -0.0009990707039833069,
+    -0.0009816833771765232,
+    -0.0010281282011419535,
+    -0.03576440364122391,
+    -0.00219533103518188,
+    -0.0009192770230583847,
+    -0.0009859706042334437,
+    -0.0012206730898469687,
+    -0.0522099994122982,
+    -0.0024465173482894897,
+    -0.0007712250226177275,
+    -0.000922969076782465,
+    -0.0012032896047458053,
+    -4.277622699737549,
+    -0.03900103271007538,
+    -8.720890998840332,
+    -9.544379234313965,
+    -3.6195855140686035,
+    -6.892409801483154,
+    -2.413815498352051,
+    -0.020612435415387154,
+    -3.161557197570801,
+    -0.12007209658622742,
+    -0.10956994444131851,
+    -0.7005914449691772,
+    -0.011685729026794434,
+    -0.05855536460876465,
+    -0.004035069607198238,
+    -0.008462522178888321,
+    -0.1306619793176651,
+    -0.0035051594022661448,
+    -0.011535374447703362,
+    -0.0006407829932868481,
+    -0.0025215516798198223,
+    -4.297739505767822
+  ],
+  "text": "_CODE_HERE↓indows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\nindows_MACHINE_OS_MACHINE\n\nindows_결국여\nindows결국여\nindows결국여\nindows결국여",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 104,
+  "rollout_topk": "topk/063_2.pt",
+  "rollout_topk_hash": "7a11a0c3fa66c19128a5d5a94eaeef922a7df2ec8212cfb05618f73b72402f1f"
+}

@@ -1,0 +1,1284 @@
+{
+  "key": "006_0",
+  "id": "ot3-07711",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    32,
+    34564,
+    9099,
+    35841,
+    1495,
+    389,
+    264,
+    16202,
+    11031,
+    374,
+    26430,
+    553,
+    264,
+    9067,
+    429,
+    2239,
+    504,
+    279,
+    1909,
+    315,
+    279,
+    34564,
+    311,
+    264,
+    1459,
+    389,
+    279,
+    11031,
+    13,
+    576,
+    9067,
+    3643,
+    458,
+    9210,
+    315,
+    220,
+    21,
+    15,
+    12348,
+    448,
+    279,
+    11031,
+    13,
+    3197,
+    264,
+    25366,
+    374,
+    9099,
+    220,
+    16,
+    15,
+    9961,
+    3123,
+    504,
+    279,
+    1459,
+    1380,
+    279,
+    9067,
+    28627,
+    279,
+    11031,
+    11,
+    432,
+    1101,
+    28627,
+    279,
+    9067,
+    13,
+    1416,
+    279,
+    10578,
+    315,
+    279,
+    25366,
+    374,
+    220,
+    17,
+    9961,
+    11,
+    1128,
+    374,
+    279,
+    10578,
+    315,
+    279,
+    34564,
+    594,
+    2331,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 6,
+  "seed": 66,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "44c716c94901c151a268621e09264d35c2e24d38f3cb021a3a6cae3bc7ab391d",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    134299,
+    198,
+    2354,
+    279,
+    1555,
+    364,
+    5717,
+    516,
+    5656,
+    264,
+    3550,
+    3668,
+    624,
+    5717,
+    198,
+    91104,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    1406,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    271,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    1406,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    198,
+    85278,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    }
+  ],
+  "sampled_logps": [
+    -5.724358558654785,
+    -3.324659585952759,
+    -9.159281730651855,
+    -1.0301403999328613,
+    -8.09106159210205,
+    -4.36260986328125,
+    -6.916699409484863,
+    -1.5334696769714355,
+    -5.8918352127075195,
+    -1.6711151599884033,
+    -1.5667054653167725,
+    -4.394286155700684,
+    -3.1415956020355225,
+    -2.745239734649658,
+    -0.7844721078872681,
+    -7.968430042266846,
+    -0.40110862255096436,
+    -11.60871410369873,
+    -0.5656147599220276,
+    -0.7615615129470825,
+    -0.4528203010559082,
+    -0.6511991024017334,
+    -0.36942869424819946,
+    -0.13167846202850342,
+    -0.2299409806728363,
+    -0.029288029298186302,
+    -0.17912077903747559,
+    -0.011395132169127464,
+    -0.14014632999897003,
+    -0.0055489083752036095,
+    -0.11569060385227203,
+    -0.0034925672225654125,
+    -0.09713254868984222,
+    -0.002558531705290079,
+    -0.08128190040588379,
+    -0.0017357297474518418,
+    -6.4415059089660645,
+    -0.7682474255561829,
+    -0.30472463369369507,
+    -0.0031291113700717688,
+    -0.11190365254878998,
+    -0.0018822111887857318,
+    -0.05417611077427864,
+    -0.001004667836241424,
+    -0.07019330561161041,
+    -0.001321038813330233,
+    -0.08588676899671555,
+    -0.0010642108973115683,
+    -0.0992354154586792,
+    -0.0009952597320079803,
+    -0.09234345704317093,
+    -0.0009078433504328132,
+    -0.09202003479003906,
+    -0.001033129869028926,
+    -0.09048185497522354,
+    -0.0010888606775552034,
+    -0.21973274648189545,
+    -0.0012680593645200133,
+    -0.21341487765312195,
+    -0.0009085579658858478,
+    -0.15204393863677979,
+    -0.0007495454628951848,
+    -0.11075322329998016,
+    -0.0007459718617610633,
+    -0.07955603301525116,
+    -0.0006286313873715699,
+    -0.06363862007856369,
+    -0.0006086166249588132,
+    -0.05880335345864296,
+    -0.0006731866160407662,
+    -0.047238968312740326,
+    -0.0007512131123803556,
+    -0.038527533411979675,
+    -0.00047874910524114966,
+    -0.040819209069013596,
+    -0.0005423743859864771,
+    -0.039787907153367996,
+    -0.00044109628652222455,
+    -0.036173105239868164,
+    -0.00034290633630007505,
+    -0.035732656717300415,
+    -0.0003771070914808661,
+    -0.03496802598237991,
+    -0.00038425691309385,
+    -0.03118090331554413,
+    -0.00027414379292167723,
+    -0.030274584889411926,
+    -0.00029738296871073544,
+    -0.03318241238594055,
+    -0.0003831844369415194,
+    -0.03472337871789932,
+    -0.0003358753747306764,
+    -0.03704365715384483,
+    -0.0003997480380348861,
+    -0.03333127871155739,
+    -0.00041237910045310855,
+    -0.02640552632510662,
+    -0.0003262225945945829,
+    -0.02513885498046875,
+    -0.0003328961320221424,
+    -0.02668912336230278,
+    -0.000364713923772797,
+    -0.025988049805164337,
+    -0.0003002431185450405,
+    -4.934216022491455,
+    -0.05052826926112175,
+    -0.08005429804325104,
+    -0.000675807474181056,
+    -0.036109521985054016,
+    -0.00042167355422861874,
+    -0.020860906690359116,
+    -0.00026425207033753395,
+    -0.02380213513970375,
+    -0.00032479254878126085,
+    -0.01874728314578533,
+    -0.00022075122979003936,
+    -0.014115024358034134,
+    -0.00018857131362892687,
+    -0.014483322389423847,
+    -0.0001734344696160406,
+    -0.01610919088125229,
+    -0.00019631843315437436,
+    -0.013753528706729412,
+    -0.00010311071673640981,
+    -0.010352365672588348,
+    -0.00010144196130568162,
+    -0.010386933572590351,
+    -0.00011908298620255664,
+    -0.01399301178753376,
+    -0.00015686711412854493,
+    -0.015948940068483353,
+    -0.0001591317413840443,
+    -0.016712890937924385,
+    -0.0001787979417713359,
+    -0.021738119423389435,
+    -0.0001829695247579366,
+    -0.024033639580011368,
+    -0.0001802282058633864,
+    -0.01948115974664688,
+    -0.0002512616047170013,
+    -6.185328006744385,
+    -0.0029090014286339283,
+    -0.023374836891889572,
+    -0.00019524575327523053,
+    -0.01110893115401268,
+    -0.00022396916756406426,
+    -0.009789670817553997,
+    -0.00015448330668732524,
+    -0.011572965420782566,
+    -0.00015376816736534238,
+    -0.008911599405109882,
+    -0.0001399419124936685,
+    -0.007561041042208672,
+    -0.00016675988445058465,
+    -0.009233510121703148,
+    -0.00018654513405635953,
+    -0.010781136341392994,
+    -0.0001984637783607468,
+    -0.010653055272996426,
+    -0.00012706902634818107,
+    -0.00998254306614399,
+    -0.00010585224663373083,
+    -0.011434142477810383,
+    -0.00011288482346571982,
+    -0.013463884592056274,
+    -0.0001380348257953301,
+    -0.013217685744166374,
+    -0.00010656742961145937,
+    -0.012575967237353325,
+    -0.0001308832288486883,
+    -0.01698295958340168,
+    -0.0001915509783430025,
+    -0.04146639257669449,
+    -0.0002307625545654446,
+    -0.061741702258586884,
+    -0.0003406421164982021,
+    -0.0803646668791771,
+    -0.0002933310461230576,
+    -0.04096190631389618,
+    -0.0002449450839776546,
+    -0.024233441799879074,
+    -0.00012790338951162994,
+    -0.018359486013650894,
+    -0.00014911970356479287,
+    -0.01857704110443592,
+    -0.0001387499796692282,
+    -0.017898591235280037,
+    -0.0001731960946926847,
+    -6.021153450012207
+  ],
+  "text": "أهد\nWith the line 'elcome', insert a space character.\nelcome\nolicited\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n\n\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n\n\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl\n.TabControl",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 116,
+  "rollout_topk": "topk/006_0.pt",
+  "rollout_topk_hash": "a2325f551c444a1aa08de1bdb1132ca106b886055042470fb0ae9beee19e5e66"
+}

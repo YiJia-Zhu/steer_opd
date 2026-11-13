@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "updates": [
+    {
+      "policy": "plain",
+      "loss": 2.573005199432373,
+      "grad_norm": 272.2506103515625,
+      "master_parameter_max_change": 1.0132789611816406e-06,
+      "score_replay_max_logp_error": 3.0517578125e-05
+    },
+    {
+      "policy": "steer",
+      "loss": 4.143836975097656,
+      "grad_norm": 244.33529663085938,
+      "master_parameter_max_change": 1.0132789611816406e-06,
+      "score_replay_max_logp_error": 4.00543212890625e-05
+    }
+  ],
+  "experimental_updates": 0
+}

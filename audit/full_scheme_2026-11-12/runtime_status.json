@@ -1,0 +1,77 @@
+{
+  "checked_at": "2026-11-12T18:02:34.001181+00:00",
+  "supervisors": {
+    "precheck": {
+      "receipt": {
+        "pid": 3105249,
+        "start_ticks": 173440124,
+        "command": [
+          "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+          "scripts/run_pre_opd_overlap_tuning.py",
+          "--config",
+          "/local_nvme/data/zhenning/working_tmp/steer_opd/configs/full_scheme_precheck_20261112.json",
+          "--execute"
+        ],
+        "started_at": "2026-11-12T17:57:51.348373+00:00",
+        "max_gpus": 1,
+        "gpu_wait_seconds": 604800
+      },
+      "live": true,
+      "start_ticks_match": true,
+      "actual_command": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python scripts/run_pre_opd_overlap_tuning.py --config /local_nvme/data/zhenning/working_tmp/steer_opd/configs/full_scheme_precheck_20261112.json --execute",
+      "actual_cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd"
+    },
+    "panel": {
+      "receipt": {
+        "pid": 3105250,
+        "start_ticks": 173440124,
+        "command": [
+          "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+          "scripts/run_full_scheme.py",
+          "--execute"
+        ],
+        "started_at": "2026-11-12T17:57:51.350351+00:00",
+        "preferred_gpus": 1,
+        "maximum_project_gpus": 2,
+        "gpu_wait_seconds": 604800,
+        "authorization": "user requested complete experiments on2026-11-12"
+      },
+      "live": true,
+      "start_ticks_match": true,
+      "actual_command": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python scripts/run_full_scheme.py --execute",
+      "actual_cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd"
+    }
+  },
+  "panel_status": {
+    "status": "waiting_precheck",
+    "updated_at": 1794506549.4157455,
+    "precheck_phase": "calibration_teacher",
+    "precheck_pid": 3105249,
+    "gpu_limit": 1
+  },
+  "precheck_status": {
+    "status": "running",
+    "phase": "calibration_teacher",
+    "supervisor_pid": 3105249,
+    "supervisor_start_ticks": 173440124,
+    "updated_at": 1794506272.1085262,
+    "attempt": "runs/full_scheme_20261112/precheck/attempts/calibration_teacher_1794506272108522561",
+    "command": [
+      "scripts/figure8_generate.py",
+      "--job",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/precheck/jobs/calibration_teacher.json"
+    ],
+    "max_gpus": 1,
+    "resume_command": ".venv-opd/bin/python scripts/run_pre_opd_overlap_tuning.py --config /local_nvme/data/zhenning/working_tmp/steer_opd/configs/full_scheme_precheck_20261112.json --execute"
+  },
+  "gpu_state": {
+    "returncode": 0,
+    "stdout": "0, GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c, 64641 MiB, 73415 MiB, 0 %\n1, GPU-f6057057-a493-11bb-aee3-7b3df35011ef, 64641 MiB, 73415 MiB, 0 %\n2, GPU-351e102b-8c81-a10b-a483-483f0d69828c, 69189 MiB, 73415 MiB, 92 %\n3, GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e, 64641 MiB, 73415 MiB, 0 %\n4, GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 64639 MiB, 73415 MiB, 0 %\n5, GPU-17f76845-5d79-933c-affa-2ef7cec12651, 64641 MiB, 73415 MiB, 0 %\n6, GPU-d115c176-2398-0734-e910-c56a1ea063ea, 64641 MiB, 73415 MiB, 0 %\n7, GPU-a5748c8b-b1d9-b1af-f58f-37407318c093, 63111 MiB, 73415 MiB, 99 %\n",
+    "stderr": ""
+  },
+  "gpu_processes": {
+    "returncode": 0,
+    "stdout": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c, 1979818, /opt/venv/bin/python, 64632 MiB\nGPU-f6057057-a493-11bb-aee3-7b3df35011ef, 1974937, /opt/venv/bin/python, 64632 MiB\nGPU-351e102b-8c81-a10b-a483-483f0d69828c, 2664023, VLLM::EngineCore, 69180 MiB\nGPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e, 1969698, /opt/venv/bin/python, 64632 MiB\nGPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 2814343, /opt/venv/bin/python, 64630 MiB\nGPU-17f76845-5d79-933c-affa-2ef7cec12651, 3075834, /opt/venv/bin/python, 64632 MiB\nGPU-d115c176-2398-0734-e910-c56a1ea063ea, 3743278, /opt/venv/bin/python, 64632 MiB\nGPU-a5748c8b-b1d9-b1af-f58f-37407318c093, 2754206, VLLM::EngineCore, 63102 MiB\n",
+    "stderr": ""
+  }
+}

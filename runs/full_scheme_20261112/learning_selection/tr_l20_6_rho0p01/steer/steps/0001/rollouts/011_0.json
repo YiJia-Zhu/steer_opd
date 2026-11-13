@@ -1,0 +1,655 @@
+{
+  "key": "011_0",
+  "id": "ot3-01447",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    9885,
+    279,
+    1372,
+    315,
+    6785,
+    25780,
+    2686,
+    1091,
+    220,
+    20,
+    15,
+    15,
+    429,
+    646,
+    387,
+    13302,
+    438,
+    279,
+    2629,
+    315,
+    1378,
+    12460,
+    4727,
+    31340,
+    13,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 11,
+  "seed": 86,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "71a81df2b22a2a912147e251fb70a538811185c3fe2a402947356985c1102a3a",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    113536,
+    150136,
+    80565,
+    801,
+    137080,
+    20048,
+    137714,
+    134052,
+    595,
+    546,
+    49894,
+    311,
+    500,
+    437,
+    74337,
+    303,
+    276,
+    311,
+    500,
+    309,
+    220,
+    16,
+    131404,
+    78114,
+    124717,
+    715,
+    55604,
+    759,
+    457,
+    6581,
+    22718,
+    46555,
+    4260,
+    129245,
+    18086,
+    5853,
+    318,
+    4179,
+    318,
+    132962,
+    60722,
+    389,
+    126379,
+    69696,
+    300,
+    38697,
+    62910,
+    52171,
+    15688,
+    57000,
+    271,
+    104275,
+    129742,
+    37915,
+    62009,
+    271,
+    104275,
+    132760,
+    130722,
+    274,
+    1509,
+    295,
+    323,
+    321,
+    81710,
+    16927,
+    500,
+    645,
+    2943,
+    92105,
+    96568,
+    13510,
+    87949,
+    14845,
+    50996,
+    57963,
+    29610,
+    91775,
+    3956,
+    41360,
+    11,
+    59289,
+    17472,
+    129852,
+    128365,
+    28776,
+    128431,
+    128439,
+    312,
+    53994,
+    137241,
+    36542,
+    131232,
+    1459,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    }
+  ],
+  "sampled_logps": [
+    -7.5865068435668945,
+    -10.032155990600586,
+    -4.243317604064941,
+    -11.43481159210205,
+    -17.193357467651367,
+    -10.526310920715332,
+    -11.25942611694336,
+    -7.886380195617676,
+    -4.920719146728516,
+    -2.0252959728240967,
+    -5.10792350769043,
+    -4.671404838562012,
+    -0.38692817091941833,
+    -1.976640224456787,
+    -0.6806212067604065,
+    -3.136030912399292,
+    -0.23720872402191162,
+    -4.096600532531738,
+    -0.07147923111915588,
+    -0.340087354183197,
+    -2.0804245471954346,
+    -2.3322830200195312,
+    -3.70436954498291,
+    -4.77541446685791,
+    -5.361093044281006,
+    -6.000720977783203,
+    -7.473472595214844,
+    -10.644554138183594,
+    -4.636932849884033,
+    -12.763509750366211,
+    -13.478418350219727,
+    -5.575564861297607,
+    -2.722445011138916,
+    -7.903162956237793,
+    -6.3023905754089355,
+    -10.23356819152832,
+    -5.036848068237305,
+    -8.446880340576172,
+    -3.636118173599243,
+    -7.237964153289795,
+    -2.273913860321045,
+    -5.502256393432617,
+    -4.112948894500732,
+    -9.051237106323242,
+    -8.957554817199707,
+    -2.0878891944885254,
+    -4.333083152770996,
+    -2.3628010749816895,
+    -12.70057487487793,
+    -6.562587738037109,
+    -3.8129680156707764,
+    -4.32028341293335,
+    -8.317363739013672,
+    -4.430826663970947,
+    -9.38186264038086,
+    -3.4632961750030518,
+    -2.1655044555664062,
+    -13.454212188720703,
+    -8.8754301071167,
+    -8.536661148071289,
+    -12.01942253112793,
+    -7.797220706939697,
+    -7.482189655303955,
+    -6.009335517883301,
+    -14.035296440124512,
+    -9.345304489135742,
+    -6.771312236785889,
+    -3.6929306983947754,
+    -2.831791639328003,
+    -9.380655288696289,
+    -13.60432243347168,
+    -9.66094970703125,
+    -11.026815414428711,
+    -7.752722263336182,
+    -4.790591716766357,
+    -12.606461524963379,
+    -8.366674423217773,
+    -8.492097854614258,
+    -9.347159385681152,
+    -10.225193977355957,
+    -5.459763526916504,
+    -11.049689292907715,
+    -5.72525691986084,
+    -12.142383575439453,
+    -6.001629829406738,
+    -4.3600358963012695,
+    -5.80622673034668,
+    -6.173795700073242,
+    -8.124141693115234,
+    -12.311145782470703,
+    -10.700614929199219,
+    -12.744882583618164,
+    -14.921879768371582,
+    -8.299869537353516,
+    -5.04713249206543
+  ],
+  "text": "一直到🧴结束essage artır können sayılı sayısı kare olarak toplandığından toplam 1 sayı yazınız \nácilphile.client desde başla açık çitingim netim başarıyla onayı hariasında açılı resume oldu\n\n直到 cuối là\\Message\n\n直到답 된 s itemet andil vincalcplie client mới dobr ga pública aođanus são nós essqueda, bliça dưỡng năng có ý tính reicom ayrıca wolfชนะ point",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 51,
+  "rollout_topk": "topk/011_0.pt",
+  "rollout_topk_hash": "b6ae0b8eb407d01ffd685baf768e0608883c9b0ac4988bce05bbb5d81801ffba"
+}

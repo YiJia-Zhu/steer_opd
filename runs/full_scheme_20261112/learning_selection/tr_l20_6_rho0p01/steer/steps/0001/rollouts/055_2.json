@@ -1,0 +1,223 @@
+{
+  "key": "055_2",
+  "id": "ot3-10473",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    641,
+    264,
+    5792,
+    12371,
+    6113,
+    11,
+    1817,
+    11936,
+    374,
+    8433,
+    311,
+    279,
+    81963,
+    315,
+    279,
+    14002,
+    3108,
+    13,
+    3555,
+    374,
+    279,
+    7192,
+    1372,
+    315,
+    29783,
+    25941,
+    429,
+    646,
+    387,
+    14122,
+    553,
+    279,
+    19246,
+    315,
+    1378,
+    1555,
+    20632,
+    20913,
+    1378,
+    13530,
+    315,
+    17228,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 55,
+  "seed": 264,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "eca88a5bfd7343e73ef221650f927c7ba65e7dc389a153865e08a93f7d3072b8",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    135509,
+    123856,
+    22470,
+    198,
+    83086,
+    716,
+    131908,
+    198,
+    83086,
+    716,
+    131908,
+    198,
+    83086,
+    716,
+    131908,
+    198,
+    83086,
+    716,
+    131908,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.3125
+    }
+  ],
+  "sampled_logps": [
+    -9.245624542236328,
+    -3.432681083679199,
+    -13.464661598205566,
+    -1.4552210569381714,
+    -6.536647796630859,
+    -10.719743728637695,
+    -9.963277816772461,
+    -2.5164897441864014,
+    -0.18591980636119843,
+    -0.6405236721038818,
+    -0.17956167459487915,
+    -0.8586199283599854,
+    -0.018450187519192696,
+    -0.04795530438423157,
+    -0.016348697245121002,
+    -0.2983378767967224,
+    -0.0039013714995235205,
+    -0.011737688444554806,
+    -0.0022762122098356485,
+    -3.362217903137207
+  ],
+  "text": "אנגליה.vertices\n.rcParams _られて\n.rcParams _られて\n.rcParams _られて\n.rcParams _られて",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 69,
+  "rollout_topk": "topk/055_2.pt",
+  "rollout_topk_hash": "e6a49659f4635f6109e6e419d13475c7e2def4392e6e8e25e01cb4bf9cf8cb5f"
+}

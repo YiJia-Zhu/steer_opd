@@ -1,0 +1,13 @@
+{
+  "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+  "packages": {
+    "torch": "2.10.0",
+    "vllm": "0.1.dev14461+g21d7a9f61.precompiled",
+    "easysteer": "0.1.0",
+    "transformers": "4.57.6"
+  },
+  "modules": {
+    "easysteer": "/local_nvme/data/zhenning/working_zyj/EasySteer/easysteer/__init__.py",
+    "vllm": "/local_nvme/data/zhenning/working_zyj/EasySteer/vllm-steer/vllm/__init__.py"
+  }
+}

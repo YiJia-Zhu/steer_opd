@@ -1,29 +1,60 @@
-# 学生空间差分与overlap门控辅助OPD
+# 面向低相容师生的门控 Steering OPD
 
-研究：强教师有额外能力，但学生难以利用其OPD监督时，能否从学生空间提取有用方向，
-在师生高概率候选不相容的位置干预，改善训练后的独立学生表现？
+当前队列说明：[完整方案实施与恢复](docs/08_full_scheme_execution.md)。新实验状态在`runs/full_scheme_20261112/`，
+主入口为`scripts/run_full_scheme.py --execute`；下文暂停和未实现的叙述保留为历史，最新能力边界以新协议与真实日志为准。
 
-**2026-11-12主候选：教师同家族差分T−R＋overlap单阈值门控。**
-T/R/S回答均由同一个冻结初始学生读取；方向在训练前固定。生成和学习前向使用
-一致的受控策略，主评测完全去掉steering和门控。熵差作为独立对照，不与overlap组合。
+**2026-11-12最新授权：恢复完整方案的实现、验收和分阶段实验。** 新任务在`runs/full_scheme_20261112/`，
+与下文旧暂停记录分开。优先一张空闲GPU，首次检查所有卡均被占用，precheck已排队等待。
+先执行原定T−S/all/S0-global零更新诊断，再推进现有配对的主线和对照；实际状态以新process/campaign记录为准。
+
+**当前目标已调整：暂停OPD，先在原始Base上调steering，做0次参数更新的固定前缀overlap诊断。**
+先检验同题提取的T−S全局方向，再扫描注入层位置、注入层数与强度；完整结果交用户检查，
+收到明确下一步指令后才进入短程OPD。最新已授权实现方法分支及独立零更新诊断入口；当前仅做代码/CPU准备，不运行GPU。
+具体网格、指标与停止点见[训练前overlap调参](docs/04_pre_opd_overlap_tuning.md)，
+代码开关、默认第一步与验收边界见[方法分支](docs/05_method_branches.md)。
+旧第10步无hook overlap发生在OPD之后，不是这次要测的初始Base带hook即时overlap。
+方向提取与未来OPD直接固定共用原100题；当前直接进行层位置、层数和强度调参。
+
+下文2–2–2为后续完整研究设计，当前不启动该面板。
+
+研究：强教师难以被学生通过普通OPD吸收时，能否通过学生空间中的参考差分与训练期干预，
+改善撤去steering后的独立学生表现？不预设方法有效。
+
+**当前完整方案以2–2–2为主线：T−R差分、overlap单阈值门控、当前学生逐题提取。**
+每轮rollout前，当前学生关闭steering和梯度，读取当前OPD题的教师T与小参考R回答，
+得到该题方向。同题在本轮的多个rollout及学习重放中使用同一向量；学生更新后再次遇题时重提。
+教师/小参考文本可以逐题缓存；文本缓存、初始学生逐题向量缓存和当前学生重提是不同设置。
+最终主评测完全关闭steering、门控和教师调用，熵差门控只作独立对照。
 
 | 文档 | 内容 |
 |---|---|
-| [用户最新完整稿](docs/Steering_OPD_完整研究方案.md) | 本轮逻辑来源，保留原文 |
-| [主计划摘要](docs/01_research_plan.md) | 三种方向、三种策略、OPD闭环、实验与结论边界 |
-| [论文与资产证据](docs/02_paper_settings.md) | 固定论文版本、原设置、阅读范围与资产缺口 |
-| [执行与验收](docs/03_execution_plan.md) | 缓存/probe/重放、概率接口、分阶段面板及预算 |
-| [新颖性审计](docs/09_novelty_audit_cross_family_steering_opd.md) | 原2026-11-07审计及新版本适用范围提示 |
-| [AGENTS](AGENTS.md) | 常驻状态、权限和方法边界 |
+| [当前第一步：训练前overlap调参](docs/04_pre_opd_overlap_tuning.md) | 冻结Base、层/强度扫描、0次OPD、结果后人工检查 |
+| [用户完整稿](docs/Steering_OPD_完整研究方案.md) | 三个设计问题、2–2–2主线与全部备选 |
+| [主计划摘要](docs/01_research_plan.md) | 逐题提取流程、数据复用、粒度与刷新对照 |
+| [论文与资产证据](docs/02_paper_settings.md) | 固定来源、SV全局/逐题/刷新先例及原配方 |
+| [执行与验收](docs/03_execution_plan.md) | 逐题持久化、提取版本、生成/重放一致性与实施边界 |
+| [新颖性历史审计](docs/09_novelty_audit_cross_family_steering_opd.md) | 历史检索及新版适用范围；不视为新审计 |
+| [AGENTS](AGENTS.md) | 授权、当前运行与方法边界 |
 
-保留方案1 T−S、主方案2 T−R、R−S对照，配合全回答位置/overlap动态/因果后段形成三乘三矩阵，
-先建立最小闭环再补齐。SFT替代、成本更低和跨家族效果均须实验支持。
+提取与OPD题目在逐题主方案中相同；dev与测试保持独立。独立题集全局方向是迁移对照，
+同时保留同数据全局均值与初始学生逐题缓存，分别检验粒度和随学生刷新是否有收益。
+以主方案为中心逐项改变差分、门控与提取策略，按需要补交叉，不把完整组合矩阵作为起步条件。
 
-当前先讨论Qwen3-4B Non-thinking→Qwen3-1.7B-Base，R候选Qwen3-0.6B。
-OpenThoughts3中100题仍仅指OPD题池；方向题和dev独立划分的新增预算尚未冻结。
-AIME2025的30题只评测。本地SFT对照/下载暂缓，C1及其他旧排程不自动启动。
+**实验保持停止；同题Top16 v2是此前已完成的代码/数据准备，本轮不继续修改或启动。**
+旧首轮普通OPD/T−S全位置全局固定方向的两组各10/50步保留，使用
+[旧配置](configs/figure8_first_run.json)与[旧记录](runs/figure8_first_run_20261112/README.md)。
+新配置[同题Top16 v2](configs/figure8_shared_top16_v2.json)让SV提取与OPD共用原100题，
+保留原独立dev128与AIME2025 30题；rollout逐token保存原始Top16候选和log-prob，
+教师一次前向评分并计算训练轨迹overlap，跳过HF学生无梯度重放。
+其保存值仍为S0全局固定T−S（layer13/rho0.03）；这是旧锚点，不是调参结论。
+原配置计划生成与学习注入，训练后评测无hook；
+不自动加入T−R、逐题刷新或动态门控。两组新训练从原Base开始，旧10步不混入新曲线。
+代码与CPU验收见[修改记录](audit/rollout_top16_shared_data_2026-11-12/README.md)，
+新接口GPU验收须待后续授权。现有campaign会先做参数更新，不可用它直接恢复本轮纯overlap阶段。
+入口仍拒绝自动重启paused_by_user任务；新诊断入口尚未实现。
 
-**当前只更新文档，实验和下载继续暂停。** 现有模型/数据软链接优先复用。
-旧`experiments/` JSON/CSV及启动器描述此前loss-only草案，尚未迁移到新主方法，不能直接启动。
-本次同步保留用户完整稿及论文/来源证据；修改前快照与记录见
-[同步审计](audit/plan_integration_2026-11-12/manifest.json)。
+基础配方仍沿用Student Top-K16反向KL系列surrogate，冻结student_p奖励、PPO与token-mean的
+原代码口径见[对照报告](audit/rethinking_alignment_2026-11-12/README.md)。原fork默认由
+[参考配置](configs/rethinking_opd.json)记录；当前单GPU首轮的实际配置与支持集修正在其运行记录中明示。
+新版逐题重提与门控尚待实现验收，不因文档更新而视为已有能力。
+修改前快照、输入原文与本轮校验见[同步记录](audit/extraction_timing_sync_2026-11-12/manifest.json)。

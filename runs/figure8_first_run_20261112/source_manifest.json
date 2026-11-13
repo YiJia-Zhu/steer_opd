@@ -1,0 +1,44 @@
+{
+  "files": {
+    "src/steer_opd/resumable_core.py": "09e2cfec17dd6c162080d23a249aec3efaf6efaaee2a2584af04155160a8034a",
+    "src/steer_opd/vllm_steering.py": "53449b9325ae04bd16f6ba4e1cd7923eae2bae03530e67dddd4285a617ff9a2f",
+    "src/steer_opd/vllm_worker.py": "dd617b9270e0ba0000ceccfabadffde25137eca9c5f720d9b13c8f8f1ab99c41",
+    "scripts/prepare_figure8_first_run.py": "56e4223d445cd0971f01dd4811c00cf0345f12d6aaa6d64249d5f842bc6ec7c4",
+    "scripts/figure8_generate.py": "cfd1127ded708f6f937fa866cd39441c4209460efe870849a06bd5b3a2d07d21",
+    "scripts/figure8_stage.py": "daa9450da012e51473699395b479e24159629aa450bd45caac7f86d5b5053c31",
+    "scripts/figure8_acceptance.py": "60f4a71562779ed604da44b8b535e3da660ed7ee36948e3203a00f05f346beca",
+    "scripts/run_figure8_campaign.py": "48192cb7f90ea65547ce87edee83a059158a066627532d8642b9c644f2d27f94",
+    "scripts/figure8_report.py": "ab2da533fc06d78a8da648ae9909e7d28725c2f04a829c6239dac549f39e5abc",
+    "scripts/figure8_status.py": "ba023595ee76ddbc325dec5e437317bbbdc7e46daefb2211e01f7e4672395ac3",
+    "scripts/check_figure8_checkpoint.py": "576943325cd15f1661010e963ffb629e011acc8e34d61797d37a10c59393e4e7",
+    "tests/test_resumable_opd.py": "247163049caa6b41b1ff30a352edfc010835908d61d7f2aa93055b23608c9ec1"
+  },
+  "validation": {
+    "combined_cpu_tests": "17 passed in acceptance/cpu_tests.log",
+    "subsequent_resumable_suite": "8 passed, includes one additional early-layer extraction equivalence test",
+    "hf_gpu": {
+      "passed": true,
+      "alpha_zero_exact": true,
+      "hook_removal_exact": true,
+      "cache_replay_mean_kl": 0.0016204629791900516,
+      "threshold_mean_kl": 0.005
+    },
+    "vllm_hf": true,
+    "real_backward": true,
+    "real_checkpoint_reload": {
+      "passed": true,
+      "step": 1,
+      "parameter_tensors": 310,
+      "saved_model_equals_bf16_master": true,
+      "adam_steps": [
+        1
+      ],
+      "cpu_cuda_python_numpy_rng_present": true,
+      "gpu_used": false,
+      "checkpoint_at_verification": "vanilla/checkpoints/step_0001"
+    },
+    "package_validator": "fails on pre-existing missing audit/docs_cleanup_2026-11-10/concurrent_source_snapshots/12_cross_family_research_contract.md"
+  },
+  "gpu_limit": 1,
+  "user_authorized_maximum": 2
+}

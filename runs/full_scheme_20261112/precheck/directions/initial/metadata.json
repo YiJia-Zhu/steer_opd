@@ -1,0 +1,946 @@
+{
+  "bank_id": "18f4d6fe6718cf9e2090d19b056f7796e26024c60d87809691e2f7388ff6f0a1",
+  "identity": {
+    "checkpoint": "assets/models/Qwen3-1.7B-Base",
+    "step": 0,
+    "questions_hash": "74b2692928f853e6b1e5c23865ce7ecf6db014d405fcd37da5224cf2bdca506c",
+    "job_hash": "d8103a380464add7af980d6a542a5bafcdf10a034a0b357b0bdcc7deabfb2083",
+    "reference_hashes": {
+      "teacher": {
+        "ot3-00063": "9e2d7c775033ea3530cd90d5a2038b29381c94fc1c8d565597e11da7f4498cdb",
+        "ot3-10473": "83c5d74be4500462495df7f3ee4e1631886d1847592fea1a185479ebfd1ba43a",
+        "ot3-08895": "352573123038adfbd74d96b53d4824eeb9456ae925a09f37fd3b1c8d02605412",
+        "ot3-18434": "f089fe68b69f001b93840a32fea8d4fd1f02ba89bbaf138c5de2c1b2debba181",
+        "ot3-25032": "707aaeeba399492b3977b1eb9414549edd39d00c60139c3a3abfdb19f58505cc",
+        "ot3-20139": "cb162bbaa10ad65e82ba69979f13cf8be8b3c07da14ca1715e1229b4e95c09f9",
+        "ot3-05224": "4cfd14a9162cbe471715d41aaaf59942fdb4478ac83aaae369daee43f6ea0770",
+        "ot3-04128": "64a0c8299d07ba2287579ca53fddaf9e9c98affd53a7bb072aa355487b9ca2af",
+        "ot3-07786": "55e30be50440d76615b6c28e4043a543cdc7c0a3461be49f1bba6a3cf10cc15b",
+        "ot3-07563": "9fd6a8a6d1692a6790b5b7ed44aece8ebfb18c1a0b256f6cbd50de2e1d7577cd",
+        "ot3-02285": "87d0610d3ef5ff8aabc51f53cc357d919dc4c0544632e32c1b7925c237b1d962",
+        "ot3-02055": "afb3ec21ccc30e37b2aaeb2768bba29acb5e33f0d458cdfe46941dc6c48f7f67",
+        "ot3-07711": "ec14909392231c142ca4711c990c10c7f405fd03e27755f390d6ef5e567f7d4d",
+        "ot3-06447": "d975f36297c4d78bf3e0406c1b4466466c19e33dac1cf64684615004df2fea7c",
+        "ot3-10817": "85f5e9680d87221517bfe6dccab9efa0d7249eb6f95d722eb40c9539b2ac9914",
+        "ot3-17275": "ad1d02d01e2ab7fac2078514322bf8a7568b79226427eef48d858df42b119865",
+        "ot3-04529": "b5feda12859ab442bf9fca6cca282edba5f98003aac14b7ebb931faf4dc7a151",
+        "ot3-23240": "700b6db9e26f2b6002331e41e64c06fc579db54af28336967b55206b785c8b8b",
+        "ot3-09072": "16c255e92deb958baa0b396863c6a079e335e1564d855ac3d0e3ce44a154b318",
+        "ot3-15577": "cdbc61d83dfa8366a5a3733b52d3940940d9894fa819119f291a88abe28fba46",
+        "ot3-01982": "a01f09ae558643ab3707e7b540c32982adc7184da0b46cf6ac39b8ad9b902615",
+        "ot3-01447": "4085f6fd6b067dcb398a6bd18d69b22c8403d3cc6e24bfa250b17ce166ad4d99",
+        "ot3-10035": "f8684766a9ec5419d1e6bbd41679a08af6054450058523ff015913f3f0ee1059",
+        "ot3-03602": "e0b0247525dc615af604f0262d10d7c2dc21878dfb7220ff9231a1895a7a76ed",
+        "ot3-19520": "5e36be618b684f15f4db1fe43f0e9d9d693c515f11ac6adf319976a7f0c7293d",
+        "ot3-24416": "98f15009488f5776a936b99a2759a580a66001df807b571927526e13982e7409",
+        "ot3-18449": "27637c01f68fd1ddd136ad52204dc3e1f5ee5b12a6214fbfef3db57a8d6e705d",
+        "ot3-02218": "a7ab6a7ffb2bfdac7161d6596fb2aea9043be2097d3b80df1a824cc9f2ecd55c",
+        "ot3-11067": "cc5f93e947e501f290fa1a866793870884800454c6b0ace65d6c4dd1cc3a5199",
+        "ot3-19468": "3bd161fad2a54b7f68f4e117755aeadc60b0148ef3714cacf16cc0dba3d0b70d",
+        "ot3-09449": "28f3578f60b268bf641a7ac23461e27c88cd48ab0929b9a40cd67af8cbf6363d",
+        "ot3-07750": "976096660ca4d19986463de597a4712b6772e4412d0814c4329abbcad5e2bb32",
+        "ot3-07866": "4b55bfae064caeff9c5bbd42fe3835d0233f657ab22a07e2c0c9bd28eebf07d9",
+        "ot3-10598": "da8ffb073c762bfff61d6b744a34721af73f8ea5d8a003f973016daba1a8c363",
+        "ot3-03931": "e3e9f6665d104f748a49e89e962af894b110acf12c922e6c77824ad98348d84f",
+        "ot3-28930": "1d14ce2f825eea06363feacf74d2aef29fc9353432336f5df79c1972aeb91af8",
+        "ot3-19541": "193b9fa7aafbad3cb3c88e55e607921b3b695e5f293540c83c262b57ad7c98d7",
+        "ot3-00634": "24d9deadb2375a778ad596b7911223f6189d9878a6a267e93ba756b0572aee38",
+        "ot3-12535": "ab23ce1c163392b83d75deb7cb841dfabc26a338c5ebafe6fc82979a28099a65",
+        "ot3-00722": "9953889c6ddf63c25b89d034ae75b4322ae78cfd50a56392425f1d51fd5c9bcf",
+        "ot3-13394": "25efddd9f8dccc7180c211ea426b857d1ffc6ec4aa36e076843d58c427ec1866",
+        "ot3-20917": "00b43718792b3500c6fa4cf030cf68235231f31de3b82723234aae843a5952b3",
+        "ot3-06236": "4399c1e0f7ab1d19c502ba11c6cc09dd0c03a211ea2ee621a69320f3ae1f2e66",
+        "ot3-04652": "d571b91ef39fb88c4a9a5418a2f7dd3b3fdf2aa504052b1527ad04289ad118a8",
+        "ot3-01086": "122bd2b14b927402e2a7c82e96bc5af2828efc4397147967031a8dc1220f7207",
+        "ot3-01464": "4452948e469de5ae9cbaeef91ae5834233cc4d699bff1eb61701f9f72d659c1d",
+        "ot3-07081": "f71539009c918dba2e16f84eff788b77f0c7fa1d2d694b4d738e4b949f75cec0",
+        "ot3-05773": "f9121811210c28690e0c715c42a7a26dcd5f03e71fabce9aa700d492b0a71e01",
+        "ot3-28846": "903114d5224760afcaf63d1dd2773cdc069475f34f3bff835a2858c61a853555",
+        "ot3-20691": "bf3397efeca647125e9ff441179eb3f15accbf878f9894f2d2821817f319b8a0",
+        "ot3-00141": "58f20a362a5cd4b9143b5e14c143597e22f3eb95f809892a38c8814ebc953d6c",
+        "ot3-04654": "14e38cd72c0de7fd000e34c112124eba9b49b98e332b9ed6b7c3c7a6a43c567d",
+        "ot3-11917": "42bcdbc86a90c986731e581567b26863bdde6d35f828c5bc5aaab7b5c8f18ab4",
+        "ot3-00976": "ced65fb66415ea3ed9e102d86cf386bb2d26aa7c1417690b3f440f558df34df0",
+        "ot3-20218": "07c147f2e2fee5a43f345f533050cb44db65e24e9a297178db7c7339bd3f3f64",
+        "ot3-09846": "e57b7837bfd7a452cc092a6c82c449940f03eaf099b94588517feb962fcc8830",
+        "ot3-02415": "3ca81416a3617679cb134f95705aaded372d03b7615d6fdbba75aa05e79b1d1f",
+        "ot3-06145": "ea6cb274a63548963d0d1e4f18c73e296fdbfc14b8dc35aa34fe4b010008017e",
+        "ot3-07004": "e07b573ea8f538b1839954650998abb833a2a1efcd9d2110af52ffbdce347486",
+        "ot3-12051": "ab9f9f798ea3643fb6aac7ef76cf1701d2eb122e06ee35b2667f1abe661a5112",
+        "ot3-01946": "bdf72165f45e2e23f2cc184360409031af88a8739742c943a408c005c8c9a42c",
+        "ot3-18928": "0046189c761a5fffd914158f6193a35addd5850d7032d9e61a809baab317fb8d",
+        "ot3-08185": "87d9b057e0d21b0b46dcf84257ac12088f23960f8a9734b68ab03e401b424215",
+        "ot3-20396": "b5835eeab808cafadca2d79fd1a66a67ba7d860c651318477d3608ae8525ae64",
+        "ot3-17335": "dfc83e302ff453701840e6cfd6191e7eaf22d7b8ba0669238115db37f7a653a4",
+        "ot3-14168": "ea80f87ecdb8a9390b704ee8efe96f19f0378c8de4ddc0d3e5846d6045eeb316",
+        "ot3-04967": "28af8a9bbb9b91fde1c9e5a5a6792ebbfde75896c5f3c1a42ce6acb8ed482441",
+        "ot3-26951": "c66ef311c9ebbae5a0e6eae9a16accffd5d6f1c1849db6d9ffc8da25c5ee0a4b",
+        "ot3-11873": "b44559bcb4ec961d07863988fde6fde77c1d9c1421aa18b51bb87d243c52d419",
+        "ot3-00078": "aff3fbf57f6b90b8a13a8cd47a2f39b9d6e43a19cce729f3d434e0e44a30fb0b",
+        "ot3-12922": "dde63be1da5e0208a3732421ccfd0343802b72c1c56654e0de8c690c6f78f8c9",
+        "ot3-15848": "39d3ca9fe5c18e51403f2b31c6699c43e6f85cfd27c1ac684163809873fc577e",
+        "ot3-05615": "a9143b59c2cc8baaed124fe6920f0076eafdc45b546ad2513b4567276b877d36",
+        "ot3-02763": "f8826056c622ca25ef45d9c773f4e1d0cc919eb482c472d07c97a8fcb59004cb",
+        "ot3-07931": "42d390c35b57d1f94fe4699cb990a6974ab42be8c63747c4a5ffe68e60c3e7da",
+        "ot3-02360": "ad5e8d6deac0866ceb1b755a2f615d1a447a5907f3113bc172faa3d1d03279ef",
+        "ot3-10271": "ba92419258e67db63fec229954e3b09bdf003c9445a2bef47381c328837eeb04",
+        "ot3-00709": "e52b12632a1eaee136efc57c9d89ba044a5424c87c8260c491328bac2a91a5f6",
+        "ot3-13072": "698b2e252f5be93220e6599a6159834cb30a646c397d722a4384ad8d50f9abf4",
+        "ot3-03499": "6b4dc14dffb033222647dc8fbe60479e92f63d40749d21fe6b3763cd7a2a5788",
+        "ot3-19575": "ae1f619922435acf22ac2567040091fea96a46f6776841167f18cdf77413219e",
+        "ot3-01184": "7b118455853ea247d774df82a8d0c2941e3aef3fd316a05147680b37c7cd8879",
+        "ot3-18937": "1bbf9038dd95d4bb2eed5872b2feada14b25558184f07a4f2bdcf879dda91112",
+        "ot3-11600": "58705a652bd59ae6bb8d82303c429e7b23145b9c6b4d58ef2c7692cfdb02d0ae",
+        "ot3-10000": "365e3892074389acc6fe8f5f9e57120b0964d6159abb1a79eecebdf81e742fbd",
+        "ot3-04773": "9ff76ec5c85813b7692e80408d1c16d9ad9640c0b562a911222c96dbb5fee9c1",
+        "ot3-18183": "f89b63a1002b8c5290ea488f0a74ca9d0f0153bb04e0b12ee34907b34280c06d",
+        "ot3-05354": "e79f92fd3201fb6f095ca39d0c642fbb6d96b0c0328d32f29a5eecb91c4ba0cf",
+        "ot3-01870": "a3754042fa43d1ec330ae76b2405a6f7aca488a4eaaff6c4f6f13a30b42c2f40",
+        "ot3-19218": "1beabe4087b106a3ca0f0a9cfca5e594a64c082b52263593d820886dd50db731",
+        "ot3-00545": "fbb4aa8b343e7d3cd9e56c51e68b2fe49fff17d6e25b31779f3d9547aa2c12b3",
+        "ot3-01146": "de58442af2dd48fc9c01c84d46c42da25f38ab6d6308f8665dfdc2f043441873",
+        "ot3-02858": "fc8d972b2eb4c16373edc6fa7b534e63aac0e298b89ce6c6fe688a91e46dc383",
+        "ot3-07879": "177a78aad3249c27267a49eb3f0a1091401fa443b4edd13b487313a5619ff800",
+        "ot3-27836": "8f7e942cbfe739c04939cd4ef716264a22beb93ab15c850eaef9f312b1baf727",
+        "ot3-04890": "716e7a9c64c6c56308de68cbd19be55cb80308195fcf60279767a29c576a99cf",
+        "ot3-00812": "43654f984e412156aec76f4708d889923885c6d6e48958269bdd20790ba64601",
+        "ot3-02770": "a294a691fc920be810c41bf691117e1f259fe7ecea55bee59f00b857c88b17a3",
+        "ot3-07012": "b3ca9d3e82b3d37b33538872fb53b18091247aad30ce0a209b5488a3ead6742d",
+        "ot3-03218": "8f97cd7f19df1abb13396ac310c604d788b668065f61fddc7f08a07c6345643c"
+      },
+      "student": {
+        "ot3-00063": "0590079ee836f2215c271cd65761d56ecf5bfd84fa64562379e5c9390c72aeae",
+        "ot3-10473": "af07b092338ad34cb8318c0144d53652a9cab508115af636d3cdb34f4baa2274",
+        "ot3-08895": "b00c7ec99d638eecc0fc1a1fc8f8e6f34b6f5f696d1578ed701dd1c7cc8a1cc8",
+        "ot3-18434": "a9871ce2d3bd1b16ecb32663cde8ba4620ccd7e6bbd7697ae460e119a780cdc8",
+        "ot3-25032": "b11b4f14f3efbb6483702fca90145d666f51d0c1b83d51b76f363ce1f16f2ce1",
+        "ot3-20139": "7ec3b3dcfb9e3307558cc0454726600b2e40a92ddaf8b343fa8d8e9e47b211c6",
+        "ot3-05224": "5d054d422f4a193f005438431af08df5359e887eea91bc6075fe0a2c70261e36",
+        "ot3-04128": "6236c655200a7c2c42d285ea4ae36bab717af40d87b0c5579583e096198974dd",
+        "ot3-07786": "094d001a7adf692446412d2f070dec0e7235c41bef17ad0c90ea4b52712448d0",
+        "ot3-07563": "aa825d8fad9bf41034296b349ba0da863263e89826e7e3c5a25fb84dbb81b624",
+        "ot3-02285": "3908de466dcc1332c1a51cebc78117836b749e2a88ad6d733f0c995d56c699e7",
+        "ot3-02055": "7a3cb6990ee4cbd2bd617bbebc0cfb7649dd5532413ff7b218071f983657b20a",
+        "ot3-07711": "5a15938082b61dc577a6e9cdc3cd84a58adba8e93befd57767906432f091d0c9",
+        "ot3-06447": "6453453e6f3a30f3ebd07e071a2700f7b69b3fb6c35b6fd0c8464188b4702de0",
+        "ot3-10817": "ee913c3a4e6de45c1e1dc2adc5ca47759661c7fbd00f6f5748db0424657ef184",
+        "ot3-17275": "e36a531cca57bf416a5efdf8865d1abff46e9bec5adb0f80d1d0aa431339d0a1",
+        "ot3-04529": "97a7a360887a7e9165cd278728f57c1742cb33af6bc9236b964b30fcef6783c5",
+        "ot3-23240": "02079eb4cc4b6bd34a7b39105f1f94af6137e5cd168fd76a735b87ce2ce6f117",
+        "ot3-09072": "dc209d8c672dac799988363e12ee60c2f55c88a075995f6f30bc7ad90c2adabb",
+        "ot3-15577": "2acc4c9a9c603e35c9ef0def0b9c0e46308244fea5b35189511d67df279415f4",
+        "ot3-01982": "dbddf56681c1a2ebe5c9f036ede4b222c3bea5fd90f85dc6d20444428ff127d8",
+        "ot3-01447": "0b924a0e5e38f357b47a27c9c9a22052cfb3dfe491f9d0876493a4711df1980e",
+        "ot3-10035": "d8c9d8eb3fdbb87c5bdeb0e07849bf053a722e635c2058f0875bf37bc06238dd",
+        "ot3-03602": "f21e35a8f144615230235ff370e4d605a398a90c3e802120e4d93487425a790a",
+        "ot3-19520": "52b2ee50f33d7dc8fa9e6639b6583f3e810293b1cd59a26b606c21c31b186adb",
+        "ot3-24416": "61cf71ba00e46bbcffde20269b944b1577c23d9742d3cb4f0fe5952140e0663f",
+        "ot3-18449": "7cfe70fe4a603ba34c298ebcd445501fdf000f648cf631d20bb1d4b96bbc5d8d",
+        "ot3-02218": "9b0b319c3edd402ca1db07f41044e2bfb8ff12cce4869659669e23b906bfc695",
+        "ot3-11067": "233d99b35dd48ab70ebfee8087f677548e7687a11007c67a6e6b002c52238322",
+        "ot3-19468": "58c9c532af308c8b9cb35fd2e1ebe9ced011c75616ab3fd0b80eca8a2b2f68b0",
+        "ot3-09449": "ce6619b679e771866755d28966e98a672ff8b9426b9f7ae416e9c26e680383a2",
+        "ot3-07750": "eb6e5251053cfae0330c0b400b4ed19c9a5efada490dd7a7c09a116f9e529191",
+        "ot3-07866": "c4a67276fec3c6af6789bddeb8c32bbd9bdf0fdca6fcedcff2c176633337815d",
+        "ot3-10598": "19b2ddbf5afff6a0db34f9d3285748140a985b307dc752180de965bf66f0793f",
+        "ot3-03931": "2f3136b57f9ec6ded65f5f5e9d6d41081e1399910048df37db0c488b06178ec0",
+        "ot3-28930": "7c4ebc934cb5ba2add7b77d465044821ee0b68cdc2be0b9d932ab0b07a2f28cd",
+        "ot3-19541": "579c6cda951b6159f53f0676d644ba0798185b0829eab0c8b487f28f5674326c",
+        "ot3-00634": "0e7c400f42fe8a07fa332163f0b2419dea40b9970fef921dced148b0aa8e0416",
+        "ot3-12535": "73ebf2e23abe8c9d6ba4177b1a8ba1f8f75125832529170a7476fa0bcca125c3",
+        "ot3-00722": "766a692260c8219282fa620520a171740bdb8e85dfe1de4a830b92b299901ede",
+        "ot3-13394": "ff1eec158d2a1693d552c14b76651d6adb04494365690ac26de12f6a9a2d8aba",
+        "ot3-20917": "67622b23717a8d12950ee2c316a71ec0c288da594381ceb2c3b7e37632d653aa",
+        "ot3-06236": "db31b354da5b7bf2f1d11b0435dfb4965a619e5244b9e40499a5015511258a12",
+        "ot3-04652": "113e140e6a2148c37e22f7f0ad7d5ef7d14b4ffc27bcd254cd8e05263d6f3b9d",
+        "ot3-01086": "2e5150975ed17e9cfc53747b6bc66d8354d8049f8e3e552e516773c0fd010a2b",
+        "ot3-01464": "ea081fd3cd5ddf8cf19bc46e0ec29694346c2c5671fe3d05eeb2220d63e923ce",
+        "ot3-07081": "b59731dbbb3e48fd4ce9eefd472ebaeba9b55ffcc75f8b61d3c9a9601b3def4e",
+        "ot3-05773": "a18d294dff9e755ff2b7182809ce5233e5f53c62e69699ced85bcab4f7d0ff60",
+        "ot3-28846": "4fe8c603f1606b1570f54f38a1bd8d48702b83d7cde5a11e53f20712d8ac2614",
+        "ot3-20691": "c0bb3199780b4a24ef79e06983b05db019982ef615ed1afb2b58e8e3a8d0dafc",
+        "ot3-00141": "0c26d2e1eb54a4a9d0312939f06b50fb44793dc227c26e274acb2ea39f105aa9",
+        "ot3-04654": "091601c368adface4a10a98aeb131fdac8aa6028fe6b22e50912fae2f43ba892",
+        "ot3-11917": "d3593023c75586087efe4ee17e6f20a2298bfa8ba118c1aac8c0ac8aea7c80d0",
+        "ot3-00976": "631c072525908f3ebc035099bae3145ae7d540d1c7caa0d042edb351a0b1fbbd",
+        "ot3-20218": "7c3927e16479c4ddacd9acad1e868c04b1b2604af705eef71e739ff070bdbe5c",
+        "ot3-09846": "c8b60d56b3c1d89551696e807e4a9064eba3df654df557508eb53a99c8553844",
+        "ot3-02415": "6b556baa6d99a9b6766bbb5a4ed8a887c610a9a36b43bf4567ceb3ec502d4533",
+        "ot3-06145": "8cd17b8fdc02a21258c8096720c7db7e7fcf0c7d80bbd1e2ab5b93c53df33e83",
+        "ot3-07004": "4806eba3554468da1ab8fcb3b51973b8c84e613a4319e0096ddd28090bad862f",
+        "ot3-12051": "2e288180a1fd7c3a736c6d74d1f2ec1fffbfe63096d80c94f1b2e5cea9571834",
+        "ot3-01946": "85926c512cea79a141124b1c871ba06e6f26a91aaa484a9936de80fabc9cec9c",
+        "ot3-18928": "2fb5f99967afdb15685ba65631379d7f4855cec2a2cf6f9fa472717a94be7e1d",
+        "ot3-08185": "8fbfcecd57e8f4cd26d9c6a24eeac30c8ff21e1a42e2011a9aef5f8d6d847196",
+        "ot3-20396": "f0f5112ca6096f0b9b2aaa09ed09d3eac36bf8f898503077a8670a0dad3a9aed",
+        "ot3-17335": "243f67301a3ff0f1a1017bc4ada06e63ae79e2189c52b0b7e050f2cc1f878740",
+        "ot3-14168": "d37f9cc282d59653f5e467ec98784b317acec7d97d5fbde8de7a63f5d0489910",
+        "ot3-04967": "25027cd81dceb47f2360f4426d74bd2d863b9b97b07d3b7a0e6b552c5e54dd20",
+        "ot3-26951": "17fa06505b98d21f7c822fe76cd239c0126dff5f7b12869230b80b54a6adfefe",
+        "ot3-11873": "9bcf9ae795932c11376bd1b7b3ab2b31d17f8782c83867a4fdd7e4da43785f3b",
+        "ot3-00078": "8d903f2e559db87b11bc47ffbae40657af34900501532cd5884561279a8c4d6d",
+        "ot3-12922": "2af131e4551cdd270ac4a91e1bebd59dd6819788febf79cf34dac23052f84492",
+        "ot3-15848": "0ccded00105463f3e70bc2a710647eb4e0a08bdb33e09db9f5f4020c28f9d643",
+        "ot3-05615": "e70b2a374c21befe0d7183c2786cad987af1d28c85e17ffcb51bdb0b49292ff6",
+        "ot3-02763": "b74f02e3a5b8aa040c9e5c020227d4af27795d2d7d1f5384e8b1a10724473e80",
+        "ot3-07931": "c33d689f541c8379447e40f882fe6a7323894f915a09b95266d6e073c864b9e6",
+        "ot3-02360": "3686a3008a127ef3b68bbce381b680f4b1b49172b91830dba7fb35136141d58c",
+        "ot3-10271": "7e8116101910e51df6b3ec5a2864c583b4bdffed31d59937027e9171b8d718fa",
+        "ot3-00709": "94ba4e26f40fc05e761a8fd3c3349b0a893e979042c3f7a9b90e205f640f1a43",
+        "ot3-13072": "9cbaa2e7ed9b62dafd7476d23c43024d80daf0478c2abe7966fa306744ec5c2c",
+        "ot3-03499": "d152f96a68529e6326af84b47b0ec4499c6d414d59af84503d1a07944616aa7b",
+        "ot3-19575": "a2b10761d8ae2e02ff3e4b5ae49ff2401d0f78809f26b050544e64103a945ec5",
+        "ot3-01184": "9049ada942e3fae5c8f20841638eca9933b050883c965e5e5dabb8e1b45476ff",
+        "ot3-18937": "8777ca1f81907088c18dda8515e221ef699cb98aa2707808c9ff7935d7ce5e0b",
+        "ot3-11600": "1a3dca82ddf394f7738b44808e17daff4c017ffb97414726c024eb9a76b74aff",
+        "ot3-10000": "beb1e08fa7f4bd76a558e13150e53bc31edd08b166877011b88fa879c321d4a1",
+        "ot3-04773": "442ac37f68e6ed0a71c22c3e8cb32caa87122dc65df6f0bc6cdb13c1b95f0639",
+        "ot3-18183": "52f77723cdd01e5b60945fcb7fff8ee9b08fc9c424bb6bbfa66f1e1a856af31a",
+        "ot3-05354": "f08375897aef2135e3fe785dfabf0918ad90967313f28eda81616e8a357b05d1",
+        "ot3-01870": "c7f965a6026c648f655849b03629e1ca71752b0561a25c84c8f69ca7d77db964",
+        "ot3-19218": "501ce06e1753b32cd49258dd71eb7f788ccd07701a61c0c90c5d092a0149c95d",
+        "ot3-00545": "5a2b5e94ec562c8600dd537bbe6394d99cded4df221a7bab4a3a688ba3d9dfd5",
+        "ot3-01146": "4891b085fbc0d0d1583f7e923abfb33a8f2521761cc344d26dfc4f93c0a03a2b",
+        "ot3-02858": "9df3c2b766a59aef8e81d424b5f669e0e22c36680b409f026d0f9f8202f03bed",
+        "ot3-07879": "cd989e28e5f562af30bfd68a3458f86fa9f6aa071bdd7a40d08860f6affe7d9a",
+        "ot3-27836": "3fc7d35f92ed7f7310240d6ddb145c426e9c0d0e819145da43c35a115ff27bf0",
+        "ot3-04890": "67b75dca129c927e97a80a9fcd1a7bfa5877109f77960b66f87070c03f0b8257",
+        "ot3-00812": "f13657d98eea88f37405492268c3d9cb73e2750f128052f8bcf20a882a56289f",
+        "ot3-02770": "242392859d73bc0c79540465ecd25aae3427088695042f2348bc8ee0a5f56ed0",
+        "ot3-07012": "cd1833a34e422a867f506210ef4cf5a3fe101518ac8bf5a8fc12b06d01fd6675",
+        "ot3-03218": "971ce39ef2bf761f99e9f2579804cefc4028b21730aef6e610329c72ec582b0e"
+      }
+    }
+  },
+  "method": {
+    "direction": "T-S",
+    "granularity": "global",
+    "extractor": "initial",
+    "refresh_interval": 1,
+    "layers": [
+      6,
+      10,
+      13,
+      16,
+      20
+    ],
+    "rho": 0.03,
+    "gate": "all",
+    "overlap_threshold": null,
+    "entropy_threshold": null,
+    "random_probability": null,
+    "start_token": null,
+    "matching_bin_width": 256,
+    "vector_assignment": "own",
+    "direction_control": "positive",
+    "seed": 42
+  },
+  "valid_ids": [
+    "ot3-10473",
+    "ot3-08895",
+    "ot3-18434",
+    "ot3-20139",
+    "ot3-07786",
+    "ot3-07563",
+    "ot3-07711",
+    "ot3-06447",
+    "ot3-23240",
+    "ot3-09072",
+    "ot3-01982",
+    "ot3-01447",
+    "ot3-03602",
+    "ot3-18449",
+    "ot3-02218",
+    "ot3-11067",
+    "ot3-09449",
+    "ot3-07866",
+    "ot3-10598",
+    "ot3-03931",
+    "ot3-28930",
+    "ot3-00634",
+    "ot3-00722",
+    "ot3-13394",
+    "ot3-20917",
+    "ot3-04652",
+    "ot3-05773",
+    "ot3-28846",
+    "ot3-20691",
+    "ot3-00141",
+    "ot3-04654",
+    "ot3-11917",
+    "ot3-00976",
+    "ot3-20218",
+    "ot3-06145",
+    "ot3-07004",
+    "ot3-12051",
+    "ot3-08185",
+    "ot3-17335",
+    "ot3-04967",
+    "ot3-26951",
+    "ot3-11873",
+    "ot3-00078",
+    "ot3-12922",
+    "ot3-02763",
+    "ot3-07931",
+    "ot3-10271",
+    "ot3-00709",
+    "ot3-19575",
+    "ot3-01184",
+    "ot3-18937",
+    "ot3-11600",
+    "ot3-04773",
+    "ot3-27836",
+    "ot3-02770"
+  ],
+  "invalid": {
+    "ot3-00063": "empty_or_truncated",
+    "ot3-25032": "empty_or_truncated",
+    "ot3-05224": "empty_or_truncated",
+    "ot3-04128": "empty_or_truncated",
+    "ot3-02285": "empty_or_truncated",
+    "ot3-02055": "empty_or_truncated",
+    "ot3-10817": "empty_or_truncated",
+    "ot3-17275": "empty_or_truncated",
+    "ot3-04529": "empty_or_truncated",
+    "ot3-15577": "empty_or_truncated",
+    "ot3-10035": "empty_or_truncated",
+    "ot3-19520": "empty_or_truncated",
+    "ot3-24416": "empty_or_truncated",
+    "ot3-19468": "empty_or_truncated",
+    "ot3-07750": "empty_or_truncated",
+    "ot3-19541": "empty_or_truncated",
+    "ot3-12535": "empty_or_truncated",
+    "ot3-06236": "empty_or_truncated",
+    "ot3-01086": "empty_or_truncated",
+    "ot3-01464": "empty_or_truncated",
+    "ot3-07081": "empty_or_truncated",
+    "ot3-09846": "empty_or_truncated",
+    "ot3-02415": "empty_or_truncated",
+    "ot3-01946": "empty_or_truncated",
+    "ot3-18928": "empty_or_truncated",
+    "ot3-20396": "empty_or_truncated",
+    "ot3-14168": "empty_or_truncated",
+    "ot3-15848": "empty_or_truncated",
+    "ot3-05615": "empty_or_truncated",
+    "ot3-02360": "empty_or_truncated",
+    "ot3-13072": "empty_or_truncated",
+    "ot3-03499": "empty_or_truncated",
+    "ot3-10000": "empty_or_truncated",
+    "ot3-18183": "empty_or_truncated",
+    "ot3-05354": "empty_or_truncated",
+    "ot3-01870": "empty_or_truncated",
+    "ot3-19218": "empty_or_truncated",
+    "ot3-00545": "empty_or_truncated",
+    "ot3-01146": "empty_or_truncated",
+    "ot3-02858": "empty_or_truncated",
+    "ot3-07879": "empty_or_truncated",
+    "ot3-04890": "empty_or_truncated",
+    "ot3-00812": "empty_or_truncated",
+    "ot3-07012": "empty_or_truncated",
+    "ot3-03218": "empty_or_truncated"
+  },
+  "candidate_count": 100,
+  "valid_count": 55,
+  "token_activation_cache": true,
+  "token_activation_dtype": "bfloat16",
+  "shared_initial_pool": null,
+  "token_activation_artifacts": {
+    "ot3-00063": {},
+    "ot3-10473": {
+      "teacher": {
+        "path": "token_activations/ot3-10473/teacher.pt",
+        "sha256": "2fa1a86c418a0c544f82a43ce30821bf7d3d3992b8823cf8583549359d09f2a6"
+      },
+      "student": {
+        "path": "token_activations/ot3-10473/student.pt",
+        "sha256": "48ff10bf9799a96e73e6d0d19c30dbebffff9fc20bf6f2ca9f78c6fe64d8d55c"
+      }
+    },
+    "ot3-08895": {
+      "teacher": {
+        "path": "token_activations/ot3-08895/teacher.pt",
+        "sha256": "bb0a778f397d88450b865dddce8c70b83ec77f9f053d5f8c31843d8229febc09"
+      },
+      "student": {
+        "path": "token_activations/ot3-08895/student.pt",
+        "sha256": "bef7508ca9f75d60eeb917199533363aa617cf238d0922454af12b71357dc8c8"
+      }
+    },
+    "ot3-18434": {
+      "teacher": {
+        "path": "token_activations/ot3-18434/teacher.pt",
+        "sha256": "ae6500aaa052e9d7acafe8ece36cc6b7437afe1c39a1b0ce9cc646f64f1c201d"
+      },
+      "student": {
+        "path": "token_activations/ot3-18434/student.pt",
+        "sha256": "9195d125fd4e1bef67b4921cee689c85c6ce0235e902cb91e0e2c04eaace1dbf"
+      }
+    },
+    "ot3-25032": {},
+    "ot3-20139": {
+      "teacher": {
+        "path": "token_activations/ot3-20139/teacher.pt",
+        "sha256": "7ec9efca0ffaff36b4ceeb6a58e05ef065173f011fac043b732f083ce13b7b3a"
+      },
+      "student": {
+        "path": "token_activations/ot3-20139/student.pt",
+        "sha256": "1fafe299e9c367db28476379d87737399adfe6287535150db7daab8bbfa3f3e3"
+      }
+    },
+    "ot3-05224": {},
+    "ot3-04128": {},
+    "ot3-07786": {
+      "teacher": {
+        "path": "token_activations/ot3-07786/teacher.pt",
+        "sha256": "d3e5f108ac67220456d1abb9373140f4492336711692410266234f6bd6da1aa5"
+      },
+      "student": {
+        "path": "token_activations/ot3-07786/student.pt",
+        "sha256": "e25a325f6a1bff376b9aea2acac40d2dc76f1b89ab43f581b0bc9c32a064b97f"
+      }
+    },
+    "ot3-07563": {
+      "teacher": {
+        "path": "token_activations/ot3-07563/teacher.pt",
+        "sha256": "9f35c1ec0d0fe0f4c9da9b203579d4488add1d19d7ef9e9859fb633ace12cdc9"
+      },
+      "student": {
+        "path": "token_activations/ot3-07563/student.pt",
+        "sha256": "a1262d0f3dc2f90c2c7d6e230571bfceb418e61e15a8b9f0912d9cae22e6919d"
+      }
+    },
+    "ot3-02285": {},
+    "ot3-02055": {},
+    "ot3-07711": {
+      "teacher": {
+        "path": "token_activations/ot3-07711/teacher.pt",
+        "sha256": "b3f338bcd3a743be74cf870a41f6ba8c87f694a8e8ed9db4c341ba046d64d664"
+      },
+      "student": {
+        "path": "token_activations/ot3-07711/student.pt",
+        "sha256": "534bf37bb35f766adda49d003c8cc8c2b8cb81334a3ccf34883617a55baf0191"
+      }
+    },
+    "ot3-06447": {
+      "teacher": {
+        "path": "token_activations/ot3-06447/teacher.pt",
+        "sha256": "a761508dbecc0260a921170a7232106390a719844ef63b3ac9a3618544b453f9"
+      },
+      "student": {
+        "path": "token_activations/ot3-06447/student.pt",
+        "sha256": "d01c037bac7bb4dc1b2bc47184306bc205ff6066beb5a39ad2125617596d30c5"
+      }
+    },
+    "ot3-10817": {},
+    "ot3-17275": {},
+    "ot3-04529": {},
+    "ot3-23240": {
+      "teacher": {
+        "path": "token_activations/ot3-23240/teacher.pt",
+        "sha256": "e757ee9f65897c90b54dda677bd621aa655fd1f265cf3c03065ed354a20210e4"
+      },
+      "student": {
+        "path": "token_activations/ot3-23240/student.pt",
+        "sha256": "2f8524f406184a380c7d47dbab8aa3829d3cc5e56d25ebde8c11710125d778b3"
+      }
+    },
+    "ot3-09072": {
+      "teacher": {
+        "path": "token_activations/ot3-09072/teacher.pt",
+        "sha256": "55c8263cab0367def5a9a647f22c6ff13b57d1978f485cf5391ef131a9746506"
+      },
+      "student": {
+        "path": "token_activations/ot3-09072/student.pt",
+        "sha256": "57eeac93607d9dc471faa370964c1d0171d3421ce0141ae49eb6a63faddaa933"
+      }
+    },
+    "ot3-15577": {},
+    "ot3-01982": {
+      "teacher": {
+        "path": "token_activations/ot3-01982/teacher.pt",
+        "sha256": "f5188906643a648d485aaf9adf8dd1eddf99325bab8c46af9cf1c08d62f8d796"
+      },
+      "student": {
+        "path": "token_activations/ot3-01982/student.pt",
+        "sha256": "8688f01eaaa94365cd2c31efcf53267d0556aad767bbfb1c90b120c63b6c281b"
+      }
+    },
+    "ot3-01447": {
+      "teacher": {
+        "path": "token_activations/ot3-01447/teacher.pt",
+        "sha256": "67bf7a9c00f6b57dbd11582a18f1254f637b534ff21fdb82277ead8cac8662fa"
+      },
+      "student": {
+        "path": "token_activations/ot3-01447/student.pt",
+        "sha256": "a6021fd04a147712bd01e096e3becc0d5c0c17e52f3de553d2b3eee08484b873"
+      }
+    },
+    "ot3-10035": {},
+    "ot3-03602": {
+      "teacher": {
+        "path": "token_activations/ot3-03602/teacher.pt",
+        "sha256": "74d46c63f534e1d8bf193f040b500815d47ce342f7c0516f50d6be2df7b7d3c0"
+      },
+      "student": {
+        "path": "token_activations/ot3-03602/student.pt",
+        "sha256": "71d30fc0d88f2e59608cba8fd5ed8f51e5a4f6af6d9140d8f233a97d7ccf83a3"
+      }
+    },
+    "ot3-19520": {},
+    "ot3-24416": {},
+    "ot3-18449": {
+      "teacher": {
+        "path": "token_activations/ot3-18449/teacher.pt",
+        "sha256": "9c9a930b7632e3b181f95339413664f4be23ca4e592a52fcd84e714a34464a1b"
+      },
+      "student": {
+        "path": "token_activations/ot3-18449/student.pt",
+        "sha256": "349573d4a334463eab044671c4bf38ed75c998789386e8a4aa8a53dd4592a333"
+      }
+    },
+    "ot3-02218": {
+      "teacher": {
+        "path": "token_activations/ot3-02218/teacher.pt",
+        "sha256": "3bba6c9cc12e737fef9a98c32e1d9fd9ba0285d241ce846ab0595ab44d0773e3"
+      },
+      "student": {
+        "path": "token_activations/ot3-02218/student.pt",
+        "sha256": "979f23b9f7304e1581855670c80a0cd032caa4dc98ef2249c583b8cffa2760b7"
+      }
+    },
+    "ot3-11067": {
+      "teacher": {
+        "path": "token_activations/ot3-11067/teacher.pt",
+        "sha256": "70804acbc26e2f48bdef7547a6eea0b6001428e1c57251393e3c5bde11f9ea3f"
+      },
+      "student": {
+        "path": "token_activations/ot3-11067/student.pt",
+        "sha256": "1c64ae85e6c1ee24c7659b044b1b80337f34b78c9d10cbc1046efb7c5daf3294"
+      }
+    },
+    "ot3-19468": {},
+    "ot3-09449": {
+      "teacher": {
+        "path": "token_activations/ot3-09449/teacher.pt",
+        "sha256": "3ca0c23ea44ca018025341de564506eb0012cdd38807522f93bd5f5fad6e956f"
+      },
+      "student": {
+        "path": "token_activations/ot3-09449/student.pt",
+        "sha256": "921c8bfa35b4b2a478bacc5850d86163d07f9a56b48862986988389cc6490d12"
+      }
+    },
+    "ot3-07750": {},
+    "ot3-07866": {
+      "teacher": {
+        "path": "token_activations/ot3-07866/teacher.pt",
+        "sha256": "d78c62e29cea6a3e27bbfcdb94f8dbbc389ea9e1c07741ff60db725031187cb4"
+      },
+      "student": {
+        "path": "token_activations/ot3-07866/student.pt",
+        "sha256": "97f078f792a17e5226ba47d5b0bcf0eb88210427d146f024089eee5a4d154225"
+      }
+    },
+    "ot3-10598": {
+      "teacher": {
+        "path": "token_activations/ot3-10598/teacher.pt",
+        "sha256": "e0d97203eb98f1fc911facd742f6248a691bc6a528b71eb94667bfeac510cfcb"
+      },
+      "student": {
+        "path": "token_activations/ot3-10598/student.pt",
+        "sha256": "e99ab5a1132e27f4e628be837722838d75113e9afb8be45f4ae212d27b02f474"
+      }
+    },
+    "ot3-03931": {
+      "teacher": {
+        "path": "token_activations/ot3-03931/teacher.pt",
+        "sha256": "e3f02df461922ae8d8c1606074ffad119bbd98f527c4b119d8b3b6c35f79d42e"
+      },
+      "student": {
+        "path": "token_activations/ot3-03931/student.pt",
+        "sha256": "71f675f1f98093df041d676dfbacc43df9be12ead8e6171788795319b920a408"
+      }
+    },
+    "ot3-28930": {
+      "teacher": {
+        "path": "token_activations/ot3-28930/teacher.pt",
+        "sha256": "26bb659a7ba20b670b338a57227fa16f8e94f70186f863d8da686940d16fe73d"
+      },
+      "student": {
+        "path": "token_activations/ot3-28930/student.pt",
+        "sha256": "3a836712b3458923f8691e496a327ac9327e122aceba9873f591bdf4d6cb8860"
+      }
+    },
+    "ot3-19541": {},
+    "ot3-00634": {
+      "teacher": {
+        "path": "token_activations/ot3-00634/teacher.pt",
+        "sha256": "ed644338e49e9f213d0b8f24a601ab4d266ca521a17cffb3266394f5d5b34c94"
+      },
+      "student": {
+        "path": "token_activations/ot3-00634/student.pt",
+        "sha256": "21405f981b09b0724866f37a77b675788e5102eb219607106cb50623c737e9ea"
+      }
+    },
+    "ot3-12535": {},
+    "ot3-00722": {
+      "teacher": {
+        "path": "token_activations/ot3-00722/teacher.pt",
+        "sha256": "b728b18d8b9c706eb44bdf79906b0cc3c0ec65b92ee7438e64e5de0f6a4628be"
+      },
+      "student": {
+        "path": "token_activations/ot3-00722/student.pt",
+        "sha256": "ee2e70c5e0e2443725f2f7eec09cb05d901397b285a7c6d1af4e9d9bc7e5e915"
+      }
+    },
+    "ot3-13394": {
+      "teacher": {
+        "path": "token_activations/ot3-13394/teacher.pt",
+        "sha256": "b10562d7f55c0fc15da53e0833b3572af20f207aa13bd6e26080b48681af634e"
+      },
+      "student": {
+        "path": "token_activations/ot3-13394/student.pt",
+        "sha256": "f10dc0f08439165c3e19c77de2682e82017a1299b56d66ab802c6fe0f853149c"
+      }
+    },
+    "ot3-20917": {
+      "teacher": {
+        "path": "token_activations/ot3-20917/teacher.pt",
+        "sha256": "3dd5e5577e5560cb8f115ca7214c5be848cf7640f97366c032c112472d9620c0"
+      },
+      "student": {
+        "path": "token_activations/ot3-20917/student.pt",
+        "sha256": "219314a07db658137b88b37852f2e54c931696e3049b7d8a952ba8c45119c1b6"
+      }
+    },
+    "ot3-06236": {},
+    "ot3-04652": {
+      "teacher": {
+        "path": "token_activations/ot3-04652/teacher.pt",
+        "sha256": "4471ff855acfc85a5d91cdf49a64d4d68984aa41b027c3137c022967776d09cc"
+      },
+      "student": {
+        "path": "token_activations/ot3-04652/student.pt",
+        "sha256": "5865bf101f8d999e8a46bb1b32e77447e08dbf1e05e9c75fadeded453c3a7424"
+      }
+    },
+    "ot3-01086": {},
+    "ot3-01464": {},
+    "ot3-07081": {},
+    "ot3-05773": {
+      "teacher": {
+        "path": "token_activations/ot3-05773/teacher.pt",
+        "sha256": "82a08febca2542a7037e0c085a4624f6719e28a5e3deef60a7cc8440f5574666"
+      },
+      "student": {
+        "path": "token_activations/ot3-05773/student.pt",
+        "sha256": "2674704c9d340a316e4a55f3fbfa8dfc4ec8c582232efe14fdef96b833996311"
+      }
+    },
+    "ot3-28846": {
+      "teacher": {
+        "path": "token_activations/ot3-28846/teacher.pt",
+        "sha256": "7977e3dd4d19332d71802e36f187c2100c05de4ad89028c9d5f7559654d8998c"
+      },
+      "student": {
+        "path": "token_activations/ot3-28846/student.pt",
+        "sha256": "e84c1692da28554dae02cb80c8f20b1cd85c343b8a62a13bfed03847fa5ba012"
+      }
+    },
+    "ot3-20691": {
+      "teacher": {
+        "path": "token_activations/ot3-20691/teacher.pt",
+        "sha256": "42b3e4863a4c79200600f97fefa05c7017509550e048ee5457b5e8b6a2123891"
+      },
+      "student": {
+        "path": "token_activations/ot3-20691/student.pt",
+        "sha256": "860ac204a13469308c88026a72e31fd24ecfa7d4819a57addb4e3900e8288d9a"
+      }
+    },
+    "ot3-00141": {
+      "teacher": {
+        "path": "token_activations/ot3-00141/teacher.pt",
+        "sha256": "aea69248eed90f866f86a267714982e56b623d4682984ae2ce8a5b97db9207d5"
+      },
+      "student": {
+        "path": "token_activations/ot3-00141/student.pt",
+        "sha256": "0fd195484821dba5764764b47b639424a75eb3590e2bd67749476d9c90b721d0"
+      }
+    },
+    "ot3-04654": {
+      "teacher": {
+        "path": "token_activations/ot3-04654/teacher.pt",
+        "sha256": "92840b7edad0095e600e9ef584455818898f7644ee033cbb36bdd71350cf9a8b"
+      },
+      "student": {
+        "path": "token_activations/ot3-04654/student.pt",
+        "sha256": "debc2933a2fd29db237d4e45ce777ca4e572c23a60419c0c652a60d9f9348cf6"
+      }
+    },
+    "ot3-11917": {
+      "teacher": {
+        "path": "token_activations/ot3-11917/teacher.pt",
+        "sha256": "646a1b27c3aab2c7c87f2fe63049fa3d40652e71ffce76ca375512851343ba37"
+      },
+      "student": {
+        "path": "token_activations/ot3-11917/student.pt",
+        "sha256": "de211fdc7375d3b9de4b49a92489eb5df7440dbf63998ebd4d4221eb48923e77"
+      }
+    },
+    "ot3-00976": {
+      "teacher": {
+        "path": "token_activations/ot3-00976/teacher.pt",
+        "sha256": "c7b76019203732d26d888bebdfac85056bddefa6d86962376c3cf0dc397e5b93"
+      },
+      "student": {
+        "path": "token_activations/ot3-00976/student.pt",
+        "sha256": "c09da70c9f6935bfe0553f7464fdbc5e0ab4f36287f3c5ec603483cf5517b015"
+      }
+    },
+    "ot3-20218": {
+      "teacher": {
+        "path": "token_activations/ot3-20218/teacher.pt",
+        "sha256": "3dca4e3eb00a1259618cdc5d65ea2c7911f8fd72f3247ed22893f04ef96d6f03"
+      },
+      "student": {
+        "path": "token_activations/ot3-20218/student.pt",
+        "sha256": "25c9259f47644cad2a0fdcf62c185dc245b8b884d08c9b3fd98d71587796f0aa"
+      }
+    },
+    "ot3-09846": {},
+    "ot3-02415": {},
+    "ot3-06145": {
+      "teacher": {
+        "path": "token_activations/ot3-06145/teacher.pt",
+        "sha256": "535f6e7af38ca79f14dffe318c959639a0f73fd7136c66de7df2441eef9fcc30"
+      },
+      "student": {
+        "path": "token_activations/ot3-06145/student.pt",
+        "sha256": "ba5627de4d3bae60e62c348dffbec5956b1d551189cad9a4c9a31c7baec5c824"
+      }
+    },
+    "ot3-07004": {
+      "teacher": {
+        "path": "token_activations/ot3-07004/teacher.pt",
+        "sha256": "d94160ae4551fbc2f37224a9bcd95222b9bdcd74a9324abc79957f1b2579ea26"
+      },
+      "student": {
+        "path": "token_activations/ot3-07004/student.pt",
+        "sha256": "fab08e1129a79479004418bd6864bcd77c8f64d6e3b76b9201cfa3fc2b46de9c"
+      }
+    },
+    "ot3-12051": {
+      "teacher": {
+        "path": "token_activations/ot3-12051/teacher.pt",
+        "sha256": "93edeae657e05d17ae1bcc9c7e716d76b175bc31153a1147cad02224c6fa17ee"
+      },
+      "student": {
+        "path": "token_activations/ot3-12051/student.pt",
+        "sha256": "2620a2ccd840822dd760d4f8ee72f16d2f5e393315bafdbf2a19fe8c96bc2595"
+      }
+    },
+    "ot3-01946": {},
+    "ot3-18928": {},
+    "ot3-08185": {
+      "teacher": {
+        "path": "token_activations/ot3-08185/teacher.pt",
+        "sha256": "55c750755816497255b0da2af33d1018d5ecb5b95e262ff5697bf631ca1b3609"
+      },
+      "student": {
+        "path": "token_activations/ot3-08185/student.pt",
+        "sha256": "5c39bbfb81f8cb3db323b2048f118a01ceba34f70b6f3a5a31db260a43cd093a"
+      }
+    },
+    "ot3-20396": {},
+    "ot3-17335": {
+      "teacher": {
+        "path": "token_activations/ot3-17335/teacher.pt",
+        "sha256": "89966caf881a2738768fde06cd0afe86697af8c6574d2bee7267897b70247734"
+      },
+      "student": {
+        "path": "token_activations/ot3-17335/student.pt",
+        "sha256": "7b0fa09b36f13bb866aa4e45d097d14543cea6cc7bd6f740aeb6a20db8124441"
+      }
+    },
+    "ot3-14168": {},
+    "ot3-04967": {
+      "teacher": {
+        "path": "token_activations/ot3-04967/teacher.pt",
+        "sha256": "5cd6be4d1989cf3726dc874838bfdb252b25e33a1cb0d6cf0e3b2ca930b03254"
+      },
+      "student": {
+        "path": "token_activations/ot3-04967/student.pt",
+        "sha256": "f1e610c61af71e8be964e44a6677ccbc7c7eb281f5e90d25d210684ee13dbb48"
+      }
+    },
+    "ot3-26951": {
+      "teacher": {
+        "path": "token_activations/ot3-26951/teacher.pt",
+        "sha256": "06a595a06cc21110c1946f739ed7bfcdfa69e9a8f7f4682d48796c976cdc0928"
+      },
+      "student": {
+        "path": "token_activations/ot3-26951/student.pt",
+        "sha256": "2965b0de461ac7dd3b247007f1089909f4daef47edb87fe2de66b29d61b7ad5b"
+      }
+    },
+    "ot3-11873": {
+      "teacher": {
+        "path": "token_activations/ot3-11873/teacher.pt",
+        "sha256": "744f8835469564f87c69e237ee4ac5f68a68a8847d90def48c9d4eb37b36e2a7"
+      },
+      "student": {
+        "path": "token_activations/ot3-11873/student.pt",
+        "sha256": "55ee132d0d5cc028cbdde8f928c93c2712dc33dd4b4099fa7bbad333a6393a86"
+      }
+    },
+    "ot3-00078": {
+      "teacher": {
+        "path": "token_activations/ot3-00078/teacher.pt",
+        "sha256": "300732307851da54653591776413a72f26ce01405ff137e29ab3e091de1b4303"
+      },
+      "student": {
+        "path": "token_activations/ot3-00078/student.pt",
+        "sha256": "99cde4cc3b549d74af9aef8f32d38b7f0424006fa121fea8bc28b3ca4ac4030b"
+      }
+    },
+    "ot3-12922": {
+      "teacher": {
+        "path": "token_activations/ot3-12922/teacher.pt",
+        "sha256": "698201325c2f1bbb864b0096bb664b842c2e91547bcb076207e7599547bac485"
+      },
+      "student": {
+        "path": "token_activations/ot3-12922/student.pt",
+        "sha256": "dd8b2d3da4cec13942bf079194d87bc16f13427589d5838d654175c4182ccf57"
+      }
+    },
+    "ot3-15848": {},
+    "ot3-05615": {},
+    "ot3-02763": {
+      "teacher": {
+        "path": "token_activations/ot3-02763/teacher.pt",
+        "sha256": "1f5f2b861d1b45539979a225d1c04aa9b9085f20ede5aabe975ddcc0fd38a16a"
+      },
+      "student": {
+        "path": "token_activations/ot3-02763/student.pt",
+        "sha256": "de2b22e4b62b66f28e2ad6846e7c5ef61092580fb93a29d292caa3af95119317"
+      }
+    },
+    "ot3-07931": {
+      "teacher": {
+        "path": "token_activations/ot3-07931/teacher.pt",
+        "sha256": "29d6de03824e12885cde465ff616eadd8a3fb28624451a0771b1821d4ad1755f"
+      },
+      "student": {
+        "path": "token_activations/ot3-07931/student.pt",
+        "sha256": "09567034e0984e67f056c96da725102e48c100a5c17c4d32cf5970ddd19d3a26"
+      }
+    },
+    "ot3-02360": {},
+    "ot3-10271": {
+      "teacher": {
+        "path": "token_activations/ot3-10271/teacher.pt",
+        "sha256": "0de93fe92fc3165a71a720e46ec79d6ecd8c993538ac5620cb1d128aa3ae25b4"
+      },
+      "student": {
+        "path": "token_activations/ot3-10271/student.pt",
+        "sha256": "c8cc83f80aef07942c67b9d396fa4e5f857650753b7857ea0e2fc7407ebbee9f"
+      }
+    },
+    "ot3-00709": {
+      "teacher": {
+        "path": "token_activations/ot3-00709/teacher.pt",
+        "sha256": "957c4edb247565645a50080740c32ceb208f32f7847187e2b5aa2899ad48b1b4"
+      },
+      "student": {
+        "path": "token_activations/ot3-00709/student.pt",
+        "sha256": "198dbc8e1f74175dae33b070776db71fc5673b2231a0be98cb170c1620b9e93a"
+      }
+    },
+    "ot3-13072": {},
+    "ot3-03499": {},
+    "ot3-19575": {
+      "teacher": {
+        "path": "token_activations/ot3-19575/teacher.pt",
+        "sha256": "9ccd738af89f217efec510843974840aabf639c83f8fbd6d3abb51345d597659"
+      },
+      "student": {
+        "path": "token_activations/ot3-19575/student.pt",
+        "sha256": "532c7d63484f6e9cf71aa44c4876ceeecca503bb01481f335e481fa99be97da8"
+      }
+    },
+    "ot3-01184": {
+      "teacher": {
+        "path": "token_activations/ot3-01184/teacher.pt",
+        "sha256": "f5eec4e136fa0c6ea2d7f0dd506b1a55637f1cb93b1a902327623c9a4421abbc"
+      },
+      "student": {
+        "path": "token_activations/ot3-01184/student.pt",
+        "sha256": "91869e7bdf73741b61caca84a212d4eab8ac67cc4279efa85737ca26244d9d88"
+      }
+    },
+    "ot3-18937": {
+      "teacher": {
+        "path": "token_activations/ot3-18937/teacher.pt",
+        "sha256": "6f681b1df657ba037e9c4cc3d931477c7612154bdf4db8d1cbc48d191b515031"
+      },
+      "student": {
+        "path": "token_activations/ot3-18937/student.pt",
+        "sha256": "52755545914f05484b310f11e44e7278a2214aad7859f18f6f4af2f861bc3bf4"
+      }
+    },
+    "ot3-11600": {
+      "teacher": {
+        "path": "token_activations/ot3-11600/teacher.pt",
+        "sha256": "79e44c9c2f82e12ba8241e7b04950db0436a2554bf5a83c5603a6a19c28a0d60"
+      },
+      "student": {
+        "path": "token_activations/ot3-11600/student.pt",
+        "sha256": "37924e9ddbbf04c3557c149589751aa553f06e803fcd373d78ee0ec82f610c5a"
+      }
+    },
+    "ot3-10000": {},
+    "ot3-04773": {
+      "teacher": {
+        "path": "token_activations/ot3-04773/teacher.pt",
+        "sha256": "8031c8afab24bb03dfb45c269c57eb1e168999bfe1420accd3087cae201a194c"
+      },
+      "student": {
+        "path": "token_activations/ot3-04773/student.pt",
+        "sha256": "11c1b98b4ab77ca924ca40821b1013ccc879eee3794a8799e8e1cf3ba387ebf5"
+      }
+    },
+    "ot3-18183": {},
+    "ot3-05354": {},
+    "ot3-01870": {},
+    "ot3-19218": {},
+    "ot3-00545": {},
+    "ot3-01146": {},
+    "ot3-02858": {},
+    "ot3-07879": {},
+    "ot3-27836": {
+      "teacher": {
+        "path": "token_activations/ot3-27836/teacher.pt",
+        "sha256": "18bc77ad5c15e2d3d9865eb96d9a15b7f0444881c81e16f37b92f4e6056c4ce5"
+      },
+      "student": {
+        "path": "token_activations/ot3-27836/student.pt",
+        "sha256": "f716e9b07b133b143f5685eaa07a3b84561e0b2f11d2e4bf42a4aa62790a15be"
+      }
+    },
+    "ot3-04890": {},
+    "ot3-00812": {},
+    "ot3-02770": {
+      "teacher": {
+        "path": "token_activations/ot3-02770/teacher.pt",
+        "sha256": "34231af5c058f3e900045a69358858b6e8c0210ce129222b045a047495074816"
+      },
+      "student": {
+        "path": "token_activations/ot3-02770/student.pt",
+        "sha256": "98228ed1365cad3028e233bfcab3a2b111335a6b639c352c23fd9b4dc5bd230e"
+      }
+    },
+    "ot3-07012": {},
+    "ot3-03218": {}
+  },
+  "vector_file_sha256": "b91959166a1110c3fd37d2fc69525eadaf364969e933d3a472a66eb807b47edb",
+  "parameter_updates": 0
+}

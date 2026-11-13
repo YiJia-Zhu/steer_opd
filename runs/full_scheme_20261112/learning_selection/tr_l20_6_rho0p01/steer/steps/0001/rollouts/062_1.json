@@ -1,0 +1,2420 @@
+{
+  "key": "062_1",
+  "id": "ot3-06447",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    641,
+    264,
+    3654,
+    2331,
+    21389,
+    66,
+    3,
+    13042,
+    11,
+    279,
+    2629,
+    315,
+    678,
+    1378,
+    48342,
+    5109,
+    374,
+    6144,
+    311,
+    400,
+    16,
+    18,
+    20,
+    666,
+    12947,
+    29901,
+    279,
+    897,
+    315,
+    400,
+    66,
+    12947,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 62,
+  "seed": 291,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "bc2e4fb7d7d0054739ee90bb86368ec792a98a79c759cd82545277483a2d0a8c",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    71703,
+    25,
+    10548,
+    311,
+    279,
+    3491,
+    5114,
+    11,
+    279,
+    12941,
+    1849,
+    686,
+    3635,
+    13340,
+    304,
+    220,
+    16,
+    18,
+    20,
+    12941,
+    2849,
+    13,
+    17399,
+    279,
+    2661,
+    1372,
+    220,
+    16,
+    18,
+    20,
+    355,
+    1832,
+    304,
+    12344,
+    44197,
+    323,
+    1477,
+    348,
+    29870,
+    859,
+    892,
+    279,
+    1849,
+    686,
+    3635,
+    97424,
+    13,
+    17399,
+    348,
+    29870,
+    859,
+    448,
+    2856,
+    285,
+    220,
+    16,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    11,
+    220,
+    16,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    15,
+    11,
+    323,
+    220,
+    16,
+    17,
+    18,
+    19,
+    20,
+    624,
+    66782,
+    271,
+    7874,
+    7468,
+    198,
+    31124,
+    770,
+    421,
+    448,
+    27594,
+    4494,
+    25,
+    1416,
+    27594,
+    943,
+    374,
+    2878,
+    3654,
+    2088,
+    11,
+    1221,
+    9026,
+    279,
+    2504,
+    315,
+    2038,
+    1212,
+    279,
+    2971,
+    315,
+    279,
+    2088,
+    13,
+    5443,
+    71617,
+    658,
+    5675,
+    311,
+    11651,
+    198,
+    2822,
+    10,
+    16,
+    271,
+    144582,
+    145375,
+    2805,
+    16224,
+    25,
+    20848,
+    279,
+    2038,
+    1212,
+    279,
+    1156,
+    2971,
+    11,
+    304,
+    419,
+    1142,
+    11,
+    421,
+    279,
+    2331,
+    1849,
+    429,
+    686,
+    387,
+    1483,
+    553,
+    9237,
+    374,
+    7868,
+    11,
+    1221,
+    419,
+    7868,
+    2805,
+    16224,
+    897,
+    4157,
+    387,
+    17271,
+    13,
+    15277,
+    11,
+    279,
+    198,
+    29044,
+    7357,
+    2567,
+    73975,
+    320,
+    1855,
+    264,
+    7868,
+    198,
+    7634,
+    2355,
+    304,
+    1496,
+    293,
+    1786,
+    5109,
+    36408,
+    13,
+    481,
+    3491,
+    198,
+    86120,
+    271,
+    84736,
+    608,
+    91197,
+    311,
+    15442,
+    279,
+    5461,
+    220,
+    24,
+    23,
+    429,
+    374,
+    279,
+    897,
+    5871,
+    311,
+    387,
+    9099,
+    389,
+    279,
+    7868,
+    5942,
+    3465,
+    553,
+    1496,
+    293,
+    1786,
+    10335,
+    382,
+    10724,
+    25,
+    1173,
+    16141,
+    4153,
+    10662,
+    6863,
+    5431,
+    5130,
+    12808,
+    7468,
+    198,
+    31124,
+    770,
+    421,
+    448,
+    27594,
+    4494,
+    25,
+    1416,
+    27594,
+    943,
+    374,
+    2878,
+    3654,
+    2088,
+    11,
+    1221,
+    9026,
+    279,
+    2504,
+    315,
+    2038,
+    1212,
+    279,
+    2971,
+    315,
+    279,
+    2088,
+    13,
+    5443,
+    71617,
+    658,
+    5675,
+    311,
+    11651,
+    198,
+    75180,
+    32306,
+    3523,
+    2822,
+    37774,
+    21236,
+    368,
+    914,
+    22182,
+    508,
+    16,
+    17,
+    60,
+    220,
+    220,
+    16,
+    17,
+    340,
+    368,
+    914,
+    1857,
+    271,
+    96466,
+    60390,
+    17,
+    320,
+    917,
+    4651,
+    25,
+    469,
+    476,
+    390,
+    9568,
+    74497,
+    703,
+    1857,
+    38658,
+    2822,
+    7,
+    2073,
+    66,
+    3767,
+    263,
+    89,
+    320,
+    2073,
+    16,
+    17,
+    11,
+    220,
+    16,
+    17,
+    9336,
+    314,
+    2073,
+    11849,
+    854,
+    760,
+    1591,
+    57435,
+    2025,
+    198,
+    565,
+    438,
+    1657,
+    5322,
+    438,
+    369,
+    279,
+    1156,
+    37056,
+    220,
+    19,
+    315,
+    198,
+    17485,
+    2025,
+    89,
+    610,
+    12774,
+    2531,
+    1694,
+    25071,
+    624,
+    11,
+    3845,
+    449,
+    19,
+    8,
+    2038,
+    19898,
+    369,
+    198,
+    1921,
+    12924,
+    14860,
+    198,
+    46674,
+    198,
+    39285,
+    10690,
+    198,
+    144193,
+    198,
+    13413,
+    2403,
+    1336,
+    5857,
+    198,
+    13,
+    15,
+    198,
+    13413,
+    7197,
+    67340,
+    7954,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 1.0
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    }
+  ],
+  "sampled_logps": [
+    -3.198765277862549,
+    -0.020040415227413177,
+    -7.601726531982422,
+    -0.00525581045076251,
+    -0.18789932131767273,
+    -0.8710716366767883,
+    -2.307036876678467,
+    -0.12502017617225647,
+    -0.6524595618247986,
+    -13.390565872192383,
+    -1.257044792175293,
+    -4.463285446166992,
+    -3.8024566173553467,
+    -7.666849136352539,
+    -2.2712130546569824,
+    -1.5070303678512573,
+    -1.0711075067520142,
+    -0.5910879373550415,
+    -0.10731130838394165,
+    -4.500821113586426,
+    -0.9151024222373962,
+    -0.6901689171791077,
+    -6.603674411773682,
+    -2.0044302940368652,
+    -3.559643030166626,
+    -1.3169591426849365,
+    -1.7976688146591187,
+    -0.01840665191411972,
+    -0.00923221092671156,
+    -0.0033831524197012186,
+    -11.073711395263672,
+    -2.1759285926818848,
+    -0.5277249217033386,
+    -4.109874248504639,
+    -0.05456877872347832,
+    -2.0619964599609375,
+    -1.9419605731964111,
+    -11.27779769897461,
+    -9.343807220458984,
+    -6.420191287994385,
+    -6.360934734344482,
+    -4.097626209259033,
+    -3.2535624504089355,
+    -0.5740851759910583,
+    -0.6603479385375977,
+    -8.759093284606934,
+    -1.3509124517440796,
+    -2.915975332260132,
+    -2.04020357131958,
+    -0.0730278342962265,
+    -0.02651895210146904,
+    -3.2943665981292725,
+    -8.742925643920898,
+    -5.688529968261719,
+    -3.1771557331085205,
+    -0.7260968685150146,
+    -1.265858769416809,
+    -1.408128261566162,
+    -0.8902575969696045,
+    -1.127636194229126,
+    -0.46280962228775024,
+    -0.3694952726364136,
+    -0.5159335136413574,
+    -0.26492494344711304,
+    -0.231872096657753,
+    -3.947408676147461,
+    -1.9037505388259888,
+    -0.35111939907073975,
+    -0.12517060339450836,
+    -0.04754343256354332,
+    -0.023125475272536278,
+    -0.03116588108241558,
+    -0.05248410999774933,
+    -0.0665980651974678,
+    -0.1128130853176117,
+    -2.1884407997131348,
+    -2.5370967388153076,
+    -0.1708110123872757,
+    -0.027364306151866913,
+    -6.938558101654053,
+    -1.5941596031188965,
+    -0.4846775531768799,
+    -0.15360639989376068,
+    -4.213572978973389,
+    -8.944697380065918,
+    -1.719328761100769,
+    -5.485506534576416,
+    -13.16316032409668,
+    -2.41487717628479,
+    -8.640097618103027,
+    -12.197370529174805,
+    -2.085350751876831,
+    -2.6267151832580566,
+    -8.342231750488281,
+    -1.8726474046707153,
+    -4.824061393737793,
+    -4.421281814575195,
+    -5.112580299377441,
+    -0.9998321533203125,
+    -1.1756162643432617,
+    -7.031704425811768,
+    -2.808800220489502,
+    -0.6804454326629639,
+    -0.39809679985046387,
+    -2.282898426055908,
+    -2.430060386657715,
+    -1.8712505102157593,
+    -2.7214808464050293,
+    -0.5718287825584412,
+    -0.5370960235595703,
+    -4.621112823486328,
+    -1.3082714080810547,
+    -1.7883167266845703,
+    -3.171520233154297,
+    -1.3404890298843384,
+    -2.6622443199157715,
+    -0.9578351378440857,
+    -4.307516574859619,
+    -5.965394973754883,
+    -0.019562408328056335,
+    -0.5697523355484009,
+    -0.8162928223609924,
+    -4.579804420471191,
+    -5.500854015350342,
+    -11.815078735351562,
+    -6.976746082305908,
+    -2.529233455657959,
+    -2.7200024127960205,
+    -9.55351734161377,
+    -4.992931365966797,
+    -10.586311340332031,
+    -3.1608712673187256,
+    -3.651240348815918,
+    -5.675884246826172,
+    -0.9010513424873352,
+    -2.686710834503174,
+    -1.9714540243148804,
+    -0.30118104815483093,
+    -3.2196550369262695,
+    -0.2447579950094223,
+    -1.3415559530258179,
+    -6.527778625488281,
+    -3.30711030960083,
+    -0.482332319021225,
+    -0.39082324504852295,
+    -2.026099681854248,
+    -0.8995211124420166,
+    -7.315852165222168,
+    -5.824949264526367,
+    -6.7967329025268555,
+    -3.3356847763061523,
+    -1.9881781339645386,
+    -1.4592325687408447,
+    -3.7571189403533936,
+    -6.265988826751709,
+    -0.8696163892745972,
+    -4.6819376945495605,
+    -0.7583503723144531,
+    -0.6201568245887756,
+    -4.7459211349487305,
+    -3.6598100662231445,
+    -7.273590087890625,
+    -0.30550000071525574,
+    -6.44550895690918,
+    -5.314497470855713,
+    -0.24785207211971283,
+    -6.82230806350708,
+    -1.7223973274230957,
+    -2.999619245529175,
+    -0.03805633261799812,
+    -1.0930235385894775,
+    -6.408247947692871,
+    -10.709182739257812,
+    -12.914894104003906,
+    -9.541783332824707,
+    -9.967792510986328,
+    -4.052779197692871,
+    -11.71009635925293,
+    -1.6704400777816772,
+    -3.1909708976745605,
+    -4.2264909744262695,
+    -9.967192649841309,
+    -8.031036376953125,
+    -4.706760883331299,
+    -9.161832809448242,
+    -8.150520324707031,
+    -10.017294883728027,
+    -5.726473808288574,
+    -15.1581392288208,
+    -4.140651226043701,
+    -6.187307834625244,
+    -9.124029159545898,
+    -1.9573756456375122,
+    -6.459813594818115,
+    -2.651700496673584,
+    -10.34422492980957,
+    -6.31562614440918,
+    -7.700373649597168,
+    -4.485918998718262,
+    -7.354495048522949,
+    -0.8951386213302612,
+    -6.6068220138549805,
+    -6.102940559387207,
+    -3.6547088623046875,
+    -3.0659730434417725,
+    -7.620813846588135,
+    -1.7132362127304077,
+    -2.554983139038086,
+    -3.4367828369140625,
+    -8.095938682556152,
+    -0.6025223135948181,
+    -1.7959142923355103,
+    -4.5063629150390625,
+    -2.5252022743225098,
+    -0.5423606634140015,
+    -4.05085563659668,
+    -6.655272960662842,
+    -6.532283782958984,
+    -1.1575310230255127,
+    -6.67440128326416,
+    -1.5175243616104126,
+    -0.30988067388534546,
+    -10.357893943786621,
+    -3.013820171356201,
+    -11.999725341796875,
+    -2.4146668910980225,
+    -10.380854606628418,
+    -8.740525245666504,
+    -11.111590385437012,
+    -10.835973739624023,
+    -6.298081398010254,
+    -3.851219654083252,
+    -4.571521759033203,
+    -6.046896934509277,
+    -2.0007026195526123,
+    -0.43665769696235657,
+    -0.9337249398231506,
+    -0.15369461476802826,
+    -0.006852578371763229,
+    -0.01770571805536747,
+    -0.027387967333197594,
+    -0.010498298332095146,
+    -0.02505061775445938,
+    -0.01699022762477398,
+    -0.07549174129962921,
+    -0.008492663502693176,
+    -0.0048861149698495865,
+    -0.008745700120925903,
+    -0.00851772166788578,
+    -0.0058151353150606155,
+    -0.004078404977917671,
+    -0.002173325279727578,
+    -0.004353094846010208,
+    -0.0037681306712329388,
+    -0.004705783445388079,
+    -0.002517152111977339,
+    -0.0030976191628724337,
+    -0.003022627905011177,
+    -0.0033787565771490335,
+    -0.006947644986212254,
+    -0.0038659849669784307,
+    -0.00311924796551466,
+    -0.004461454227566719,
+    -0.016336265951395035,
+    -0.014406242407858372,
+    -0.008540534414350986,
+    -0.0005069877952337265,
+    -0.009157205931842327,
+    -0.006013040896505117,
+    -0.03503847122192383,
+    -0.2457454800605774,
+    -13.300910949707031,
+    -10.387798309326172,
+    -6.266378879547119,
+    -2.6184744834899902,
+    -11.262401580810547,
+    -12.94845199584961,
+    -3.715850830078125,
+    -7.601405620574951,
+    -9.057533264160156,
+    -5.900343418121338,
+    -1.901064395904541,
+    -2.547689914703369,
+    -3.2586829662323,
+    -3.020252227783203,
+    -5.45670223236084,
+    -1.0436146259307861,
+    -1.0589405298233032,
+    -5.937732696533203,
+    -3.9858736991882324,
+    -3.580388307571411,
+    -2.7847752571105957,
+    -2.6870975494384766,
+    -12.385235786437988,
+    -13.523107528686523,
+    -3.905022144317627,
+    -5.359183311462402,
+    -3.1760663986206055,
+    -7.848766326904297,
+    -5.331812858581543,
+    -9.957307815551758,
+    -8.405782699584961,
+    -7.101785659790039,
+    -9.848366737365723,
+    -7.491030693054199,
+    -4.014772415161133,
+    -2.2786827087402344,
+    -8.370235443115234,
+    -2.314582109451294,
+    -5.217863082885742,
+    -6.130096435546875,
+    -5.86612606048584,
+    -7.636051654815674,
+    -1.337695837020874,
+    -8.292036056518555,
+    -6.215963840484619,
+    -4.358260154724121,
+    -3.9974851608276367,
+    -0.8868465423583984,
+    -4.2182512283325195,
+    -1.054186224937439,
+    -0.8088176250457764,
+    -0.8120843172073364,
+    -4.2279438972473145,
+    -5.891800880432129,
+    -1.3642550706863403,
+    -7.320930480957031,
+    -2.021284341812134,
+    -5.621089458465576,
+    -10.202972412109375,
+    -11.946111679077148,
+    -4.65993595123291,
+    -2.1304967403411865,
+    -7.560509204864502,
+    -9.094911575317383,
+    -5.220933437347412,
+    -5.1682844161987305,
+    -0.78556889295578,
+    -7.842916011810303,
+    -1.8010897636413574,
+    -3.351444959640503,
+    -12.222677230834961,
+    -4.552351951599121,
+    -3.145021438598633,
+    -5.454047203063965,
+    -3.0699656009674072,
+    -11.399554252624512,
+    -4.920125961303711,
+    -8.08728313446045,
+    -10.10857105255127,
+    -12.61962890625,
+    -12.993406295776367,
+    -8.434436798095703,
+    -12.126749038696289,
+    -5.146986961364746,
+    -5.862008571624756,
+    -10.46823501586914,
+    -6.914731025695801,
+    -6.748412132263184,
+    -4.168170928955078,
+    -7.181567192077637,
+    -13.113825798034668,
+    -3.9533531665802,
+    -2.8349804878234863,
+    -7.612293243408203,
+    -10.375434875488281,
+    -9.673259735107422,
+    -2.3550102710723877,
+    -8.919332504272461,
+    -2.09419846534729,
+    -11.30538558959961,
+    -6.706003665924072,
+    -1.6397068500518799,
+    -6.693331718444824,
+    -1.3869194984436035,
+    -7.975231170654297,
+    -6.856988906860352,
+    -4.2507710456848145,
+    -2.4061777591705322,
+    -1.1192060708999634,
+    -3.7379796504974365,
+    -4.410133361816406,
+    -1.9845024347305298,
+    -4.202868461608887,
+    -8.932188034057617,
+    -16.129722595214844,
+    -9.84582805633545,
+    -6.0425124168396
+  ],
+  "text": "Assistant: According to the problem statement, the solar system will become temporary in 135 solar days. Express the given number 135usually in scientific notation and find vuberov which the system will becomepermanent. Express vuberov with initialis 1000000000, 10000000, and 12345.\nièrement\n\n.assertEqual programs\n.Combine else if with primitive types: If primitive type is within certain range, then execute the block of code under the condition of the range. Use ternary operator to judge\n()\n\n+1\n\n👉🏽 short circuit: Execute the code under the first condition, in this case, if the base system that will be used by Earth is binary, then this binary short circuit value cannot be initialized. Therefore, the\nOTTOM Person required parentheses ( create a binary\n.run power in even b-c numbers erf. - problem\nrogram\n\n.setMinimum / setPosition to evaluate the average 98 that is the value necessary to be placed on the binary systems created by even b-c ends.\n\nVideo: printAnswerFactory(\"@binaries\")\n\n.Equal programs\n.Combine else if with primitive types: If primitive type is within certain range, then execute the block of code under the condition of the range. Use ternary operator to judge\n_usingPrimeMethod()\n\nassertSame spy() stringArrays [12]  12)\n() stringArray\n\n(suffix_prog2 (stringNum: com or con })\n\n.optimizeStringArrayComparator()\n\n(“canyonz (“12, 12”, {“prefix” | \"\" complementary program\n## as many problems as for the first induction 4 of\ngoogle programzach.zeros easby injection.\n, duiz4) code predictions for\nnot_\nbottom\n■\n.libraryProgram\n□\n.outputAllProgs\n.0\n.output.py Latitude Unit",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 58,
+  "rollout_topk": "topk/062_1.pt",
+  "rollout_topk_hash": "9a98c6c1878f66a7bbac3df11fbd3ea5873f512584a92bb0e0caad18a985db10"
+}

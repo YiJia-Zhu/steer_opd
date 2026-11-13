@@ -1,0 +1,55 @@
+{
+  "cpu_only": true,
+  "gpu_run_started": false,
+  "tests": 48,
+  "failures": 0,
+  "errors": 0,
+  "ast_files": [
+    "scripts/figure8_generate.py",
+    "scripts/figure8_stage.py",
+    "scripts/figure8_acceptance.py",
+    "scripts/run_figure8_campaign.py",
+    "scripts/prepare_figure8_first_run.py",
+    "scripts/figure8_status.py",
+    "src/steer_opd/rollout_topk.py",
+    "src/steer_opd/resumable_core.py",
+    "src/steer_opd/replay_validation.py",
+    "src/steer_opd/generation_runtime.py",
+    "tests/test_rollout_topk.py"
+  ],
+  "same_pool_count": 100,
+  "preserved_dev_questions": 128,
+  "preserved_aime_questions": 30,
+  "pause_guard_subprocess_exit": 1,
+  "pause_guard_state_unchanged": true,
+  "old_committed_updates": {
+    "vanilla": 10,
+    "steer": 10
+  },
+  "new_committed_updates": {
+    "vanilla": 0,
+    "steer": 0
+  },
+  "new_config_hash": "6982cb5f46a10b23a3fe83f15e48a8980d965fe0a1e26713544eae6e1c34ca61",
+  "code_sha256": {
+    "scripts/figure8_generate.py": "63a6ee3a6d339fd21c06b26bd7db6fd9d2e3c7d917f294e5f1f3af8e93fc3679",
+    "scripts/figure8_stage.py": "baf23e9d2a2aa920f5b74f3e9b3058b9da0e93c4b10939716e277186aeb71fc7",
+    "scripts/figure8_acceptance.py": "2e2ac47a2ece1c95c37d416eab583b477c238a8c4ec81a0143c29a6d08cf3c77",
+    "scripts/run_figure8_campaign.py": "f5e12aec0115a1fc154e09e963e9013e0bdc1599c8c6032e4fec405859e1af2a",
+    "scripts/prepare_figure8_first_run.py": "d7679b43e193d89fafb6678752a93d9054735df3987024aa4863fc6798d5b3e9",
+    "scripts/figure8_status.py": "f740c201b2afa3faedc6897c82e13fdcf08e3554fe06d072b8f0cd59c016ff81",
+    "src/steer_opd/rollout_topk.py": "13f45055854771099496c335b84bbe751bdeeab73bc671acb576b7e220de928a",
+    "src/steer_opd/resumable_core.py": "9616e19c2aee2736658d88f451639e18b014811790fd4793b3acccb99f29ea9b",
+    "src/steer_opd/replay_validation.py": "64dc569bd7d744a5b71fb61f6112e2f46b61063085d6212c7156f3ad5e64b879",
+    "src/steer_opd/generation_runtime.py": "283ab314b3096cf63279b29f421fb050dddb9f441aa10854b2532c91eb9158f9",
+    "tests/test_rollout_topk.py": "e9f930a378d733e08ea46db7108b7eeec5b265f2be5093f542f6ed961de281a5"
+  },
+  "gpu_acceptance": "not_run_user_paused",
+  "performance_measurement": "not_run_user_paused",
+  "base_evaluation_reused": {
+    "files": 1031,
+    "samples": 480,
+    "source_run": "runs/figure8_first_run_20261112",
+    "both_groups_share_step_zero": true
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "checked_at": "2026-11-13T09:57:33.265388+08:00",
+  "supervisor_launched_at": "2026-11-13T01:57:51.350351+08:00",
+  "elapsed_seconds": 28781.915036916733,
+  "first_gpu_queue_seconds": 18035.124465942383,
+  "all_gpu_queue_seconds": 18118.03463935852,
+  "child_process_wall_seconds": 10624.696292638779,
+  "completed_child_process_wall_seconds": 1286.7632586956024,
+  "acceptance_child_wall_seconds": 100.45133256912231,
+  "other_cpu_and_supervisor_wall_seconds": 39.184104919433594,
+  "timing_definition": "GPU-admitted child process wall time includes model loading, computation, I/O and memory recovery; excludes queue time. It is not pure CUDA kernel time.",
+  "scope": "new full_scheme_20261112 only; reused Base AIME and old cached assets have no newly incurred generation time",
+  "rollout": {
+    "planned": 256,
+    "completed": 233,
+    "completed_answer_tokens": 293899,
+    "memory_splits": {
+      "OutOfMemoryError": 15,
+      "BatchMemoryPressure": 15
+    }
+  },
+  "committed_training_updates": 0,
+  "phases": [
+    {
+      "phase": "calibration_teacher",
+      "receipt": "runs/full_scheme_20261112/precheck/attempts/calibration_teacher_1794506272108522561/process.json",
+      "started_at": "2026-11-13T06:58:27.267602+08:00",
+      "finished_at": "2026-11-13T07:05:17.131364+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 409.86376214027405,
+      "queue_seconds": 18035.124465942383
+    },
+    {
+      "phase": "calibration_student",
+      "receipt": "runs/full_scheme_20261112/precheck/attempts/calibration_student_1794524717148446219/process.json",
+      "started_at": "2026-11-13T07:05:19.498773+08:00",
+      "finished_at": "2026-11-13T07:11:48.329842+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 388.83106899261475,
+      "queue_seconds": 2.309854030609131
+    },
+    {
+      "phase": "direction_initial",
+      "receipt": "runs/full_scheme_20261112/precheck/attempts/direction_initial_1794525108336888374/process.json",
+      "started_at": "2026-11-13T07:11:50.690197+08:00",
+      "finished_at": "2026-11-13T07:12:07.845402+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 17.155205011367798,
+      "queue_seconds": 2.305341958999634
+    },
+    {
+      "phase": "diagnostic_select",
+      "receipt": "runs/full_scheme_20261112/precheck/attempts/diagnostic_select_1794525127852096343/process.json",
+      "started_at": "2026-11-13T07:12:10.169852+08:00",
+      "finished_at": "2026-11-13T07:12:31.924814+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 21.75496196746826,
+      "queue_seconds": 2.2794339656829834
+    },
+    {
+      "phase": "diagnostic_confirm",
+      "receipt": "runs/full_scheme_20261112/precheck/attempts/diagnostic_confirm_1794525151940929616/process.json",
+      "started_at": "2026-11-13T07:12:34.311281+08:00",
+      "finished_at": "2026-11-13T07:12:53.077397+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 18.76611614227295,
+      "queue_seconds": 2.31797194480896
+    },
+    {
+      "phase": "multilayer_select",
+      "receipt": "runs/full_scheme_20261112/attempts/multilayer_select_1794525181264256882/process.json",
+      "started_at": "2026-11-13T07:13:03.616963+08:00",
+      "finished_at": "2026-11-13T07:13:11.270189+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 7.653226137161255,
+      "queue_seconds": 2.3007888793945312
+    },
+    {
+      "phase": "multilayer_confirm",
+      "receipt": "runs/full_scheme_20261112/attempts/multilayer_confirm_1794525191276904741/process.json",
+      "started_at": "2026-11-13T07:13:25.930084+08:00",
+      "finished_at": "2026-11-13T07:13:31.578817+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 5.648732900619507,
+      "queue_seconds": 14.609899997711182
+    },
+    {
+      "phase": "calibration_reference",
+      "receipt": "runs/full_scheme_20261112/attempts/calibration_reference_1794525219977641960/process.json",
+      "started_at": "2026-11-13T07:13:42.315712+08:00",
+      "finished_at": "2026-11-13T07:14:44.474901+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 62.159188985824585,
+      "queue_seconds": 2.284226894378662
+    },
+    {
+      "phase": "independent_calibration_reference",
+      "receipt": "runs/full_scheme_20261112/attempts/independent_calibration_reference_1794525294130532435/process.json",
+      "started_at": "2026-11-13T07:14:56.472335+08:00",
+      "finished_at": "2026-11-13T07:16:18.931907+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 82.4595718383789,
+      "queue_seconds": 2.2955751419067383
+    },
+    {
+      "phase": "initial_triplet_pools",
+      "receipt": "runs/full_scheme_20261112/attempts/initial_triplet_pools_1794525382961785234/process.json",
+      "started_at": "2026-11-13T07:16:25.312747+08:00",
+      "finished_at": "2026-11-13T07:16:33.332643+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 8.019896030426025,
+      "queue_seconds": 2.3044509887695312
+    },
+    {
+      "phase": "eval_learning_selection_base",
+      "receipt": "runs/full_scheme_20261112/attempts/eval_learning_selection_base_1794525393343239177/process.json",
+      "started_at": "2026-11-13T07:16:47.966465+08:00",
+      "finished_at": "2026-11-13T07:19:31.966661+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 164.00019598007202,
+      "queue_seconds": 14.579837083816528
+    },
+    {
+      "phase": "acceptance_hf",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/acceptance_hf_1794525576477569509/process.json",
+      "started_at": "2026-11-13T07:19:38.840376+08:00",
+      "finished_at": "2026-11-13T07:19:43.662601+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 4.822225093841553,
+      "queue_seconds": 2.3156518936157227
+    },
+    {
+      "phase": "acceptance_vllm_plain_verified",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/acceptance_vllm_plain_verified_1794525583669216501/process.json",
+      "started_at": "2026-11-13T07:19:45.988620+08:00",
+      "finished_at": "2026-11-13T07:20:16.042182+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 30.05356192588806,
+      "queue_seconds": 2.280189037322998
+    },
+    {
+      "phase": "acceptance_vllm_steer_verified",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/acceptance_vllm_steer_verified_1794525616052748377/process.json",
+      "started_at": "2026-11-13T07:20:18.404355+08:00",
+      "finished_at": "2026-11-13T07:20:48.288558+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 29.88420295715332,
+      "queue_seconds": 2.3061959743499756
+    },
+    {
+      "phase": "acceptance_compare",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/acceptance_compare_1794525648294746017/process.json",
+      "started_at": "2026-11-13T07:20:50.651403+08:00",
+      "finished_at": "2026-11-13T07:20:55.068756+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 4.41735315322876,
+      "queue_seconds": 2.3090739250183105
+    },
+    {
+      "phase": "acceptance_backward",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/acceptance_backward_1794525655074647613/process.json",
+      "started_at": "2026-11-13T07:20:57.392520+08:00",
+      "finished_at": "2026-11-13T07:21:04.847881+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 7.4553611278533936,
+      "queue_seconds": 2.278991937637329
+    },
+    {
+      "phase": "plain_batched_backend_rollout",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/plain_batched_backend_rollout_1794525664855645457/process.json",
+      "started_at": "2026-11-13T07:21:07.193842+08:00",
+      "finished_at": "2026-11-13T07:21:12.967060+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 5.773218154907227,
+      "queue_seconds": 2.3031070232391357
+    },
+    {
+      "phase": "plain_batched_full_support_and_backward",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/plain_batched_full_support_and_backward_1794525672972836527/process.json",
+      "started_at": "2026-11-13T07:21:15.318596+08:00",
+      "finished_at": "2026-11-13T07:21:22.067399+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 6.74880313873291,
+      "queue_seconds": 2.3089327812194824
+    },
+    {
+      "phase": "branch_backend_rollout",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/branch_backend_rollout_1794525684669454799/process.json",
+      "started_at": "2026-11-13T07:21:26.998019+08:00",
+      "finished_at": "2026-11-13T07:21:32.497460+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 5.499440908432007,
+      "queue_seconds": 2.289834976196289
+    },
+    {
+      "phase": "branch_distribution_and_backward_acceptance",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/branch_distribution_and_backward_acceptance_1794525692503532422/process.json",
+      "started_at": "2026-11-13T07:21:47.156214+08:00",
+      "finished_at": "2026-11-13T07:21:52.953380+08:00",
+      "status": "finished",
+      "exit_code": 0,
+      "process_seconds": 5.797166109085083,
+      "queue_seconds": 14.602813959121704
+    },
+    {
+      "phase": "steer_0001_rollout",
+      "receipt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_rollout_1794525712965473006/process.json",
+      "started_at": "2026-11-13T07:21:55.332354+08:00",
+      "finished_at": null,
+      "status": "running",
+      "exit_code": null,
+      "process_seconds": 9337.933033943176,
+      "queue_seconds": 2.328001022338867
+    }
+  ]
+}

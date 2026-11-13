@@ -1,0 +1,13 @@
+{
+  "pid": 2716649,
+  "started_at": 1794496766.9405556,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_pre_opd_overlap_tuning.py",
+    "--config",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/configs/full_scheme_precheck_20261112.json",
+    "--execute"
+  ],
+  "authorized_by": "2026-11-12 user requested complete experiments",
+  "max_gpus": 1
+}

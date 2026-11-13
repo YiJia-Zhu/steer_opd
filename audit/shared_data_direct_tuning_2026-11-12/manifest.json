@@ -1,0 +1,389 @@
+{
+  "started_at": "2026-11-12T13:49:18.025925+00:00",
+  "scope": "Delete cause-validation framing and old/new data-source ablation from current Markdown; directly use shared100 questions and tune layer position/count/strength. No code/config/GPU changes.",
+  "before": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a01038867a34e8036c0ccb8a5a3bf7b8c4720d397e2c5cbaa494af2565603c2e"
+    },
+    {
+      "path": "README.md",
+      "sha256": "4974000b5a42b1e256338857a6e50503bd725bc200f0c642024da7dcc3dd4a54"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "d8b8ad309a0820183bf5182ead5ff58ffd148af9705aad06006b8dd7575d60d9"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "a7dfa9e8c02c56ff9a16fd076c388f04b3bf9817781e296f60bc03019275d0f5"
+    },
+    {
+      "path": "docs/04_pre_opd_overlap_tuning.md",
+      "sha256": "7ad0b2c0a0b2ebbf2bcb13c7caecfb6d4cb90e8ad6e36749c1db651a5ff9a47f"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "bb49126f12f71b0a428f2434c6110f56bffa4afdc9b311f0fd727e646d82f1b1"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "1f3ffdf63a064d91c23757449b3eadc409c66ad68aa2272404f4f3a5701ab24b"
+    },
+    {
+      "path": "docs/05_method_branches.md",
+      "sha256": "de8661eaf7f38d6fac15e4b9827720a920538f22dc8ea49d94f6bf7cbaba2f63"
+    }
+  ],
+  "protected_non_markdown": [
+    {
+      "path": "configs/figure8_first_run.json",
+      "sha256": "2cf4d9d2745a462329b3ffa4629e7ffd3f0531fb9990309dd39c3a4fb2b4b647"
+    },
+    {
+      "path": "configs/figure8_shared_top16_v2.json",
+      "sha256": "25ef10bd9475fc1d61e3b6cd4810edc461fa1b97d8222cd1f4b479ee65abb829"
+    },
+    {
+      "path": "configs/pre_opd_overlap_tuning.json",
+      "sha256": "7ad5eb29b171dcdf352077b9148525d110584efea82e9c2693b0b954107c4cc7"
+    },
+    {
+      "path": "configs/r1_agent_loop.yaml",
+      "sha256": "175f68756432c0070f8f662c7d951cda78c5ed5243e132f70237724392aad78a"
+    },
+    {
+      "path": "configs/rethinking_opd.json",
+      "sha256": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b"
+    },
+    {
+      "path": "configs/steering_branch_presets.json",
+      "sha256": "1da10ca0af7c5282d586c0c2dafd1b16926d2dcb3d3915826181b7d65fe95e3a"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110.json",
+      "sha256": "d92e1430581f6fa11e378da11775e5974403b10a8b7c6201f5a1719747cddf5a"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110_v2.json",
+      "sha256": "832e7c318c696bc252cba99d2fb55b419e8d8bf11fc5dc95336cb3d039aa8534"
+    },
+    {
+      "path": "experiments/cross_family_steering_probe_20261110.json",
+      "sha256": "aa2036f1fbd771a07365de5aae136247f4e4cf681b45c8655cfe83ec019bbb24"
+    },
+    {
+      "path": "experiments/download_manifest.json",
+      "sha256": "17fd09e3c08159030dc37e2fa8ab5dcb52d4544a969b4324b6f50f701da8ddda"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256": "3f65def54bb40ea7b4faf4308aa9d6da3d2dcbc33797769082d5357340fa2526"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256": "db4b9ba25baf20ff8184fe22b983aeb3d78bbd50857651b71b3ac47b89f15eaf"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256": "75394011019e61fb7c51327ab0be84127129149970bcb6cc359debecb72e7d0b"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256": "5d306aecab62a1134193cfa390a6e7bcf03bbfa25ecb9e535c405a7e2418cf26"
+    },
+    {
+      "path": "scripts/audit_rethinking_alignment.py",
+      "sha256": "92c9df85d3e2077a51af199d391110980cb6e0d4ea6c0a452865dbdb84dbbe42"
+    },
+    {
+      "path": "scripts/check_figure8_checkpoint.py",
+      "sha256": "576943325cd15f1661010e963ffb629e011acc8e34d61797d37a10c59393e4e7"
+    },
+    {
+      "path": "scripts/create_steering_variant.py",
+      "sha256": "976b82f8236d5841b99406a3c005fac04f54b22b96cf8d68f6f85e89841c28c7"
+    },
+    {
+      "path": "scripts/diagnose_cross_family_overlap.py",
+      "sha256": "7c140c464f8c3a892fca0ff78892ba8c3ad88d6ab1dfe6ace2a299cb670a46fb"
+    },
+    {
+      "path": "scripts/diagnose_figure8_replay.py",
+      "sha256": "7fe8b47a6ab5fca1f9ece55fb3ebbea555ca8a702e26d404079608e7f6d63486"
+    },
+    {
+      "path": "scripts/download_assets.py",
+      "sha256": "d1f9f454d307dd4550f44deab803ab4b7272dc0eeebc0a5a1979530d6747e1fc"
+    },
+    {
+      "path": "scripts/evaluate_initial_pair.py",
+      "sha256": "1a800a880f4a717be41284fcb2b85713cf5682967b232b35ea478977778b6646"
+    },
+    {
+      "path": "scripts/export_pilot_parquet.py",
+      "sha256": "7f30608672aa3a7c82582f3aa1ec3f3d2c8f1a1000a4ff07edf5dc361127801d"
+    },
+    {
+      "path": "scripts/extract_pilot_vectors.py",
+      "sha256": "8f3d98a71cf4d4489db1ca24a39e90d151cf51b06c8cfb29ae11f1bc73b20b0e"
+    },
+    {
+      "path": "scripts/figure8_acceptance.py",
+      "sha256": "2e2ac47a2ece1c95c37d416eab583b477c238a8c4ec81a0143c29a6d08cf3c77"
+    },
+    {
+      "path": "scripts/figure8_branch_acceptance.py",
+      "sha256": "e9d3325d89243b323972979bed35a4e9bd2971fc08d5caf5c2781798b1b38e4a"
+    },
+    {
+      "path": "scripts/figure8_extract.py",
+      "sha256": "54a42e31729e6dcf5d62da687b8864869d227ce25c7c1ff1a0e83cded5620ef9"
+    },
+    {
+      "path": "scripts/figure8_generate.py",
+      "sha256": "17898362206db65751dc0492686f167c459d15c541317bda42125363832c13e8"
+    },
+    {
+      "path": "scripts/figure8_generate_controlled.py",
+      "sha256": "9d3f11571686e4662e488ecd7b1c8aedc80c733b096f815ca8e81b6af5e2f9e8"
+    },
+    {
+      "path": "scripts/figure8_report.py",
+      "sha256": "23a984b3783aaf0c2119b793b8dba8aa4dd95481946d9ff2ee6878ae14bb48f4"
+    },
+    {
+      "path": "scripts/figure8_stage.py",
+      "sha256": "0837684fdf57e83afce4b6222a86e467136de3933ab256374cda1a3bb59a2788"
+    },
+    {
+      "path": "scripts/figure8_status.py",
+      "sha256": "f740c201b2afa3faedc6897c82e13fdcf08e3554fe06d072b8f0cd59c016ff81"
+    },
+    {
+      "path": "scripts/generate_cross_family_calibration.py",
+      "sha256": "90a10c2f442266bf419c33d9641bf67fa504f5d4318f254ca0ffc23b957a63d0"
+    },
+    {
+      "path": "scripts/generate_math.py",
+      "sha256": "2cc742258f3cc919c2d6b88fcfabfdbd10ecbdceb9688bb5b6fecefa7c305dc3"
+    },
+    {
+      "path": "scripts/gpu_preflight.py",
+      "sha256": "dc759b16443a529471f242cbaf787b143a4457fda38201b232c154f86c547d62"
+    },
+    {
+      "path": "scripts/launch_pilot.py",
+      "sha256": "42d026ad708d60b2d7e7bbcb1c98cdfb1fe65feafd8cef9db74976e5bd9f12d8"
+    },
+    {
+      "path": "scripts/pre_opd_overlap_stage.py",
+      "sha256": "142973437196bff3224919b02cdc3c0bee77135b272084ef987dbd80417fe7c1"
+    },
+    {
+      "path": "scripts/prepare_figure8_first_run.py",
+      "sha256": "d7679b43e193d89fafb6678752a93d9054735df3987024aa4863fc6798d5b3e9"
+    },
+    {
+      "path": "scripts/prepare_math500_pilot.py",
+      "sha256": "cb39209e29356f14ff59c3a17f01e3ed10679da9d488b82f59f9adfaf9824556"
+    },
+    {
+      "path": "scripts/probe_cross_family_steering.py",
+      "sha256": "1108dfddabe6c1396d227194c64638eb06fae7443f9fca23b5e0b0cf58740ebc"
+    },
+    {
+      "path": "scripts/profile_figure8_generation.py",
+      "sha256": "3e2e5115c24545d7378bf627e9d2bd488cea04954e9dfb7e66cca70e638ad8f2"
+    },
+    {
+      "path": "scripts/run_cross_family_diagnosis.py",
+      "sha256": "7bdad6194745b6cb8cd79b23e24a301a17a68562f25a3ff3ca9a90bca68338cf"
+    },
+    {
+      "path": "scripts/run_cross_family_steering_probe.py",
+      "sha256": "096e60000bd7a9077222fbf30b0038b93b29d45e5b4aa0f0098c4272e73bff11"
+    },
+    {
+      "path": "scripts/run_figure8_campaign.py",
+      "sha256": "40bdf5beb8d30b327ffbce94e4d7d013310d9cfab1d5b1b0e18d40d1a82b4a53"
+    },
+    {
+      "path": "scripts/run_on_idle_gpus.py",
+      "sha256": "107a735e5708408b77b1c0d6659724e430c7977f7afc19b9aa5fbadcfb1f32e6"
+    },
+    {
+      "path": "scripts/run_pilot_campaign.py",
+      "sha256": "43044cc5e3982817e5c241e0a0698b166c7d705afebf10b8891f73a1a357f328"
+    },
+    {
+      "path": "scripts/run_pre_opd_overlap_tuning.py",
+      "sha256": "e4c67cc500210b18755b36a3f3e52e1ec765b2ac32d6d53ef0aae726c30c4b38"
+    },
+    {
+      "path": "scripts/runtime_env.sh",
+      "sha256": "f336e429cd8ba9d4b68f11ae5f335914f10fe62e380bc109e1ef1836d4a5a357"
+    },
+    {
+      "path": "scripts/validate_package.py",
+      "sha256": "4f327a8cc64fcb65b6d103a689419b9879ac43122a2464e78b12fa22d6e4eac0"
+    },
+    {
+      "path": "src/steer_opd/__init__.py",
+      "sha256": "817c295ba78cec7d0b45c0b1248a9aaa70175c349d11e8f686286f7dc2577430"
+    },
+    {
+      "path": "src/steer_opd/campaign_status.py",
+      "sha256": "020d83e13ae940433914e3af513a2606a8b406f35d181d4e3ee7d077a6d77c16"
+    },
+    {
+      "path": "src/steer_opd/controlled_rollout.py",
+      "sha256": "0f0b2a6b01c3640e76f97503570a8a40c04ffcf3da1722181b1ff5a8c90d990a"
+    },
+    {
+      "path": "src/steer_opd/cross_family_overlap.py",
+      "sha256": "9a03efff94b99ee9b907b9cfdcf5b91529d3d3b471a687d691f7db16aa0f6e40"
+    },
+    {
+      "path": "src/steer_opd/direction_bank.py",
+      "sha256": "a9c692e6b7e268bb78eb3fa2f4179cf8bd7b1546ff425a0e3c9bbe1691e10fa6"
+    },
+    {
+      "path": "src/steer_opd/extraction.py",
+      "sha256": "1f8ffcce1f7449ccc01b217bb32ab2d9cd291730f8b02425e43e2b3b16b6e73c"
+    },
+    {
+      "path": "src/steer_opd/generation_runtime.py",
+      "sha256": "283ab314b3096cf63279b29f421fb050dddb9f441aa10854b2532c91eb9158f9"
+    },
+    {
+      "path": "src/steer_opd/math_data.py",
+      "sha256": "4bf182e86b17d615b399e93cd1378638259a17bbd19f46bbac9f6fd44e55cdf3"
+    },
+    {
+      "path": "src/steer_opd/method_config.py",
+      "sha256": "26c6c708eab28d2c83e37d8dac8a7ffb8e00f856d9bad8f53758074cdda33b96"
+    },
+    {
+      "path": "src/steer_opd/overlap_tuning.py",
+      "sha256": "2da16a42ff787f24dc1ab47f275873f6607b326bba0b3e72453b50e5f2096c43"
+    },
+    {
+      "path": "src/steer_opd/r1_agent_loop.py",
+      "sha256": "5eaf2c881d1121c477c93ac3d463bbf951364d59af9d1e183e570154023f9ad3"
+    },
+    {
+      "path": "src/steer_opd/replay_validation.py",
+      "sha256": "64dc569bd7d744a5b71fb61f6112e2f46b61063085d6212c7156f3ad5e64b879"
+    },
+    {
+      "path": "src/steer_opd/resumable_core.py",
+      "sha256": "4dc2fc1c098eafd5226395c624a2f072706b8bc02f26314625c3e14fe9e9e47b"
+    },
+    {
+      "path": "src/steer_opd/rethinking_protocol.py",
+      "sha256": "8c6b6278dfef01019b6d662c26e55d313b4e27d6413a119820df21b263089e76"
+    },
+    {
+      "path": "src/steer_opd/reward.py",
+      "sha256": "74c69e2fe38daff5fb3d8d9d0f337bbab9527b34ea6a4b534bf8fedac0a6c8de"
+    },
+    {
+      "path": "src/steer_opd/rollout_topk.py",
+      "sha256": "9d388bf840df7decc4f31538d090387e95795b3db9ea04e976f35e32890a08ea"
+    },
+    {
+      "path": "src/steer_opd/runtime.py",
+      "sha256": "f96be44492da2a7fcab5f92d2168576e99e2f6a78a07b03bb29506a9870b6cac"
+    },
+    {
+      "path": "src/steer_opd/steering.py",
+      "sha256": "b48350fd928dd5ad719cc697fdcd6fd1bd6d4b3d5b0494ff8e74ae543cb45967"
+    },
+    {
+      "path": "src/steer_opd/verl_extension.py",
+      "sha256": "6663f9a16bd2bf80ddf8ab1227e933b682fe7c5ff833be7ff1b5fc40d09a4ca9"
+    },
+    {
+      "path": "src/steer_opd/vllm_steering.py",
+      "sha256": "ea582c2c16590a07a35ed9313804deb7f241fa3868de46852896539219ce0e05"
+    },
+    {
+      "path": "src/steer_opd/vllm_worker.py",
+      "sha256": "c9a6372b27ac7b2d1174ebb90487bbf0349b771f048dcb29dfd7d46c4e788b93"
+    },
+    {
+      "path": "tests/test_campaign_reporting.py",
+      "sha256": "796363a70fe7cb93de9d7efb1ae8a1bf899a931aaf9b7b26f521bd306a043ed7"
+    },
+    {
+      "path": "tests/test_cross_family_overlap.py",
+      "sha256": "6fe36e350ebdd277468877d9dbca186e987c215ddf40b3e143e93ebcb97b36d7"
+    },
+    {
+      "path": "tests/test_generation_runtime.py",
+      "sha256": "a02e3a665ca7241bd9ad9f61d16c91faf340231f89bfbc8c87a8703e82925bdf"
+    },
+    {
+      "path": "tests/test_method_branches.py",
+      "sha256": "f451a6054ad8fd10bbe6f16c6fd2d877fd0d665393dc127a90b36a23a9a6d0c3"
+    },
+    {
+      "path": "tests/test_replay_validation.py",
+      "sha256": "37a9d1c6eb00c2e1b97687a989a7554fbf96567104d9d26dd7861c3b55f0311e"
+    },
+    {
+      "path": "tests/test_resumable_opd.py",
+      "sha256": "247163049caa6b41b1ff30a352edfc010835908d61d7f2aa93055b23608c9ec1"
+    },
+    {
+      "path": "tests/test_rethinking_protocol.py",
+      "sha256": "fa430248f48bc53341bcf119bf174ea33fd2252da05eab45f742051afe227651"
+    },
+    {
+      "path": "tests/test_rollout_topk.py",
+      "sha256": "e9f930a378d733e08ea46db7108b7eeec5b265f2be5093f542f6ed961de281a5"
+    },
+    {
+      "path": "tests/test_training_semantics.py",
+      "sha256": "f448e4d80ae4aeb4313f1a6bb5aec8c3a7c6f37c1295b7305ecfd659f5edbff4"
+    }
+  ],
+  "completed_at": "2026-11-12T13:51:11.274410+00:00",
+  "status": "markdown_correction_complete",
+  "after": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "78687906791e77e849169c462e44018c8916637fa3438be8f3d8d92a193f0528"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3fdf8a618f28e1555a5e9aff3e47332fd254138c2edb7969c6c4201939e7629e"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "147225f6225c1cc3a8846d038c9df47ce3d9f5ae906e0862b977c4e07f5dc462"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "62df7f9862f2895ee0475420d9b4d9c555daf82dbe41196b6d152ab0dc95cdbb"
+    },
+    {
+      "path": "docs/04_pre_opd_overlap_tuning.md",
+      "sha256": "8c76b3ef3d6f5d079bb5dc941dccbff7dd3015505c02ba13b5c3189a48b68d71"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "2fda5094e45cbb5806b89e078eebb8a9ac45c30639a66b39d0a65e3738652806"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "59f74cc1563bd004d129c4ee474e3fb506cfc9d0b50b7849100a8de73db3c6f2"
+    },
+    {
+      "path": "docs/05_method_branches.md",
+      "sha256": "9c464a3d2eaea68c3bb68032f1a051ea675a27fcfaa63861a855c76b926cf667"
+    }
+  ],
+  "validation": "audit/shared_data_direct_tuning_2026-11-12/validation.json"
+}

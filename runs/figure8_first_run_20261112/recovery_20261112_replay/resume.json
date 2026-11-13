@@ -1,0 +1,19 @@
+{
+  "pid": 1487345,
+  "started_at": 1794465162.7341602,
+  "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/figure8_first_run_20261112/supervisor_009_replay_speed_20261112.log",
+  "runtime": {
+    "version": 1,
+    "rollout_from_step": 9,
+    "rollout_max_num_seqs": 64,
+    "eval_max_num_seqs": 16,
+    "gpu_memory_utilization": 0.9,
+    "validation": "recovery_20261112_replay/runtime_acceptance.json",
+    "reason": "Throughput improvement; scientific sampling and evaluation settings unchanged; fresh jobs only."
+  },
+  "uncommitted_batch_archive": "uncommitted_steer_0008",
+  "committed_updates_before_resume": {
+    "vanilla": 8,
+    "steer": 7
+  }
+}

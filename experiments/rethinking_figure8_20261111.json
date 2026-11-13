@@ -204,7 +204,7 @@
   },
   "verification": {
     "comparison": "audit/rethinking_alignment_2026-11-12/comparison.json",
-    "hydra_preview": "audit/rethinking_alignment_2026-11-12/preview/launch.json",
+    "hydra_preview": "audit/rethinking_alignment_2026-11-12/preview_final/launch.json",
     "controlled_generation_and_replay_validated": false,
     "tokenizer_and_stop_protocol_frozen": false,
     "gpu_runtime_validated": false

@@ -1,0 +1,75 @@
+{
+  "time": "2026-11-12T15:55:07.998672",
+  "campaign_gaps": [
+    {
+      "name": "plot_failure",
+      "campaign_not_advancing_seconds": 16806.49613380432
+    },
+    {
+      "name": "short_replay_failure",
+      "campaign_not_advancing_seconds": 3721.648938179016
+    }
+  ],
+  "campaign_gap_total_hours": 5.702262519995371,
+  "gap_scope": "Includes repair/profiling periods; not all is idle GPU time.",
+  "old_mean_update_seconds": 413.2851584207444,
+  "new_mean_update_seconds": 372.5573910474777,
+  "new_stage_shares": {
+    "rollout": 0.5119061137294645,
+    "student": 0.0610777806157235,
+    "teacher": 0.09969262288908667,
+    "train": 0.32732348276572537
+  },
+  "training_tail_after_last_backward_seconds": 13.220141256751958,
+  "attention_kernel_share_percent": 85.1234853012828,
+  "sampling_related_kernel_share_percent": 0.6735008692541851,
+  "probe": {
+    "startup_seconds": 21.287570524029434,
+    "cases": [
+      {
+        "prefix_length": 128,
+        "responses": 16,
+        "generated_tokens": 8192,
+        "seconds_including_prefill": 2.9087939870078117,
+        "tokens_per_second_including_prefill": 2816.287449915579,
+        "last_64_client_step_median_ms": 5.803400999866426,
+        "engine_calls": 513,
+        "steady_decode_approx_tokens_per_second": 2757.004039591313
+      },
+      {
+        "prefix_length": 8192,
+        "responses": 16,
+        "generated_tokens": 8192,
+        "seconds_including_prefill": 11.678873687051237,
+        "tokens_per_second_including_prefill": 701.4375032656401,
+        "last_64_client_step_median_ms": 17.84353982657194,
+        "engine_calls": 517,
+        "steady_decode_approx_tokens_per_second": 896.683066000917
+      },
+      {
+        "prefix_length": 16384,
+        "responses": 16,
+        "generated_tokens": 8192,
+        "seconds_including_prefill": 23.153779838001356,
+        "tokens_per_second_including_prefill": 353.8083223264827,
+        "last_64_client_step_median_ms": 30.079768504947424,
+        "engine_calls": 527,
+        "steady_decode_approx_tokens_per_second": 531.9189872544522
+      },
+      {
+        "prefix_length": 30000,
+        "responses": 16,
+        "generated_tokens": 8192,
+        "seconds_including_prefill": 42.43997633387335,
+        "tokens_per_second_including_prefill": 193.02555532910554,
+        "last_64_client_step_median_ms": 50.45135400723666,
+        "engine_calls": 527,
+        "steady_decode_approx_tokens_per_second": 317.1371772837848
+      }
+    ],
+    "note": "Dev-derived repeated prefixes, fixed 512 outputs/request, 16 requests; hardware probe only; not accuracy evaluation. Profiled 16k timing includes profiler overhead."
+  },
+  "data_notes": "Old/new training steps have different questions and model weights; observation only. CUDA profile is a 32-iteration 16K decode probe on GPU7 with the production BF16/V1/FP32-head settings.",
+  "production_changes": false,
+  "scientific_protocol_changes": false
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "group": "vanilla",
+    "step": 10,
+    "compatible_hash": "649bbd2f77501847be001fc4c1e6e243076e8a3d29913a2cb3619b36195a38f9",
+    "adam_steps": [
+      10
+    ],
+    "parameter_count": 310
+  },
+  {
+    "group": "steer",
+    "step": 10,
+    "compatible_hash": "649bbd2f77501847be001fc4c1e6e243076e8a3d29913a2cb3619b36195a38f9",
+    "adam_steps": [
+      10
+    ],
+    "parameter_count": 310
+  }
+]

@@ -29,10 +29,19 @@ def load_profile(path=PROFILE):
 
 
 def reference_commit(profile):
-    return subprocess.check_output(
+    reference_root = ROOT / profile["reference"]["root"]
+    commit = subprocess.check_output(
         ["git", "-C", str(ROOT / profile["reference"]["root"]), "rev-parse", "HEAD"],
         text=True,
     ).strip()
+    subprocess.run(
+        ["git", "-C", str(reference_root), "diff", "--quiet", commit, "--",
+         "on_policy_distillation.sh", "verl/verl/workers/actor/dp_actor.py",
+         "verl/verl/trainer/ppo/core_algos.py", "verl/verl/trainer/config",
+         "scripts/val/eval/gen_vllm.py", "scripts/val/eval/utils.py"],
+        check=True,
+    )
+    return commit
 
 
 def local_output(path):

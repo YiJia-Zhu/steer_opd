@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "method_hash": "c839ba0912b04002827256ad059b33597c04b3a51bc952022afebb92a3c37269",
+  "bank_sha256": null,
+  "distributions": [
+    {
+      "passed": true,
+      "support": 151665,
+      "positions": 8,
+      "forward_mean_kl": 0.000705988029949367,
+      "forward_max_kl": 0.0022469940595328808,
+      "reverse_mean_kl": 0.0007053167792037129,
+      "reverse_max_kl": 0.0022326293401420116,
+      "entropy_capture_max_error": 2.384185791015625e-07
+    },
+    {
+      "component": "teacher",
+      "passed": true,
+      "support": 151665,
+      "positions": 8,
+      "forward_mean_kl": 0.0005405496922321618,
+      "forward_max_kl": 0.0018802573904395103,
+      "reverse_mean_kl": 0.000540208478923887,
+      "reverse_max_kl": 0.0018714768812060356,
+      "entropy_capture_max_error": 2.384185791015625e-07
+    },
+    {
+      "passed": true,
+      "support": 151665,
+      "positions": 8,
+      "forward_mean_kl": 3.71968695844771e-08,
+      "forward_max_kl": 3.2211073630605824e-07,
+      "reverse_mean_kl": 2.0411424372923648e-07,
+      "reverse_max_kl": 5.479387823470461e-07,
+      "entropy_capture_max_error": 4.656612873077393e-10
+    },
+    {
+      "component": "teacher",
+      "passed": true,
+      "support": 151665,
+      "positions": 8,
+      "forward_mean_kl": -2.7585744799552003e-10,
+      "forward_max_kl": 1.1018606860258018e-10,
+      "reverse_mean_kl": 4.341046411227012e-10,
+      "reverse_max_kl": 3.610691745592476e-09,
+      "entropy_capture_max_error": 5.551115123125783e-17
+    }
+  ],
+  "loss": 0.0021325540728867054,
+  "grad_norm": 0.8503870368003845,
+  "max_candidate_logp_error": 0.15045833587646484,
+  "learning_replay_check": {
+    "method": "rollout_topk_plus_complement_and_conditional_kl",
+    "passed": true,
+    "full_vocabulary_kl": false,
+    "positions": 8,
+    "mean_logp_error": 0.04071093068696996,
+    "max_logp_error": 0.15045833587646484,
+    "threshold_mean_kl": 0.005,
+    "threshold_max_kl": 0.03,
+    "topk_plus_complement_forward_mean_kl": 1.1173372796192691e-07,
+    "topk_plus_complement_forward_max_kl": 3.1230972140241473e-07,
+    "topk_plus_complement_reverse_mean_kl": 1.1353171608129515e-07,
+    "topk_plus_complement_reverse_max_kl": 3.208852734903516e-07,
+    "conditional_topk_forward_mean_kl": 9.473970128337454e-08,
+    "conditional_topk_forward_max_kl": 2.606883634510943e-07,
+    "conditional_topk_reverse_mean_kl": 9.624992911609992e-08,
+    "conditional_topk_reverse_max_kl": 2.676383284309855e-07
+  },
+  "experimental_updates": 0,
+  "numeric_gate_override": false,
+  "numeric_gate_purpose": null,
+  "backend": "hf_batched",
+  "vllm_per_question_bank_gpu_validated": false
+}

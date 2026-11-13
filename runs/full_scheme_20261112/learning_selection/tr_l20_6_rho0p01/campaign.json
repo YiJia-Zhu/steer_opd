@@ -1,0 +1,10 @@
+{
+  "status": "failed_resumable",
+  "phase": "steer_0001_train",
+  "exit_code": 1,
+  "attempt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_train_1794535830176309739",
+  "updated_at": 1794535860.6976652,
+  "error": "RuntimeError('Stage steer_0001_train failed; inspect /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_train_1794535830176309739/stdout.log; artifacts retained')",
+  "supervisor_pid": 3785262,
+  "supervisor_start_ticks": 175370311
+}

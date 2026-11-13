@@ -1,0 +1,66 @@
+{
+  "checked_at": "2026-11-13T09:52:05.151296+08:00",
+  "precheck": {
+    "status": "awaiting_user_review",
+    "parameter_updates": 0,
+    "automatic_opd": false,
+    "next_action": "show_complete_overlap_table_then_stop"
+  },
+  "root_current_stage": {
+    "status": "running",
+    "phase": "learning_selection_tr_l20_6_rho0p01",
+    "supervisor_pid": 3105250,
+    "supervisor_start_ticks": 173440124,
+    "updated_at": 1794525573.21253,
+    "command": [
+      "scripts/run_figure8_campaign.py",
+      "--config",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/configs/selection_tr_l20_6_rho0p01.json"
+    ],
+    "device": "cpu",
+    "max_gpus": 1
+  },
+  "trial_stage": {
+    "status": "running",
+    "phase": "steer_0001_rollout",
+    "supervisor_pid": 3785262,
+    "supervisor_start_ticks": 175370311,
+    "updated_at": 1794525712.9654787,
+    "attempt": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/attempts/steer_0001_rollout_1794525712965473006",
+    "command": [
+      "scripts/figure8_generate_batched.py",
+      "--job",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/jobs/steer_0001_rollout.json"
+    ],
+    "max_gpus": 1,
+    "resume_command": ".venv-opd/bin/python scripts/run_figure8_campaign.py --config /local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/configs/selection_tr_l20_6_rho0p01.json"
+  },
+  "trial": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01",
+  "rollout": {
+    "planned": 256,
+    "completed": 226,
+    "durable_partial_records": 11
+  },
+  "committed_training_updates": 0,
+  "gpu_acceptance": {
+    "plain_batched_acceptance.json": {
+      "passed": true,
+      "experimental_updates": 0,
+      "backend": "hf_batched"
+    },
+    "branch_acceptance.json": {
+      "passed": true,
+      "experimental_updates": 0,
+      "backend": "hf_batched"
+    }
+  },
+  "formal_panel_started": false,
+  "resume_command": "source scripts/runtime_env.sh\n\"$STEER_OPD_PYTHON\" scripts/run_full_scheme.py --execute",
+  "recovery_boundaries": {
+    "completed_responses": "reuse after provenance checks",
+    "unfinished_batched_responses": "saved every32 generated tokens with RNG/mask; reconstruct KV; regenerate at most31 uncommitted tokens per response",
+    "training": "last complete atomic model/optimizer/RNG checkpoint; interrupted uncommitted update reruns"
+  },
+  "observed_performance_issue": "long-answer gated rollout and repeated memory-pressure/OOM split/repack; process remains active",
+  "user_requested_stop": false
+}

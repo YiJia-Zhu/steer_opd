@@ -1,0 +1,412 @@
+{
+  "started_at": "2026-11-12T11:19:19.892673+00:00",
+  "scope": "Markdown only: pre-OPD frozen-Base steering overlap tuning, stop for user inspection before any OPD; retain paused experiments, existing code/config/data/run records.",
+  "before": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "418fb93061d60c8c3564f81593ebd997f5f11fa5f1bde65e54cb4f219db221cf"
+    },
+    {
+      "path": "README.md",
+      "sha256": "88c0057e3f5ca72aea516740d91ba884e3f89f43689cc4dba69397fde0a00490"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "e2bc4953ceac40b398551e4f80995e4da4fc338cd401ca91c20e317540b23261"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "bfe0812b44ef69df08f8a3b662bcb5a26b0064cfb799983e4419b9ab6d010bc4"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "7d2fe82ae6a46658f2eb69a99b6f783f406aea591d64057b9acde2efeec60ffd"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "5bc12173ca6ec451c48ca9143e06ec2c6f19a71e87d6984ffced6e483888ee9e"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "2ff0001c0bb16be8d8e1bbf9e967717cd68921615ee5955d1d9cb11e4ef6f048"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "ada054b8226aa04e13db43e261a108f14f230b7646c0213df1005ecd59269316"
+    }
+  ],
+  "protected_non_markdown": [
+    {
+      "path": "configs/figure8_first_run.json",
+      "sha256": "2cf4d9d2745a462329b3ffa4629e7ffd3f0531fb9990309dd39c3a4fb2b4b647"
+    },
+    {
+      "path": "configs/figure8_shared_top16_v2.json",
+      "sha256": "25ef10bd9475fc1d61e3b6cd4810edc461fa1b97d8222cd1f4b479ee65abb829"
+    },
+    {
+      "path": "configs/r1_agent_loop.yaml",
+      "sha256": "175f68756432c0070f8f662c7d951cda78c5ed5243e132f70237724392aad78a"
+    },
+    {
+      "path": "configs/rethinking_opd.json",
+      "sha256": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b"
+    },
+    {
+      "path": "data/figure8_first_run_20261112/aime2025.json",
+      "sha256": "a62c84fcfda743bdc36af05670375aed51d48ccb9d55c7d71e681eded7e4d11c"
+    },
+    {
+      "path": "data/figure8_first_run_20261112/dev.json",
+      "sha256": "f238c9064db6654777defd385d0c8ba90128583b05acc53152ade8d40680b3b9"
+    },
+    {
+      "path": "data/figure8_first_run_20261112/direction.json",
+      "sha256": "06569cf62c0fb3df67e92debc66b2407dc526272b6c87281e718efd612416bb1"
+    },
+    {
+      "path": "data/figure8_first_run_20261112/manifest.json",
+      "sha256": "bb464bf198c475c4184c540bed114c684e2f3d6b252220564bb8d6a34b47bbd9"
+    },
+    {
+      "path": "data/figure8_first_run_20261112/opd.json",
+      "sha256": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4"
+    },
+    {
+      "path": "data/figure8_shared_top16_v2_20261112/aime2025.json",
+      "sha256": "a62c84fcfda743bdc36af05670375aed51d48ccb9d55c7d71e681eded7e4d11c"
+    },
+    {
+      "path": "data/figure8_shared_top16_v2_20261112/dev.json",
+      "sha256": "f238c9064db6654777defd385d0c8ba90128583b05acc53152ade8d40680b3b9"
+    },
+    {
+      "path": "data/figure8_shared_top16_v2_20261112/direction.json",
+      "sha256": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4"
+    },
+    {
+      "path": "data/figure8_shared_top16_v2_20261112/manifest.json",
+      "sha256": "768052874dc72ac8a8d17fc38d9d265bdd6d57d9f36a76eb8cf53a01a21c0df8"
+    },
+    {
+      "path": "data/figure8_shared_top16_v2_20261112/opd.json",
+      "sha256": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110.json",
+      "sha256": "d92e1430581f6fa11e378da11775e5974403b10a8b7c6201f5a1719747cddf5a"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110_v2.json",
+      "sha256": "832e7c318c696bc252cba99d2fb55b419e8d8bf11fc5dc95336cb3d039aa8534"
+    },
+    {
+      "path": "experiments/cross_family_steering_probe_20261110.json",
+      "sha256": "aa2036f1fbd771a07365de5aae136247f4e4cf681b45c8655cfe83ec019bbb24"
+    },
+    {
+      "path": "experiments/download_manifest.json",
+      "sha256": "17fd09e3c08159030dc37e2fa8ab5dcb52d4544a969b4324b6f50f701da8ddda"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256": "3f65def54bb40ea7b4faf4308aa9d6da3d2dcbc33797769082d5357340fa2526"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256": "db4b9ba25baf20ff8184fe22b983aeb3d78bbd50857651b71b3ac47b89f15eaf"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256": "75394011019e61fb7c51327ab0be84127129149970bcb6cc359debecb72e7d0b"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256": "5d306aecab62a1134193cfa390a6e7bcf03bbfa25ecb9e535c405a7e2418cf26"
+    },
+    {
+      "path": "runs/figure8_first_run_20261112/campaign.json",
+      "sha256": "a4df3f893a51761048fe300daf117282f76da19fc8b011faa4cac93dc1d40a38"
+    },
+    {
+      "path": "runs/figure8_shared_top16_v2_20261112/campaign.json",
+      "sha256": "ea778e84e82faa8302a75fcbd0961dd94b57662894b8e75e9050ceb71cc5d780"
+    },
+    {
+      "path": "scripts/audit_rethinking_alignment.py",
+      "sha256": "92c9df85d3e2077a51af199d391110980cb6e0d4ea6c0a452865dbdb84dbbe42"
+    },
+    {
+      "path": "scripts/check_figure8_checkpoint.py",
+      "sha256": "576943325cd15f1661010e963ffb629e011acc8e34d61797d37a10c59393e4e7"
+    },
+    {
+      "path": "scripts/diagnose_cross_family_overlap.py",
+      "sha256": "7c140c464f8c3a892fca0ff78892ba8c3ad88d6ab1dfe6ace2a299cb670a46fb"
+    },
+    {
+      "path": "scripts/diagnose_figure8_replay.py",
+      "sha256": "7fe8b47a6ab5fca1f9ece55fb3ebbea555ca8a702e26d404079608e7f6d63486"
+    },
+    {
+      "path": "scripts/download_assets.py",
+      "sha256": "d1f9f454d307dd4550f44deab803ab4b7272dc0eeebc0a5a1979530d6747e1fc"
+    },
+    {
+      "path": "scripts/evaluate_initial_pair.py",
+      "sha256": "1a800a880f4a717be41284fcb2b85713cf5682967b232b35ea478977778b6646"
+    },
+    {
+      "path": "scripts/export_pilot_parquet.py",
+      "sha256": "7f30608672aa3a7c82582f3aa1ec3f3d2c8f1a1000a4ff07edf5dc361127801d"
+    },
+    {
+      "path": "scripts/extract_pilot_vectors.py",
+      "sha256": "8f3d98a71cf4d4489db1ca24a39e90d151cf51b06c8cfb29ae11f1bc73b20b0e"
+    },
+    {
+      "path": "scripts/figure8_acceptance.py",
+      "sha256": "2e2ac47a2ece1c95c37d416eab583b477c238a8c4ec81a0143c29a6d08cf3c77"
+    },
+    {
+      "path": "scripts/figure8_generate.py",
+      "sha256": "63a6ee3a6d339fd21c06b26bd7db6fd9d2e3c7d917f294e5f1f3af8e93fc3679"
+    },
+    {
+      "path": "scripts/figure8_report.py",
+      "sha256": "23a984b3783aaf0c2119b793b8dba8aa4dd95481946d9ff2ee6878ae14bb48f4"
+    },
+    {
+      "path": "scripts/figure8_stage.py",
+      "sha256": "baf23e9d2a2aa920f5b74f3e9b3058b9da0e93c4b10939716e277186aeb71fc7"
+    },
+    {
+      "path": "scripts/figure8_status.py",
+      "sha256": "f740c201b2afa3faedc6897c82e13fdcf08e3554fe06d072b8f0cd59c016ff81"
+    },
+    {
+      "path": "scripts/generate_cross_family_calibration.py",
+      "sha256": "90a10c2f442266bf419c33d9641bf67fa504f5d4318f254ca0ffc23b957a63d0"
+    },
+    {
+      "path": "scripts/generate_math.py",
+      "sha256": "2cc742258f3cc919c2d6b88fcfabfdbd10ecbdceb9688bb5b6fecefa7c305dc3"
+    },
+    {
+      "path": "scripts/gpu_preflight.py",
+      "sha256": "dc759b16443a529471f242cbaf787b143a4457fda38201b232c154f86c547d62"
+    },
+    {
+      "path": "scripts/launch_pilot.py",
+      "sha256": "42d026ad708d60b2d7e7bbcb1c98cdfb1fe65feafd8cef9db74976e5bd9f12d8"
+    },
+    {
+      "path": "scripts/prepare_figure8_first_run.py",
+      "sha256": "d7679b43e193d89fafb6678752a93d9054735df3987024aa4863fc6798d5b3e9"
+    },
+    {
+      "path": "scripts/prepare_math500_pilot.py",
+      "sha256": "cb39209e29356f14ff59c3a17f01e3ed10679da9d488b82f59f9adfaf9824556"
+    },
+    {
+      "path": "scripts/probe_cross_family_steering.py",
+      "sha256": "1108dfddabe6c1396d227194c64638eb06fae7443f9fca23b5e0b0cf58740ebc"
+    },
+    {
+      "path": "scripts/profile_figure8_generation.py",
+      "sha256": "3e2e5115c24545d7378bf627e9d2bd488cea04954e9dfb7e66cca70e638ad8f2"
+    },
+    {
+      "path": "scripts/run_cross_family_diagnosis.py",
+      "sha256": "7bdad6194745b6cb8cd79b23e24a301a17a68562f25a3ff3ca9a90bca68338cf"
+    },
+    {
+      "path": "scripts/run_cross_family_steering_probe.py",
+      "sha256": "096e60000bd7a9077222fbf30b0038b93b29d45e5b4aa0f0098c4272e73bff11"
+    },
+    {
+      "path": "scripts/run_figure8_campaign.py",
+      "sha256": "f5e12aec0115a1fc154e09e963e9013e0bdc1599c8c6032e4fec405859e1af2a"
+    },
+    {
+      "path": "scripts/run_on_idle_gpus.py",
+      "sha256": "107a735e5708408b77b1c0d6659724e430c7977f7afc19b9aa5fbadcfb1f32e6"
+    },
+    {
+      "path": "scripts/run_pilot_campaign.py",
+      "sha256": "43044cc5e3982817e5c241e0a0698b166c7d705afebf10b8891f73a1a357f328"
+    },
+    {
+      "path": "scripts/runtime_env.sh",
+      "sha256": "f336e429cd8ba9d4b68f11ae5f335914f10fe62e380bc109e1ef1836d4a5a357"
+    },
+    {
+      "path": "scripts/validate_package.py",
+      "sha256": "4f327a8cc64fcb65b6d103a689419b9879ac43122a2464e78b12fa22d6e4eac0"
+    },
+    {
+      "path": "src/steer_opd/__init__.py",
+      "sha256": "817c295ba78cec7d0b45c0b1248a9aaa70175c349d11e8f686286f7dc2577430"
+    },
+    {
+      "path": "src/steer_opd/campaign_status.py",
+      "sha256": "020d83e13ae940433914e3af513a2606a8b406f35d181d4e3ee7d077a6d77c16"
+    },
+    {
+      "path": "src/steer_opd/cross_family_overlap.py",
+      "sha256": "9a03efff94b99ee9b907b9cfdcf5b91529d3d3b471a687d691f7db16aa0f6e40"
+    },
+    {
+      "path": "src/steer_opd/generation_runtime.py",
+      "sha256": "283ab314b3096cf63279b29f421fb050dddb9f441aa10854b2532c91eb9158f9"
+    },
+    {
+      "path": "src/steer_opd/math_data.py",
+      "sha256": "4bf182e86b17d615b399e93cd1378638259a17bbd19f46bbac9f6fd44e55cdf3"
+    },
+    {
+      "path": "src/steer_opd/r1_agent_loop.py",
+      "sha256": "5eaf2c881d1121c477c93ac3d463bbf951364d59af9d1e183e570154023f9ad3"
+    },
+    {
+      "path": "src/steer_opd/replay_validation.py",
+      "sha256": "64dc569bd7d744a5b71fb61f6112e2f46b61063085d6212c7156f3ad5e64b879"
+    },
+    {
+      "path": "src/steer_opd/resumable_core.py",
+      "sha256": "9616e19c2aee2736658d88f451639e18b014811790fd4793b3acccb99f29ea9b"
+    },
+    {
+      "path": "src/steer_opd/rethinking_protocol.py",
+      "sha256": "8c6b6278dfef01019b6d662c26e55d313b4e27d6413a119820df21b263089e76"
+    },
+    {
+      "path": "src/steer_opd/reward.py",
+      "sha256": "74c69e2fe38daff5fb3d8d9d0f337bbab9527b34ea6a4b534bf8fedac0a6c8de"
+    },
+    {
+      "path": "src/steer_opd/rollout_topk.py",
+      "sha256": "13f45055854771099496c335b84bbe751bdeeab73bc671acb576b7e220de928a"
+    },
+    {
+      "path": "src/steer_opd/runtime.py",
+      "sha256": "f96be44492da2a7fcab5f92d2168576e99e2f6a78a07b03bb29506a9870b6cac"
+    },
+    {
+      "path": "src/steer_opd/steering.py",
+      "sha256": "ae3db3d6e43ae862afb353eaf7ca64e8e9c9d9c326b9318d3ad68d88f8c07688"
+    },
+    {
+      "path": "src/steer_opd/verl_extension.py",
+      "sha256": "6663f9a16bd2bf80ddf8ab1227e933b682fe7c5ff833be7ff1b5fc40d09a4ca9"
+    },
+    {
+      "path": "src/steer_opd/vllm_steering.py",
+      "sha256": "53449b9325ae04bd16f6ba4e1cd7923eae2bae03530e67dddd4285a617ff9a2f"
+    },
+    {
+      "path": "src/steer_opd/vllm_worker.py",
+      "sha256": "56fd7ee05fb00f25e6a63081a62da69c0d96d6daeae8c7f67fd1d96c3e86c3b3"
+    },
+    {
+      "path": "tests/test_campaign_reporting.py",
+      "sha256": "796363a70fe7cb93de9d7efb1ae8a1bf899a931aaf9b7b26f521bd306a043ed7"
+    },
+    {
+      "path": "tests/test_cross_family_overlap.py",
+      "sha256": "6fe36e350ebdd277468877d9dbca186e987c215ddf40b3e143e93ebcb97b36d7"
+    },
+    {
+      "path": "tests/test_generation_runtime.py",
+      "sha256": "a02e3a665ca7241bd9ad9f61d16c91faf340231f89bfbc8c87a8703e82925bdf"
+    },
+    {
+      "path": "tests/test_replay_validation.py",
+      "sha256": "37a9d1c6eb00c2e1b97687a989a7554fbf96567104d9d26dd7861c3b55f0311e"
+    },
+    {
+      "path": "tests/test_resumable_opd.py",
+      "sha256": "247163049caa6b41b1ff30a352edfc010835908d61d7f2aa93055b23608c9ec1"
+    },
+    {
+      "path": "tests/test_rethinking_protocol.py",
+      "sha256": "fa430248f48bc53341bcf119bf174ea33fd2252da05eab45f742051afe227651"
+    },
+    {
+      "path": "tests/test_rollout_topk.py",
+      "sha256": "e9f930a378d733e08ea46db7108b7eeec5b265f2be5093f542f6ed961de281a5"
+    },
+    {
+      "path": "tests/test_training_semantics.py",
+      "sha256": "f448e4d80ae4aeb4313f1a6bb5aec8c3a7c6f37c1295b7305ecfd659f5edbff4"
+    }
+  ],
+  "new_plan": "docs/04_pre_opd_overlap_tuning.md",
+  "source_evidence": [
+    "audit/step10_overlap_2026-11-12/README.md",
+    "audit/step10_overlap_2026-11-12/result.json",
+    "scripts/run_figure8_campaign.py",
+    "scripts/figure8_stage.py",
+    "runs/figure8_first_run_20261112/campaign.json",
+    "runs/figure8_shared_top16_v2_20261112/campaign.json"
+  ],
+  "concurrent_inputs": {
+    "checked_at": "2026-11-12T11:24:46.322901+00:00",
+    "note": "Preserve independently added full-plan implementation review notices; no overwriting these additions.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "f634da54eaf50ed5f9b9ed2412a46be63b5ed0c7bcc20bf2cae5c1f159172dc4",
+        "snapshot": "audit/pre_opd_overlap_plan_2026-11-12/concurrent_before/AGENTS.md"
+      },
+      {
+        "path": "docs/03_execution_plan.md",
+        "sha256": "f03e1e217de02000b3571fdc5f46fabe7b8a89a59740b87c9d6d1f922cc8b0a0",
+        "snapshot": "audit/pre_opd_overlap_plan_2026-11-12/concurrent_before/docs/03_execution_plan.md"
+      }
+    ]
+  },
+  "completed_at": "2026-11-12T11:28:09.254862+00:00",
+  "status": "markdown_only_plan_update_complete_experiments_paused",
+  "after": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "628eae2979d80c729af32caa739607fadc397bea22532138cfd117a9c061bb94"
+    },
+    {
+      "path": "README.md",
+      "sha256": "10d8aa1545300319a368f497e4639d3001547590300a04de8d82cbe3557450b3"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "77fba8bac833752d2b0b6c9fc696c48c05490d09fbda2f4fd45bce19989500df"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "f2986802cdeb5d0c3206c27b364c7f7c52956a247518444f3f5a843b6b54971d"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "498adfc5f8511760d4d6157950f904778994cf2f32abacae1f217fc3b27b4fb1"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "4f2997c2b14d282e0766949fd21a9207180aa36137a854759571c714cd259180"
+    },
+    {
+      "path": "docs/Steering_OPD_完整研究方案.md",
+      "sha256": "bb49126f12f71b0a428f2434c6110f56bffa4afdc9b311f0fd727e646d82f1b1"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "1f3ffdf63a064d91c23757449b3eadc409c66ad68aa2272404f4f3a5701ab24b"
+    },
+    {
+      "path": "docs/04_pre_opd_overlap_tuning.md",
+      "sha256": "8031ca9719e90941b62612a269e05f60fa02db520a2a8cabf8c10e5d530f5425"
+    }
+  ],
+  "validation": "audit/pre_opd_overlap_plan_2026-11-12/markdown_validation.json",
+  "only_markdown_and_audit_metadata_written": true,
+  "new_overlap_results": false
+}

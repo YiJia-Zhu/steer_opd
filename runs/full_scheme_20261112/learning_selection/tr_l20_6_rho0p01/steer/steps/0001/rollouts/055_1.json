@@ -1,0 +1,667 @@
+{
+  "key": "055_1",
+  "id": "ot3-10473",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    641,
+    264,
+    5792,
+    12371,
+    6113,
+    11,
+    1817,
+    11936,
+    374,
+    8433,
+    311,
+    279,
+    81963,
+    315,
+    279,
+    14002,
+    3108,
+    13,
+    3555,
+    374,
+    279,
+    7192,
+    1372,
+    315,
+    29783,
+    25941,
+    429,
+    646,
+    387,
+    14122,
+    553,
+    279,
+    19246,
+    315,
+    1378,
+    1555,
+    20632,
+    20913,
+    1378,
+    13530,
+    315,
+    17228,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 55,
+  "seed": 263,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "eca88a5bfd7343e73ef221650f927c7ba65e7dc389a153865e08a93f7d3072b8",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    74951,
+    11,
+    458,
+    29783,
+    9210,
+    374,
+    458,
+    9210,
+    429,
+    374,
+    2686,
+    1091,
+    220,
+    24,
+    15,
+    12348,
+    13,
+    1416,
+    582,
+    2908,
+    279,
+    37236,
+    5128,
+    429,
+    4564,
+    1378,
+    23942,
+    17228,
+    311,
+    279,
+    81963,
+    315,
+    279,
+    14002,
+    3108,
+    11,
+    1493,
+    5128,
+    686,
+    387,
+    76833,
+    311,
+    279,
+    11067,
+    315,
+    279,
+    12371,
+    6113,
+    11,
+    773,
+    807,
+    686,
+    1352,
+    220,
+    21,
+    15,
+    37675,
+    29783,
+    25941,
+    3786,
+    13,
+    758,
+    1493,
+    11,
+    279,
+    2629,
+    315,
+    279,
+    29783,
+    25941,
+    374,
+    220,
+    18,
+    21,
+    15,
+    12348,
+    11,
+    323,
+    1052,
+    525,
+    902,
+    1378,
+    29783,
+    25941,
+    304,
+    279,
+    1852,
+    37236,
+    1555,
+    382,
+    44683,
+    9248,
+    34928,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    }
+  ],
+  "sampled_logps": [
+    -3.481733798980713,
+    -0.5981885194778442,
+    -5.037353515625,
+    -0.27037209272384644,
+    -0.051280759274959564,
+    -0.17130590975284576,
+    -0.6420764923095703,
+    -0.007915202528238297,
+    -0.9333900213241577,
+    -0.8308483362197876,
+    -0.12009334564208984,
+    -0.0021023093722760677,
+    -0.11728106439113617,
+    -0.0023387717083096504,
+    -0.00028427375946193933,
+    -0.04813800007104874,
+    -0.31080347299575806,
+    -4.164504051208496,
+    -0.24099820852279663,
+    -1.1259765625,
+    -1.11867356300354,
+    -6.811417579650879,
+    -1.8810055255889893,
+    -1.8365761041641235,
+    -0.2502598464488983,
+    -0.48102712631225586,
+    -4.0195631980896,
+    -0.04933628812432289,
+    -1.7500666379928589,
+    -0.19910548627376556,
+    -0.41744959354400635,
+    -0.004563631024211645,
+    -0.025745496153831482,
+    -0.04219944775104523,
+    -0.03308600187301636,
+    -0.32017725706100464,
+    -2.586966037750244,
+    -0.37497037649154663,
+    -0.7156451940536499,
+    -4.333702087402344,
+    -1.5752371549606323,
+    -0.06729643791913986,
+    -0.4973331093788147,
+    -0.5123119354248047,
+    -0.051214054226875305,
+    -0.0020235555712133646,
+    -0.041646622121334076,
+    -0.0012753218179568648,
+    -1.651065707206726,
+    -4.082458019256592,
+    -0.361274778842926,
+    -0.3168615698814392,
+    -0.5546806454658508,
+    -1.126556396484375,
+    -2.4884510040283203,
+    -0.26000145077705383,
+    -0.3061973750591278,
+    -2.772386312484741,
+    -0.0025607910938560963,
+    -10.987470626831055,
+    -0.7888910174369812,
+    -4.306461811065674,
+    -7.0916829109191895,
+    -5.938559532165527,
+    -1.3631327152252197,
+    -4.484086990356445,
+    -0.05186586454510689,
+    -0.49081507325172424,
+    -1.234078288078308,
+    -0.03170732408761978,
+    -1.3292022943496704,
+    -0.3659360706806183,
+    -0.7969281673431396,
+    -0.0160464309155941,
+    -0.001347110839560628,
+    -0.03206966072320938,
+    -0.7194472551345825,
+    -1.707208514213562,
+    -2.262941837310791,
+    -0.3470509946346283,
+    -2.2201220989227295,
+    -3.41264271736145,
+    -0.40896540880203247,
+    -0.010578745976090431,
+    -2.5378971099853516,
+    -0.8305280208587646,
+    -0.5868176221847534,
+    -2.4122581481933594,
+    -0.7398679852485657,
+    -2.145979881286621,
+    -7.831752777099609,
+    -9.543170928955078,
+    -8.549004554748535,
+    -4.241030693054199
+  ],
+  "text": "umably, an acute angle is an angle that is less than 90 degrees. If we consider the diagonal lines that connect two adjacent vertices to the midpoint of the opposite side, these lines will be perpendicular to the sides of the hexagon, so they will form 60-degree acute angles together. In these, the sum of the acute angles is 360 degrees, and there are no two acute angles in the same diagonal line.\n\nAndFeel |\nceptions",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 69,
+  "rollout_topk": "topk/055_1.pt",
+  "rollout_topk_hash": "9ed20976f059ec320ba51f9a2b46429c0ebf1433ddcb0b5fc3787841e0f0de53"
+}

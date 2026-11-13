@@ -1,0 +1,38 @@
+{
+  "config": "configs/full_scheme_precheck_20261112.json",
+  "questions": "runs/full_scheme_20261112/precheck/directions/initial/questions.json",
+  "output": "runs/full_scheme_20261112/precheck/directions/initial",
+  "method": {
+    "direction": "T-S",
+    "granularity": "global",
+    "extractor": "initial",
+    "refresh_interval": 1,
+    "layers": [
+      6,
+      10,
+      13,
+      16,
+      20
+    ],
+    "rho": 0.03,
+    "gate": "all",
+    "overlap_threshold": null,
+    "entropy_threshold": null,
+    "random_probability": null,
+    "start_token": null,
+    "matching_bin_width": 256,
+    "vector_assignment": "own",
+    "direction_control": "positive",
+    "seed": 42
+  },
+  "role_directories": {
+    "teacher": "runs/full_scheme_20261112/precheck/calibration/teacher",
+    "student": "runs/full_scheme_20261112/precheck/calibration/student"
+  },
+  "extractor_model": "assets/models/Qwen3-1.7B-Base",
+  "extractor_step": 0,
+  "fixed_scales": "runs/full_scheme_20261112/precheck/directions/fixed_scales.pt",
+  "cache_token_activations": true,
+  "token_activation_dtype": "bfloat16",
+  "minimum_pairs": 32
+}

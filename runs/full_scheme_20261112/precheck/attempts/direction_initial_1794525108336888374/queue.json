@@ -1,0 +1,13 @@
+{
+  "pid": 3769126,
+  "start_ticks": 175323824,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/figure8_extract.py",
+    "--job",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/precheck/jobs/extract_initial.json"
+  ],
+  "created_at": "2026-11-12T23:11:48.384855+00:00",
+  "status": "launched",
+  "child_pid": 3769238
+}

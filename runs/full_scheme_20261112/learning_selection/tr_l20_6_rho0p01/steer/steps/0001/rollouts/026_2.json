@@ -1,0 +1,728 @@
+{
+  "key": "026_2",
+  "id": "ot3-05773",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    32,
+    5792,
+    12371,
+    6113,
+    400,
+    25411,
+    13649,
+    3,
+    374,
+    1640,
+    17433,
+    304,
+    264,
+    12671,
+    448,
+    4126,
+    400,
+    46,
+    12947,
+    6771,
+    400,
+    38,
+    3,
+    387,
+    279,
+    81963,
+    315,
+    15580,
+    400,
+    4897,
+    54876,
+    323,
+    1077,
+    400,
+    39,
+    3,
+    387,
+    279,
+    81963,
+    315,
+    3108,
+    400,
+    1706,
+    12947,
+    576,
+    20632,
+    400,
+    1890,
+    3,
+    323,
+    400,
+    1150,
+    3,
+    525,
+    11577,
+    311,
+    3367,
+    518,
+    1459,
+    400,
+    44,
+    12947,
+    1416,
+    400,
+    1402,
+    28,
+    18,
+    3,
+    323,
+    400,
+    52865,
+    28,
+    17,
+    54876,
+    1128,
+    374,
+    279,
+    3082,
+    315,
+    29136,
+    42939,
+    400,
+    4897,
+    36332,
+    3,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 26,
+  "seed": 148,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "34a973a8d1aa36c9a3daf0e52e00900bba36e422546b95d5befc5afb9b124d43",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    134221,
+    198,
+    136924,
+    123797,
+    271,
+    89980,
+    198,
+    82520,
+    198,
+    2762,
+    271,
+    433,
+    34159,
+    16099,
+    311,
+    2213,
+    304,
+    10135,
+    271,
+    80891,
+    9844,
+    271,
+    67643,
+    5406,
+    15919,
+    600,
+    291,
+    271,
+    10047,
+    321,
+    92013,
+    79,
+    198,
+    38473,
+    198,
+    34012,
+    267,
+    271,
+    322,
+    375,
+    9360,
+    10822,
+    315,
+    1460,
+    25,
+    888,
+    8752,
+    16094,
+    2132,
+    5868,
+    1075,
+    498,
+    2299,
+    4460,
+    311,
+    4211,
+    2745,
+    69503,
+    1824,
+    304,
+    264,
+    3339,
+    88,
+    2025,
+    1667,
+    356,
+    22890,
+    4329,
+    1008,
+    650,
+    4059,
+    3800,
+    1616,
+    2337,
+    27703,
+    30,
+    19716,
+    432,
+    323,
+    3624,
+    432,
+    916,
+    311,
+    752,
+    1549,
+    13,
+    358,
+    686,
+    3624,
+    264,
+    11827,
+    1465,
+    1943,
+    311,
+    498,
+    13,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    }
+  ],
+  "sampled_logps": [
+    -5.74992561340332,
+    -1.2227596044540405,
+    -9.305330276489258,
+    -6.824609279632568,
+    -1.2147849798202515,
+    -8.971373558044434,
+    -0.8926981091499329,
+    -11.478442192077637,
+    -1.758238673210144,
+    -3.371851682662964,
+    -1.5452343225479126,
+    -10.250600814819336,
+    -10.225099563598633,
+    -13.715873718261719,
+    -0.3386305570602417,
+    -3.846383571624756,
+    -4.031223297119141,
+    -7.134227752685547,
+    -1.7787078619003296,
+    -11.59507942199707,
+    -5.818502426147461,
+    -3.3319547176361084,
+    -9.082839012145996,
+    -9.26447582244873,
+    -15.649677276611328,
+    -7.519667148590088,
+    -6.738023281097412,
+    -2.4931116104125977,
+    -12.267233848571777,
+    -2.827981472015381,
+    -12.613414764404297,
+    -8.557785987854004,
+    -3.137150526046753,
+    -5.781068801879883,
+    -1.8608251810073853,
+    -5.444311618804932,
+    -9.636594772338867,
+    -1.9558323621749878,
+    -7.05051326751709,
+    -9.15081787109375,
+    -13.09663200378418,
+    -12.01740550994873,
+    -5.113800048828125,
+    -8.122058868408203,
+    -4.426578044891357,
+    -9.15262508392334,
+    -9.86607551574707,
+    -6.989246368408203,
+    -7.582300186157227,
+    -3.1374807357788086,
+    -0.012047856114804745,
+    -0.21043747663497925,
+    -0.5535081028938293,
+    -0.6950541138648987,
+    -0.0006293461774475873,
+    -3.048555374145508,
+    -4.244349479675293,
+    -6.91482400894165,
+    -2.874699354171753,
+    -0.5900089740753174,
+    -1.4568921327590942,
+    -13.545051574707031,
+    -5.762077331542969,
+    -4.4754133224487305,
+    -2.5653445720672607,
+    -1.651697039604187,
+    -1.0256531238555908,
+    -8.038912773132324,
+    -6.180883407592773,
+    -8.979218482971191,
+    -5.291037559509277,
+    -12.259953498840332,
+    -8.757633209228516,
+    -9.513097763061523,
+    -6.10693359375,
+    -5.795879364013672,
+    -7.793878555297852,
+    -1.5389041900634766,
+    -3.448643684387207,
+    -4.492040157318115,
+    -1.77230703830719,
+    -5.157733917236328,
+    -1.4156440496444702,
+    -1.0053030252456665,
+    -3.664773464202881,
+    -1.2355769872665405,
+    -2.0681140422821045,
+    -2.5481812953948975,
+    -3.2547261714935303,
+    -3.238219976425171,
+    -9.054325103759766,
+    -6.235050678253174,
+    -1.9838197231292725,
+    -1.3220831155776978,
+    -0.5184363126754761,
+    -1.4487667083740234,
+    -2.690859079360962
+  ],
+  "text": "התחיל\n 바랍ים\n\nonnement\n GUIContent\nContent\n\nessaggio converted to content in python\n\n'à propos\n\niação.contentPeople ied\n\n auxilcultp\nDllImport\nDllst\n\n//pecache coding of std:public Thread{}\nIt looks like you're trying to implement multiclass support in a Trumpy program using C++. Some other unmet others way during debugging? Fix it and send it over to me again. I will send a suggested error message to you.",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 112,
+  "rollout_topk": "topk/026_2.pt",
+  "rollout_topk_hash": "a3dc7bc84b57d1cb1af14e1f4c1218df4cced30e458c1ad4003f717f4d605519"
+}

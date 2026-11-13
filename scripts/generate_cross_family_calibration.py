@@ -44,7 +44,7 @@ def main():
               trust_remote_code=False, tensor_parallel_size=1, enforce_eager=True,
               gpu_memory_utilization=0.92 if args.model_key == "teacher" else 0.55,
               max_model_len=protocol["max_new_tokens"] + 1024,
-              max_num_seqs=8, max_num_batched_tokens=4096,
+              max_num_batched_tokens=4096,
               kernel_config={"moe_backend": "triton"},
               enable_prefix_caching=False, generation_config="vllm", seed=config["seed"])
     tokenizer = llm.get_tokenizer()
@@ -69,23 +69,21 @@ def main():
             raise ValueError("Prompt exceeds reserved 1024 tokens; do not silently truncate")
         records = []
         with (out / f"{split}.jsonl").open("x") as stream:
-            for offset in range(0, len(rows), 8):
-                batch = rows[offset:offset + 8]
-                results = llm.generate(
-                    [{"prompt_token_ids": ids} for ids in encoded[offset:offset + len(batch)]],
-                    params, use_tqdm=False)
-                for row, result in zip(batch, results):
-                    answer = result.outputs[0]
-                    record = {"id": row["id"], "question": row["question"], "answer": str(row["answer"]),
-                              "text": answer.text, "response_token_ids": list(answer.token_ids),
-                              "prompt_token_ids": list(result.prompt_token_ids),
-                              "finish_reason": answer.finish_reason, "response_tokens": len(answer.token_ids),
-                              **grade_math(row["answer"], answer.text)}
-                    records.append(record)
-                    stream.write(json.dumps(record, ensure_ascii=False) + "\n")
-                stream.flush()
-                print(json.dumps({"model": args.model_key, "split": split,
-                                  "completed": len(records), "total": len(rows)}), flush=True)
+            results = llm.generate(
+                [{"prompt_token_ids": ids} for ids in encoded],
+                params, use_tqdm=False)
+            for row, result in zip(rows, results):
+                answer = result.outputs[0]
+                record = {"id": row["id"], "question": row["question"], "answer": str(row["answer"]),
+                          "text": answer.text, "response_token_ids": list(answer.token_ids),
+                          "prompt_token_ids": list(result.prompt_token_ids),
+                          "finish_reason": answer.finish_reason, "response_tokens": len(answer.token_ids),
+                          **grade_math(row["answer"], answer.text)}
+                records.append(record)
+                stream.write(json.dumps(record, ensure_ascii=False) + "\n")
+            stream.flush()
+            print(json.dumps({"model": args.model_key, "split": split,
+                              "completed": len(records), "total": len(rows)}), flush=True)
         summaries[split] = {"questions": len(records), "correct": sum(r["correct"] for r in records),
                             "correct_complete": sum(r["correct"] and r["finish_reason"] != "length" for r in records),
                             "accuracy": sum(r["correct"] for r in records) / len(records),

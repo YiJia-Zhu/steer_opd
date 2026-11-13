@@ -1,0 +1,17 @@
+{
+  "pid": 3789449,
+  "start_ticks": 175382240,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/figure8_branch_acceptance.py",
+    "--config",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/configs/selection_tr_l20_6_rho0p01.json",
+    "--bank",
+    "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+    "--rollouts",
+    "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/acceptance/bank_backend"
+  ],
+  "created_at": "2026-11-12T23:21:32.553400+00:00",
+  "status": "launched",
+  "child_pid": 3789764
+}

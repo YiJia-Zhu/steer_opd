@@ -1,0 +1,3741 @@
+{
+  "key": "046_3",
+  "id": "ot3-10271",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    10061,
+    400,
+    47,
+    2075,
+    15087,
+    387,
+    264,
+    47311,
+    315,
+    8381,
+    220,
+    18,
+    448,
+    1931,
+    36829,
+    323,
+    6785,
+    19703,
+    11,
+    825,
+    315,
+    892,
+    374,
+    220,
+    18,
+    13,
+    1416,
+    279,
+    36829,
+    315,
+    400,
+    47,
+    2075,
+    15087,
+    525,
+    25780,
+    323,
+    421,
+    279,
+    19703,
+    315,
+    400,
+    47,
+    2075,
+    15087,
+    525,
+    304,
+    34784,
+    32724,
+    11,
+    1246,
+    1657,
+    1741,
+    1471,
+    76961,
+    400,
+    47,
+    2075,
+    15087,
+    26553,
+    1493,
+    4682,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 46,
+  "seed": 229,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "481a10240e4e5b033869e8069fb8d56be7c9659d451a983db69924eb8dc4f376",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    45972,
+    271,
+    137481,
+    54514,
+    123919,
+    124152,
+    75525,
+    124800,
+    25,
+    220,
+    18,
+    271,
+    137481,
+    54514,
+    123919,
+    123800,
+    123793,
+    124800,
+    133183,
+    126878,
+    123793,
+    125156,
+    131601,
+    123919,
+    131269,
+    123797,
+    14429,
+    14429,
+    127519,
+    123797,
+    6538,
+    139554,
+    11012,
+    66461,
+    51707,
+    11,
+    6395,
+    59801,
+    2956,
+    99011,
+    6538,
+    57093,
+    39056,
+    198,
+    92141,
+    49503,
+    3173,
+    268,
+    624,
+    51,
+    28865,
+    7796,
+    198,
+    146237,
+    220,
+    18,
+    6538,
+    220,
+    18,
+    198,
+    732,
+    33529,
+    268,
+    624,
+    74456,
+    68,
+    624,
+    134153,
+    118099,
+    624,
+    34544,
+    624,
+    27420,
+    13,
+    105496,
+    102538,
+    100350,
+    19,
+    129756,
+    198,
+    56372,
+    198,
+    127309,
+    198,
+    130108,
+    125971,
+    134476,
+    345,
+    8,
+    220,
+    279,
+    85140,
+    2038,
+    198,
+    89437,
+    5508,
+    198,
+    117607,
+    11,
+    63415,
+    16157,
+    124014,
+    53479,
+    124062,
+    20931,
+    2410,
+    849,
+    624,
+    69293,
+    13,
+    128304,
+    220,
+    126911,
+    26283,
+    198,
+    126911,
+    61958,
+    13844,
+    126492,
+    138821,
+    126298,
+    77703,
+    127288,
+    198,
+    125700,
+    39697,
+    87131,
+    129747,
+    127016,
+    18849,
+    198,
+    75639,
+    46207,
+    24218,
+    97322,
+    52475,
+    43909,
+    198,
+    106859,
+    3990,
+    15672,
+    11,
+    128486,
+    5050,
+    6236,
+    11,
+    132760,
+    133099,
+    198,
+    83518,
+    73077,
+    8499,
+    458,
+    47942,
+    220,
+    102242,
+    16439,
+    71951,
+    624,
+    85106,
+    105396,
+    109151,
+    80443,
+    99730,
+    18493,
+    99446,
+    99462,
+    106962,
+    104114,
+    13,
+    2267,
+    76,
+    3152,
+    13,
+    103346,
+    13,
+    48001,
+    304,
+    624,
+    15136,
+    10869,
+    364,
+    55653,
+    5676,
+    8993,
+    39974,
+    67822,
+    198,
+    90897,
+    198,
+    9081,
+    17698,
+    3070,
+    34087,
+    334,
+    624,
+    82,
+    53276,
+    429,
+    5019,
+    1265,
+    12793,
+    3070,
+    429,
+    807,
+    1035,
+    6177,
+    311,
+    4446,
+    279,
+    1429,
+    88016,
+    7493,
+    624,
+    2247,
+    8078,
+    279,
+    1429,
+    700,
+    315,
+    419,
+    10655,
+    3753,
+    323,
+    264,
+    6233,
+    3070,
+    4766,
+    334,
+    13,
+    128330,
+    130626,
+    26698,
+    624,
+    8373,
+    13511,
+    1083,
+    4362,
+    311,
+    1281,
+    3070,
+    3931,
+    11672,
+    334,
+    315,
+    7249,
+    826,
+    21780,
+    287,
+    624,
+    40,
+    3982,
+    2814,
+    3070,
+    10077,
+    334,
+    315,
+    51219,
+    0,
+    358,
+    3982,
+    1865,
+    678,
+    20853,
+    315,
+    2513,
+    624,
+    40,
+    1936,
+    3070,
+    30995,
+    44029,
+    334,
+    448,
+    264,
+    3281,
+    30995,
+    44029,
+    6188,
+    369,
+    30995,
+    19721,
+    624,
+    267,
+    75,
+    3070,
+    623,
+    16081,
+    579,
+    334,
+    53170,
+    6660,
+    271,
+    127478,
+    877,
+    2310,
+    323,
+    23541,
+    311,
+    5545,
+    1449,
+    9131,
+    315,
+    806,
+    3971,
+    11,
+    566,
+    572,
+    1083,
+    20045,
+    264,
+    2613,
+    13732,
+    1917,
+    773,
+    429,
+    566,
+    1410,
+    387,
+    3265,
+    311,
+    806,
+    6554,
+    1933,
+    518,
+    279,
+    882,
+    13,
+    315,
+    1449,
+    53309,
+    5464,
+    198,
+    87027,
+    3070,
+    29015,
+    3093,
+    315,
+    34957,
+    334,
+    323,
+    1105,
+    3070,
+    3100,
+    817,
+    10976,
+    2513,
+    1526,
+    5577,
+    1773,
+    22929,
+    10689,
+    566,
+    8997,
+    59858,
+    603,
+    11965,
+    76,
+    198,
+    128667,
+    129341,
+    123877,
+    124661,
+    47632,
+    12961,
+    110385,
+    114302,
+    22287,
+    11,
+    624,
+    124613,
+    124075,
+    124691,
+    130906,
+    137329,
+    132823,
+    43982,
+    126780,
+    14293,
+    124793,
+    130543,
+    27846,
+    125617,
+    124387,
+    128754,
+    128259,
+    45577,
+    124613,
+    124543,
+    124425,
+    21360,
+    94957,
+    124011,
+    25871,
+    142360,
+    77273,
+    27846,
+    83378,
+    8532,
+    73441,
+    87425,
+    94957,
+    124011,
+    25871,
+    125027,
+    133677,
+    90581,
+    125962,
+    7,
+    124125,
+    23224,
+    23364,
+    124015,
+    8,
+    57221,
+    7,
+    18267,
+    12,
+    34038,
+    78105,
+    8,
+    143755,
+    67406,
+    22496,
+    220,
+    16,
+    76,
+    125486,
+    128617,
+    90194,
+    796,
+    86,
+    198,
+    48120,
+    124375,
+    4142,
+    198,
+    125018,
+    198,
+    134029,
+    14391,
+    124756,
+    198,
+    92285,
+    198,
+    137135,
+    131382,
+    198,
+    5824,
+    143701,
+    198,
+    124123,
+    198,
+    23224,
+    124522,
+    55057,
+    1768,
+    198,
+    79632,
+    45290,
+    4846,
+    798,
+    1388,
+    8013,
+    14582,
+    25,
+    4041,
+    3832,
+    25,
+    6427,
+    344,
+    2382,
+    110791,
+    271,
+    785,
+    3405,
+    330,
+    6579,
+    3832,
+    25,
+    6427,
+    344,
+    2382,
+    1,
+    374,
+    10161,
+    369,
+    264,
+    23628,
+    36921,
+    429,
+    5646,
+    279,
+    3409,
+    330,
+    43203,
+    344,
+    2382,
+    1189,
+    16603,
+    344,
+    2382,
+    374,
+    4363,
+    264,
+    3116,
+    79,
+    6293,
+    315,
+    330,
+    772,
+    3708,
+    1,
+    476,
+    330,
+    24712,
+    1335,
+    714,
+    2474,
+    432,
+    594,
+    2669,
+    304,
+    3405,
+    1352,
+    11,
+    432,
+    1410,
+    1083,
+    8300,
+    311,
+    2494,
+    429,
+    40155,
+    6529,
+    476,
+    17601,
+    38371,
+    367,
+    382,
+    32,
+    3204,
+    23628,
+    36921,
+    26345,
+    279,
+    4008,
+    1035,
+    387,
+    3070,
+    1,
+    65717,
+    1783,
+    1,
+    97219,
+    438,
+    432,
+    17601,
+    1251,
+    879,
+    2525,
+    3786,
+    369,
+    17879,
+    476,
+    19407,
+    11,
+    1741,
+    438,
+    304,
+    458,
+    1538,
+    1380,
+    498,
+    6723,
+    911,
+    1105,
+    504,
+    4325,
+    770,
+    382,
+    21468,
+    419,
+    4226,
+    279,
+    3405,
+    30,
+    1416,
+    537,
+    11,
+    4486,
+    3410,
+    803,
+    2266,
+    476,
+    37163,
+    1128,
+    498,
+    525,
+    3330,
+    369,
+    13,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    }
+  ],
+  "sampled_logps": [
+    -8.943944931030273,
+    -1.6113770008087158,
+    -4.699269771575928,
+    -0.4870528280735016,
+    -4.4011311531066895,
+    -5.40727424621582,
+    -0.6768353581428528,
+    -6.080541610717773,
+    -1.7567964792251587,
+    -1.3181666135787964,
+    -2.610224485397339,
+    -1.2513115406036377,
+    -0.9863492846488953,
+    -0.009735013358294964,
+    -0.3387179672718048,
+    -4.20808219909668,
+    -4.517998695373535,
+    -1.1326930522918701,
+    -7.421465873718262,
+    -4.368672847747803,
+    -3.4299864768981934,
+    -1.6035231351852417,
+    -5.577737331390381,
+    -4.2615065574646,
+    -2.9888763427734375,
+    -3.548417568206787,
+    -12.744539260864258,
+    -4.147594451904297,
+    -12.813234329223633,
+    -0.1304258555173874,
+    -7.589833736419678,
+    -9.15904426574707,
+    -11.80081844329834,
+    -11.503643989562988,
+    -0.39960432052612305,
+    -2.604614019393921,
+    -7.274774551391602,
+    -5.802796363830566,
+    -1.1250113248825073,
+    -6.345963001251221,
+    -4.060642242431641,
+    -4.896797180175781,
+    -12.269872665405273,
+    -5.098769187927246,
+    -10.067794799804688,
+    -7.664491653442383,
+    -7.519859790802002,
+    -0.946593165397644,
+    -4.270140647888184,
+    -6.8544182777404785,
+    -8.369340896606445,
+    -10.38901424407959,
+    -3.6405906677246094,
+    -10.225231170654297,
+    -3.3104679584503174,
+    -1.7411035299301147,
+    -5.36824893951416,
+    -1.9999732971191406,
+    -1.1581311225891113,
+    -2.315749168395996,
+    -13.858840942382812,
+    -11.51762580871582,
+    -0.9041630625724792,
+    -3.8973467350006104,
+    -12.289275169372559,
+    -6.594630718231201,
+    -4.668819904327393,
+    -11.522106170654297,
+    -14.236289978027344,
+    -3.806682586669922,
+    -9.095548629760742,
+    -2.2616612911224365,
+    -12.354286193847656,
+    -2.7175440788269043,
+    -11.97481918334961,
+    -7.8456292152404785,
+    -8.68080997467041,
+    -5.2826948165893555,
+    -10.002847671508789,
+    -2.5362722873687744,
+    -10.21906566619873,
+    -1.766104817390442,
+    -8.960636138916016,
+    -2.3357274532318115,
+    -13.558937072753906,
+    -7.891173839569092,
+    -1.501686453819275,
+    -5.918360710144043,
+    -6.641180038452148,
+    -2.4268085956573486,
+    -8.276226997375488,
+    -10.273720741271973,
+    -8.454021453857422,
+    -2.054140090942383,
+    -7.979130268096924,
+    -8.631098747253418,
+    -1.6243000030517578,
+    -11.34968376159668,
+    -2.0361223220825195,
+    -8.840686798095703,
+    -4.917284965515137,
+    -3.9223175048828125,
+    -3.8951668739318848,
+    -6.1670756340026855,
+    -4.137615203857422,
+    -9.446929931640625,
+    -7.32988166809082,
+    -3.7947216033935547,
+    -12.120370864868164,
+    -2.8913326263427734,
+    -8.300719261169434,
+    -2.2514500617980957,
+    -8.047203063964844,
+    -6.312251091003418,
+    -2.6442878246307373,
+    -6.023020267486572,
+    -11.086515426635742,
+    -13.189915657043457,
+    -12.298519134521484,
+    -10.19221305847168,
+    -6.9361090660095215,
+    -5.8356218338012695,
+    -3.9613053798675537,
+    -2.484398126602173,
+    -8.717491149902344,
+    -5.292058944702148,
+    -16.50496482849121,
+    -11.543559074401855,
+    -11.428780555725098,
+    -8.048711776733398,
+    -2.170346260070801,
+    -12.558300018310547,
+    -5.303594589233398,
+    -5.525434970855713,
+    -13.291922569274902,
+    -11.407315254211426,
+    -10.430079460144043,
+    -1.942411184310913,
+    -11.289129257202148,
+    -10.593316078186035,
+    -7.769550323486328,
+    -4.412932395935059,
+    -9.306706428527832,
+    -10.31333065032959,
+    -5.594038486480713,
+    -3.3836798667907715,
+    -9.990055084228516,
+    -6.884105205535889,
+    -1.6001781225204468,
+    -10.060142517089844,
+    -8.874842643737793,
+    -13.088836669921875,
+    -5.892228126525879,
+    -6.8673858642578125,
+    -3.9855823516845703,
+    -9.491479873657227,
+    -14.364609718322754,
+    -8.361557006835938,
+    -5.249393463134766,
+    -10.652606964111328,
+    -7.085864067077637,
+    -7.973851203918457,
+    -6.072092533111572,
+    -9.828207969665527,
+    -3.660156011581421,
+    -11.127044677734375,
+    -3.984928607940674,
+    -6.508327484130859,
+    -6.761297225952148,
+    -5.546911239624023,
+    -10.729241371154785,
+    -2.701472520828247,
+    -12.98649787902832,
+    -2.846214771270752,
+    -10.469228744506836,
+    -3.0780129432678223,
+    -14.837590217590332,
+    -4.138934135437012,
+    -3.6794650554656982,
+    -10.92100715637207,
+    -12.654890060424805,
+    -7.718484878540039,
+    -11.080461502075195,
+    -4.68245792388916,
+    -10.586722373962402,
+    -15.938081741333008,
+    -10.727579116821289,
+    -2.7320830821990967,
+    -9.937079429626465,
+    -1.4223651885986328,
+    -8.097208023071289,
+    -0.6322263479232788,
+    -10.286274909973145,
+    -9.553106307983398,
+    -1.6647452116012573,
+    -3.4668540954589844,
+    -4.6159563064575195,
+    -4.964651584625244,
+    -3.4673142433166504,
+    -5.813058376312256,
+    -1.7878706455230713,
+    -9.410703659057617,
+    -3.1631388664245605,
+    -8.696739196777344,
+    -2.4516005516052246,
+    -4.201708793640137,
+    -8.796072006225586,
+    -7.187286376953125,
+    -6.144502639770508,
+    -2.3618385791778564,
+    -4.518725395202637,
+    -10.948955535888672,
+    -4.113428115844727,
+    -3.7998712062835693,
+    -8.538347244262695,
+    -11.400962829589844,
+    -2.9749720096588135,
+    -2.3499226570129395,
+    -2.6956920623779297,
+    -0.1730174720287323,
+    -3.0282208919525146,
+    -9.487459182739258,
+    -5.628541946411133,
+    -2.3725571632385254,
+    -4.448360443115234,
+    -3.3707993030548096,
+    -3.820821762084961,
+    -7.034181118011475,
+    -1.823482632637024,
+    -2.2854936122894287,
+    -9.58738899230957,
+    -12.817137718200684,
+    -4.946914196014404,
+    -2.5360114574432373,
+    -8.542798042297363,
+    -6.981177806854248,
+    -3.9664645195007324,
+    -7.627346038818359,
+    -0.5980161428451538,
+    -3.5324320793151855,
+    -1.525174617767334,
+    -8.704641342163086,
+    -1.0212037563323975,
+    -0.3109249770641327,
+    -2.0310306549072266,
+    -6.308210372924805,
+    -13.929838180541992,
+    -12.049128532409668,
+    -4.826024532318115,
+    -1.9632320404052734,
+    -5.00096321105957,
+    -5.527467727661133,
+    -4.948515892028809,
+    -2.103926658630371,
+    -4.622546195983887,
+    -0.539961040019989,
+    -0.055780697613954544,
+    -5.690365791320801,
+    -5.404573917388916,
+    -2.092927932739258,
+    -1.6869244575500488,
+    -1.6055715084075928,
+    -3.806619167327881,
+    -1.575761079788208,
+    -0.04016461968421936,
+    -1.5879682302474976,
+    -2.094271659851074,
+    -2.3672003746032715,
+    -8.652835845947266,
+    -1.1958948373794556,
+    -9.12283706665039,
+    -3.4461894035339355,
+    -0.6282315850257874,
+    -3.70178484916687,
+    -2.3942339420318604,
+    -2.504756212234497,
+    -2.378242015838623,
+    -0.7058666348457336,
+    -8.09528923034668,
+    -0.5850667953491211,
+    -2.0640532970428467,
+    -4.381315231323242,
+    -0.46538490056991577,
+    -7.571674823760986,
+    -6.769923210144043,
+    -3.0991971492767334,
+    -7.632134437561035,
+    -7.21560525894165,
+    -8.356541633605957,
+    -1.6030064821243286,
+    -9.681831359863281,
+    -0.3403128385543823,
+    -5.872054100036621,
+    -10.643903732299805,
+    -10.202618598937988,
+    -10.657953262329102,
+    -4.641517162322998,
+    -7.842922687530518,
+    -0.48318204283714294,
+    -6.15125036239624,
+    -6.422183036804199,
+    -1.6222819089889526,
+    -0.3444526791572571,
+    -3.630195140838623,
+    -4.776000022888184,
+    -2.35123348236084,
+    -2.0217370986938477,
+    -2.9759676456451416,
+    -4.022419452667236,
+    -6.854211807250977,
+    -3.1037180423736572,
+    -5.111018657684326,
+    -8.878664016723633,
+    -8.202108383178711,
+    -6.706182479858398,
+    -0.3025272786617279,
+    -0.7149819731712341,
+    -0.4400706887245178,
+    -3.3283982276916504,
+    -5.36155366897583,
+    -0.06808152049779892,
+    -0.9867625832557678,
+    -3.1431846618652344,
+    -5.708775997161865,
+    -4.435858726501465,
+    -1.454318642616272,
+    -1.5842944383621216,
+    -2.302891492843628,
+    -5.894851207733154,
+    -5.6667985916137695,
+    -12.499917030334473,
+    -10.032336235046387,
+    -2.6258339881896973,
+    -10.909452438354492,
+    -2.930246591567993,
+    -6.187756538391113,
+    -6.1903839111328125,
+    -0.6908184885978699,
+    -12.332489013671875,
+    -0.509804904460907,
+    -2.7586615085601807,
+    -8.239328384399414,
+    -2.8651912212371826,
+    -8.115985870361328,
+    -8.747502326965332,
+    -5.3509521484375,
+    -7.105269432067871,
+    -7.057729244232178,
+    -8.095160484313965,
+    -8.160344123840332,
+    -8.6253662109375,
+    -11.00556755065918,
+    -6.543428421020508,
+    -6.412898063659668,
+    -14.217802047729492,
+    -6.196588516235352,
+    -10.238871574401855,
+    -3.948040246963501,
+    -1.5429250001907349,
+    -10.546317100524902,
+    -9.237251281738281,
+    -3.4008560180664062,
+    -5.453983783721924,
+    -2.9533205032348633,
+    -5.787450790405273,
+    -14.438658714294434,
+    -13.310662269592285,
+    -9.277752876281738,
+    -6.34255313873291,
+    -5.949667453765869,
+    -7.573531627655029,
+    -6.116388320922852,
+    -7.5310773849487305,
+    -10.152649879455566,
+    -2.0851352214813232,
+    -7.785922050476074,
+    -6.3187055587768555,
+    -3.5513856410980225,
+    -0.9694122076034546,
+    -5.9283552169799805,
+    -5.6099677085876465,
+    -4.6224775314331055,
+    -6.100120544433594,
+    -4.658736705780029,
+    -6.747088432312012,
+    -5.2011799812316895,
+    -4.042646408081055,
+    -6.0864105224609375,
+    -7.566349983215332,
+    -8.064126968383789,
+    -4.363044738769531,
+    -5.450879096984863,
+    -5.528602123260498,
+    -0.9486456513404846,
+    -8.696586608886719,
+    -3.7759721279144287,
+    -4.679263591766357,
+    -15.179508209228516,
+    -6.472381114959717,
+    -4.356021881103516,
+    -13.832819938659668,
+    -5.783021926879883,
+    -1.0702099800109863,
+    -0.095683254301548,
+    -7.302635192871094,
+    -11.040894508361816,
+    -14.691370010375977,
+    -5.842823028564453,
+    -8.863700866699219,
+    -7.547210693359375,
+    -3.5398502349853516,
+    -3.806367874145508,
+    -3.814542055130005,
+    -2.0153369903564453,
+    -12.454824447631836,
+    -3.5693695545196533,
+    -11.268855094909668,
+    -2.077341079711914,
+    -11.305582046508789,
+    -10.069535255432129,
+    -4.292283058166504,
+    -9.6864652633667,
+    -5.031548500061035,
+    -3.829821825027466,
+    -4.777975082397461,
+    -2.015768051147461,
+    -4.834957599639893,
+    -12.976359367370605,
+    -9.401952743530273,
+    -15.117094039916992,
+    -8.087650299072266,
+    -5.640301704406738,
+    -4.60509729385376,
+    -7.775414943695068,
+    -6.983831882476807,
+    -11.306732177734375,
+    -2.9730920791625977,
+    -8.372873306274414,
+    -3.7445027828216553,
+    -12.028487205505371,
+    -6.154160499572754,
+    -11.231125831604004,
+    -2.7113301753997803,
+    -9.795839309692383,
+    -2.1235177516937256,
+    -11.154659271240234,
+    -6.324868679046631,
+    -2.529527425765991,
+    -10.006937026977539,
+    -13.003466606140137,
+    -1.4874306917190552,
+    -7.500664234161377,
+    -1.5375295877456665,
+    -6.387202739715576,
+    -5.068166732788086,
+    -4.645943641662598,
+    -14.654180526733398,
+    -1.0283246040344238,
+    -11.047562599182129,
+    -11.650181770324707,
+    -10.92156982421875,
+    -5.220250606536865,
+    -4.8049774169921875,
+    -10.108716011047363,
+    -9.751266479492188,
+    -2.5463619232177734,
+    -12.224559783935547,
+    -10.200261116027832,
+    -4.614510536193848,
+    -11.98354721069336,
+    -2.9928081035614014,
+    -8.971385955810547,
+    -8.71239185333252,
+    -4.130190849304199,
+    -1.5774108171463013,
+    -2.402611017227173,
+    -0.7938522100448608,
+    -0.8562867641448975,
+    -0.2233104258775711,
+    -0.036297500133514404,
+    -0.053973957896232605,
+    -0.039441417902708054,
+    -0.0022232832852751017,
+    -0.22403055429458618,
+    -1.9635919332504272,
+    -2.941389560699463,
+    -0.7552292943000793,
+    -1.335444450378418,
+    -6.352916717529297,
+    -1.5471162796020508,
+    -1.132890224456787,
+    -2.6530678272247314,
+    -0.592565655708313,
+    -1.277397632598877,
+    -0.005674088839441538,
+    -0.4581347405910492,
+    -0.12656058371067047,
+    -0.011149956844747066,
+    -0.5370640754699707,
+    -2.209672689437866,
+    -0.011709529906511307,
+    -0.0008207766804844141,
+    -0.3874863088130951,
+    -1.975053310394287,
+    -0.102698415517807,
+    -0.85017991065979,
+    -0.00029774048016406596,
+    -0.008846850134432316,
+    -1.2473535537719727,
+    -0.07475625723600388,
+    -7.5436577796936035,
+    -5.048839569091797,
+    -1.0040770769119263,
+    -0.10651689022779465,
+    -0.1641709804534912,
+    -2.0595767498016357,
+    -0.559227466583252,
+    -0.6874960064888,
+    -1.6452815532684326,
+    -0.7087703943252563,
+    -0.46330928802490234,
+    -5.653115272521973,
+    -1.7065975666046143,
+    -3.9773709774017334,
+    -0.3198457360267639,
+    -0.05977335572242737,
+    -0.6512603759765625,
+    -3.9518394470214844,
+    -1.878352165222168,
+    -1.3198267221450806,
+    -0.0006226746481843293,
+    -1.4370646476745605,
+    -1.515649437904358,
+    -1.5825515985488892,
+    -0.9472832083702087,
+    -0.04126131162047386,
+    -4.464822769165039,
+    -0.6456136107444763,
+    -0.00551606947556138,
+    -0.45817071199417114,
+    -1.704262137413025,
+    -0.6820135116577148,
+    -0.5743077993392944,
+    -0.04208172857761383,
+    -4.1519341468811035,
+    -1.803953766822815,
+    -0.8527455925941467,
+    -1.1347359418869019,
+    -0.0035580205731093884,
+    -1.7272441387176514,
+    -0.058318447321653366,
+    -7.257959365844727,
+    -4.073064804077148,
+    -0.3485085070133209,
+    -1.0126591920852661,
+    -2.4548561573028564,
+    -0.2907241880893707,
+    -0.9324440956115723,
+    -1.3334494829177856,
+    -1.1850167512893677,
+    -3.5588860511779785,
+    -0.894170880317688,
+    -1.571367859840393,
+    -2.9851419925689697,
+    -0.05171124264597893,
+    -5.670047283172607,
+    -1.1498795747756958,
+    -2.510948896408081,
+    -0.0014577010879293084,
+    -0.03669506683945656,
+    -2.009486675262451,
+    -1.3502289056777954,
+    -2.1164207458496094,
+    -4.103539943695068,
+    -8.056571960449219,
+    -1.7427351474761963,
+    -2.09599232673645,
+    -3.3851678371429443,
+    -2.7384891510009766,
+    -0.36633896827697754,
+    -0.6769404411315918,
+    -9.094880104064941,
+    -0.25067010521888733,
+    -0.9168680906295776,
+    -2.490166187286377,
+    -0.046977631747722626,
+    -0.9129425883293152,
+    -1.1072313785552979,
+    -0.07815951853990555,
+    -0.002262415364384651,
+    -0.267794668674469,
+    -0.24558687210083008,
+    -0.1791754961013794,
+    -0.24119454622268677,
+    -0.2618119418621063,
+    -0.2564147114753723,
+    -0.8899588584899902,
+    -0.4686741828918457,
+    -2.8064939975738525,
+    -0.16008810698986053,
+    -0.0003780603874474764,
+    -0.29777103662490845,
+    -0.044876378029584885
+  ],
+  "text": "webElementX\n\nתשובת המוטבנית: 3\n\nתשובת המטפנית אינה מדפיקה ולכן המספרים III III مختلفים von höher Men Möglichkeiten, zu erhöngen von vier AU\nPerPixel zurückgingen.\nTunde д\n₸ 3 von 3\n im Millionen.\n getTotale.\n الإلك厚厚.\n convertView.\n subsequently.增加了最多获得4تا\n.Decode\nโพ\n 어떻게 그렇습니까,\n)  the jumlah code\n bạn convert\n总而言之, أهمل المحدف Adict.\nakistan. hơn ตอบม\nตอบ.OffsetUpload مست البيت يمكن قضاء\n الآز Dmitry רבים üretiere\nエタイedBy MatDialog ainda\n与其 TypeChat, giảiMy chat,답다면\n 여 오 signed an oath 今日 Taylor 是否.\n需要询问的主题没有应该在康德提出的德国.ohmbase.引用. lacked in.\ntimes Title 'Freshmen Simple():\n\neated\netchup\nsausage **closed**.\nsuggested that everyone should imagine ** that they would paint to bring the most visceral expression.\nсMake the most out of this comfortable house and a beautiful ** inside**. но보고서.\nSome artists also needed to make ** cutouts** of photosengemiing.\nI’ve done ** lots** of sewing! I’ve made all sorts of things.\nI build ** nail polish** with a special nail polish designed for nail extensions.\nstl **Sturdib** Plywood\n\n늘 id old and eager to reach every corner of his mind, he was also preparing a small household action so that he could be close to his motherland at the time. of every moucommon\ngere **every kind of lenses** and them ** light perishing things through themselves。อ Love he。\n+mone mtm\nكتب تلك الأثرات ا刻意时髦ร,.\nكمياوات ngoại trừ أنا عرفت أي أنها بتشوف إذا لا فكمحتتجب التربة لديك في ب|wxلية하지 التربة سيشركات_bhالت(سبع متر) breadth( semi- Dubai)t) диэти 1mんだبة <%= arw\nชของ–\nตาม\nتخصصی של\nası\nесть свои\n!= تشرين\nאת\nعطرىvice\n명jsx/generative-(Question: comes subject: captivons什么意思\n\nThe question \"comes subject: captivons\" is asking for a compound noun that includes the word \"captivons.\" Captivons is likely a misspelling of \"contemplate\" or \"consider,\" but since it's already in question form, it could also refer to something that captures attention or involves contemplation.\n\nA possible compound noun fitting the description would be **\"contestants\"**, as it involves people who come together for consideration or judgment, such as in an event where you hear about them from someone else.\n\nDoes this answer the question? If not, please provide more context or clarify what you are looking for.",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 89,
+  "rollout_topk": "topk/046_3.pt",
+  "rollout_topk_hash": "a284aa81462045a4fb6dd9f2e525c4e44e91fcde7b641f874648e88ef33f588f"
+}

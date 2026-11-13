@@ -1,0 +1,817 @@
+{
+  "key": "033_1",
+  "id": "ot3-20218",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    32,
+    21495,
+    400,
+    25411,
+    3,
+    374,
+    1640,
+    17433,
+    304,
+    264,
+    12671,
+    11,
+    1380,
+    400,
+    1867,
+    284,
+    220,
+    20,
+    59,
+    1124,
+    1318,
+    90,
+    6226,
+    31716,
+    323,
+    400,
+    1706,
+    284,
+    220,
+    16,
+    17,
+    59,
+    1124,
+    1318,
+    90,
+    6226,
+    92,
+    12947,
+    1416,
+    264,
+    1459,
+    400,
+    35,
+    3,
+    389,
+    279,
+    12671,
+    374,
+    518,
+    264,
+    6010,
+    315,
+    400,
+    17,
+    15,
+    59,
+    1124,
+    1318,
+    90,
+    6226,
+    31716,
+    504,
+    400,
+    33,
+    3,
+    323,
+    400,
+    23,
+    59,
+    1124,
+    1318,
+    90,
+    6226,
+    31716,
+    504,
+    400,
+    34,
+    54876,
+    1128,
+    374,
+    279,
+    12196,
+    3204,
+    3082,
+    315,
+    57960,
+    55114,
+    362,
+    3506,
+    3,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 33,
+  "seed": 175,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "6691149d834684c150d67520a944b108be5ed243a08de0c00f50fe392b5bbd85",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    51720,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    5416,
+    41349,
+    3314,
+    3314,
+    3314,
+    13152,
+    360,
+    3314,
+    3314,
+    80630,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    3314,
+    41349,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    3314,
+    3314,
+    3314,
+    35597,
+    80630,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    3314,
+    80630,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    }
+  ],
+  "sampled_logps": [
+    -8.597654342651367,
+    -9.552812576293945,
+    -0.6362422704696655,
+    -0.2515551745891571,
+    -0.11646503955125809,
+    -7.274138927459717,
+    -0.24420411884784698,
+    -0.21459133923053741,
+    -0.16777227818965912,
+    -0.17412063479423523,
+    -0.17462731897830963,
+    -0.10625569522380829,
+    -0.07539213448762894,
+    -0.06022040545940399,
+    -5.61718225479126,
+    -1.7523313760757446,
+    -0.4708886742591858,
+    -0.16658811271190643,
+    -0.10511666536331177,
+    -10.933300018310547,
+    -1.7865511178970337,
+    -0.031039923429489136,
+    -0.049299295991659164,
+    -5.324588298797607,
+    -0.10882094502449036,
+    -0.10238220542669296,
+    -0.13857877254486084,
+    -0.12333250790834427,
+    -0.11214547604322433,
+    -0.06608846783638,
+    -0.05548955500125885,
+    -0.061325717717409134,
+    -0.19584394991397858,
+    -0.16535526514053345,
+    -0.09113861620426178,
+    -0.06654497236013412,
+    -0.057753533124923706,
+    -0.05078856647014618,
+    -0.05274514481425285,
+    -0.055886104702949524,
+    -0.04244855418801308,
+    -0.030132897198200226,
+    -0.03175709769129753,
+    -0.038374848663806915,
+    -4.267723083496094,
+    -0.037824954837560654,
+    -0.06294306367635727,
+    -0.09665030241012573,
+    -0.11750484257936478,
+    -0.10669251531362534,
+    -0.0819724053144455,
+    -0.053942784667015076,
+    -0.04861003905534744,
+    -0.05450613051652908,
+    -0.07987216860055923,
+    -0.06723546981811523,
+    -0.05060147866606712,
+    -0.05073156952857971,
+    -0.05828774720430374,
+    -0.05812162905931473,
+    -0.0455876886844635,
+    -3.5710155963897705,
+    -0.028679711744189262,
+    -5.970473766326904,
+    -0.04959530755877495,
+    -0.05315058305859566,
+    -0.09192076325416565,
+    -0.07430094480514526,
+    -0.07237448543310165,
+    -0.07514314353466034,
+    -0.06044015288352966,
+    -0.06008806452155113,
+    -0.05842392519116402,
+    -0.060560330748558044,
+    -3.4363560676574707,
+    -0.04774075374007225,
+    -0.10455804318189621,
+    -0.12455761432647705,
+    -0.12196915596723557,
+    -0.12007082253694534,
+    -2.295854091644287,
+    -0.0468924380838871,
+    -0.13317599892616272,
+    -0.12422212958335876,
+    -7.879814624786377,
+    -1.9087568521499634,
+    -0.10965754836797714,
+    -0.22066885232925415,
+    -0.31062978506088257,
+    -0.30235135555267334,
+    -0.26838693022727966,
+    -0.2021055668592453,
+    -0.15209513902664185,
+    -0.16258402168750763,
+    -0.22717072069644928,
+    -0.30095168948173523,
+    -0.212987020611763,
+    -0.17910324037075043,
+    -0.21264880895614624,
+    -0.25654181838035583,
+    -0.26062098145484924,
+    -0.2072732150554657,
+    -0.16605038940906525,
+    -0.14622534811496735,
+    -0.1658954918384552,
+    -0.1823212057352066,
+    -0.1645219326019287,
+    -0.18003274500370026,
+    -0.3224335312843323,
+    -1.6257380247116089,
+    -7.330838203430176
+  ],
+  "text": "OrNilculculculculcalculculculculculculculculculcalculusculculculčulculculcalculculculculculculculculculculculculculculculculculculculculculcalculculculculculculculculculculculculculculculculculcalculculculusculculculculculculculculculculcalculculculculculculcalculculculculcalculatecalculculculculculculculculculculculculculculculculculculculculculculculculcalcul",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 117,
+  "rollout_topk": "topk/033_1.pt",
+  "rollout_topk_hash": "1fd3f5ac63ef9e57442c79efdd66f9d6952552efb1da20fdd63f6946b6bfc002"
+}

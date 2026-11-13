@@ -1,0 +1,414 @@
+{
+  "key": "063_3",
+  "id": "ot3-23240",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    32,
+    21495,
+    448,
+    17228,
+    4930,
+    15,
+    11,
+    15,
+    15087,
+    11,
+    4930,
+    19,
+    11,
+    15,
+    15087,
+    11,
+    323,
+    4930,
+    17,
+    11,
+    18,
+    15087,
+    374,
+    1640,
+    17433,
+    304,
+    264,
+    12671,
+    13,
+    576,
+    12671,
+    88184,
+    264,
+    1555,
+    400,
+    88,
+    28,
+    18085,
+    35093,
+    3,
+    518,
+    1378,
+    3501,
+    11,
+    2176,
+    315,
+    892,
+    525,
+    304,
+    279,
+    1156,
+    93286,
+    13,
+    576,
+    1555,
+    10238,
+    20913,
+    1493,
+    1378,
+    3501,
+    702,
+    3084,
+    57960,
+    26888,
+    90,
+    17,
+    15,
+    92,
+    12947,
+    3555,
+    374,
+    279,
+    897,
+    315,
+    400,
+    76,
+    3,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 63,
+  "seed": 297,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "39bb32ca161457b01561bbc9d016843ecd86b2890fe25a8f1cd3dd8ac9774aa0",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    9112,
+    25,
+    576,
+    4128,
+    323,
+    5944,
+    315,
+    697,
+    3405,
+    525,
+    537,
+    2797,
+    11,
+    323,
+    279,
+    6888,
+    14518,
+    2038,
+    1558,
+    537,
+    3561,
+    279,
+    1467,
+    12440,
+    13,
+    5209,
+    3410,
+    264,
+    2797,
+    323,
+    4396,
+    3405,
+    11,
+    323,
+    358,
+    686,
+    653,
+    847,
+    1850,
+    311,
+    1492,
+    498,
+    4226,
+    432,
+    13,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5
+    }
+  ],
+  "sampled_logps": [
+    -10.037107467651367,
+    -0.13171838223934174,
+    -0.2988981008529663,
+    -7.995944976806641,
+    -2.164621114730835,
+    -3.473914623260498,
+    -0.41007423400878906,
+    -1.704558253288269,
+    -0.7037219405174255,
+    -1.6789844036102295,
+    -1.0373620986938477,
+    -1.0529414415359497,
+    -1.0080366134643555,
+    -0.6341224312782288,
+    -1.66447913646698,
+    -5.2321929931640625,
+    -1.3112012147903442,
+    -1.5000321865081787,
+    -2.201327085494995,
+    -0.001158996019512415,
+    -4.634961128234863,
+    -0.6561371684074402,
+    -2.558377742767334,
+    -1.6702709197998047,
+    -0.09896356612443924,
+    -0.6850042939186096,
+    -0.7554386854171753,
+    -0.41020965576171875,
+    -0.862422525882721,
+    -0.4082455635070801,
+    -1.8315156698226929,
+    -0.474145770072937,
+    -2.247232437133789,
+    -0.2944645285606384,
+    -0.6503050923347473,
+    -0.2577051520347595,
+    -1.7946606874465942,
+    -0.006262796465307474,
+    -0.0008750900160521269,
+    -0.003671098267659545,
+    -1.2939105033874512,
+    -0.28528106212615967,
+    -4.188098907470703,
+    -0.03426501527428627,
+    -0.5040681958198547,
+    -0.20888614654541016
+  ],
+  "text": "Note: The language and structure of your question are not clear, and the mathjax code does not format the text correctly. Please provide a clear and correct question, and I will do my best to help you answer it.",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 104,
+  "rollout_topk": "topk/063_3.pt",
+  "rollout_topk_hash": "cc4d9373afb853000fe0808551bf0ead2a7b91b17604c14cf1f54a10018149e8"
+}

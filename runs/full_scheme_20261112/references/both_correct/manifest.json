@@ -1,0 +1,1525 @@
+{
+  "job": {
+    "student": "assets/models/Qwen3-1.7B-Base",
+    "questions": "data/figure8_shared_top16_v2_20261112/direction.json",
+    "roles": {
+      "teacher": "runs/full_scheme_20261112/references/raw/teacher",
+      "reference": "runs/full_scheme_20261112/references/raw/reference",
+      "student": "runs/full_scheme_20261112/references/raw/student"
+    },
+    "output": "runs/full_scheme_20261112/references/both_correct",
+    "minimum_pairs": 1,
+    "both_correct": true
+  },
+  "job_hash": "04adadc91ee8ca05b3d18f344d56b8388b159b87d84677538afd50329af27f95",
+  "valid_ids": [
+    "ot3-28930",
+    "ot3-28846",
+    "ot3-04654"
+  ],
+  "rejected": {
+    "ot3-00063": "common_text_filter",
+    "ot3-10473": "teacher_reference_not_both_correct",
+    "ot3-08895": "teacher_reference_not_both_correct",
+    "ot3-18434": "teacher_reference_not_both_correct",
+    "ot3-25032": "common_text_filter",
+    "ot3-20139": "teacher_reference_not_both_correct",
+    "ot3-05224": "common_text_filter",
+    "ot3-04128": "common_text_filter",
+    "ot3-07786": "teacher_reference_not_both_correct",
+    "ot3-07563": "teacher_reference_not_both_correct",
+    "ot3-02285": "common_text_filter",
+    "ot3-02055": "common_text_filter",
+    "ot3-07711": "teacher_reference_not_both_correct",
+    "ot3-06447": "teacher_reference_not_both_correct",
+    "ot3-10817": "common_text_filter",
+    "ot3-17275": "common_text_filter",
+    "ot3-04529": "common_text_filter",
+    "ot3-23240": "teacher_reference_not_both_correct",
+    "ot3-09072": "teacher_reference_not_both_correct",
+    "ot3-15577": "common_text_filter",
+    "ot3-01982": "teacher_reference_not_both_correct",
+    "ot3-01447": "teacher_reference_not_both_correct",
+    "ot3-10035": "common_text_filter",
+    "ot3-03602": "teacher_reference_not_both_correct",
+    "ot3-19520": "common_text_filter",
+    "ot3-24416": "common_text_filter",
+    "ot3-18449": "teacher_reference_not_both_correct",
+    "ot3-02218": "teacher_reference_not_both_correct",
+    "ot3-11067": "teacher_reference_not_both_correct",
+    "ot3-19468": "common_text_filter",
+    "ot3-09449": "teacher_reference_not_both_correct",
+    "ot3-07750": "common_text_filter",
+    "ot3-07866": "teacher_reference_not_both_correct",
+    "ot3-10598": "teacher_reference_not_both_correct",
+    "ot3-03931": "teacher_reference_not_both_correct",
+    "ot3-19541": "common_text_filter",
+    "ot3-00634": "teacher_reference_not_both_correct",
+    "ot3-12535": "common_text_filter",
+    "ot3-00722": "teacher_reference_not_both_correct",
+    "ot3-13394": "teacher_reference_not_both_correct",
+    "ot3-20917": "teacher_reference_not_both_correct",
+    "ot3-06236": "common_text_filter",
+    "ot3-04652": "teacher_reference_not_both_correct",
+    "ot3-01086": "common_text_filter",
+    "ot3-01464": "common_text_filter",
+    "ot3-07081": "common_text_filter",
+    "ot3-05773": "teacher_reference_not_both_correct",
+    "ot3-20691": "teacher_reference_not_both_correct",
+    "ot3-00141": "teacher_reference_not_both_correct",
+    "ot3-11917": "teacher_reference_not_both_correct",
+    "ot3-00976": "teacher_reference_not_both_correct",
+    "ot3-20218": "teacher_reference_not_both_correct",
+    "ot3-09846": "common_text_filter",
+    "ot3-02415": "common_text_filter",
+    "ot3-06145": "teacher_reference_not_both_correct",
+    "ot3-07004": "teacher_reference_not_both_correct",
+    "ot3-12051": "teacher_reference_not_both_correct",
+    "ot3-01946": "common_text_filter",
+    "ot3-18928": "common_text_filter",
+    "ot3-08185": "teacher_reference_not_both_correct",
+    "ot3-20396": "common_text_filter",
+    "ot3-17335": "teacher_reference_not_both_correct",
+    "ot3-14168": "common_text_filter",
+    "ot3-04967": "teacher_reference_not_both_correct",
+    "ot3-26951": "teacher_reference_not_both_correct",
+    "ot3-11873": "teacher_reference_not_both_correct",
+    "ot3-00078": "teacher_reference_not_both_correct",
+    "ot3-12922": "teacher_reference_not_both_correct",
+    "ot3-15848": "common_text_filter",
+    "ot3-05615": "common_text_filter",
+    "ot3-02763": "teacher_reference_not_both_correct",
+    "ot3-07931": "teacher_reference_not_both_correct",
+    "ot3-02360": "common_text_filter",
+    "ot3-10271": "teacher_reference_not_both_correct",
+    "ot3-00709": "teacher_reference_not_both_correct",
+    "ot3-13072": "common_text_filter",
+    "ot3-03499": "common_text_filter",
+    "ot3-19575": "teacher_reference_not_both_correct",
+    "ot3-01184": "teacher_reference_not_both_correct",
+    "ot3-18937": "teacher_reference_not_both_correct",
+    "ot3-11600": "teacher_reference_not_both_correct",
+    "ot3-10000": "common_text_filter",
+    "ot3-04773": "teacher_reference_not_both_correct",
+    "ot3-18183": "common_text_filter",
+    "ot3-05354": "common_text_filter",
+    "ot3-01870": "common_text_filter",
+    "ot3-19218": "common_text_filter",
+    "ot3-00545": "common_text_filter",
+    "ot3-01146": "common_text_filter",
+    "ot3-02858": "common_text_filter",
+    "ot3-07879": "common_text_filter",
+    "ot3-27836": "teacher_reference_not_both_correct",
+    "ot3-04890": "common_text_filter",
+    "ot3-00812": "common_text_filter",
+    "ot3-02770": "teacher_reference_not_both_correct",
+    "ot3-07012": "common_text_filter",
+    "ot3-03218": "common_text_filter"
+  },
+  "correctness": {
+    "ot3-00063": {
+      "teacher": true,
+      "reference": false
+    },
+    "ot3-10473": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-08895": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-18434": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-25032": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-20139": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-05224": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-04128": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07786": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07563": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02285": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02055": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07711": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-06447": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-10817": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-17275": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04529": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-23240": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-09072": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-15577": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01982": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01447": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-10035": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-03602": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-19520": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-24416": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-18449": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02218": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-11067": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-19468": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-09449": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07750": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07866": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-10598": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-03931": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-28930": {
+      "teacher": true,
+      "reference": true
+    },
+    "ot3-19541": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00634": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-12535": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00722": {
+      "teacher": true,
+      "reference": false
+    },
+    "ot3-13394": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-20917": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-06236": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04652": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01086": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01464": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07081": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-05773": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-28846": {
+      "teacher": true,
+      "reference": true
+    },
+    "ot3-20691": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00141": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04654": {
+      "teacher": true,
+      "reference": true
+    },
+    "ot3-11917": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00976": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-20218": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-09846": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02415": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-06145": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07004": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-12051": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01946": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-18928": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-08185": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-20396": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-17335": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-14168": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04967": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-26951": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-11873": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00078": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-12922": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-15848": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-05615": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02763": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07931": {
+      "teacher": true,
+      "reference": false
+    },
+    "ot3-02360": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-10271": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00709": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-13072": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-03499": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-19575": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-01184": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-18937": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-11600": {
+      "teacher": false,
+      "reference": true
+    },
+    "ot3-10000": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04773": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-18183": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-05354": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01870": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-19218": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00545": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-01146": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02858": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07879": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-27836": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-04890": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-00812": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-02770": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-07012": {
+      "teacher": false,
+      "reference": false
+    },
+    "ot3-03218": {
+      "teacher": false,
+      "reference": false
+    }
+  },
+  "grading": {
+    "ot3-00063": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-10473": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-08895": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-18434": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-25032": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-20139": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-05224": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-04128": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07786": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07563": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02285": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02055": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07711": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-06447": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-10817": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-17275": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04529": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-23240": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-09072": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-15577": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01982": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01447": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-10035": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-03602": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-19520": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-24416": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-18449": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02218": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-11067": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-19468": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-09449": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07750": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07866": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-10598": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-03931": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-28930": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-19541": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00634": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-12535": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00722": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-13394": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-20917": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-06236": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04652": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01086": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01464": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07081": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-05773": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-28846": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-20691": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00141": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04654": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-11917": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00976": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-20218": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-09846": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02415": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-06145": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07004": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-12051": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01946": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-18928": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-08185": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-20396": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-17335": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-14168": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04967": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-26951": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-11873": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00078": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-12922": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-15848": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-05615": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02763": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07931": {
+      "teacher": {
+        "correct": true,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02360": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-10271": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00709": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-13072": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-03499": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-19575": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-01184": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-18937": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-11600": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": true,
+        "status": "graded"
+      }
+    },
+    "ot3-10000": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04773": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-18183": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-05354": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01870": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-19218": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00545": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-01146": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02858": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07879": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-27836": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-04890": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-00812": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-02770": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-07012": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    },
+    "ot3-03218": {
+      "teacher": {
+        "correct": false,
+        "status": "graded"
+      },
+      "reference": {
+        "correct": false,
+        "status": "graded"
+      }
+    }
+  },
+  "source_hash": "65d8071f57a4dec42dc4d36b2d6ef4f907171df4a872b28b4e8e1cb3d53d035b",
+  "parameter_updates": 0
+}

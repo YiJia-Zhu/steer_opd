@@ -1,0 +1,324 @@
+{
+  "started_at": "2026-11-12T04:51:07.777949+00:00",
+  "scope": "Synchronize active Markdown to user revised 2-2-2 plan: current-student per-question extraction, data reuse, recoverable records; no code/config/run changes.",
+  "input": {
+    "path": "docs/Steering_OPD_完整研究方案.md",
+    "sha256": "2ff0001c0bb16be8d8e1bbf9e967717cd68921615ee5955d1d9cb11e4ef6f048"
+  },
+  "before": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a2bda9f9765f5e05e38e555e9f7219610d098f5467511168c1b56b84147dd9f0"
+    },
+    {
+      "path": "README.md",
+      "sha256": "92e906c5bf80389cd8f38e179d1fc4d9420cc23edb23d3494eb43846cddb3c41"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "bc87463c8c4dd890d500e0e24458d5e5195deb915eadf651209615bfa23babd0"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "bce00bad34185e2855b3d0920b786973ba9dea37a0570b05cf5a88fa979b365d"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "e540baead5da160c6db917ed35733a180b36a6a46e29878ce2d415e199ab87b2"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "dcb66007099442c910b39fe6508cbb9e93e6d08a7246db6b064fa34f2fca14d6"
+    },
+    {
+      "path": "docs/09_novelty_audit_cross_family_steering_opd.md",
+      "sha256": "701fefb79bfd78809d4981644df6bc19d098dfd4cc6a18fe7a303e3f8976f489"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "a1eec2989b0a65a48e9ab94f5600b1d0420375dcba914fb7ac22cd17538e1dc0"
+    },
+    {
+      "path": "ref/README.md",
+      "sha256": "29e0e9c0407cd1709309dc93b1ab939002b0a5722f94aabeb1cebb9a992ba655"
+    },
+    {
+      "path": "ref/archive/README.md",
+      "sha256": "114064ab1fc9e32c7cb31b5663f3a7d114fc23e600a05624d953b6dcb33a77bf"
+    }
+  ],
+  "protected_non_markdown": [
+    {
+      "path": "configs/figure8_first_run.json",
+      "sha256": "f2ef88c500d0d8eabf8eca6a03e90d3da84ec080b9dd67968945af6c28ef973e"
+    },
+    {
+      "path": "configs/r1_agent_loop.yaml",
+      "sha256": "175f68756432c0070f8f662c7d951cda78c5ed5243e132f70237724392aad78a"
+    },
+    {
+      "path": "configs/rethinking_opd.json",
+      "sha256": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110.json",
+      "sha256": "d92e1430581f6fa11e378da11775e5974403b10a8b7c6201f5a1719747cddf5a"
+    },
+    {
+      "path": "experiments/cross_family_overlap_20261110_v2.json",
+      "sha256": "832e7c318c696bc252cba99d2fb55b419e8d8bf11fc5dc95336cb3d039aa8534"
+    },
+    {
+      "path": "experiments/cross_family_steering_probe_20261110.json",
+      "sha256": "aa2036f1fbd771a07365de5aae136247f4e4cf681b45c8655cfe83ec019bbb24"
+    },
+    {
+      "path": "experiments/download_manifest.json",
+      "sha256": "17fd09e3c08159030dc37e2fa8ab5dcb52d4544a969b4324b6f50f701da8ddda"
+    },
+    {
+      "path": "experiments/experiment_matrix.csv",
+      "sha256": "3f65def54bb40ea7b4faf4308aa9d6da3d2dcbc33797769082d5357340fa2526"
+    },
+    {
+      "path": "experiments/paper_aligned_selection_20261110.json",
+      "sha256": "db4b9ba25baf20ff8184fe22b983aeb3d78bbd50857651b71b3ac47b89f15eaf"
+    },
+    {
+      "path": "experiments/rethinking_figure8_20261111.json",
+      "sha256": "75394011019e61fb7c51327ab0be84127129149970bcb6cc359debecb72e7d0b"
+    },
+    {
+      "path": "experiments/stage_matrix.csv",
+      "sha256": "5d306aecab62a1134193cfa390a6e7bcf03bbfa25ecb9e535c405a7e2418cf26"
+    },
+    {
+      "path": "scripts/audit_rethinking_alignment.py",
+      "sha256": "92c9df85d3e2077a51af199d391110980cb6e0d4ea6c0a452865dbdb84dbbe42"
+    },
+    {
+      "path": "scripts/check_figure8_checkpoint.py",
+      "sha256": "576943325cd15f1661010e963ffb629e011acc8e34d61797d37a10c59393e4e7"
+    },
+    {
+      "path": "scripts/diagnose_cross_family_overlap.py",
+      "sha256": "7c140c464f8c3a892fca0ff78892ba8c3ad88d6ab1dfe6ace2a299cb670a46fb"
+    },
+    {
+      "path": "scripts/download_assets.py",
+      "sha256": "d1f9f454d307dd4550f44deab803ab4b7272dc0eeebc0a5a1979530d6747e1fc"
+    },
+    {
+      "path": "scripts/evaluate_initial_pair.py",
+      "sha256": "1a800a880f4a717be41284fcb2b85713cf5682967b232b35ea478977778b6646"
+    },
+    {
+      "path": "scripts/export_pilot_parquet.py",
+      "sha256": "7f30608672aa3a7c82582f3aa1ec3f3d2c8f1a1000a4ff07edf5dc361127801d"
+    },
+    {
+      "path": "scripts/extract_pilot_vectors.py",
+      "sha256": "8f3d98a71cf4d4489db1ca24a39e90d151cf51b06c8cfb29ae11f1bc73b20b0e"
+    },
+    {
+      "path": "scripts/figure8_acceptance.py",
+      "sha256": "60f4a71562779ed604da44b8b535e3da660ed7ee36948e3203a00f05f346beca"
+    },
+    {
+      "path": "scripts/figure8_generate.py",
+      "sha256": "cfd1127ded708f6f937fa866cd39441c4209460efe870849a06bd5b3a2d07d21"
+    },
+    {
+      "path": "scripts/figure8_report.py",
+      "sha256": "ef29b0fce8f5c2ce83a8527e2be38727ba6857378726ef873d3a8de1c1296c1f"
+    },
+    {
+      "path": "scripts/figure8_stage.py",
+      "sha256": "daa9450da012e51473699395b479e24159629aa450bd45caac7f86d5b5053c31"
+    },
+    {
+      "path": "scripts/figure8_status.py",
+      "sha256": "c3e2c427a4b873b6d6f3c5bf4bb33488d88405e450cbd61d18e7136436e07389"
+    },
+    {
+      "path": "scripts/generate_cross_family_calibration.py",
+      "sha256": "816c886325dc1b0af589bf15da8ab429364945db369b74ba69abada642e06d74"
+    },
+    {
+      "path": "scripts/generate_math.py",
+      "sha256": "4dee91a5e065fc24a481126a7171e2574765c82001741113d55b1de0061208f6"
+    },
+    {
+      "path": "scripts/gpu_preflight.py",
+      "sha256": "dc759b16443a529471f242cbaf787b143a4457fda38201b232c154f86c547d62"
+    },
+    {
+      "path": "scripts/launch_pilot.py",
+      "sha256": "42d026ad708d60b2d7e7bbcb1c98cdfb1fe65feafd8cef9db74976e5bd9f12d8"
+    },
+    {
+      "path": "scripts/prepare_figure8_first_run.py",
+      "sha256": "56e4223d445cd0971f01dd4811c00cf0345f12d6aaa6d64249d5f842bc6ec7c4"
+    },
+    {
+      "path": "scripts/prepare_math500_pilot.py",
+      "sha256": "cb39209e29356f14ff59c3a17f01e3ed10679da9d488b82f59f9adfaf9824556"
+    },
+    {
+      "path": "scripts/probe_cross_family_steering.py",
+      "sha256": "1108dfddabe6c1396d227194c64638eb06fae7443f9fca23b5e0b0cf58740ebc"
+    },
+    {
+      "path": "scripts/run_cross_family_diagnosis.py",
+      "sha256": "7bdad6194745b6cb8cd79b23e24a301a17a68562f25a3ff3ca9a90bca68338cf"
+    },
+    {
+      "path": "scripts/run_cross_family_steering_probe.py",
+      "sha256": "096e60000bd7a9077222fbf30b0038b93b29d45e5b4aa0f0098c4272e73bff11"
+    },
+    {
+      "path": "scripts/run_figure8_campaign.py",
+      "sha256": "b2199785d29f42253b049871ddd048a59bda6d901db79f52a6eb79d70fd7861c"
+    },
+    {
+      "path": "scripts/run_on_idle_gpus.py",
+      "sha256": "107a735e5708408b77b1c0d6659724e430c7977f7afc19b9aa5fbadcfb1f32e6"
+    },
+    {
+      "path": "scripts/run_pilot_campaign.py",
+      "sha256": "43044cc5e3982817e5c241e0a0698b166c7d705afebf10b8891f73a1a357f328"
+    },
+    {
+      "path": "scripts/runtime_env.sh",
+      "sha256": "f336e429cd8ba9d4b68f11ae5f335914f10fe62e380bc109e1ef1836d4a5a357"
+    },
+    {
+      "path": "scripts/validate_package.py",
+      "sha256": "4f327a8cc64fcb65b6d103a689419b9879ac43122a2464e78b12fa22d6e4eac0"
+    },
+    {
+      "path": "src/steer_opd/__init__.py",
+      "sha256": "817c295ba78cec7d0b45c0b1248a9aaa70175c349d11e8f686286f7dc2577430"
+    },
+    {
+      "path": "src/steer_opd/campaign_status.py",
+      "sha256": "020d83e13ae940433914e3af513a2606a8b406f35d181d4e3ee7d077a6d77c16"
+    },
+    {
+      "path": "src/steer_opd/cross_family_overlap.py",
+      "sha256": "9a03efff94b99ee9b907b9cfdcf5b91529d3d3b471a687d691f7db16aa0f6e40"
+    },
+    {
+      "path": "src/steer_opd/math_data.py",
+      "sha256": "4bf182e86b17d615b399e93cd1378638259a17bbd19f46bbac9f6fd44e55cdf3"
+    },
+    {
+      "path": "src/steer_opd/r1_agent_loop.py",
+      "sha256": "5eaf2c881d1121c477c93ac3d463bbf951364d59af9d1e183e570154023f9ad3"
+    },
+    {
+      "path": "src/steer_opd/resumable_core.py",
+      "sha256": "09e2cfec17dd6c162080d23a249aec3efaf6efaaee2a2584af04155160a8034a"
+    },
+    {
+      "path": "src/steer_opd/rethinking_protocol.py",
+      "sha256": "8c6b6278dfef01019b6d662c26e55d313b4e27d6413a119820df21b263089e76"
+    },
+    {
+      "path": "src/steer_opd/reward.py",
+      "sha256": "74c69e2fe38daff5fb3d8d9d0f337bbab9527b34ea6a4b534bf8fedac0a6c8de"
+    },
+    {
+      "path": "src/steer_opd/runtime.py",
+      "sha256": "f96be44492da2a7fcab5f92d2168576e99e2f6a78a07b03bb29506a9870b6cac"
+    },
+    {
+      "path": "src/steer_opd/steering.py",
+      "sha256": "ae3db3d6e43ae862afb353eaf7ca64e8e9c9d9c326b9318d3ad68d88f8c07688"
+    },
+    {
+      "path": "src/steer_opd/verl_extension.py",
+      "sha256": "6663f9a16bd2bf80ddf8ab1227e933b682fe7c5ff833be7ff1b5fc40d09a4ca9"
+    },
+    {
+      "path": "src/steer_opd/vllm_steering.py",
+      "sha256": "53449b9325ae04bd16f6ba4e1cd7923eae2bae03530e67dddd4285a617ff9a2f"
+    },
+    {
+      "path": "src/steer_opd/vllm_worker.py",
+      "sha256": "dd617b9270e0ba0000ceccfabadffde25137eca9c5f720d9b13c8f8f1ab99c41"
+    },
+    {
+      "path": "tests/test_campaign_reporting.py",
+      "sha256": "76fd6afa635d5b6719b0d099669d66c1be0bf2e3a0474f302760a11a5f82a4a2"
+    },
+    {
+      "path": "tests/test_cross_family_overlap.py",
+      "sha256": "6fe36e350ebdd277468877d9dbca186e987c215ddf40b3e143e93ebcb97b36d7"
+    },
+    {
+      "path": "tests/test_resumable_opd.py",
+      "sha256": "247163049caa6b41b1ff30a352edfc010835908d61d7f2aa93055b23608c9ec1"
+    },
+    {
+      "path": "tests/test_rethinking_protocol.py",
+      "sha256": "fa430248f48bc53341bcf119bf174ea33fd2252da05eab45f742051afe227651"
+    },
+    {
+      "path": "tests/test_training_semantics.py",
+      "sha256": "f448e4d80ae4aeb4313f1a6bb5aec8c3a7c6f37c1295b7305ecfd659f5edbff4"
+    }
+  ],
+  "runtime_policy": "Existing first-run authorization/configuration retained; do not launch, stop, migrate or relabel the existing campaign.",
+  "completed_at": "2026-11-12T04:59:49.043194+00:00",
+  "status": "markdown_sync_complete",
+  "after": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a56bda7308131c1fd36e91723ea25cd6ec50662a4abced58616ec0b2e41c4abe"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8382bb22554325ff6758157894b1ef13a186d194bcf4cf5b09c65d4f741eec96"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "682deded37ad92c6a9b6db7fee6aae720be2e0b0a2be1a59c7dd403d359401e2"
+    },
+    {
+      "path": "docs/01_research_plan.md",
+      "sha256": "c4b6cf314041ec025dc6928b58d0eae31e1b1a545a7fcccbaa8f80a75e4ced28"
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "sha256": "ae1c4c2fe783523b7762b10a8366b1ae1933b1b57d5f9ac86e950fa620b4b49c"
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "sha256": "17c22cd82f63c6a54a3bcc53a30d279a645bb7b2080a4664c0ae88a82a9b265d"
+    },
+    {
+      "path": "docs/09_novelty_audit_cross_family_steering_opd.md",
+      "sha256": "02a17f47aec50c330ca26bf79b4d53b704ce67966c130fa829f8944f6d307e9b"
+    },
+    {
+      "path": "experiments/run_record_template.md",
+      "sha256": "ada054b8226aa04e13db43e261a108f14f230b7646c0213df1005ecd59269316"
+    },
+    {
+      "path": "ref/README.md",
+      "sha256": "6a73e627de163464acf8cf4f29a75232733fc7542437f063a8ef377ee8a51b62"
+    },
+    {
+      "path": "ref/archive/README.md",
+      "sha256": "ec11027239c8aa995dbb0faefa2deacb027b65d08963d05320b31db55ec0381c"
+    }
+  ],
+  "validation": "audit/extraction_timing_sync_2026-11-12/markdown_validation.json",
+  "method_changes": [
+    "2-2-2: T-R, overlap-only, current-student per-question before each rollout batch",
+    "OPD question/reference reuse; independent dev/test; global controls named separately",
+    "Persist reference-text and extraction/vector/trajectory versions for recovery",
+    "Separate granularity from refresh with same-data global and S0 per-question cache controls"
+  ]
+}

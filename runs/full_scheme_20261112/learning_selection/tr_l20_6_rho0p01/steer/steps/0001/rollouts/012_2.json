@@ -1,0 +1,392 @@
+{
+  "key": "012_2",
+  "id": "ot3-03602",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    785,
+    4771,
+    315,
+    400,
+    88,
+    61,
+    17,
+    488,
+    220,
+    17,
+    4130,
+    488,
+    220,
+    21,
+    19,
+    62827,
+    87803,
+    220,
+    19,
+    15,
+    15,
+    3,
+    46688,
+    279,
+    11031,
+    1119,
+    3807,
+    13604,
+    13,
+    3555,
+    374,
+    279,
+    3082,
+    315,
+    279,
+    61115,
+    5537,
+    30,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 12,
+  "seed": 92,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "c8b8be36633edb027dd5d813b422724fbdd3ab56609771ab337b410b52cdf46c",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    896,
+    614,
+    311,
+    1477,
+    279,
+    2750,
+    315,
+    856,
+    7358,
+    369,
+    279,
+    2750,
+    315,
+    856,
+    7358,
+    892,
+    14043,
+    304,
+    279,
+    61115,
+    5537,
+    271,
+    32664,
+    99738,
+    15946,
+    4480,
+    320,
+    87,
+    61,
+    17,
+    488,
+    220,
+    17,
+    87,
+    17,
+    28,
+    481,
+    88,
+    29776,
+    17,
+    861,
+    220,
+    23,
+    61,
+    17,
+    271,
+    150967,
+    4480,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.9375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.875
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.625
+    }
+  ],
+  "sampled_logps": [
+    -10.837504386901855,
+    -2.0314910411834717,
+    -1.7312687635421753,
+    -1.2729047536849976,
+    -0.27157190442085266,
+    -4.869788646697998,
+    -0.11560724675655365,
+    -1.7473558187484741,
+    -4.116901397705078,
+    -1.9540756940841675,
+    -2.492630958557129,
+    -4.257635593414307,
+    -0.19223885238170624,
+    -1.5080147981643677,
+    -0.9991328716278076,
+    -1.7698581218719482,
+    -10.217022895812988,
+    -2.463275909423828,
+    -0.3125338554382324,
+    -1.6546087265014648,
+    -0.12681758403778076,
+    -3.3305351734161377,
+    -10.682767868041992,
+    -8.799783706665039,
+    -6.821854114532471,
+    -9.27596378326416,
+    -5.33978271484375,
+    -2.7370102405548096,
+    -2.5930984020233154,
+    -0.0412382073700428,
+    -1.6429271697998047,
+    -0.7016956210136414,
+    -0.3457582890987396,
+    -3.136631727218628,
+    -5.17255973815918,
+    -6.233082294464111,
+    -3.477566719055176,
+    -2.1452994346618652,
+    -5.014072895050049,
+    -0.06787236034870148,
+    -6.254919528961182,
+    -0.5406768918037415,
+    -3.662487506866455,
+    -2.952237606048584,
+    -0.11279039829969406,
+    -1.6935970783233643,
+    -10.578689575195312,
+    -2.8830151557922363,
+    -7.1665802001953125
+  ],
+  "text": "we have to find the values of x,y for the values of x,y which maps in the bounded region\n\n对令中part (x^2 + 2x2= -y)^2 > 8^2\n\n뼐part",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 64,
+  "rollout_topk": "topk/012_2.pt",
+  "rollout_topk_hash": "a3ed353af0e71c3294ada7cf23d33c4c98b6653845f348e1f4e6f5e6153640b4"
+}

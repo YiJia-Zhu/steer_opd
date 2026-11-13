@@ -1,0 +1,18 @@
+{
+  "review": "audit/full_plan_implementation_review_2026-11-12.md",
+  "result": "2-2-2_not_implemented_fixed_T-S_all_positions_S0_global_only",
+  "training_logic_changed": false,
+  "gpu_started": false,
+  "source_sha256": {
+    "docs/Steering_OPD_完整研究方案.md": "2ff0001c0bb16be8d8e1bbf9e967717cd68921615ee5955d1d9cb11e4ef6f048",
+    "configs/figure8_shared_top16_v2.json": "25ef10bd9475fc1d61e3b6cd4810edc461fa1b97d8222cd1f4b479ee65abb829",
+    "configs/rethinking_opd.json": "31946d4e3072644a17ae18f10a09e57f83e3dcc300b1bd281b1f01f96021867b",
+    "scripts/run_figure8_campaign.py": "f5e12aec0115a1fc154e09e963e9013e0bdc1599c8c6032e4fec405859e1af2a",
+    "scripts/figure8_stage.py": "baf23e9d2a2aa920f5b74f3e9b3058b9da0e93c4b10939716e277186aeb71fc7",
+    "scripts/figure8_generate.py": "63a6ee3a6d339fd21c06b26bd7db6fd9d2e3c7d917f294e5f1f3af8e93fc3679",
+    "src/steer_opd/resumable_core.py": "9616e19c2aee2736658d88f451639e18b014811790fd4793b3acccb99f29ea9b",
+    "src/steer_opd/vllm_steering.py": "53449b9325ae04bd16f6ba4e1cd7923eae2bae03530e67dddd4285a617ff9a2f",
+    "src/steer_opd/steering.py": "ae3db3d6e43ae862afb353eaf7ca64e8e9c9d9c326b9318d3ad68d88f8c07688"
+  },
+  "new_campaign_state": "paused_by_user"
+}

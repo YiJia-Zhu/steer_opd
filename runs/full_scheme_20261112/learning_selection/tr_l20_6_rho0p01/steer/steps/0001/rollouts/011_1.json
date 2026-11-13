@@ -1,0 +1,187 @@
+{
+  "key": "011_1",
+  "id": "ot3-01447",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    9885,
+    279,
+    1372,
+    315,
+    6785,
+    25780,
+    2686,
+    1091,
+    220,
+    20,
+    15,
+    15,
+    429,
+    646,
+    387,
+    13302,
+    438,
+    279,
+    2629,
+    315,
+    1378,
+    12460,
+    4727,
+    31340,
+    13,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 11,
+  "seed": 87,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "71a81df2b22a2a912147e251fb70a538811185c3fe2a402947356985c1102a3a",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    101906,
+    34187,
+    4891,
+    98,
+    236,
+    140854,
+    198,
+    99195,
+    99654,
+    49434,
+    239,
+    89012,
+    102287,
+    105395,
+    198,
+    147588,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    true
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.8125
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.0625
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.75
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.25
+    }
+  ],
+  "sampled_logps": [
+    -8.65325927734375,
+    -1.0979331731796265,
+    -7.426878929138184,
+    -1.4556889533996582,
+    -8.05402660369873,
+    -11.102669715881348,
+    -2.7227563858032227,
+    -9.369468688964844,
+    -8.456926345825195,
+    -3.6134772300720215,
+    -0.047385528683662415,
+    -6.9086222648620605,
+    -9.472454071044922,
+    -4.770034313201904,
+    -1.8022948503494263,
+    -8.023391723632812,
+    -2.7580747604370117
+  ],
+  "text": "做好了 奎エステ\n几这样 我给更好的翻译\n곘",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 51,
+  "rollout_topk": "topk/011_1.pt",
+  "rollout_topk_hash": "6de2d9b69a6b05ccb40929a938f5ea648accfa773cf6b930ff71ec0a9a197118"
+}

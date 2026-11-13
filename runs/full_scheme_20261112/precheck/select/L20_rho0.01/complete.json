@@ -1,0 +1,14 @@
+{
+  "questions": 16,
+  "condition": {
+    "id": "L20_rho0.01",
+    "kind": "bank",
+    "layers": [
+      20
+    ],
+    "rho": 0.01,
+    "control": "positive",
+    "seed": 42
+  },
+  "parameter_updates": 0
+}

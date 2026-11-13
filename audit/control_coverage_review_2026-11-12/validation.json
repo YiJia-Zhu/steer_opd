@@ -1,0 +1,55 @@
+{
+  "tests": 99,
+  "failures": 0,
+  "errors": 0,
+  "reviewed_components": 29,
+  "component_status_counts": {
+    "integrated_cpu_checked": 13,
+    "not_implemented": 7,
+    "partial": 6,
+    "not_implemented_current_pipeline": 1,
+    "deferred_not_implemented": 1,
+    "not_implemented_training": 1
+  },
+  "core_switches_are_not_complete_control_panel": true,
+  "first_configs_byte_identical": true,
+  "shared_questions": 100,
+  "first_method": {
+    "direction": "T-S",
+    "granularity": "global",
+    "extractor": "initial",
+    "refresh_interval": 1,
+    "layers": [
+      6,
+      10,
+      13,
+      16,
+      20
+    ],
+    "rho": 0.03,
+    "gate": "all",
+    "overlap_threshold": null,
+    "entropy_threshold": null,
+    "random_probability": null,
+    "start_token": null,
+    "vector_assignment": "own",
+    "direction_control": "positive",
+    "seed": 42
+  },
+  "parameter_updates": 0,
+  "campaign_statuses": {
+    "figure8_first_run_20261112": "paused_by_user",
+    "figure8_shared_top16_v2_20261112": "paused_by_user",
+    "pre_opd_overlap_tuning_20261112": "paused_by_user"
+  },
+  "new_gpu_work": false,
+  "gpu_acceptance": "not_run",
+  "local_links_valid": true,
+  "code_sha256": {
+    "src/steer_opd/method_config.py": "b9896c7eda896499fd0f15b6493a8ccae9f74baef00adb9a70260111d0666834",
+    "src/steer_opd/overlap_tuning.py": "2990ebe06bc711515ffca4c2281a0c7783c95551ca691e7b856a0dbfdfa1ce98",
+    "scripts/run_figure8_campaign.py": "80ac068dd772be2293ff4287c096b66659df4ecd3f89f027b20eff4d70aa7268",
+    "tests/test_control_coverage.py": "b273160befbdcad94e473bb5f2785f0ce2daeda151f25e2587f2111f356c1026"
+  },
+  "reviewed_plan_sha256": "b64adc598b80bb41b6698a183b508d5ba644d2f83290f4c2228351b7d3eff002"
+}

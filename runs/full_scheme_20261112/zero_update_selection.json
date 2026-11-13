@@ -1,0 +1,16 @@
+{
+  "condition": {
+    "id": "L20_6_rho0.01",
+    "kind": "bank",
+    "layers": [
+      20,
+      6
+    ],
+    "rho": 0.01,
+    "control": "positive",
+    "seed": 42
+  },
+  "selection_source": "dev-select only; confirm never used for choosing",
+  "updates": 0,
+  "does_not_establish_learning": true
+}

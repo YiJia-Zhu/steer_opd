@@ -1,0 +1,42 @@
+{
+  "step": 10,
+  "base": {
+    "group": "vanilla",
+    "step": 0,
+    "overlap16": 0.5929321553592265,
+    "student_shared_mass": 0.9084962802214271,
+    "teacher_shared_mass": 0.9177699497099677,
+    "positions": 35994,
+    "questions": 32,
+    "student_hook": false,
+    "prefixes": "fixed_initial_Base_dev_rollouts"
+  },
+  "groups": {
+    "vanilla": {
+      "group": "vanilla",
+      "step": 10,
+      "overlap16": 0.5949203339445464,
+      "student_shared_mass": 0.9083134441141215,
+      "teacher_shared_mass": 0.918348090741269,
+      "positions": 35994,
+      "questions": 32,
+      "student_hook": false,
+      "prefixes": "fixed_initial_Base_dev_rollouts"
+    },
+    "steer": {
+      "group": "steer",
+      "step": 10,
+      "overlap16": 0.5947657942990499,
+      "student_shared_mass": 0.9082712153841265,
+      "teacher_shared_mass": 0.9183821998329178,
+      "positions": 35994,
+      "questions": 32,
+      "student_hook": false,
+      "prefixes": "fixed_initial_Base_dev_rollouts"
+    }
+  },
+  "steer_minus_vanilla_percentage_points": -0.015453964549649868,
+  "vanilla_minus_base_percentage_points": 0.19881785853198553,
+  "steer_minus_base_percentage_points": 0.18336389398233566,
+  "scope": "Both unhooked, same fixed initial Base dev prefixes, teacher scores reused; scheduled step10 measurement computed ahead of slow AIME generation."
+}

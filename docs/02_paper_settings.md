@@ -1,15 +1,39 @@
 # 论文设置、模型与数据证据
 
+2026-11-13补充核验：已读取Compass正文式(9)–(11)及EOPD v3正文/附录A，而非仅摘要。
+本轮分别实现sampled优势/锚定、有限候选目标和教师高熵Top16 FKL；配对、初始化、数据与预算仍为本项目适配。
+正文/输入SHA与CPU证据见`audit/full_scheme_2026-11-12/`；[运行边界](08_full_scheme_execution.md)不等于论文完整复现。
+
 更新：2026-11-12。本文记录定点阅读所得的设置，**没有独立复现论文成绩**。
-研究设计以[完整方案](01_research_plan.md)为准；模型缺口不代表下载授权。
+研究设计以[用户完整稿](Steering_OPD_完整研究方案.md)及[主计划摘要](01_research_plan.md)为准。
+本轮只同步文档与定点核对已有本地正文；模型缺口不代表下载授权。
 
 ## 0. 最新方案与来源边界
 
-按用户修订的[完整稿](Steering_OPD_完整研究方案.md)同步：主候选为T−R方向、
-overlap单阈值门控、生成/学习一致的受控策略；熵差独立对照，不与overlap组合。
+最新用户已暂停训练，要求先在原始Base上做层位置/注入层数/强度的训练前overlap调参，
+OPD更新数为0，结果供用户检查后才决定是否进入学习。详见[当前诊断协议](04_pre_opd_overlap_tuning.md)。
+旧第10步overlap是OPD后无hook结果，不是原始Base带hook的即时结果，来源见
+[第10步证据](../audit/step10_overlap_2026-11-12/README.md)。当前固定提取/未来OPD同题100题，直接进行注入参数搜索。
+当前不新增文献或新颖性结论，不把即时overlap提高解释为OPD有效的充分条件。
+以下2–2–2为后续研究设计；可选[代码分支](05_method_branches.md)已实现CPU语义，GPU未验收，第一步仍T−S/全位置/S0全局。
+
+按用户修订的[完整稿](Steering_OPD_完整研究方案.md)同步为2–2–2：T−R方向、
+overlap单阈值门控、每轮rollout前当前学生读取当前OPD题的T/R文本，逐题提取。
+同题本轮生成与学习重放使用同一向量，更新后再遇题时重提；参考文本可固定缓存。
+逐题粒度与刷新频率分开比较，熵差独立对照，不与overlap组合。
 同家族低相容机制验证先于跨家族，主评测无steer/无门控。旧仅loss前向方案是单独变体。
-新方法面板使用兼容词表全词表反向KL；下文Rethinking原Student Top-K16等配方
-保留为论文事实，不因方法修改而改写，也不能把新面板称为原Figure 8完全复现。
+用户随后要求统一基础配方：新方法面板采用Rethinking原fork Student Top-K16反向KL
+系列surrogate，student_p/token_reward_direct/PPO及token-mean均对齐源码；全词表KL
+另作消融。论文子集重归一化KL与源码冻结原生log-ratio奖励不直接宣称梯度等价。
+100题、AIME单项、方向及受控门控是本项目差异，不能把新面板称为原Figure 8完全复现。
+默认值与来源逐项见[配置对照](../audit/rethinking_alignment_2026-11-12/comparison.json)。
+
+旧[首轮配置](../configs/figure8_first_run.json)100题OPD/256题独立方向/128题dev的
+两组各10步现已暂停并保留。最新用户要求的[同题Top16 v2](../configs/figure8_shared_top16_v2.json)
+让SV/OPD共用原100题，保留dev/test划分；方向仍为S0全局固定T−S。
+rollout保存原始Top16并跳过单独HF学生评分，是本地新接口，不能归为原fork已这样实现；
+原fork仍有compute_log_prob前向。新接口训练轨迹overlap与无hook固定dev主指标分开。
+代码/CPU验收见[修改记录](../audit/rollout_top16_shared_data_2026-11-12/README.md)；GPU未恢复。
 
 完整稿列出的Entropy-Aware OPD暂为候选相关工作/强基线，本项目尚未独立核对其
 固定版本公式与源码，不以该稿转述建立已复现证据。原稿称未定位SCOUT的说明
@@ -24,7 +48,7 @@ overlap单阈值门控、生成/学习一致的受控策略；熵差独立对照
 | Rethinking OPD | [2604.13016v2](https://arxiv.org/abs/2604.13016v2)、[本地正文](../papers/sources/2604.13016v2.txt) | §2–6、§8、附录A.2/B/C.1 | 共享词表机制、overlap、SFT冷启动、模板及长前缀局限 |
 | Simple-OPD | [2608.06802v1](https://arxiv.org/abs/2608.06802v1)、[本地正文](../ref/sources/2608.06802v1.txt) | §3–5、附录A/B.2、固定代码启动器 | 同教师CoT、LoRA warm-up、实际merge与OPD |
 | CompassOPD | [2609.10154v1](https://arxiv.org/abs/2609.10154v1)、[本地正文](../ref/sources/2609.10154v1.txt) | §2–5、式(6)–(11)、附录A.1–A.6 | 异构文本span、教师家族增量、学生锚点及原配对 |
-| SV Training | [2610.40998v1](https://arxiv.org/abs/2610.40998v1)、[本地正文](../papers/sources/2610.40998v1.txt) | §4.1/4.3、§5.1、附录C.1及固定代码 | teacher-forced训练hook与GRPO advantage修正分别解释，不作为受控OPD已验证证据 |
+| SV Training | [2610.40998v1](https://arxiv.org/abs/2610.40998v1)、[本地正文](../papers/sources/2610.40998v1.txt) | §4.1/4.3、§5.1、附录C.1；本轮补查C.2/表8的粒度及刷新，已有固定代码 | 全局/逐题固定、周期刷新、teacher-forced训练hook与GRPO修正分别解释，不作为在线逐题OPD已验证证据 |
 
 以上是方法/设置定点阅读，不将下载全文算作逐公式独立验证。PDF、官方快照、版本
 与哈希保持在[papers清单](../papers/manifest.json)和[ref清单](../ref/manifest.json)。
@@ -74,6 +98,29 @@ Qwen3-4B-Thinking-2507→Qwen3-0.6B thinking；另有JustRL→R1-1.5B。
 这些组合的数字。共享广义Qwen谱系与独立family迁移分开标注。
 
 ## 3. 原论文模型、初始化与题源
+
+### 3.1 本轮补查：逐题与刷新分别已有怎样的证据
+
+SV Training §4.1的逐题差分与其全局均值，可以由初始学生训练前一次提取并冻结。
+附录C.2/表8在Qwen2.5-1.5B、GSM8K、layer15的SV辅助SFT中报告：
+
+| 方法 | alpha | 准确率（%） | 能支持的比较 |
+|---|---|---|---|
+| Mean-SV additive | 0.50 | 61.11 | 全局固定加法基线 |
+| Per-sample additive | 0.50 | 62.93 | 相同加法方式下，保留逐题方向的结果 |
+| Per-sample Slerp | 0.10 | 64.14 | 同时改变注入操作/强度，不单独归因于粒度 |
+| Dynamic SV | 0.50 | 60.23 | 每200个优化步用当前LoRA学生重算全局方向；未超过固定全局 |
+
+Dynamic SV重读的是GT/学生预测相关轨迹并更新全局均值，不是本项目当前题T−R、每轮在线逐题。
+这些是原论文单一SFT设置的结果，本项目未独立复现；不外推为OPD刷新必然无效或逐题必然更好。
+本轮仅定点核对本地C.2正文及表8，不把完整稿的自述阅读范围继承为本项目全部新证据。
+
+相应实验需用两组桥接对照：同题同文本同S0的全局均值vs逐题缓存检验粒度；
+同题同文本的逐题缓存vs当前学生每轮重提检验刷新。独立数据全局vs在线逐题同时改变
+训练信息、题目覆盖、粒度与提取者，不能隔离各自贡献。参考文本缓存不等于激活缓存。
+ACSD的固定全局、自教师侧注入与SV训练的逐题固定先例均不能当成新版在线提取已获验证。
+
+### 3.2 冷启动概念与原配对
 
 2026-11-11针对“冷启动”概念补充：SV Training §4.1/4.3的方向由同一学生读取
 参考/自身回答所得，固定后用于teacher-forced监督训练，评测不注入，正文没有
@@ -165,8 +212,10 @@ LR1e-5、1 epoch；小样本DAPO实验不等于200K OpenThoughts3复现。
 | OpenThoughts-114k与相应教师SFT示范/初始化 | 尚未落实；须查原checkpoint/题集，不拿OpenThoughts3替代 |
 | MATH-500、AIME24/AIME25/AMC | 已有输入；源码AMC23为83题，legacy83与strict40分开，不凭文件名认定年份 |
 
-本地R1/JustRL词元映射、BPE模型规则相同，Qwen3组内也相同；R1的不同head大小
-主要是额外输出行，不能据vocab_size断言分词器不同。新面板仍逐对检查。
+本地R1/JustRL普通词元映射与BPE规则相同；Qwen3-4B/Base普通映射一致，但教师多四个
+控制词元及EOS/模板差异，输出head也有未定义行。当前首轮统一151665个共同有效输出词元，
+生成/评分/训练/评测均在此支持归一化，证据见[实现记录](../runs/figure8_first_run_20261112/IMPLEMENTATION.md)。
+不能据vocab_size认定相同或不同分词器，新面板仍逐对检查。
 
 ## 6. 方法近邻与主张边界
 

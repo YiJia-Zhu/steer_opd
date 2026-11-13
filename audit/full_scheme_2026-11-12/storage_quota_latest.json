@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-11-12T18:02:34.001181+00:00",
+  "statvfs": {
+    "/local_nvme": {
+      "total_bytes": 7679093243904,
+      "available_bytes": 3686367924224,
+      "device": 2304
+    },
+    "/local_nvme/data/zhenning/working_tmp/steer_opd": {
+      "total_bytes": 1398011854848,
+      "available_bytes": 124534333440,
+      "device": 2304
+    }
+  },
+  "df": {
+    "returncode": 0,
+    "stdout": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/md0        7.0T  3.7T  3.4T  52% /local_nvme\n/dev/md0        1.3T  1.2T  116G  92% /local_nvme\n",
+    "stderr": ""
+  },
+  "mount": {
+    "returncode": 0,
+    "stdout": "TARGET      SOURCE   FSTYPE OPTIONS\n/local_nvme /dev/md0 xfs    rw,noatime,attr2,inode64,logbufs=8,logbsize=32k,sunit=1024,swidth=2048,prjquota\n",
+    "stderr": ""
+  },
+  "project_attrs": {
+    "returncode": 0,
+    "stdout": "21003 -------------------P-- /local_nvme/data/zhenning/working_tmp/steer_opd\n",
+    "stderr": ""
+  },
+  "quota_query": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "interpretation": "Same XFS device, mount has prjquota, directory project ID21003/P. The project-path statvfs/df is quota-limited. Direct quota query is denied, so no administrative hard/soft quota fields are claimed."
+}

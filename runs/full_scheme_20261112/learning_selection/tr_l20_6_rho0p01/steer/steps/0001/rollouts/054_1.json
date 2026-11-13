@@ -1,0 +1,158 @@
+{
+  "key": "054_1",
+  "id": "ot3-02770",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    35,
+    24308,
+    279,
+    2331,
+    369,
+    892,
+    279,
+    13042,
+    315,
+    279,
+    12122,
+    1372,
+    220,
+    16,
+    21,
+    19,
+    438,
+    264,
+    2326,
+    48342,
+    1372,
+    702,
+    264,
+    6149,
+    15723,
+    429,
+    374,
+    10917,
+    279,
+    1537,
+    15723,
+    13,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 54,
+  "seed": 259,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "f4c209a60842657a866ea5d79d4005efc942d617fd1f1854bbca4fc4b29d3e05",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    16448,
+    1019,
+    127403,
+    123845,
+    124288,
+    121094,
+    220,
+    70184,
+    256,
+    659,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.1875
+    },
+    {
+      "probe_overlap16": 0.5
+    },
+    {
+      "probe_overlap16": 0.4375
+    },
+    {
+      "probe_overlap16": 0.25
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.6875
+    },
+    {
+      "probe_overlap16": 0.5625
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.5625
+    }
+  ],
+  "sampled_logps": [
+    -14.155654907226562,
+    -9.902222633361816,
+    -12.500655174255371,
+    -6.582969665527344,
+    -9.414180755615234,
+    -11.778214454650879,
+    -4.434376239776611,
+    -13.273487091064453,
+    -6.856684684753418,
+    -2.473245620727539,
+    -1.2255473136901855
+  ],
+  "text": " .\n**\nшие כמק飨 .Highlight   .",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 58,
+  "rollout_topk": "topk/054_1.pt",
+  "rollout_topk_hash": "6b13ea048037d3732f0760b3b48b32ba759eeea2e38e6102b335bf4b7d7adfa7"
+}

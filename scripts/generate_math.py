@@ -28,7 +28,8 @@ def main():
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--n", type=int, default=evaluation["n"])
     parser.add_argument("--max-tokens", type=int, default=evaluation["max_tokens"])
-    parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--batch-size", type=int, default=None,
+                        help="Legacy option; all requests are submitted together")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--temperature", type=float, default=evaluation["temperature"])
     parser.add_argument("--top-p", type=float, default=evaluation["top_p"])
@@ -63,7 +64,7 @@ def main():
     llm = LLM(model=args.model, tokenizer=args.model, dtype="bfloat16",
               trust_remote_code=False, tensor_parallel_size=1,
               gpu_memory_utilization=0.90, max_model_len=args.max_tokens + 1024,
-              max_num_seqs=64, enforce_eager=True, enable_prefix_caching=False,
+              enforce_eager=True, enable_prefix_caching=False,
               generation_config="vllm", seed=args.seed)
     tokenizer = llm.get_tokenizer()
     encoded = [prompt_ids(tokenizer, r["question"], enable_thinking=args.enable_thinking) for r in rows]
@@ -96,29 +97,28 @@ def main():
                 "gpu_admission": os.environ["STEER_OPD_GPU_ADMISSION"],
                 "packages": {p: importlib.metadata.version(p) for p in ["torch", "transformers", "vllm", "math-verify"]}}
     with out.open("x") as stream:
-        for offset in range(0, len(rows), args.batch_size):
-            batch = rows[offset:offset + args.batch_size]
-            requests = [{"prompt_token_ids": ids} for ids in encoded[offset:offset + len(batch)]]
-            outputs = llm.generate(requests, params, use_tqdm=False)
-            for row, result in zip(batch, outputs):
-                for answer in result.outputs:
-                    record = {"id": row["id"], "sample": answer.index, "answer": str(row["answer"]),
-                              "text": answer.text, "token_ids": list(answer.token_ids),
-                              "prompt_token_ids": list(result.prompt_token_ids),
-                              "response_tokens": len(answer.token_ids), "finish_reason": answer.finish_reason,
-                              **grader(row["answer"], answer.text)}
-                    records.append(record)
-                    if record["correct"] and record["finish_reason"] != "length":
-                        correct_complete_ids.add(row["id"])
-                    stream.write(json.dumps(record, ensure_ascii=False) + "\n")
-            stream.flush()
-            print(json.dumps({"completed_questions": min(offset + len(batch), len(rows)),
-                              "samples": len(records), "accuracy": sum(r["correct"] for r in records) / len(records),
-                              "correct_complete_questions": len(correct_complete_ids),
-                              "elapsed_seconds": time.monotonic() - started}), flush=True)
+        requests = [{"prompt_token_ids": ids} for ids in encoded]
+        outputs = llm.generate(requests, params, use_tqdm=False)
+        for row, result in zip(rows, outputs):
+            for answer in result.outputs:
+                record = {"id": row["id"], "sample": answer.index, "answer": str(row["answer"]),
+                          "text": answer.text, "token_ids": list(answer.token_ids),
+                          "prompt_token_ids": list(result.prompt_token_ids),
+                          "response_tokens": len(answer.token_ids), "finish_reason": answer.finish_reason,
+                          **grader(row["answer"], answer.text)}
+                records.append(record)
+                if record["correct"] and record["finish_reason"] != "length":
+                    correct_complete_ids.add(row["id"])
+                stream.write(json.dumps(record, ensure_ascii=False) + "\n")
             if args.correct_target and len(correct_complete_ids) >= args.correct_target:
                 break
-    metadata.update({"samples": len(records), "questions": len({r["id"] for r in records}),
+        stream.flush()
+        print(json.dumps({"completed_questions": len({r["id"] for r in records}),
+                          "samples": len(records), "accuracy": sum(r["correct"] for r in records) / len(records),
+                          "correct_complete_questions": len(correct_complete_ids),
+                          "elapsed_seconds": time.monotonic() - started}), flush=True)
+    metadata.update({"generation_requested_questions": len(rows), "all_requests_submitted": True,
+                     "samples": len(records), "questions": len({r["id"] for r in records}),
                      "avg_accuracy": sum(r["correct"] for r in records) / len(records),
                      "truncation_rate": sum(r["finish_reason"] == "length" for r in records) / len(records),
                      "mean_response_tokens": sum(r["response_tokens"] for r in records) / len(records),

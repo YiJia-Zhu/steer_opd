@@ -57,9 +57,11 @@ def main():
                      '03_execution_plan.md',
                      '09_novelty_audit_cross_family_steering_opd.md'}
     assert required_docs <= {path.name for path in docs}
-    md_files = [ROOT / 'README.md', ROOT / 'AGENTS.md', ROOT / 'runs/README.md', *docs,
+    optional_historical_docs = [ROOT / 'runs/README.md']
+    md_files = [ROOT / 'README.md', ROOT / 'AGENTS.md', *docs,
                 ROOT / 'experiments/run_record_template.md', ROOT / 'ref/README.md',
                 ROOT / 'ref/archive/README.md']
+    md_files.extend(path for path in optional_historical_docs if path.exists())
     local_count, missing, outside, arxiv_versions = 0, [], [], set()
     for path in md_files:
         content = path.read_text()
@@ -121,7 +123,10 @@ def main():
     required_groups = set(plan['required_groups'])
     assert {row['id'] for row in rows if row['priority'] == 'required'} == required_groups
     assert all(row['primary_evaluation'] == 'student_without_hook' for row in rows)
-    assert all(row['rollout_hook'] == 'false' for row in rows)
+    assert all(row['rollout_hook'] in {'true', 'false'} for row in rows)
+    for row in rows:
+        expected = row['direction'] != 'none' and row['warmup'] != 'sv_sft'
+        assert (row['rollout_hook'] == 'true') == expected, row['id']
     assert all(row['status'] == 'planned' for row in rows)
     assert plan['executable_launch_config'] is False
     if plan['state'] == 'planning_only_paused':
@@ -168,7 +173,13 @@ def main():
         if row['action'].startswith('replace_'):
             assert not path.exists(), f'Superseded exploration document recreated: {path}'
         else:
-            assert sha256(path) == row['sha256'], path
+            if sha256(path) != row['sha256']:
+                # A dated scope notice was added to the old novelty audit. Its
+                # exact original evidence is preserved, rather than rewriting
+                # the historical cleanup manifest to pretend nothing changed.
+                snapshot = ROOT / 'audit/plan_integration_2026-11-12/before' / row['path']
+                assert row['path'] == 'docs/09_novelty_audit_cross_family_steering_opd.md'
+                assert sha256(snapshot) == row['sha256'], snapshot
         if row.get('concurrent_latest_snapshot'):
             assert sha256(ROOT / row['concurrent_latest_snapshot']) == row['pre_deletion_sha256']
 
@@ -187,6 +198,7 @@ def main():
         'primary_source_snapshots_verified': len(all_papers),
         'experiment_documents': len(docs), 'markdown_files_checked': len(md_files),
         'local_links_checked': local_count, 'missing_local_links': missing,
+        'absent_optional_historical_docs': [str(path.relative_to(ROOT)) for path in optional_historical_docs if not path.exists()],
         'links_outside_package': outside, 'exact_prompt_templates_verified': len(templates),
         'planned_experiment_groups': len(rows), 'required_experiment_groups': len(required_groups),
         'planned_stage_group_rows': len(stage_rows),

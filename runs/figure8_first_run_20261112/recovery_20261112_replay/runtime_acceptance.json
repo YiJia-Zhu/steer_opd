@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "runtime_hash": "03a6f1381f682504c722f99b3bd3a0fba1a44fd1bfbe23e02c552958d77ba8a9",
+  "groups": {
+    "vanilla": {
+      "passed": true,
+      "rows": 96,
+      "token_mean_logp_error": 0.017349377379727422,
+      "sampled_error_flags": [],
+      "max_full_kl": 0.019542565569281578
+    },
+    "steer": {
+      "passed": true,
+      "rows": 96,
+      "token_mean_logp_error": 0.015546961189011641,
+      "sampled_error_flags": [
+        "021_3"
+      ],
+      "max_full_kl": 0.012981349602341652
+    }
+  },
+  "performance": {
+    "8": {
+      "seconds": 66.84790276014246,
+      "tokens": 32768,
+      "tokens_per_second": 490.187405244038
+    },
+    "16": {
+      "seconds": 56.908352016005665,
+      "tokens": 32768,
+      "tokens_per_second": 575.8030032355161
+    },
+    "speedup": 1.1746589101954887,
+    "scope": "32 dev-derived 12000-token prefixes, exactly 1024 greedy output tokens each; throughput-only, no quality grading; includes prefill, excludes model startup"
+  },
+  "cpu_tests": {
+    "passed": 17,
+    "command": "pytest -q tests/test_replay_validation.py tests/test_campaign_reporting.py tests/test_resumable_opd.py"
+  },
+  "code_sha256": {
+    "scripts/figure8_generate.py": "5faacc3c1d48c3b946e856b90564171783a196c52fcddbcc3791699d81063915",
+    "scripts/figure8_stage.py": "43924b4867e1922ea700f30ca026178ff6a100648e43fb24a2e7e9644ef55944",
+    "src/steer_opd/vllm_worker.py": "56fd7ee05fb00f25e6a63081a62da69c0d96d6daeae8c7f67fd1d96c3e86c3b3",
+    "src/steer_opd/replay_validation.py": "912cd73aa0f32597f1947d5e42132f9a489a2972acf2adbbb0703b5872f7be5e"
+  }
+}

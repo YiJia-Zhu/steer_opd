@@ -1,0 +1,395 @@
+{
+  "binding": "preview only; layer/rho/threshold placeholders are NOT frozen run parameters",
+  "experiments_before_optional_tuned_directions": 55,
+  "named_methods": 49,
+  "maximum_formal_updates_before_optional_tuned_directions": 3400,
+  "maximum_learning_selection_trials": 9,
+  "maximum_learning_selection_updates": 90,
+  "cases": [
+    {
+      "name": "vanilla",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "main_222",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "vanilla",
+      "seed": 43,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "main_222",
+      "seed": 43,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "vanilla",
+      "seed": 44,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "main_222",
+      "seed": 44,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "direction_TS",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "direction_RS",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "direction_TS_fixed_self_text",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "direction_RS_fixed_self_text",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "all_positions",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "ts_global_all",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "ts_global_all_vllm",
+      "seed": 42,
+      "backend": "vllm",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "vanilla_vllm",
+      "seed": 42,
+      "backend": "vllm",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "all_positions_vllm",
+      "seed": 42,
+      "backend": "vllm",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "entropy_gate",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "global_same_text",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "per_question_cache",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "periodic_refresh",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "global_current",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "global_periodic_refresh",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "wrong_question",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "negative",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "random_vector",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "random_vector",
+      "seed": 43,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "random_vector",
+      "seed": 44,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "random_gate",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "matched_random",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "matched_position_random",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "late_positions",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "last_10_percent_off",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "phase_both",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "candidate_rkl"
+    },
+    {
+      "name": "phase_rollout_only",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "candidate_rkl"
+    },
+    {
+      "name": "phase_learning_only_all",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "candidate_rkl"
+    },
+    {
+      "name": "phase_both_all",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "candidate_rkl"
+    },
+    {
+      "name": "phase_vanilla",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "candidate_rkl"
+    },
+    {
+      "name": "compass_candidate",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "compass_candidate"
+    },
+    {
+      "name": "compass_sampled",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "compass_sampled"
+    },
+    {
+      "name": "eopd_top16_surrogate",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "eopd_top16_surrogate"
+    },
+    {
+      "name": "sampled_rkl",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "sampled_rkl"
+    },
+    {
+      "name": "eopd_sampled",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "eopd_sampled"
+    },
+    {
+      "name": "training_compute_matched",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 200,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "training_compute_matched_vllm",
+      "seed": 42,
+      "backend": "vllm",
+      "maximum_steps": 200,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "total_compute_matched_vllm",
+      "seed": 42,
+      "backend": "vllm",
+      "maximum_steps": 400,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "common_global_T-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "common_cached_T-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "both_correct_global_T-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "both_correct_global_T-R",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "common_global_R-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "common_cached_R-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "both_correct_global_R-S",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "template_length_control",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "overlap_rate_10",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "overlap_rate_30",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    },
+    {
+      "name": "independent_global",
+      "seed": 42,
+      "backend": "hf_batched",
+      "maximum_steps": 50,
+      "objective": "reference_surrogate"
+    }
+  ]
+}

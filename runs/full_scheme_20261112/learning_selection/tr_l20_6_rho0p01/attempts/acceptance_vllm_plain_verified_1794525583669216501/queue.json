@@ -1,0 +1,13 @@
+{
+  "pid": 3785487,
+  "start_ticks": 175371357,
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/figure8_generate.py",
+    "--job",
+    "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/acceptance/job_plain_verified.json"
+  ],
+  "created_at": "2026-11-12T23:19:43.708431+00:00",
+  "status": "launched",
+  "child_pid": 3785542
+}

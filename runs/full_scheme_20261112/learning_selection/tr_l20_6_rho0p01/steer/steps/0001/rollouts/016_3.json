@@ -1,0 +1,129 @@
+{
+  "key": "016_3",
+  "id": "ot3-09449",
+  "answer": "0",
+  "prompt_token_ids": [
+    151644,
+    872,
+    198,
+    35,
+    24308,
+    279,
+    1372,
+    315,
+    220,
+    19,
+    48342,
+    5109,
+    1741,
+    429,
+    279,
+    2629,
+    315,
+    279,
+    31340,
+    315,
+    279,
+    1156,
+    1378,
+    18509,
+    16819,
+    279,
+    2629,
+    315,
+    279,
+    31340,
+    315,
+    279,
+    1537,
+    1378,
+    18509,
+    13,
+    5209,
+    2874,
+    3019,
+    553,
+    3019,
+    11,
+    323,
+    2182,
+    697,
+    1590,
+    4226,
+    2878,
+    1124,
+    79075,
+    46391,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+  ],
+  "visit": 16,
+  "seed": 109,
+  "vector_path": "runs/full_scheme_20261112/learning_selection/tr_l20_6_rho0p01/directions/step_0000/vectors.pt",
+  "vector_hash": "f1f8b6aff9e0970a365b1fa7d128cf315228d3ab85c2f5564333194cda4ada0a",
+  "vector_id": "e941cbe93065918073e715e5a2b0421c097d66504254da094a9844c5eedd4ffb",
+  "learning_steering": true,
+  "steering_phase": "both",
+  "token_ids": [
+    140825,
+    198,
+    72910,
+    13146,
+    126835,
+    151643
+  ],
+  "steering_mask": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "gate_metrics": [
+    {
+      "probe_overlap16": 0.125
+    },
+    {
+      "probe_overlap16": 0.3125
+    },
+    {
+      "probe_overlap16": 0.0
+    },
+    {
+      "probe_overlap16": 0.375
+    },
+    {
+      "probe_overlap16": 0.625
+    },
+    {
+      "probe_overlap16": 0.5
+    }
+  ],
+  "sampled_logps": [
+    -7.896242141723633,
+    -1.212356448173523,
+    -6.653281211853027,
+    -9.643587112426758,
+    -7.944812774658203,
+    -2.9340600967407227
+  ],
+  "text": " להתמוד\n.debugLine다발",
+  "model": "assets/models/Qwen3-1.7B-Base",
+  "steering": true,
+  "job_hash": "72d14c1ed66cda426d897a11aaff99efe7e945cb3e6e81d4cccbdc0893e175d3",
+  "backend": "hf_batched_causal_gate",
+  "finish_reason": "stop",
+  "stop_reason": null,
+  "token_record_schema": 1,
+  "prediction_start": 59,
+  "rollout_topk": "topk/016_3.pt",
+  "rollout_topk_hash": "e70a8358d93f8939770616325a3c15d60114de73d3e17da2e65df5915fa8f51c"
+}

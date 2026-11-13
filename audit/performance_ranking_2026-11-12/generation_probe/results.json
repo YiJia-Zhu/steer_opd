@@ -1,0 +1,42 @@
+{
+  "startup_seconds": 21.287570524029434,
+  "cases": [
+    {
+      "prefix_length": 128,
+      "responses": 16,
+      "generated_tokens": 8192,
+      "seconds_including_prefill": 2.9087939870078117,
+      "tokens_per_second_including_prefill": 2816.287449915579,
+      "last_64_client_step_median_ms": 5.803400999866426,
+      "engine_calls": 513
+    },
+    {
+      "prefix_length": 8192,
+      "responses": 16,
+      "generated_tokens": 8192,
+      "seconds_including_prefill": 11.678873687051237,
+      "tokens_per_second_including_prefill": 701.4375032656401,
+      "last_64_client_step_median_ms": 17.84353982657194,
+      "engine_calls": 517
+    },
+    {
+      "prefix_length": 16384,
+      "responses": 16,
+      "generated_tokens": 8192,
+      "seconds_including_prefill": 23.153779838001356,
+      "tokens_per_second_including_prefill": 353.8083223264827,
+      "last_64_client_step_median_ms": 30.079768504947424,
+      "engine_calls": 527
+    },
+    {
+      "prefix_length": 30000,
+      "responses": 16,
+      "generated_tokens": 8192,
+      "seconds_including_prefill": 42.43997633387335,
+      "tokens_per_second_including_prefill": 193.02555532910554,
+      "last_64_client_step_median_ms": 50.45135400723666,
+      "engine_calls": 527
+    }
+  ],
+  "note": "Dev-derived repeated prefixes, fixed 512 outputs/request, 16 requests; hardware probe only; not accuracy evaluation. Profiled 16k timing includes profiler overhead."
+}

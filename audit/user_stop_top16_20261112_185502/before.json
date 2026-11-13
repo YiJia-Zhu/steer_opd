@@ -1,0 +1,211 @@
+{
+  "campaign": {
+    "status": "running",
+    "phase": "eval_steer_0010",
+    "supervisor_pid": 1869755,
+    "supervisor_start_ticks": 170227156,
+    "updated_at": 1794479954.3180265,
+    "attempt": "runs/figure8_first_run_20261112/attempts/eval_steer_0010_1794479954318021741",
+    "command": [
+      "scripts/figure8_generate.py",
+      "--job",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/figure8_first_run_20261112/jobs/eval_steer_0010.json"
+    ],
+    "max_gpus": 1,
+    "resume_command": ".venv-opd/bin/python scripts/run_figure8_campaign.py --config /local_nvme/data/zhenning/working_tmp/steer_opd/configs/figure8_first_run.json"
+  },
+  "supervisor": {
+    "pid": 1869755,
+    "state": "S",
+    "ppid": 1,
+    "pgid": 1869755,
+    "start_ticks": 170227156,
+    "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+    "cmd": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python scripts/run_figure8_campaign.py --config configs/figure8_first_run.json "
+  },
+  "process": {
+    "started_at": "2026-11-12T10:39:16.632183+00:00",
+    "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "scripts/figure8_generate.py",
+      "--job",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/runs/figure8_first_run_20261112/jobs/eval_steer_0010.json"
+    ],
+    "gpus": [
+      {
+        "index": 2,
+        "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 0,
+        "utilization": 0,
+        "has_compute_process": false
+      }
+    ],
+    "before": [
+      [
+        {
+          "index": 0,
+          "uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 1,
+          "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 2,
+          "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 0,
+          "utilization": 0,
+          "has_compute_process": false
+        },
+        {
+          "index": 3,
+          "uuid": "GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 4,
+          "uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64639,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 5,
+          "uuid": "GPU-17f76845-5d79-933c-affa-2ef7cec12651",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 6,
+          "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 7,
+          "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 0,
+          "utilization": 0,
+          "has_compute_process": false
+        }
+      ],
+      [
+        {
+          "index": 0,
+          "uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 1,
+          "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 2,
+          "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 0,
+          "utilization": 0,
+          "has_compute_process": false
+        },
+        {
+          "index": 3,
+          "uuid": "GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 4,
+          "uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64639,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 5,
+          "uuid": "GPU-17f76845-5d79-933c-affa-2ef7cec12651",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 6,
+          "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 64641,
+          "utilization": 0,
+          "has_compute_process": true
+        },
+        {
+          "index": 7,
+          "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+          "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+          "memory_mib": 0,
+          "utilization": 0,
+          "has_compute_process": false
+        }
+      ]
+    ],
+    "supervisor_pid": 2100883,
+    "pid": 2100972
+  },
+  "children": [
+    {
+      "pid": 2100972,
+      "state": "S",
+      "ppid": 2100883,
+      "pgid": 2100972,
+      "start_ticks": 170808653,
+      "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+      "cmd": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python scripts/figure8_generate.py --job /local_nvme/data/zhenning/working_tmp/steer_opd/runs/figure8_first_run_20261112/jobs/eval_steer_0010.json "
+    },
+    {
+      "pid": 2101134,
+      "state": "S",
+      "ppid": 2100972,
+      "pgid": 2100972,
+      "start_ticks": 170809382,
+      "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+      "cmd": "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python -B -c from multiprocessing.resource_tracker import main;main(55) "
+    },
+    {
+      "pid": 2101135,
+      "state": "S",
+      "ppid": 2100972,
+      "pgid": 2100972,
+      "start_ticks": 170809385,
+      "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+      "cmd": "VLLM::EngineCore                                                                                                                                                                    "
+    }
+  ]
+}

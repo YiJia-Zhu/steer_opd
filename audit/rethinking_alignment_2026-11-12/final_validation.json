@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-11-11T17:20:28.485244+00:00",
+  "parsed_files": [
+    "scripts/launch_pilot.py",
+    "scripts/generate_math.py",
+    "src/steer_opd/math_data.py",
+    "experiments/rethinking_figure8_20261111.json",
+    "experiments/paper_aligned_selection_20261110.json",
+    "experiments/experiment_matrix.csv",
+    "experiments/stage_matrix.csv",
+    "configs/rethinking_opd.json",
+    "src/steer_opd/rethinking_protocol.py",
+    "scripts/audit_rethinking_alignment.py",
+    "tests/test_rethinking_protocol.py",
+    "scripts/validate_package.py"
+  ],
+  "markdown_files": [
+    "AGENTS.md",
+    "README.md",
+    "docs/README.md",
+    "docs/01_research_plan.md",
+    "docs/02_paper_settings.md",
+    "docs/03_execution_plan.md",
+    "docs/Steering_OPD_完整研究方案.md",
+    "experiments/run_record_template.md",
+    "audit/rethinking_alignment_2026-11-12/README.md"
+  ],
+  "local_links_checked": 64,
+  "errors": [],
+  "before_snapshot_hashes_verified": 14,
+  "canonical_profile_and_proposal_match": true,
+  "final_preview_is_cpu_only": true,
+  "paper_default_checks": 79,
+  "evaluation_checks": 6,
+  "unexpected_differences": [],
+  "gpu_or_download_started": false
+}
