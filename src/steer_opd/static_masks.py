@@ -26,7 +26,7 @@ def source_binding(row, identity):
                    "prompt_token_ids": row["prompt_token_ids"], "token_ids": row["token_ids"], "identity": identity})
 
 
-def freeze_static_mask(row, overlap, threshold, identity, *, alignment_mask=None):
+def freeze_static_mask(row, overlap, threshold, identity, *, alignment_mask=None, source_metrics=None):
     """Freeze one strict-< comparison in FP64, before any candidate forward.
 
     Aligned cross-tokenizer metric values must be produced by their own
@@ -54,6 +54,15 @@ def freeze_static_mask(row, overlap, threshold, identity, *, alignment_mask=None
                 "recompute_after_intervention": False}
     if alignment_mask is not None:
         artifact.update(schema=2, alignment_mask=list(alignment_mask))
+    if source_metrics is not None:
+        saved = {}
+        for name, raw in source_metrics.items():
+            metric = torch.as_tensor([float("nan") if x is None else x for x in raw], dtype=torch.float64)
+            if (metric.shape != values.shape or not torch.isfinite(metric[valid]).all()
+                    or ((metric[valid] < 0) | (metric[valid] > 1)).any()):
+                raise ValueError("Invalid frozen source metric")
+            saved[name] = [float(x) if ok else None for x, ok in zip(metric, valid)]
+        artifact["source_metrics"] = saved
     artifact["mask_id"] = digest(artifact)
     return artifact
 
@@ -61,7 +70,7 @@ def freeze_static_mask(row, overlap, threshold, identity, *, alignment_mask=None
 def validate_static_mask(artifact, row, identity=None):
     identity = artifact["identity"] if identity is None else identity
     rebuilt = freeze_static_mask(row, artifact["source_overlap"], artifact["threshold"], identity,
-                                 alignment_mask=artifact.get("alignment_mask"))
+                                 alignment_mask=artifact.get("alignment_mask"), source_metrics=artifact.get("source_metrics"))
     if artifact != rebuilt:
         raise ValueError("Static mask source/threshold/content/hash changed")
     return list(artifact["requested_mask"])

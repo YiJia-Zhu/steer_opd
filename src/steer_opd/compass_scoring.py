@@ -32,8 +32,10 @@ def require_scoring_gpus(max_gpus=2):
         raise RuntimeError("Text scoring must see one or two admitted project GPUs")
 
 
-def load_text_scorer(model_path, codec):
+def load_text_scorer(model_path, codec, other_codec=None):
     """Qwen3 and Qwen3.5 dense/MoE text paths, each with its own native support."""
+    from steer_opd.experiment_runtime import compute_required
+    compute_required()
     from transformers import AutoConfig, AutoModelForCausalLM, AutoModelForImageTextToText
     require_scoring_gpus()
     cfg = AutoConfig.from_pretrained(model_path, local_files_only=True)
@@ -43,6 +45,8 @@ def load_text_scorer(model_path, codec):
     model = TextScoringModel(owner).eval().requires_grad_(False)
     model._opd_vocab_size = codec.support_size
     model._defined_vocab_size = codec.support_size
+    from steer_opd.byte_probabilities import projection_spec
+    model._opd_byte_projection = projection_spec(codec, other_codec)
     if len(codec.valid_ids) != codec.support_size:
         model._opd_valid_output_ids = codec.valid_ids
     model._input_device = model.model.get_input_embeddings().weight.device
@@ -52,16 +56,28 @@ def load_text_scorer(model_path, codec):
 class AlignedMetricAdapter:
     metric = METRIC
 
-    def __init__(self, plans, student_codec, teacher_codec, references):
+    def __init__(self, plans, student_codec, teacher_codec, references, *, require_dual=False):
         self.plans = plans
         self.student_codec = student_codec
         self.teacher_codec = teacher_codec
         self.references = references
+        self.require_dual = require_dual
+        if require_dual:
+            from steer_opd.byte_probabilities import projection_spec
+            self.student_projection = projection_spec(student_codec, teacher_codec)
+            self.teacher_projection = projection_spec(teacher_codec, student_codec)
 
     def __call__(self, key, student, teacher):
         plan = self.plans[key]
+        if self.require_dual:
+            from steer_opd.byte_probabilities import validate_projection
+            validate_projection(student, self.student_projection, len(plan["source_token_ids"]))
+            validate_projection(teacher, self.teacher_projection, len(plan["native_response_ids"]["teacher"]))
         likelihoods = span_scores(plan, {"student": student, "teacher": teacher, "reference": self.references[key]})
-        return {**aligned_metrics(plan, student, teacher, self.student_codec, self.teacher_codec), **likelihoods}
+        metrics = aligned_metrics(plan, student, teacher, self.student_codec, self.teacher_codec)
+        if self.require_dual and not metrics["P_overlap_available"]:
+            raise ValueError("Dual metrics require complete byte distributions; Top16 caches cannot substitute")
+        return {**metrics, **likelihoods}
 
 
 class AlignedTeacherRecords(dict):

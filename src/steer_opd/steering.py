@@ -1,21 +1,7 @@
-from contextlib import contextmanager, ExitStack
-
+"""Single-layer hooks for fixed-prefix HF numerical comparisons."""
+from contextlib import contextmanager
 import torch
-
 from steer_opd.operators import transform, validate_operator
-
-
-def prediction_mask(response_mask):
-    """A response token at t is predicted by the state at t-1.
-
-    Shift each example separately so a packed/batch boundary never wraps.
-    The last input state does not predict an observed response token.
-    """
-    if response_mask.ndim != 2:
-        raise ValueError("Expected padded [batch, sequence] response mask")
-    mask = torch.zeros_like(response_mask, dtype=torch.bool)
-    mask[:, :-1] = response_mask[:, 1:].bool()
-    return mask
 
 
 def response_prediction_mask(prefix_length, response_length, gates=None, *, device=None):
@@ -79,34 +65,3 @@ class SteeringController:
         if self.enabled:
             raise RuntimeError("Cannot detach while forward/backward is active")
         self.handle.remove()
-
-
-class CompositeSteeringController:
-    """Each block uses its own direction and scale; one shared prediction mask."""
-
-    def __init__(self, model, vectors, *, operator="additive", alpha=1.0):
-        self.controllers = [SteeringController(find_decoder_layer(model, layer), vector, alpha, operator=operator)
-                            for layer, vector in vectors.items()]
-
-    @property
-    def enabled(self):
-        return any(c.enabled for c in self.controllers)
-
-    @contextmanager
-    def loss_scope(self, mask=None):
-        with ExitStack() as stack:
-            for controller in self.controllers:
-                stack.enter_context(controller.loss_scope(mask))
-            yield self
-
-    def detach(self):
-        for controller in self.controllers:
-            controller.detach()
-
-
-def find_decoder_layer(model, layer_index):
-    matches = [(name, layer) for name, layer in model.named_modules()
-               if name.endswith(f"layers.{layer_index}")]
-    if len(matches) != 1:
-        raise RuntimeError(f"Expected one decoder block {layer_index}, found {[n for n, _ in matches]}")
-    return matches[0][1]

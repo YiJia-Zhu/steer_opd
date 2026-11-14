@@ -1,7 +1,0 @@
-{
-  "backend": "hf_batched_causal_gate",
-  "memory_admitted_batch": 46,
-  "requests": 256,
-  "shared_teacher_scoring": true,
-  "gpu_count": 1
-}

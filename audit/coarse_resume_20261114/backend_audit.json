@@ -1,0 +1,46 @@
+{
+  "reference_and_source_generation": {
+    "source": "scripts/generate_static_sources.py",
+    "line": 48,
+    "entrypoint": "engine.generate",
+    "backend": "easysteer_vllm"
+  },
+  "shared_S0_activation_capture": {
+    "source": "src/steer_opd/easysteer_extraction.py",
+    "line": 73,
+    "entrypoint": "hs.capture",
+    "backend": "easysteer_vllm"
+  },
+  "native_T_Ref_scoring": {
+    "source": "scripts/score_compass_sources.py",
+    "line": 30,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
+  "baseline_and_eight_schemes": {
+    "source": "scripts/run_static_overlap_screen.py",
+    "line": 227,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
+  "fixed_prefix_engine_call": {
+    "source": "src/steer_opd/easysteer_static.py",
+    "line": 185,
+    "entrypoint": "llm.generate",
+    "backend": "easysteer_vllm"
+  },
+  "scope": "Current zero-update panel and explicit HF acceptance/reference; legacy execution code removed",
+  "full_vocabulary_statistics": "Custom worker PyTorch aggregation on existing vLLM logits; no HF model forward",
+  "cpu_work": [
+    "tokenization",
+    "byte/span alignment",
+    "mean pooling",
+    "bank construction",
+    "metrics",
+    "serialization",
+    "plots"
+  ],
+  "hf_model_forward": "Explicit hf_batched_static numerical reference only; no automatic fallback",
+  "resume_granularity": "engine_call",
+  "gpu_validated": false
+}

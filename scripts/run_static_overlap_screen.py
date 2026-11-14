@@ -20,6 +20,7 @@ from steer_opd.static_masks import freeze_static_mask, native_overlap, validate_
 from steer_opd.static_screen import candidate_vectors, score_native_candidate
 from steer_opd.method_config import Method
 from steer_opd.execution_policy import require_default_scheduler_options, require_execution_allowed
+from steer_opd.experiment_runtime import initialize_stage, StageCheckpoint, Progress
 
 
 def path(value):
@@ -107,42 +108,41 @@ def prepare(job):
 def run(job, rows, masks, teachers, banks):
     require_execution_allowed(job)
     require_default_scheduler_options(job)
+    runtime=initialize_stage(job,path(job["output"]))
+    with Progress(path(job["output"]),"fixed_prefix_screen",len(rows)*(1+len(job["conditions"])),unit="score",show_bar=False) as progress:
+        return _run(job,rows,masks,teachers,banks,runtime,progress)
+
+
+def _run(job, rows, masks, teachers, banks, runtime, progress):
     from steer_opd.resumable_core import load_model, require_gpu
-    from steer_opd.static_plotting import plot_comparisons
+    from steer_opd.static_plotting import plot_comparisons, plot_dual_comparisons
     from steer_opd.compass_job import model_path
     os.environ["STEER_OPD_SUPPORT_SIZE"] = str(job["support_size"])
     output = path(job["output"])
     metric_adapter = getattr(teachers, "metric_adapter", None)
     plot_keys = ([r.get("key", r["id"]) for r in read_json(path(job["rows"]))[:3]]
                  if metric_adapter is not None else None)
-    phase_binding = digest(read_json(output / "manifest.json"))
+    phase_binding = digest({"manifest":read_json(output / "manifest.json"),"runtime":runtime})
+    stores = {}
+    def plots(condition, base, records):
+        plot = plot_dual_comparisons if job.get("require_dual_metrics") else plot_comparisons
+        plot(rows, base, records, output / condition["id"] / "comparison", requested_keys=plot_keys)
     def cached(name):
-        marker = output / name / "complete.json"
-        if not marker.exists():
-            return None
-        commit = read_json(marker)
-        if commit["binding"] != phase_binding:
-            raise ValueError("Cached static phase has a different source/config identity")
-        records = {}
-        for key, sha in commit["files"].items():
-            target = output / name / f"{key}.pt"
-            if not target.exists() or file_sha256(target) != sha:
-                raise ValueError("Committed static phase record missing or changed")
-            records[key] = torch.load(target, map_location="cpu", weights_only=True)
-        if set(records) != {r.get("key", r["id"]) for r in rows}:
-            raise ValueError("Committed static phase is missing source rows")
-        return records
-    def commit(name, records):
-        for key, record in records.items():
-            atomic_torch(output / name / f"{key}.pt", record)
-        atomic_json(output / name / "complete.json", {"binding": phase_binding, "parameter_updates": 0,
-                    "files": {key: file_sha256(output / name / f"{key}.pt") for key in records}})
+        stores[name]=StageCheckpoint(output/name,digest({'candidate':name,'binding':phase_binding}))
+        return stores[name].load_tensors([r.get("key",r["id"]) for r in rows])
+    def commit(name,records):
+        if ready[name] is None:
+            with progress.phase_scope('save_complete_candidate',condition=name):
+                stores[name].save_tensors(records)
+            ready[name]=records
+            progress.mark_committed(progress.committed+len(rows))
     required = ["baseline", *[c["id"] for c in job["conditions"]]]
     ready = {name: cached(name) for name in required}
+    progress.resume(sum(len(v) for v in ready.values() if v is not None))
     if all(ready[name] is not None for name in required) and (output / "complete.json").exists():
         # Rebuild requested CPU plots from cached data if necessary.
         for condition in job["conditions"]:
-            plot_comparisons(rows, ready["baseline"], ready[condition["id"]], output / condition["id"] / "comparison", requested_keys=plot_keys)
+            plots(condition, ready["baseline"], ready[condition["id"]])
         print("All static conditions already complete; reused committed probability records")
         return
     needs_model = any(ready[name] is None for name in required)
@@ -150,6 +150,8 @@ def run(job, rows, masks, teachers, banks):
     if backend not in ("hf_batched_static", "easysteer"):
         raise ValueError("Unknown static backend; no automatic backend substitution")
     if needs_model:
+        from steer_opd.experiment_runtime import compute_required
+        compute_required()
         if backend == "easysteer":
             from steer_opd.easysteer_static import require_easysteer_gpu
             require_easysteer_gpu()
@@ -161,25 +163,47 @@ def run(job, rows, masks, teachers, banks):
             model = load_model(model_path(job["student"]))
         else:
             from steer_opd.compass_scoring import load_text_scorer
-            model = load_text_scorer(model_path(job["student"]), metric_adapter.student_codec)
+            model = load_text_scorer(model_path(job["student"]), metric_adapter.student_codec, metric_adapter.teacher_codec)
     elif needs_model:
         from steer_opd.easysteer_static import engine_options, require_easysteer
         require_easysteer()
         if metric_adapter is not None and metric_adapter.student_codec.valid_ids != list(range(job["support_size"])):
             raise ValueError("EasySteer support cropping requires a contiguous defined student vocabulary")
         os.environ["STEER_OPD_STATIC_SUPPORT"] = str(job["support_size"])
-        from vllm import LLM
-        model = LLM(model=str(model_path(job["student"])), dtype="bfloat16", tensor_parallel_size=1,
-            max_model_len=max(len(r["prompt_token_ids"])+len(r["token_ids"]) for r in rows),
-            gpu_memory_utilization=job.get("gpu_memory_utilization", .75),
-            logprobs_mode="raw_logprobs", max_logprobs=16, generation_config="vllm",
-            worker_cls="steer_opd.easysteer_worker.StaticWorker", **engine_options())
+        from steer_opd.easysteer_static import create_engine
+        projection = None
+        if job.get("require_dual_metrics"):
+            from steer_opd.byte_probabilities import projection_spec
+            projection = output / "student_projection.pt"
+            atomic_torch(projection, projection_spec(metric_adapter.student_codec, metric_adapter.teacher_codec))
+        model = create_engine(model_path(job["student"]), job["support_size"],
+            max_model_len=max(len(r["prompt_token_ids"])+len(r["token_ids"]) for r in rows)+1,
+            gpu_memory_utilization=job.get("gpu_memory_utilization", .75), projection_path=projection, seed=42, progress=progress)
     def evaluate(condition):
-        bank = banks[condition["bank"]] if condition else next(iter(banks.values()))
-        if backend == "hf_batched_static":
-            return score_native_candidate(model, rows, teachers, masks, bank, condition,
-                baseline=baseline if condition else None, batch_size=job.get("batch_size", 4),
-                chunk=job.get("chunk", 128), metric_adapter=metric_adapter)
+        name=condition["id"] if condition else "baseline"
+        if ready[name] is not None:return ready[name]
+        start=progress.done
+        bank=banks[condition["bank"]] if condition else next(iter(banks.values()))
+        if backend=="hf_batched_static":
+            records=score_native_candidate(model,rows,teachers,masks,bank,condition,
+                baseline=baseline if condition else None,batch_size=job.get("batch_size",4),
+                chunk=job.get("chunk",128),metric_adapter=metric_adapter)
+        else:
+            records=evaluate_engine(condition,bank)
+        progress.finished_call(start+len(rows))
+        # All distributions are available: derive metrics/deltas after the engine call.
+        for key,record in records.items():
+            if condition:
+                for metric in (("overlap","P_overlap") if job.get("require_dual_metrics") else ("overlap",)):
+                    record[f"delta_{metric}"]=record[metric]-baseline[key][metric]
+            else:
+                gate=job.get("gate_metric","overlap")
+                for metric,values in masks[key].get("source_metrics",{gate:masks[key]["source_overlap"]}).items():
+                    record[f"source_rollout_vs_replay_delta_{metric}"]=record[metric].double()-torch.tensor(
+                        [float("nan") if v is None else v for v in values],dtype=torch.float64)
+                record["source_rollout_vs_replay_delta"]=record[f"source_rollout_vs_replay_delta_{gate}"]
+        return records
+    def evaluate_engine(condition,bank):
         from steer_opd.easysteer_static import build_spec, fixed_prefix_scores
         specs, meta = [], []
         for row in rows:
@@ -199,36 +223,53 @@ def run(job, rows, masks, teachers, banks):
                 "vector_id": vector_id, "condition": condition, "requested_mask": torch.tensor(requested),
                 "steering_mask": torch.tensor(actual), "relative_perturbation_available": False,
                 "zero_vector_no_intervention": bool(condition is not None and not nonzero)})
-        scores = fixed_prefix_scores(model, rows, specs, include_sampled=metric_adapter is not None)
-        return {row.get("key", row["id"]): {**s,
-                    **(position_metrics(s, teachers[row.get("key", row["id"])]) if metric_adapter is None else
-                       metric_adapter(row.get("key", row["id"]), s, teachers[row.get("key", row["id"])])), **m}
-                for row, s, m in zip(rows, scores, meta)}
-    baseline = ready["baseline"]
-    if baseline is None:
-        baseline = evaluate(None)
-        for row in rows:
-            key = row.get("key", row["id"])
-            baseline[key]["source_rollout_vs_replay_delta"] = baseline[key]["overlap"].double()-torch.tensor(
-                [float("nan") if v is None else v for v in masks[key]["source_overlap"]], dtype=torch.float64)
-        commit("baseline", baseline)
+        with progress.phase_scope('continuous_candidate_scoring',condition=None if condition is None else condition['id']):
+            scores=fixed_prefix_scores(model,rows,specs,include_sampled=metric_adapter is not None,
+                collect_byte_probs=job.get("require_dual_metrics",False),progress=progress)
+        with progress.phase_scope('compute_candidate_metrics'):
+            return {r.get("key",r["id"]):{**score,
+                **(position_metrics(score,teachers[r.get("key",r["id"])]) if metric_adapter is None else
+                   metric_adapter(r.get("key",r["id"]),score,teachers[r.get("key",r["id"])])),**metadata}
+                for r,score,metadata in zip(rows,scores,meta)}
+    baseline=evaluate(None)
+    commit("baseline",baseline)
     summaries = {}
     for condition in job["conditions"]:
-        records = ready[condition["id"]]
-        if records is None:
-            records = evaluate(condition)
-            commit(condition["id"], records)
+        records = evaluate(condition)
         # Aggregate multiple responses by question before paired_summary.
-        def by_question(values):
+        def by_question(values, metric="overlap"):
             groups = {}
             for row in rows:
                 groups.setdefault(row["id"], []).append(values[row.get("key", row["id"])])
-            return {qid: {name: torch.cat([v[name][v.get("alignment_mask", torch.ones_like(v[name], dtype=torch.bool))] for v in items]) for name in
+            return {qid: {name: torch.cat([v[metric if name == "overlap" else name][v.get("alignment_mask", torch.ones_like(v[metric], dtype=torch.bool))] for v in items]) for name in
                           ("overlap", "student_shared_mass", "teacher_shared_mass")} for qid, items in groups.items()}
+        metric_names = ("overlap", "P_overlap") if job.get("require_dual_metrics") else ("overlap",)
+        metric_summaries = {}
+        for name in metric_names:
+            summary = paired_summary(by_question(records, name), by_question(baseline, name))
+            if name == "P_overlap":
+                summary["token_weighted_value"] = summary.pop("token_weighted_overlap16")
+                summary.pop("student_shared_mass"); summary.pop("teacher_shared_mass")
+            summary["metric_name"] = name
+            summary["question_weighted_value"] = sum(float(v["overlap"].mean()) for v in by_question(records, name).values()) / summary["questions"]
+            total = sum(len(row["token_ids"]) for row in rows)
+            summary.update(source_prediction_positions=total, valid_position_fraction=summary["positions"] / total,
+                valid_span_count=sum(record.get("valid_span_count", 0) for record in records.values()),
+                total_span_count=sum(record.get("total_span_count", 0) for record in records.values()),
+                actual_steering_rate=sum(int(record["steering_mask"].sum()) for record in records.values()) / total)
+            metric_summaries[name] = summary
+            for row in rows:
+                key = row.get("key", row["id"])
+                records[key][f"delta_{name}"] = records[key][name]-baseline[key][name]
+        rank_metric = job.get("rank_metric", "overlap")
         summaries[condition["id"]] = {"condition": condition, "metric": job["identity"]["metric"],
-                                      **paired_summary(by_question(records), by_question(baseline))}
+            "ranking_metric": rank_metric, "metrics": metric_summaries,
+            **metric_summaries[rank_metric]}
         atomic_json(output / "summaries.json", summaries)
-        plot_comparisons(rows, baseline, records, output / condition["id"] / "comparison", requested_keys=plot_keys)
+        # Deltas are derived from the committed baseline; persist both readouts.
+        commit(condition["id"], records)
+        with progress.phase_scope("plotting",condition=condition["id"]):
+            plots(condition, baseline, records)
     atomic_json(output / "complete.json", {"status": "awaiting_user_review", "parameter_updates": 0,
                 "candidates": len(summaries), "backend": backend, "automatic_opd": False})
 

@@ -7,6 +7,7 @@ terminates any process. GPU UUIDs, command, child PID and exit code are recorded
 
 import argparse
 import csv
+import codecs
 import datetime as dt
 import fcntl
 import hashlib
@@ -16,6 +17,8 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import sys
+import signal
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +45,7 @@ def write_json(path, value):
 
 
 def source_snapshot():
-    files = sorted([*(ROOT / "src/steer_opd").glob("*.py"), *(ROOT / "scripts").glob("*.py")])
+    files = sorted([*(ROOT / "src/steer_opd").glob("*.py"), *(ROOT / "scripts").glob("*.py"), *(ROOT / "scripts").glob("*.sh")])
     bodies = {str(path.relative_to(ROOT)): path.read_text() for path in files}
     hashes = {path: hashlib.sha256(body.encode()).hexdigest() for path, body in bodies.items()}
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
@@ -54,7 +57,7 @@ def source_snapshot():
 
 def snapshot():
     output = subprocess.check_output([
-        "nvidia-smi", "--query-gpu=index,uuid,name,memory.used,utilization.gpu",
+        "nvidia-smi", "--query-gpu=index,uuid,name,memory.used,utilization.gpu,driver_version",
         "--format=csv,noheader,nounits",
     ], text=True)
     apps = subprocess.check_output([
@@ -65,10 +68,10 @@ def snapshot():
     project_owned = {uuid for uuid, pid in processes if process_ticks(pid) is not None}
     rows = []
     for row in csv.reader(io.StringIO(output)):
-        index, uuid, name, memory, utilization = [value.strip() for value in row]
+        index, uuid, name, memory, utilization, driver = [value.strip() for value in row]
         rows.append({"index": int(index), "uuid": uuid, "name": name,
                      "memory_mib": int(memory), "utilization": int(utilization),
-                     "has_compute_process": uuid in occupied, "project_owned": uuid in project_owned})
+                     "has_compute_process": uuid in occupied, "project_owned": uuid in project_owned, "driver_version":driver})
     return rows
 
 
@@ -76,17 +79,64 @@ def idle(row):
     return not row["has_compute_process"] and row["memory_mib"] <= 128 and row["utilization"] <= 1
 
 
+def parse_gpu_ids(value):
+    if value is None:return None
+    try:ids=[int(x.strip()) for x in value.split(',')]
+    except ValueError:raise ValueError('GPU IDs must be comma-separated physical indices') from None
+    if not ids or any(i<0 for i in ids) or len(ids)!=len(set(ids)):
+        raise ValueError('GPU IDs must be unique nonnegative physical indices')
+    return ids
+
+
+def select_idle(first,second,leased,count,gpu_ids=None):
+    rows={r['index']:r for r in second}
+    ids=list(rows) if gpu_ids is None else gpu_ids
+    if set(ids)-set(rows):raise ValueError(f'Unknown physical GPU IDs: {set(ids)-set(rows)}')
+    earlier={r['uuid'] for r in first if idle(r)}
+    return [rows[i] for i in ids if idle(rows[i]) and rows[i]['uuid'] in earlier
+            and rows[i]['uuid'] not in leased][:count]
+
+
+def tee_process(child,log,console=None):
+    """Drain without line buffering: tqdm carriage-return updates remain live."""
+    console=sys.stdout if console is None else console
+    decoder=codecs.getincrementaldecoder('utf-8')(errors='replace')
+    while True:
+        block=os.read(child.stdout.fileno(),65536)
+        if not block: break
+        if log is not None:log.write(block);log.flush()
+        text=decoder.decode(block)
+        try: console.write(text);console.flush()
+        except (BrokenPipeError,OSError): console=None
+        if console is None:
+            class Quiet:
+                def write(self,*args): pass
+                def flush(self): pass
+            console=Quiet()
+    tail=decoder.decode(b'',final=True)
+    try: console.write(tail);console.flush()
+    except (BrokenPipeError,OSError): pass
+    return child.wait()
+
+
 def main():
+    def interrupted(signum,frame):
+        raise KeyboardInterrupt(f'signal {signum}')
+    signal.signal(signal.SIGTERM,interrupted)
     parser = argparse.ArgumentParser()
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--wait-seconds", type=int, default=0)
     parser.add_argument("--max-project-gpus", type=int, default=2)
+    parser.add_argument("--gpu-ids",help="Only these physical nvidia-smi indices, in preference order")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command or not 1 <= args.count <= args.max_project_gpus <= 2:
         parser.error("A command is required; project GPU limit is1 or2")
+    gpu_ids=parse_gpu_ids(args.gpu_ids)
+    if gpu_ids is not None and len(gpu_ids)<args.count:
+        parser.error('Selected GPU pool is smaller than the requested tensor parallelism')
     run_dir = args.run_dir.resolve()
     if not run_dir.is_relative_to(ROOT):
         raise ValueError("Run directory must be in the project")
@@ -94,8 +144,9 @@ def main():
     record_path = run_dir / "process.json"
     if record_path.exists():
         raise FileExistsError("Use a new run directory; never overwrite an existing process record")
+    queued_monotonic=time.monotonic()
     queue = {"pid": os.getpid(), "start_ticks": process_ticks(os.getpid()), "command": command,
-             "created_at": dt.datetime.now(dt.timezone.utc).isoformat(), "status": "waiting_idle_gpu"}
+             "created_at": dt.datetime.now(dt.timezone.utc).isoformat(), "status": "waiting_idle_gpu", "gpu_ids":gpu_ids}
     write_json(run_dir / "queue.json", queue)
     lease_path = ROOT / ".runtime/gpu_leases.json"
     lock_path = ROOT / ".runtime/gpu_admission.lock"
@@ -111,20 +162,22 @@ def main():
             second = snapshot()
             leased = {uuid for lease in leases for uuid in lease["uuids"]}
             own = leased | {row["uuid"] for row in second if row.get("project_owned")}
-            earlier = {r["uuid"] for r in first if idle(r)}
-            selected = [r for r in second if idle(r) and r["uuid"] in earlier and r["uuid"] not in leased][:args.count]
+            selected = select_idle(first,second,leased,args.count,gpu_ids)
             if len(own)+args.count > args.max_project_gpus:
                 selected = []
             if len(selected) == args.count:
                 env = dict(os.environ)
                 env["CUDA_VISIBLE_DEVICES"] = ",".join(r["uuid"] for r in selected)
                 env["STEER_OPD_GPU_ADMISSION"] = str(record_path)
+                env["PYTHONHASHSEED"]="42"
+                env["PYTHONUNBUFFERED"]="1"
                 record = {"started_at": dt.datetime.now(dt.timezone.utc).isoformat(), "cwd": str(ROOT),
-                    "command": command, "gpus": selected, "before": [first, second], "supervisor_pid": os.getpid()}
+                    "command": command, "gpus": selected, "before": [first, second], "supervisor_pid": os.getpid(),
+                    "queue_wait_seconds":time.monotonic()-queued_monotonic}
                 record["source_revision"] = source_snapshot()
-                log = (run_dir / "stdout.log").open("x")
+                log = (run_dir / "stdout.log").open("xb")
                 try:
-                    child = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log,
+                    child = subprocess.Popen(command, cwd=ROOT, env=env, stdout=subprocess.PIPE,
                                              stderr=subprocess.STDOUT, start_new_session=True)
                 except BaseException:
                     log.close()
@@ -145,7 +198,23 @@ def main():
         time.sleep(10)
     try:
         print(json.dumps({"pid": child.pid, "gpus": selected, "log": str(run_dir / "stdout.log")}), flush=True)
-        record["exit_code"] = child.wait()
+        child_started=time.monotonic()
+        try:
+            record["exit_code"]=tee_process(child,log)
+        except BaseException as error:
+            record["error"]=repr(error)
+            if child.poll() is None and process_ticks(child.pid)==record["child_start_ticks"]:
+                os.killpg(child.pid,signal.SIGTERM)
+                try: child.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    if process_ticks(child.pid)==record["child_start_ticks"]: os.killpg(child.pid,signal.SIGKILL)
+                    child.wait()
+            record["exit_code"]=child.returncode
+            raise
+        finally:
+            record["elapsed_seconds"]=time.monotonic()-child_started
+            record["finished_at"]=dt.datetime.now(dt.timezone.utc).isoformat()
+            write_json(record_path,record)
     finally:
         log.close()
     record["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()

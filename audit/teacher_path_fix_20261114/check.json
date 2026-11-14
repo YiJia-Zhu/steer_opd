@@ -1,0 +1,96 @@
+{
+  "issue": "Configured local model alias was absent; weights already present in shared storage",
+  "local_alias": "/local_nvme/data/zhenning/working_tmp/steer_opd/assets/models/Qwen3.5-35B-A3B",
+  "target": "/home/zhenning/data/huggingface_models/Qwen3.5-35B-A3B",
+  "resolved_target": "/local_nvme/data/zhenning/huggingface_models/Qwen3.5-35B-A3B",
+  "shards": [
+    {
+      "name": "model.safetensors-00001-of-00014.safetensors",
+      "bytes": 5368709816,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00002-of-00014.safetensors",
+      "bytes": 5368709808,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00003-of-00014.safetensors",
+      "bytes": 5368709808,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00004-of-00014.safetensors",
+      "bytes": 5368709816,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00005-of-00014.safetensors",
+      "bytes": 5368709816,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00006-of-00014.safetensors",
+      "bytes": 5368709816,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00007-of-00014.safetensors",
+      "bytes": 5368709808,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00008-of-00014.safetensors",
+      "bytes": 5368709808,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00009-of-00014.safetensors",
+      "bytes": 5255463936,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00010-of-00014.safetensors",
+      "bytes": 5368710456,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00011-of-00014.safetensors",
+      "bytes": 5368710464,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00012-of-00014.safetensors",
+      "bytes": 5368710456,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00013-of-00014.safetensors",
+      "bytes": 5367839544,
+      "header_and_index_check": "passed"
+    },
+    {
+      "name": "model.safetensors-00014-of-00014.safetensors",
+      "bytes": 2224764664,
+      "header_and_index_check": "passed"
+    }
+  ],
+  "metadata": {
+    "config.json": {
+      "sha256": "5e4d7f74fec2f360eb9cfbfcd6ec0c4c76e684d3a11caaed259d9fd9bfbc7944",
+      "matches_pinned_metadata": true
+    },
+    "tokenizer.json": {
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+      "matches_pinned_metadata": true
+    },
+    "tokenizer_config.json": {
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8",
+      "matches_pinned_metadata": true
+    }
+  },
+  "verification": "Safetensors header/length/index plus pinned metadata checks; full weight hashes computed at launch",
+  "weights_modified": false,
+  "download_started": false,
+  "gpu_started": false
+}

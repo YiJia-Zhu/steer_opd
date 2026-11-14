@@ -1,0 +1,151 @@
+{
+  "frontend_revision": "baecd9698f32aadef68b41536f3db477b513a0d7",
+  "fork_revision": "7837b07d21c0ddffd043a30001f2c5654290aec7",
+  "vllm_wheel": "0.29.0",
+  "files": [
+    {
+      "path": "ref/easysteer_runtime/frontend/README.md",
+      "sha256": "1d78684646cbc707244543fdb70c152f49132171a25921fae2d1116249d0c541"
+    },
+    {
+      "path": "ref/easysteer_runtime/frontend/capture_api.py",
+      "sha256": "2196214cec6224ae98e2605d0ba71aac49bc9e5c5a18655ab8721c761d79f936"
+    },
+    {
+      "path": "ref/easysteer_runtime/frontend/capture_result.py",
+      "sha256": "94715b9ee0d6b2a118071e456f4a7edc0a4c18aa156d308c4996409b0b9c5d86"
+    },
+    {
+      "path": "ref/easysteer_runtime/frontend/pyproject.toml",
+      "sha256": "ad3320ae6b1b62af7bd98882ca4a1928b174e02a43bd245ff77ba348a09c7fc7"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/capture/__init__.py",
+      "sha256": "9b590a362dbfbfe29a2d52c9ab5bb5efd38011852fd2d92c71681245b7ad9fe1"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/entrypoints/llm.py",
+      "sha256": "e99a0124c442aafb18f81d0bb0f4dae8311b9627ffee68cc5c32814fbe9b7b51"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/entrypoints/offline_utils.py",
+      "sha256": "6d835b697c72a7161ea8559d32d2cfabb6e9e739f829559deb6f4660ef0fadd2"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_executor/layers/logits_processor.py",
+      "sha256": "6b0603d67b0c756253c2fdc882a3896d2e873a16e9aa2ef877aabca8d36bdb5f"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_executor/models/qwen3.py",
+      "sha256": "6ade9b12f4c7a4d670fe2e4dd778049bbe0a94fe2ba61a149d9706587a280e28"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_executor/models/qwen3_5.py",
+      "sha256": "3abeac36180df7bd1bd96b1a7c698a8f212d92c063026420cbdd16d1980e90e6"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/capture/serialization.py",
+      "sha256": "4d1e93c8fd963405ff0ea807b9aa232583dd5f44040538a1f0d690acb1098a02"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/capture/store.py",
+      "sha256": "8591d9d81b164a70e0e43390326674d2422fcddd37001b2be4f621bd50689552"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/selection/host.py",
+      "sha256": "ae06876b45b412dbdacd6221a1b5aac2bf56716e7a43aceaef0fb9c7c421598b"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/selection/runtime.py",
+      "sha256": "08429ab32b4e37b2b3a3dfd42148373d0e65af4fa954f60b51e646077780d70f"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/selection/schema.py",
+      "sha256": "f8cd3dc1b6428231b3c0c9e518a0fdfe8237f4741c0e107a5b1081c9558aab1b"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/selection/spec.py",
+      "sha256": "7f274d5df375252da9d3898b2b637667201bff51a152356606646a33ebc29f26"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/algorithms/base.py",
+      "sha256": "e35d6ad0738c5ed1c5efae4f5781028917615208934c1d7c4e912420523b40b6"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/algorithms/registry.py",
+      "sha256": "56b7590155c8aed7a979b65e710f8f50af536ff2036f68d7b0437a64dfb1149c"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/api.py",
+      "sha256": "af4a2c1c013f7d78f734965c5a44c03b0df92bd40bd8152db23c0ec31ee71c58"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/capabilities.py",
+      "sha256": "e365163f5d80b21c166fdd80f550a70009d3861f1f5d84fdd7e36fa566b5df24"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/graph/policy.py",
+      "sha256": "b0a7854389faf4ca43efd012af814dc1b5c4a672ffdf1b37ef0730fe26583dd1"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/input_validation.py",
+      "sha256": "336cad30a526efba565371108869db3be3c09e899ecd17a1bd3d44a5e56fb8c4"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/loading.py",
+      "sha256": "229d2901f8519ca423e5887dda3261893da217cf85959f2b0045a935efe91e7d"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/payload_cache.py",
+      "sha256": "ee62709ceb32611ff3abd98fe1ba7edfcd7af64c605626c68660e2639d7514b1"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/payloads.py",
+      "sha256": "ab20bbf4560bc5a876d9aa8d9c65f02e0d44794f76c7bc5e787d16f3253a039d"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/request.py",
+      "sha256": "9b8209eff1e08336ea17c1bbe07c2b659c31571da517ed7e9b382f87586398d3"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/model_hooks/steering/trace.py",
+      "sha256": "6b0504c85d3e9b46261f04367a0c3421bd8ca84b9f23ce7d56ec743d8867ab99"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/sampling_params.py",
+      "sha256": "2aba9ebd1c3921d601dcf94ac6a1f726e5172fe991e313cd5a69d3eaa02013fa"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/core/kv_cache_manager.py",
+      "sha256": "aa73c917c897732a3f110e698184847d2b29e55f5a0fb98b4de0a70811defbd8"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/core/sched/scheduler.py",
+      "sha256": "078b4a59b5a1841c8cee5482a43f2218ed2a4060fd0e5f984874b4ecb1e620c4"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/capture_model_runner_mixin.py",
+      "sha256": "08373d49adf0c841f009aecd88109cfa238cb1b8c08ecaf28709e8327dfa09b3"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/gpu/input_batch.py",
+      "sha256": "3929c92e42ae90e4410bb4537dcbdcd171a662e44afc1189a9a3e19037a84410"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/gpu/model_runner.py",
+      "sha256": "f0ba2ab4c412c1bb0a736ca7f2e6244d0bfa56ddb6b43b005698e33394daf9b6"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/gpu/sample/prompt_logprob.py",
+      "sha256": "4cf22d390e7bf59e44c458cff7180268db63e95d06af2f1e14d720a2d77c9663"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/gpu/sample/sampler.py",
+      "sha256": "408b08c4ac66de271f476460490f360ef2a9b73528a346d132a22326e1674369"
+    },
+    {
+      "path": "ref/easysteer_runtime/vllm/v1/worker/gpu/sample/states.py",
+      "sha256": "4e3671f93695ba5a48fad7d2d13beb231ac8741034904ed5a15d9f7b9b86662e"
+    }
+  ]
+}

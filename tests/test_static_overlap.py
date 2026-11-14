@@ -11,7 +11,7 @@ import torch
 from transformers import Qwen3Config, Qwen3ForCausalLM
 
 from steer_opd.direction_bank import bank_vectors, make_bank
-from steer_opd.method_config import Method, resolve_method
+from steer_opd.method_config import Method
 from steer_opd.operators import slerp
 from steer_opd.resumable_core import ROOT, response_hidden, score_hidden
 from steer_opd.static_masks import freeze_static_mask, native_overlap, selector_for_predictions, validate_static_mask
@@ -76,14 +76,11 @@ def test_invalid_slerp_strength_rejected(alpha):
         slerp(torch.ones(2), torch.ones(2), alpha)
 
 
-def test_method_static_is_distinct_from_dynamic_and_old_identity_is_stable():
-    old = Method().to_dict()
-    assert "operator" not in old and "alpha" not in old
-    assert Method(gate="overlap", overlap_threshold=.5).online_gate
+def test_method_rejects_removed_dynamic_gate_and_binds_static_direction_identity():
+    with pytest.raises(ValueError,match='all/static_overlap'):
+        Method(gate='overlap',overlap_threshold=.5)
     method = Method(gate="static_overlap", overlap_threshold=.5, operator="slerp", alpha=.1)
-    assert not method.online_gate and method.to_dict()["alpha"] == .1
-    with pytest.raises(ValueError, match="static_overlap_screen"):
-        resolve_method({"steering_method": {"gate": "static_overlap", "overlap_threshold": .5}})
+    assert method.to_dict()["alpha"] == .1
     value = bank(granularity="per_question")
     vectors, first = bank_vectors(value, "q1", alpha=.1, layers=[2])
     assert vectors[2].norm() == pytest.approx(1)
@@ -166,24 +163,12 @@ def test_all_eight_static_candidates_no_teacher_forward_and_no_mask_redecision()
     assert masks == original_masks
 
 
-def test_slerp_backward_with_gradient_checkpointing_matches_plain():
-    a = tiny(7).train(); b = copy.deepcopy(a).train()
-    b.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
-    tokens = torch.tensor([[1, 2, 3, 4]])
-    mask = torch.tensor([[False, True, True, True]])
-    for model in (a, b):
-        controller = SteeringController(model.model.layers[1], torch.arange(16).float(), .1, operator="slerp")
-        with controller.loss_scope(mask):
-            model(tokens, use_cache=False).logits.square().mean().backward()
-        controller.detach()
-    for x, y in zip(a.parameters(), b.parameters()):
-        torch.testing.assert_close(x.grad, y.grad, rtol=1e-5, atol=1e-7)
 
 
 @pytest.fixture
 def upstream_api(monkeypatch):
     """Load actual pinned source API/math on CPU, without importing a GPU engine."""
-    root = ROOT / "audit/static_mask_slerp_implementation_20261113/upstream"
+    root = ROOT / "ref/easysteer_runtime"
     before = dict(sys.modules)
     for name in ("vllm", "vllm.model_hooks", "vllm.model_hooks.steering", "vllm.model_hooks.steering.algorithms", "vllm.model_hooks.selection"):
         module = types.ModuleType(name)

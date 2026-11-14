@@ -1,0 +1,354 @@
+{
+  "authorization": "2026-11-14 user requested removal of redundant Markdown and obsolete experimental results",
+  "removed": [
+    {
+      "path": "docs/01_research_plan.md",
+      "bytes": 21112,
+      "files": 1
+    },
+    {
+      "path": "docs/02_paper_settings.md",
+      "bytes": 20346,
+      "files": 1
+    },
+    {
+      "path": "docs/03_execution_plan.md",
+      "bytes": 29720,
+      "files": 1
+    },
+    {
+      "path": "docs/04_pre_opd_overlap_tuning.md",
+      "bytes": 3909,
+      "files": 1
+    },
+    {
+      "path": "docs/05_method_branches.md",
+      "bytes": 12024,
+      "files": 1
+    },
+    {
+      "path": "docs/06_token_level_records.md",
+      "bytes": 8345,
+      "files": 1
+    },
+    {
+      "path": "docs/07_control_implementation_matrix.md",
+      "bytes": 12700,
+      "files": 1
+    },
+    {
+      "path": "docs/08_full_scheme_execution.md",
+      "bytes": 16876,
+      "files": 1
+    },
+    {
+      "path": "docs/09_novelty_audit_cross_family_steering_opd.md",
+      "bytes": 27886,
+      "files": 1
+    },
+    {
+      "path": "docs/10_overlap_parameter_search.md",
+      "bytes": 8404,
+      "files": 1
+    },
+    {
+      "path": "docs/11_online_gate_acceleration.md",
+      "bytes": 7428,
+      "files": 1
+    },
+    {
+      "path": "docs/12_static_overlap_protocol.md",
+      "bytes": 8618,
+      "files": 1
+    },
+    {
+      "path": "docs/13_next_pair_greedy_search_proposal.md",
+      "bytes": 6038,
+      "files": 1
+    },
+    {
+      "path": "docs/14_slerp_eight_scheme_screen.md",
+      "bytes": 4951,
+      "files": 1
+    },
+    {
+      "path": "docs/15_static_mask_slerp_implementation.md",
+      "bytes": 4957,
+      "files": 1
+    },
+    {
+      "path": "docs/16_compass_alignment_eight_way.md",
+      "bytes": 7768,
+      "files": 1
+    },
+    {
+      "path": "docs/17_implementation_recheck_20261113.md",
+      "bytes": 6812,
+      "files": 1
+    },
+    {
+      "path": "docs/18_efficient_steer_opd_backends_20261114.md",
+      "bytes": 11677,
+      "files": 1
+    },
+    {
+      "path": "audit/cache_policy_20261114",
+      "bytes": 285451,
+      "files": 12
+    },
+    {
+      "path": "audit/compass_span_adapter_20261113",
+      "bytes": 12996347,
+      "files": 27
+    },
+    {
+      "path": "audit/control_coverage_review_2026-11-12",
+      "bytes": 122451,
+      "files": 12
+    },
+    {
+      "path": "audit/cross_family_priority_2026-11-10",
+      "bytes": 20000,
+      "files": 7
+    },
+    {
+      "path": "audit/dataset_path_fix_2026-11-11",
+      "bytes": 1290,
+      "files": 1
+    },
+    {
+      "path": "audit/default_comparison_search_proposal_20261113",
+      "bytes": 4073,
+      "files": 4
+    },
+    {
+      "path": "audit/docs_cleanup_2026-11-10",
+      "bytes": 21894,
+      "files": 2
+    },
+    {
+      "path": "audit/efficient_backends_20261114",
+      "bytes": 3648536,
+      "files": 32
+    },
+    {
+      "path": "audit/experiment_planning_2026-11-07",
+      "bytes": 3683346,
+      "files": 94
+    },
+    {
+      "path": "audit/extraction_timing_sync_2026-11-12",
+      "bytes": 186036,
+      "files": 13
+    },
+    {
+      "path": "audit/full_plan_implementation_review_2026-11-12.json",
+      "bytes": 1226,
+      "files": 1
+    },
+    {
+      "path": "audit/full_plan_implementation_review_2026-11-12.md",
+      "bytes": 6236,
+      "files": 1
+    },
+    {
+      "path": "audit/full_scheme_2026-11-12",
+      "bytes": 619430,
+      "files": 17
+    },
+    {
+      "path": "audit/implementation_recheck_20261113",
+      "bytes": 424464,
+      "files": 28
+    },
+    {
+      "path": "audit/implementation_recheck_20261114",
+      "bytes": 12858,
+      "files": 3
+    },
+    {
+      "path": "audit/math500_launch_2026-11-08",
+      "bytes": 252632,
+      "files": 18
+    },
+    {
+      "path": "audit/method_branches_2026-11-12",
+      "bytes": 172934,
+      "files": 16
+    },
+    {
+      "path": "audit/model_storage_2026-11-10",
+      "bytes": 39883,
+      "files": 9
+    },
+    {
+      "path": "audit/next_pair_greedy_proposal_20261113",
+      "bytes": 107746,
+      "files": 9
+    },
+    {
+      "path": "audit/novelty_search_2026-11-07",
+      "bytes": 25914302,
+      "files": 157
+    },
+    {
+      "path": "audit/online_gate_performance_20261113",
+      "bytes": 440542,
+      "files": 11
+    },
+    {
+      "path": "audit/overlap_answer_20261113.json",
+      "bytes": 121513,
+      "files": 1
+    },
+    {
+      "path": "audit/overlap_answer_20261113.md",
+      "bytes": 1740,
+      "files": 1
+    },
+    {
+      "path": "audit/overlap_fidelity_review_20261114",
+      "bytes": 6054,
+      "files": 3
+    },
+    {
+      "path": "audit/package_validation.json",
+      "bytes": 4801,
+      "files": 1
+    },
+    {
+      "path": "audit/paper_alignment_2026-11-10",
+      "bytes": 14269,
+      "files": 2
+    },
+    {
+      "path": "audit/performance_ranking_2026-11-12",
+      "bytes": 939986,
+      "files": 16
+    },
+    {
+      "path": "audit/plan_integration_2026-11-12",
+      "bytes": 210930,
+      "files": 18
+    },
+    {
+      "path": "audit/pre_opd_overlap_plan_2026-11-12",
+      "bytes": 226539,
+      "files": 12
+    },
+    {
+      "path": "audit/relative_layer_depths_20261113",
+      "bytes": 2755,
+      "files": 3
+    },
+    {
+      "path": "audit/remove_sequence_caps_2026-11-12",
+      "bytes": 1480938270,
+      "files": 2973
+    },
+    {
+      "path": "audit/replay_failure_20261113",
+      "bytes": 57819482,
+      "files": 302
+    },
+    {
+      "path": "audit/research_scope_correction_2026-11-11",
+      "bytes": 40275,
+      "files": 3
+    },
+    {
+      "path": "audit/rethinking_alignment_2026-11-12",
+      "bytes": 285810,
+      "files": 26
+    },
+    {
+      "path": "audit/rethinking_figure8_2026-11-11",
+      "bytes": 11863,
+      "files": 3
+    },
+    {
+      "path": "audit/rollout_top16_shared_data_2026-11-12",
+      "bytes": 170239,
+      "files": 17
+    },
+    {
+      "path": "audit/selected_overlap_grid_20261113",
+      "bytes": 253125,
+      "files": 15
+    },
+    {
+      "path": "audit/shared_data_direct_tuning_2026-11-12",
+      "bytes": 181422,
+      "files": 10
+    },
+    {
+      "path": "audit/slerp_eight_scheme_selection_20261113",
+      "bytes": 114253,
+      "files": 9
+    },
+    {
+      "path": "audit/static_mask_slerp_implementation_20261113",
+      "bytes": 245217,
+      "files": 28
+    },
+    {
+      "path": "audit/static_overlap_continuation_20261113",
+      "bytes": 75673,
+      "files": 7
+    },
+    {
+      "path": "audit/static_overlap_protocol_20261113",
+      "bytes": 401204,
+      "files": 21
+    },
+    {
+      "path": "audit/status_2026-11-10",
+      "bytes": 3454,
+      "files": 4
+    },
+    {
+      "path": "audit/steering_full_plan_readiness_2026-11-12",
+      "bytes": 37025,
+      "files": 5
+    },
+    {
+      "path": "audit/step10_overlap_2026-11-12",
+      "bytes": 13374,
+      "files": 6
+    },
+    {
+      "path": "audit/student_forward_count_2026-11-12.md",
+      "bytes": 2279,
+      "files": 1
+    },
+    {
+      "path": "audit/token_recording_2026-11-12",
+      "bytes": 247556,
+      "files": 19
+    },
+    {
+      "path": "audit/user_stop_top16_20261112_185502",
+      "bytes": 8162,
+      "files": 2
+    },
+    {
+      "path": "audit/vllm_easysteer_review_2026-11-12",
+      "bytes": 2447300,
+      "files": 12
+    },
+    {
+      "path": "audit/vllm_seq_limits_2026-11-12",
+      "bytes": 2128118,
+      "files": 15
+    },
+    {
+      "path": "audit/vllm_steering_gate_docs_2026-11-12",
+      "bytes": 25146,
+      "files": 6
+    }
+  ],
+  "logical_bytes_removed": 1596159082,
+  "files_removed": 4033,
+  "shared_assets_modified": false,
+  "retained": "core research manuscript, current docs/config/100 source questions, paper and pinned API sources, small asset/legacy provenance, current implementation receipts"
+}

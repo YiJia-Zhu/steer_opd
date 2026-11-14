@@ -14,7 +14,7 @@ import torch
 from steer_opd.resumable_core import digest
 
 
-METRIC = "compass_aligned_byte_top16_overlap"
+METRIC = "rethinking_cross_family_top16_overlap"
 
 
 def _byte_decoder():
@@ -38,6 +38,7 @@ class ByteLevelCodec:
             raise ValueError("This adapter requires a verified ByteLevel decoder; no heuristic Unicode fallback")
         self.tokenizer = tokenizer
         self.vocab = tokenizer.get_vocab()
+        self.token_names = {index: token for token, index in self.vocab.items()}
         self.special = set(tokenizer.all_special_ids)
         self.eos = {tokenizer.eos_token_id} - {None}
         self.eos.update(self.vocab[t] for t in ("<|im_end|>", "<|endoftext|>") if t in self.vocab)
@@ -68,11 +69,19 @@ class ByteLevelCodec:
 
     def event(self, token):
         token = int(token)
-        if token in self.eos:
-            return "EOS"
-        if token in self.special or not self.raw.get(token):
+        # Top16 is a cardinality metric: do not merge distinct EOS IDs or drop
+        # matching controls. P_overlap intentionally uses coarser EOS/control classes.
+        if token in self.special:
+            return "control:"+self.token_names[token]
+        if not self.raw.get(token):
             return None
         return "bytes:"+self.raw[token].hex()
+
+    @property
+    def event_vocabulary(self):
+        if not hasattr(self, "_event_vocabulary"):
+            self._event_vocabulary = {self.event(t) for t in self.valid_ids} - {None}
+        return self._event_vocabulary
 
 
 def align_response(source_ids, student_codec, scoring_codecs):
@@ -180,8 +189,24 @@ def aligned_metrics(plan, student, teacher, student_codec, teacher_codec):
     if plan["tokenizer_mapping_sha256"]["student"] != student_codec.mapping_sha256 or plan["tokenizer_mapping_sha256"]["teacher"] != teacher_codec.mapping_sha256:
         raise ValueError("Metric codec differs from the frozen alignment")
     n = len(plan["source_token_ids"])
-    fields = {k: torch.full((n,), float("nan")) for k in
-              ("overlap", "student_shared_mass", "teacher_shared_mass", "student_event_coverage", "teacher_event_coverage")}
+    from steer_opd.byte_probabilities import probability_overlap, validate_byte_probabilities
+    fields = {k: torch.full((n,), float("nan"), dtype=torch.float64) for k in
+              ("overlap", "P_overlap", "student_shared_mass", "teacher_shared_mass",
+               "student_event_coverage", "teacher_event_coverage", "student_vocab_coverage",
+               "teacher_vocab_coverage", "student_common_vocab_mass", "teacher_common_vocab_mass")}
+    def vocabulary(codec):
+        if not hasattr(codec, "_metric_event_vocabulary"):
+            codec._metric_event_vocabulary = {codec.event(t) for t in codec.valid_ids} - {None}
+        return codec._metric_event_vocabulary
+    vocabularies = {"student": vocabulary(student_codec), "teacher": vocabulary(teacher_codec)}
+    dual = "byte_probs" in student and "byte_probs" in teacher
+    if dual:
+        validate_byte_probabilities(student["byte_probs"], n)
+        validate_byte_probabilities(teacher["byte_probs"], len(plan["native_response_ids"]["teacher"]))
+        valid_units = [u for u in plan["units"] if u["valid"]]
+        p_values = iter(probability_overlap(
+            student["byte_probs"][[u["ranges"]["student"][0] for u in valid_units]],
+            teacher["byte_probs"][[u["ranges"]["teacher"][0] for u in valid_units]]).tolist())
     per_unit = []
     def events(codec, score, position):
         result = {}
@@ -200,12 +225,27 @@ def aligned_metrics(plan, student, teacher, student_codec, teacher_codec):
         common = a.keys() & b.keys()
         values = {"overlap": len(common)/16, "student_shared_mass": sum(a[x] for x in common),
                   "teacher_shared_mass": sum(b[x] for x in common),
-                  "student_event_coverage": len(a)/16, "teacher_event_coverage": len(b)/16}
+                  "student_event_coverage": len(a)/16, "teacher_event_coverage": len(b)/16,
+                  "student_vocab_coverage": sum(student_codec.event(t) in vocabularies["teacher"] for t in student["ids"][lo])/16,
+                  "teacher_vocab_coverage": sum(teacher_codec.event(t) in vocabularies["student"] for t in teacher["ids"][tlo])/16}
+        if student_codec.mapping_sha256 == teacher_codec.mapping_sha256:
+            # Exact compatible-tokenizer regression, including duplicate byte aliases.
+            si, ti = student["ids"][lo], teacher["ids"][tlo]
+            values["overlap"] = float((si[:, None] == ti[None, :]).any(-1).double().mean())
+        if dual:
+            values["P_overlap"] = next(p_values)
+            for role, score, pos in [("student", student, lo), ("teacher", teacher, tlo)]:
+                if "common_vocab_mass" in score:
+                    values[f"{role}_common_vocab_mass"] = float(score["common_vocab_mass"][pos])
         for key, value in values.items():
             fields[key][lo:hi] = value
         per_unit.append(values)
-    return {**fields, "metric": METRIC, "metric_version": 1,
+    return {**fields, "metric": METRIC, "metric_version": 2, "P_overlap_available": dual,
+            "valid_span_count": sum(bool(u["valid"]) for u in plan["units"]),
+            "total_span_count": len(plan["units"]),
             "alignment_id": plan["alignment_id"], "alignment_mask": torch.tensor(plan["alignment_mask"]),
             "unit_metrics": per_unit, "metric_position_semantics": "shared_span_start_broadcast_to_student_tokens",
-            "paper_native_overlap_at_16": None, "native_token_ids_comparable": False,
-            "metric_origin": "project_adaptation_not_defined_by_compass_paper"}
+            "paper_native_overlap_at_16": fields["overlap"] if student_codec.mapping_sha256 == teacher_codec.mapping_sha256 else None,
+            "native_token_ids_comparable": student_codec.mapping_sha256 == teacher_codec.mapping_sha256,
+            "P_overlap_definition": "full_native_probability_first_byte_pushforward_sum_min",
+            "metric_origin": "rethinking_top16_cross_family_adaptation_not_original_native_metric"}

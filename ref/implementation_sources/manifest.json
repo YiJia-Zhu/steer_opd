@@ -1,0 +1,54 @@
+{
+  "scope": "pinned public implementation sources and minimal legacy provenance; not GPU validation",
+  "revisions": {
+    "sv_training": "198fdbd917e9d7234f734aa8eb754faa408bd2e6",
+    "verl": "61adb0c7eb90730306e7794c2bf248331211e657",
+    "nemo_rl": "5d28fc3c87f48026879ef52ab304391660b9a601"
+  },
+  "files": [
+    {
+      "path": "ref/implementation_sources/legacy_weight_fingerprints.json",
+      "sha256": "6ae99c3f5296ebbb9a7e1ed9f2f2ff1faaebdfc3cb7f96797adea14e1ab2b6df"
+    },
+    {
+      "path": "ref/implementation_sources/nemo_opd.md",
+      "sha256": "4628411e481f8eccebac913d1880a9dd873ac731569dbc79d4aae362002186b6"
+    },
+    {
+      "path": "ref/implementation_sources/reading_manifest.json",
+      "sha256": "17b5d8e7ff450c489384e7b5235dfbf282688d32890406b1defe4753923e1610"
+    },
+    {
+      "path": "ref/implementation_sources/rethinking_comparison.json",
+      "sha256": "7906f627617775417b8da9c24d00abeb208b8714a1c6797c5198ba9d0d40c618"
+    },
+    {
+      "path": "ref/implementation_sources/rethinking_launch_preview.json",
+      "sha256": "8d2180b7ad5b952a8380ea363eea2f37e039e02989077b88e9e29a334041c2fe"
+    },
+    {
+      "path": "ref/implementation_sources/sv_acts.py",
+      "sha256": "65b58862a0452707a998b68ee98e443254cf333cdd70e284039396f896267497"
+    },
+    {
+      "path": "ref/implementation_sources/sv_generate.py",
+      "sha256": "25ebfeae1e6b6bb5cb92b2e3f8055857551c6691f99cc8792a2b54f73c35e0e0"
+    },
+    {
+      "path": "ref/implementation_sources/sv_train.py",
+      "sha256": "ab13572fd01365289213b6aec21219e1ed1c944d83eccdf49bad7726a686c4af"
+    },
+    {
+      "path": "ref/implementation_sources/sv_vectors.py",
+      "sha256": "dcdbecc5d2f367705672037557ff25acd1b5b4ccc46534c36ad1462bd30c7a39"
+    },
+    {
+      "path": "ref/implementation_sources/verl_distillation_losses.py",
+      "sha256": "00e3702f008c1ddc409d659eb43bad24e0584b38cd647e7c021afca1ec2ad563"
+    },
+    {
+      "path": "ref/implementation_sources/verl_opd_README.md",
+      "sha256": "a874027dd7c00eb9b93344df41f3a8499e9a1f1b70a1d4032326781d6519ee68"
+    }
+  ]
+}

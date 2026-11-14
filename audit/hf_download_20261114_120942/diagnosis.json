@@ -1,0 +1,71 @@
+{
+  "checked_at": "2026-11-14T12:12:16.862253",
+  "repo": "Qwen/Qwen3.5-35B-A3B",
+  "revision": "59d61f3ce65a6d9863b86d2e96597125219dc754",
+  "local_dir": "/home/zhenning/data/huggingface_models/Qwen3.5-35B-A3B",
+  "huggingface_hub": "1.23.0",
+  "hf_xet": "1.5.1",
+  "network_tests": {
+    "hf_api_through_existing_proxy": {
+      "http": 200,
+      "seconds": 0.409176
+    },
+    "hf_api_direct": {
+      "status": "connect_timeout",
+      "seconds": 8.001479
+    },
+    "xet_health_through_existing_proxy": {
+      "http": 200,
+      "seconds": 1.363813
+    },
+    "xet_health_direct": {
+      "http": 200,
+      "seconds": 0.675632
+    }
+  },
+  "disk_free_bytes": 46308593664,
+  "expected_total_file_bytes": 71927084782,
+  "initially_missing": [
+    "model.safetensors-00013-of-00014.safetensors"
+  ],
+  "orphaned_partial_files": [
+    {
+      "file": ".cache/huggingface/download/4JkSC33VsYpMyVC_fJnwbQtRRak=.d5e08a7dd670d7ef8da38e7af29cb8cdf42ecded5dfb2d9fcaf06cae79dfaa41.db1ecc82.incomplete",
+      "bytes": 519236737,
+      "mtime_ns": 1794586616692404479
+    },
+    {
+      "file": ".cache/huggingface/download/B3iWRkLr1mv7bGzx1Y-n5nLABZ8=.af5f17d292df6b200ee928d7dac30a66eab3e8f6d5d88a84fe1d27859d4a64fe.9446cab5.incomplete",
+      "bytes": 402745011,
+      "mtime_ns": 1794583207174140407
+    },
+    {
+      "file": ".cache/huggingface/download/acFyXZjyC4cR1444-TvcHl7tiVM=.52885dbecd4e8e2e52e6cd50a1693a640ce622f219c35bf317aad89f72d956fc.f6b164df.incomplete",
+      "bytes": 4023519214,
+      "mtime_ns": 1794588926719883777
+    },
+    {
+      "file": ".cache/huggingface/download/nfYrR3MgbHT5nZlsGFpE1fq67Oo=.da8cc27a2a99eeba5674bfef03c80b3c4f08edfd839ad319a7702fcaedfd874f.65dd6cb8.incomplete",
+      "bytes": 3087068401,
+      "mtime_ns": 1794586623077393905
+    },
+    {
+      "file": ".cache/huggingface/download/nfYrR3MgbHT5nZlsGFpE1fq67Oo=.da8cc27a2a99eeba5674bfef03c80b3c4f08edfd839ad319a7702fcaedfd874f.e825c58d.incomplete",
+      "bytes": 402426346,
+      "mtime_ns": 1794628462093678129
+    }
+  ],
+  "orphaned_partial_bytes": 8434995709,
+  "initial_integrity": "initial_integrity.json",
+  "xet_evidence": "xet_diagnostic_summary.json",
+  "http_probe": "http_probe.json",
+  "download": "http_download_status.json",
+  "findings": [
+    "Existing complete files passed official content-hash verification.",
+    "Latest Xet log contains three IncompleteMessage connection failures to us.aws.cdn.hf.co; the earlier attempt contains five 403 responses with expired signed URLs.",
+    "Xet logs configure a 300-second read timeout, up to five attempts, and adaptive download concurrency up to 64. These can lengthen visible stalls; the precise source of connection disruption is unconfirmed.",
+    "Installed huggingface_hub 1.23.0 uses a new UUID temporary path for each download attempt and does not resume old incomplete files across restarts.",
+    "Ordinary HTTP range request for missing shard succeeded with status 206 via existing proxy. Process-local HF_HUB_DISABLE_XET=1 used for download.",
+    "No environment packages, proxy configuration, experiment configuration, or execution hold changed."
+  ]
+}

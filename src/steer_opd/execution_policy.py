@@ -1,7 +1,7 @@
 """Explicit experiment holds and default vLLM scheduler requirements."""
 
 
-POLICY_KEYS = ("execution_hold", "execution_blockers")
+POLICY_KEYS = ("execution_hold", "execution_blockers", "gpu_acceptance_receipt", "gpu_acceptance_binding")
 SEQUENCE_LIMIT_OPTIONS = frozenset({
     "max_num_seqs", "max_num_active_seqs", "vllm_max_num_seqs",
     "num_seqs", "num_seq", "seq_num", "max-num-seqs",
@@ -20,6 +20,13 @@ def require_execution_allowed(config):
         raise RuntimeError(f"Experiment execution is held: {config['execution_hold']}")
     if config.get("execution_blockers"):
         raise RuntimeError(f"Experiment prerequisites remain: {config['execution_blockers']}")
+    if config.get('gpu_acceptance_receipt'):
+        from steer_opd.resumable_core import ROOT, read_json
+        path=ROOT/config['gpu_acceptance_receipt']
+        if not path.is_file():raise RuntimeError('Run the launcher GPU validation before starting this panel')
+        value=read_json(path)
+        if value.get('status')!='passed' or value.get('binding')!=config.get('gpu_acceptance_binding'):
+            raise RuntimeError('GPU validation receipt does not match this run')
 
 
 def require_default_scheduler_options(config):

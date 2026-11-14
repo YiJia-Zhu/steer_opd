@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "checked_at": "2026-11-14T13:47:32.883535+08:00",
+  "full_cpu_tests": "249 passed, 1 skipped",
+  "final_launch_regression": "52 passed",
+  "shell_syntax": "passed",
+  "package_validation": "passed",
+  "diff_check": "passed",
+  "default_and_custom_preview": "passed; custom alpha/layer/IDs reach actual candidate config",
+  "preview_created_run": false,
+  "gpu_pool_selection": "only explicitly selected physical IDs; busy/leased GPUs excluded; maximum two GPUs",
+  "gpu_experiments_started": false,
+  "gpu_validation_executed": false,
+  "original_template_hold": "awaiting_user_approval",
+  "launch_modes": [
+    "--check",
+    "--run",
+    "--status"
+  ],
+  "resume": "repeat --run; committed stages/candidates reused",
+  "current_preflight": "teacher weights still missing; launcher does not download models",
+  "source_sha256": {
+    "scripts/run_static_panel.sh": "d895ef758aa08cc7e41be935d0f2968cd1328c054f026f70c8d4b6d5981aa2b8",
+    "scripts/launch_static_panel.py": "7282a92b77e402ffffd812774cfea23fb5b3f0ee3b46000fd8322c800a43f2eb",
+    "scripts/validate_static_gpu.py": "1d2718fc6b356b515ce8c50dc51acc98e27d2eaa38b367aa1cb3d1f5dc5b8710",
+    "scripts/run_on_idle_gpus.py": "eb7013d03d58694a303ca0cc07ebfc015518d1e6539302d7b7e0ebb6069f61ab",
+    "scripts/run_compass_static_panel.py": "78d4f49c6730a91b856687c96bec0975521529555e74bf78378aef9e1a1006b1",
+    "src/steer_opd/compass_campaign.py": "96ab6f47b9e6432ada45164d9e25072301f8275ae4947998cfa9c8e3cc758c2d",
+    "src/steer_opd/execution_policy.py": "7efab92df0e0bfa5bebc2cab476f76849ab9d12c45a3da5cd12a7668e20ce6a7",
+    "tests/test_static_launcher.py": "5f87ed9165ec91eb09486e9f1b572bd2c0199702b4a46b363b3bfb20cd1568c4"
+  }
+}

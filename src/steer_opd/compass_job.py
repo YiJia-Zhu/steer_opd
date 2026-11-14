@@ -36,6 +36,18 @@ def safe_key(row):
     return key
 
 
+def native_score_binding(job, role, row, codec):
+    identity = {"row": row, "checkpoint": job[role], "tokenizer": codec.mapping_sha256,
+                "support_id": codec.support_id}
+    if job.get("require_dual_metrics"):
+        identity.update(protocol="dual_overlap_v2", backend=job.get("probability_backend"))
+    if job.get("bind_checkpoint_content"):
+        from steer_opd.checkpoint_identity import checkpoint_content_id
+        identity["checkpoint_content_id"] = checkpoint_content_id(model_path(job[role]),
+            receipt_dir=project_path(job[f"{role}_scores"])/"provenance/checkpoints")
+    return digest(identity)
+
+
 def load_codecs(job):
     from transformers import AutoTokenizer
     return {role: ByteLevelCodec(AutoTokenizer.from_pretrained(
@@ -122,14 +134,17 @@ def prepare_screen(job, codecs=None):
             key = native_row["key"]
             p = project_path(job[f"{role}_scores"]) / f"{key}.pt"
             value = torch.load(p, weights_only=True, map_location="cpu")
-            expected = digest({"row": native_row, "checkpoint": job[role],
-                               "tokenizer": codecs[role].mapping_sha256, "support_id": codecs[role].support_id})
+            expected = native_score_binding(job, role, native_row, codecs[role])
             if value.get("binding") != expected:
                 raise ValueError(f"{role} cache has changed text/checkpoint/tokenizer/support")
             validate_native_score(value, len(native_row["token_ids"]), codecs[role].support_size)
+            if job.get("require_dual_metrics"):
+                from steer_opd.byte_probabilities import projection_spec, validate_projection
+                validate_projection(value, projection_spec(codecs[role], codecs["student"]), len(native_row["token_ids"]))
             native[role][key] = value
             hashes[role][key] = file_sha256(p)
-    adapter = AlignedMetricAdapter(plans, codecs["student"], codecs["teacher"], native["reference"])
+    adapter = AlignedMetricAdapter(plans, codecs["student"], codecs["teacher"], native["reference"],
+                                   require_dual=job.get("require_dual_metrics", False))
     masks = {}
     source_hashes = {}
     for row in rows:
@@ -138,6 +153,12 @@ def prepare_screen(job, codecs=None):
         score = load_rollout_topk(source_root, row, 16, job["support_size"])
         if row.get("model") != job["student"] or job["support_size"] != codecs["student"].support_size:
             raise ValueError("Source rollout model/native output support mismatch")
+        if job.get("bind_checkpoint_content"):
+            from steer_opd.checkpoint_identity import checkpoint_content_id
+            content_id = checkpoint_content_id(model_path(job["student"]))
+            if row.get("model_content_id") != content_id or any(
+                    bank["identity"].get("checkpoint_content_id") != content_id for bank in banks.values()):
+                raise ValueError("Source/bank checkpoint contents differ from the frozen student")
         source_hashes[key] = file_sha256(source_root / row["rollout_topk"])
         metrics = adapter(key, score, native["teacher"][key])
         identity = {**job["identity"], "student_checkpoint": job["student"], "teacher_checkpoint": job["teacher"],
@@ -146,8 +167,12 @@ def prepare_screen(job, codecs=None):
             "support_id": digest({r: codec.support_id for r, codec in codecs.items()}),
             "student_score_sha256": source_hashes[key], "teacher_score_sha256": hashes["teacher"][key],
             "reference_score_sha256": hashes["reference"][key], "alignment_id": plans[key]["alignment_id"]}
-        masks[key] = freeze_static_mask(row, metrics["overlap"], job["threshold"], identity,
-                                       alignment_mask=plans[key]["alignment_mask"])
+        gate_metric = job.get("gate_metric", "overlap")
+        identity["gate_metric"] = gate_metric
+        masks[key] = freeze_static_mask(row, metrics[gate_metric], job["threshold"], identity,
+                                       alignment_mask=plans[key]["alignment_mask"],
+                                       source_metrics={name: metrics[name] for name in ("overlap", "P_overlap")}
+                                       if job.get("require_dual_metrics") else None)
         for c in conditions:
             bank = banks[c["bank"]]
             if row["id"] not in bank["valid_ids"] or bank["identity"]["checkpoint"] != job["student"]:

@@ -1,1 +1,1 @@
-"""Steering during the student loss forward, with ordinary student rollouts."""
+"""Frozen-student static steering experiments with two overlap metrics."""

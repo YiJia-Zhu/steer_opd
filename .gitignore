@@ -41,7 +41,7 @@ htmlcov/
 /assets/cache/
 
 # 第三方嵌套 Git checkout，避免被误加为不完整的子模块。
-# 固定版本和来源见 docs/03_execution_plan.md 及 audit 中的源码清单。
+# 固定版本和来源见 docs/implementation.md 及 ref 中的源码清单。
 # 保留 ref/、papers/ 中的论文和文本，以及 audit 中的小型源码快照。
 /vendor/
 /ref/ref_rep/

@@ -8,8 +8,10 @@ else
     STEER_OPD_RUNTIME_PREFIX=/home/zhenning/data/miniconda3/envs/verl
 fi
 export STEER_OPD_PYTHON="${STEER_OPD_RUNTIME_PREFIX}/bin/python"
-export PYTHONPATH="${STEER_OPD_ROOT}/src:${STEER_OPD_ROOT}/vendor/verl${PYTHONPATH:+:${PYTHONPATH}}"
+export PYTHONPATH="${STEER_OPD_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONDONTWRITEBYTECODE=1
+export PYTHONHASHSEED=42
+export PYTHONUNBUFFERED=1
 export HF_HOME="${STEER_OPD_ROOT}/.cache/huggingface"
 export HF_DATASETS_CACHE="${STEER_OPD_ROOT}/.cache/datasets"
 export XDG_CACHE_HOME="${STEER_OPD_ROOT}/.cache"

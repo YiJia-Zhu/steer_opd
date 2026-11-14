@@ -1,12 +1,7 @@
-"""Paired fixed-prefix diagnostics only: no training or optimizer operations."""
-
-import copy
+"""Paired fixed-prefix metric summaries and select-only threshold calibration."""
+import math
 import numpy as np
 import torch
-
-from steer_opd.direction_bank import bank_vectors, file_sha256
-from steer_opd.resumable_core import atomic_json, atomic_torch, digest, response_hidden, score_hidden
-from steer_opd.steering import CompositeSteeringController, SteeringController, find_decoder_layer
 
 
 def position_metrics(student, teacher):
@@ -46,81 +41,18 @@ def paired_summary(records, baseline, seed=42, bootstrap_samples=2000):
             "parameter_updates": 0, "interpretation": "immediate_fixed_prefix_intervention_not_learning"}
 
 
-def candidate_controller(model, bank, condition):
-    if condition["kind"] == "baseline":
-        return None
-    if condition["kind"] == "legacy":
-        payload = torch.load(condition["vector_path"], map_location="cpu", weights_only=True)
-        return SteeringController(find_decoder_layer(model, payload["layer"]), payload["delta"], 1.0)
-    selected = copy.copy(bank)
-    selected["layers"] = {str(layer): bank["layers"][str(layer)] for layer in condition["layers"]}
-    vectors, _ = bank_vectors(selected, rho=condition["rho"], control=condition.get("control", "positive"),
-                              seed=condition.get("seed", 42))
-    return CompositeSteeringController(model, vectors)
-
-
-def evaluate_candidate(model, bank, condition, rows, teacher_dir, output, baseline_dir=None):
-    controller = candidate_controller(model, bank, condition)
-    results = {}
-    try:
-        with torch.inference_mode():
-            for index, row in enumerate(rows):
-                qid = row["id"]
-                teacher_path = teacher_dir / f"{qid}.pt"
-                binding = digest({"row": row, "condition": condition, "bank_id": bank["bank_id"],
-                                  "teacher_sha256": file_sha256(teacher_path), "token_record_schema": 1})
-                target = output / f"{qid}.pt"
-                actual_mask = (torch.tensor(row.get("steering_mask", [True] * len(row["token_ids"])), dtype=torch.bool)
-                               if controller is not None else torch.zeros(len(row["token_ids"]), dtype=torch.bool))
-                if target.exists():
-                    record = torch.load(target, weights_only=True)
-                    if record["binding"] != binding:
-                        raise ValueError("Diagnostic prefix/vector/teacher changed")
-                    if not torch.equal(record.get("steering_mask", torch.empty(0)), actual_mask):
-                        # Old fixed-prefix logging wrote all-True even when
-                        # response_hidden had replayed the supplied mixed mask.
-                        # Repair only metadata from the bound row, no new pass.
-                        record["steering_mask"] = actual_mask
-                        record["mask_recording_corrected"] = True
-                        atomic_torch(target, record)
-                else:
-                    teacher = torch.load(teacher_path, weights_only=True)
-                    score = score_hidden(model, response_hidden(model, row, controller), include_entropy=True)
-                    record = {"binding": binding, "ids": score["ids"], "logps": score["logps"],
-                              **position_metrics(score, teacher), "parameter_updates": 0}
-                    count = len(row["token_ids"])
-                    record.update(token_record_schema=1, question_id=qid, bank_id=bank["bank_id"],
-                        condition=condition, source_row_hash=digest(row),
-                        response_token_ids=torch.tensor(row["token_ids"], dtype=torch.int32),
-                        response_positions=torch.arange(count),
-                        prediction_input_positions=torch.arange(len(row["prompt_token_ids"]) - 1,
-                                                                len(row["prompt_token_ids"]) + count - 1),
-                        steering_mask=actual_mask,
-                        student_entropy=score["entropy"], entropy_support_size=score["entropy_support_size"],
-                        teacher_record_path=str(teacher_path), teacher_record_sha256=file_sha256(teacher_path),
-                        student_prefix_history="fixed_Base_tokens_with_this_condition_interventions",
-                        current_step_probe=False)
-                    if "entropy" in teacher:
-                        record["teacher_entropy"] = teacher["entropy"]
-                        record["signed_entropy_gap"] = score["entropy"] - teacher["entropy"]
-                    else:
-                        record["teacher_entropy_available"] = False
-                    record["position_bins"] = {str(index): float(values.mean()) for index, values in
-                                               enumerate(record["overlap"].tensor_split(min(10, len(record["overlap"]))))}
-                    if baseline_dir is not None:
-                        baseline = torch.load(baseline_dir / f"{qid}.pt", weights_only=True)
-                        if condition.get("rho") == 0:
-                            if not torch.equal(score["ids"], baseline["ids"]) or not torch.equal(score["logps"], baseline["logps"]):
-                                raise RuntimeError("alpha0 is not exactly identical to baseline")
-                        if index == 0:
-                            restored = score_hidden(model, response_hidden(model, row))
-                            if not torch.equal(restored["ids"], baseline["ids"]) or not torch.equal(restored["logps"], baseline["logps"]):
-                                raise RuntimeError("Hook removal did not restore baseline")
-                            record["hook_removal_exact"] = True
-                    atomic_torch(target, record)
-                results[qid] = record
-    finally:
-        if controller:
-            controller.detach()
-    atomic_json(output / "complete.json", {"questions": len(rows), "condition": condition, "parameter_updates": 0})
-    return results
+def calibrate_threshold(values, target_rate, comparison, *, lower_bound=None):
+    values = [float(value) for value in values]
+    if not values or not all(math.isfinite(value) for value in values):
+        raise ValueError("Calibration needs finite training/dev observations")
+    if not 0 < target_rate < 1 or comparison not in ("lt", "gt"):
+        raise ValueError("Invalid gate calibration")
+    candidates = set(values)
+    candidates.update(math.nextafter(value, math.inf if comparison == "lt" else -math.inf) for value in values)
+    if lower_bound is not None:
+        candidates = {max(lower_bound, value) for value in candidates}
+    def rate(threshold):
+        return sum(value < threshold if comparison == "lt" else value > threshold for value in values) / len(values)
+    threshold = min(candidates, key=lambda value: (abs(rate(value) - target_rate), value))
+    return {"threshold": threshold, "target_rate": target_rate, "observed_rate": rate(threshold),
+            "positions": len(values), "comparison": comparison}

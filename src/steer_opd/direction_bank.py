@@ -1,10 +1,7 @@
-"""Frozen versioned student-space direction banks, shared by rollout and replay."""
-
+"""Frozen S0 global/per-question direction banks and their content identities."""
 import hashlib
 import math
-
 import torch
-
 from steer_opd.resumable_core import digest
 
 
@@ -50,8 +47,7 @@ def make_bank(pooled, method, identity, fixed_scales=None, *, allow_zero_directi
     return bank
 
 
-def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None,
-                 operator=None, alpha=None, layers=None):
+def bank_vectors(bank, question_id=None, *, rho=None, operator=None, alpha=None, layers=None):
     method = bank["method"]
     if method["granularity"] == "global":
         records, assigned = bank["layers"], "global"
@@ -59,12 +55,6 @@ def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None,
         if question_id not in bank["per_question"]:
             raise ValueError(f"No usable vector for question {question_id}; no silent global fallback")
         assigned = question_id
-        if method.get("vector_assignment", "own") == "other_question":
-            ids = sorted(bank["per_question"])
-            if len(ids) < 2:
-                raise ValueError("Other-question control needs at least two questions")
-            offset = 1 + method["seed"] % (len(ids) - 1)
-            assigned = ids[(ids.index(question_id) + offset) % len(ids)]
         records = bank["per_question"][assigned]
     if layers is not None:
         if not layers or len(set(layers)) != len(layers) or any(str(layer) not in records for layer in layers):
@@ -76,9 +66,7 @@ def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None,
     strength = (rho if rho is not None else method["rho"]) if operator == "additive" else alpha if alpha is not None else float("nan")
     validate_operator(operator, strength)
     rho = method["rho"] if rho is None else rho
-    control = control or method.get("direction_control", "positive")
-    seed = method["seed"] if seed is None else seed
-    if rho < 0 or not math.isfinite(rho) or control not in ("positive", "negative", "random"):
+    if rho < 0 or not math.isfinite(rho):
         raise ValueError("Invalid direction intervention")
     vectors = {}
     for key, value in records.items():
@@ -86,28 +74,13 @@ def bank_vectors(bank, question_id=None, *, rho=None, control=None, seed=None,
         if direction.norm() < 1e-8:
             vectors[int(key)] = torch.zeros_like(direction)
             continue  # Zero difference means zero intervention, never a global fallback.
-        if control == "random":
-            question_seed = int(digest({"assigned_question": assigned})[:8], 16) if method["granularity"] == "per_question" else 0
-            generator = torch.Generator().manual_seed(seed + int(key) + question_seed)
-            direction = torch.randn(direction.shape, generator=generator)
-        elif control == "negative":
-            direction = -direction
         vectors[int(key)] = (direction / direction.norm() if operator == "slerp" else
                             (rho / math.sqrt(len(records))) * value["scale"] * direction / direction.norm())
     identity = {"bank_id": bank["bank_id"], "assigned": assigned, "rho": rho,
-                "control": control, "seed": seed}
+                "seed": method['seed']}
     if operator == "slerp":
         identity.update(operator=operator, alpha=alpha)
     if layers is not None:
         identity["selected_layers"] = list(layers)
     vector_id = digest(identity)
     return vectors, vector_id
-
-
-def validate_request_vectors(path, requests):
-    bank = torch.load(path, map_location="cpu", weights_only=True)
-    sha = file_sha256(path)
-    for request in requests:
-        _, vector_id = bank_vectors(bank, request["id"])
-        if request.get("vector_hash") != sha or request.get("vector_id") != vector_id:
-            raise ValueError("Request vector file/hash/identity mismatch")

@@ -1,0 +1,289 @@
+[
+  {
+    "log": "/home/zhenning/.cache/huggingface/xet/logs/xet_20261114T115138926+0800_827853.log",
+    "status_counts": {
+      "200": 20,
+      "416": 6,
+      "206": 578
+    },
+    "errors": [
+      {
+        "time": "2026-11-14T03:51:40.835023Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:40.835035Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XBX5P4K6F1ZCVFCWZV25): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6a7118839ce3204835d420ffc7ff10911cbfe2566258f5f4f9c52e8b2fad06ff[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:51:40.840811Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:40.840819Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XBX61506E3Q8EV5NMCBE): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6a7118839ce3204835d420ffc7ff10911cbfe2566258f5f4f9c52e8b2fad06ff[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:51:40.909651Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:40.909660Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XBZ5AVR5ND3NRJNHQW0B): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/a3816e630cc30904eeecb40174e09dfdb1ac5f37fb6c78c9599de8fe512d9cff[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:51:40.917595Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:40.917605Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XBZ87PT1F88BSEE004M2): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/a3816e630cc30904eeecb40174e09dfdb1ac5f37fb6c78c9599de8fe512d9cff[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:51:41.387232Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:41.387243Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XCDZTRWETYTJC49058GV): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/81b340fa54db2186dd426a741aa59c50597c6a324f2d81f406b3589714182f5a[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:51:41.461775Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-14T03:51:41.461786Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7C2XCGEPT8H2PJ54YS1PFSP): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/81b340fa54db2186dd426a741aa59c50597c6a324f2d81f406b3589714182f5a[query omitted]) "
+      },
+      {
+        "time": "2026-11-14T03:53:39.931714Z",
+        "status": null,
+        "message": "Request error Reqwest(reqwest::Error { kind: Request, url: \"https://us.aws.cdn.hf.co/xorbs/default/08fced79461e1ba40f41a5bec20ad4c6c21e38ba27d16d250fe87b632a36edb5[query omitted]\", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(IncompleteMessage)) })",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3480
+      },
+      {
+        "time": "2026-11-14T03:53:39.931797Z",
+        "status": null,
+        "message": "Retryable Client Error: s3::get_range api call failed: error sending request for url (https://us.aws.cdn.hf.co/xorbs/default/08fced79461e1ba40f41a5bec20ad4c6c21e38ba27d16d250fe87b632a36edb5[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3480
+      },
+      {
+        "time": "2026-11-14T03:54:10.193671Z",
+        "status": null,
+        "message": "Request error Reqwest(reqwest::Error { kind: Request, url: \"https://us.aws.cdn.hf.co/xorbs/default/565e8e74b4e3e58692d25425ee744b7c502c8435f970a47cf81e497f063c3296[query omitted]\", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(IncompleteMessage)) })",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3450
+      },
+      {
+        "time": "2026-11-14T03:54:10.193854Z",
+        "status": null,
+        "message": "Retryable Client Error: s3::get_range api call failed (retry 1): error sending request for url (https://us.aws.cdn.hf.co/xorbs/default/565e8e74b4e3e58692d25425ee744b7c502c8435f970a47cf81e497f063c3296[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3450
+      },
+      {
+        "time": "2026-11-14T03:56:42.908235Z",
+        "status": null,
+        "message": "Request error Reqwest(reqwest::Error { kind: Request, url: \"https://us.aws.cdn.hf.co/xorbs/default/e3ae461a5bb04ce84b13ba3971b9836654fdae8542a64657e4040cc60dedfa13[query omitted]\", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(IncompleteMessage)) })",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3297
+      },
+      {
+        "time": "2026-11-14T03:56:42.908273Z",
+        "status": null,
+        "message": "Retryable Client Error: s3::get_range api call failed: error sending request for url (https://us.aws.cdn.hf.co/xorbs/default/e3ae461a5bb04ce84b13ba3971b9836654fdae8542a64657e4040cc60dedfa13[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-14T04:51:40+00:00",
+        "seconds_until_expiry": 3297
+      }
+    ]
+  },
+  {
+    "log": "/home/zhenning/.cache/huggingface/xet/logs/xet_20261113T231519988+0800_2494986.log",
+    "status_counts": {
+      "200": 83,
+      "416": 9,
+      "206": 1489,
+      "403": 5
+    },
+    "errors": [
+      {
+        "time": "2026-11-13T15:15:26.297537Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.297554Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMR5Q5CST8JJ6CC7DPPS): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6a7118839ce3204835d420ffc7ff10911cbfe2566258f5f4f9c52e8b2fad06ff[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.320490Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.320526Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMRQKS2K0DAR6G0RRKB8): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6a7118839ce3204835d420ffc7ff10911cbfe2566258f5f4f9c52e8b2fad06ff[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.424606Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.424627Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMVRYTW91S4RH30GEKAF): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/b362f1eda002f3ec74e8a8048a333ab1470acf30c235fad01e9427d24a930eca[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.440768Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.440779Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMWAAFKCC19AP9J4FYX7): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6d818d6a40c7f6192af2548db06699b8ad55f4bdec3ac79404ad54c06af51cb8[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.449325Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.449347Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMS12460HTY3832SPT2Q): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/246f951ab9b161d61d4d8bcfe3193d768d76923e0feb233af79635473fd5f305[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.634768Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.634777Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMN2BS76PQS7QKEW2S4MF): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/6d818d6a40c7f6192af2548db06699b8ad55f4bdec3ac79404ad54c06af51cb8[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:15:26.754688Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:15:26.754700Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7AQMMVR1G41GNZX53XB9MBA): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/b362f1eda002f3ec74e8a8048a333ab1470acf30c235fad01e9427d24a930eca[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:45:48.923612Z",
+        "status": null,
+        "message": "Request error Reqwest(reqwest::Error { kind: Request, url: \"https://us.aws.cdn.hf.co/xorbs/default/49ee3b1bd8d5c7c47dac82a5c628845da579692c27e92905f835dc5d0abae17b[query omitted]\", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Io, Custom { kind: UnexpectedEof, error: \"peer closed connection without sending TLS close_notify: https://docs.rs/rustls/latest/rustls/manual/_03_howto/index.html#unexpected-eof[query omitted]\" })) })",
+        "signed_url_expires_utc": "2026-11-13T16:15:25+00:00",
+        "seconds_until_expiry": 1776
+      },
+      {
+        "time": "2026-11-13T15:45:48.923669Z",
+        "status": null,
+        "message": "Retryable Client Error: s3::get_range api call failed: error sending request for url (https://us.aws.cdn.hf.co/xorbs/default/49ee3b1bd8d5c7c47dac82a5c628845da579692c27e92905f835dc5d0abae17b[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T16:15:25+00:00",
+        "seconds_until_expiry": 1776
+      },
+      {
+        "time": "2026-11-13T15:49:24.282521Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:49:24.282541Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7ASJTYXSB1M1AG7N22J86V6): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/8f06040c24d0d6efc263cf398806debbf20d732031ba128349d086f6a7b8bab2[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T15:49:24.498984Z",
+        "status": 416,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T15:49:24.499007Z",
+        "status": null,
+        "message": "Reached end of reconstruction 416 (Range Not Satisfiable): \"cas::get_reconstruction_v2\" api call failed (request id 01M7ASJV3KJCXRV9NP72W00T92): HTTP status client error (416 Range Not Satisfiable) for url (https://cas-server.xethub.hf.co/v2/reconstructions/8f06040c24d0d6efc263cf398806debbf20d732031ba128349d086f6a7b8bab2[query omitted]) "
+      },
+      {
+        "time": "2026-11-13T16:15:33.701224Z",
+        "status": 403,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T16:15:37.417546Z",
+        "status": null,
+        "message": "Retry on 403 (Forbidden) enabled): \"s3::get_range\" api call failed (request id 01M7AV2QP12SWD9V22PJ318SKT, retry 1): HTTP status client error (403 Forbidden) for url (https://us.aws.cdn.hf.co/xorbs/default/9d1c06feecdc77ebfffb0959e093a7d26be71ba494b92c1ff6f4089dc43d5c87[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T16:15:26+00:00",
+        "seconds_until_expiry": -11
+      },
+      {
+        "time": "2026-11-13T16:15:40.435577Z",
+        "status": 403,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T16:15:40.473999Z",
+        "status": 403,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T16:15:41.982569Z",
+        "status": null,
+        "message": "Retry on 403 (Forbidden) enabled): \"s3::get_range\" api call failed (request id 01M7AV2Y8HW54ZCGNYXWV8HWEZ): HTTP status client error (403 Forbidden) for url (https://us.aws.cdn.hf.co/xorbs/default/4f04363b50b25879b8b9570fbda86f46ceb4209b40cf84c62351169a8f671894[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T16:15:26+00:00",
+        "seconds_until_expiry": -16
+      },
+      {
+        "time": "2026-11-13T16:15:41.982575Z",
+        "status": null,
+        "message": "Retry on 403 (Forbidden) enabled): \"s3::get_range\" api call failed (request id 01M7AV2Y8C7DM97KYH1PE2SWVF): HTTP status client error (403 Forbidden) for url (https://us.aws.cdn.hf.co/xorbs/default/3a726b2ef3328c8174b0d4ff7dcf17db0e3c2163d2cd2662d3d025f727dd1c52[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T16:15:26+00:00",
+        "seconds_until_expiry": -16
+      },
+      {
+        "time": "2026-11-13T17:04:28.221110Z",
+        "status": 403,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T17:04:31.349846Z",
+        "status": null,
+        "message": "Retry on 403 (Forbidden) enabled): \"s3::get_range\" api call failed (request id 01M7AXW9DRCXNR1NJDZZW3WP42, retry 2): HTTP status client error (403 Forbidden) for url (https://us.aws.cdn.hf.co/xorbs/default/011349ee3e073fb31d497feb7fa834fab0aa5f99f726cd304491d02787aba161[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T16:15:25+00:00",
+        "seconds_until_expiry": -2946
+      },
+      {
+        "time": "2026-11-13T18:31:53.374776Z",
+        "status": 403,
+        "message": "Received CAS response "
+      },
+      {
+        "time": "2026-11-13T18:31:55.467261Z",
+        "status": null,
+        "message": "Retry on 403 (Forbidden) enabled): \"s3::get_range\" api call failed (request id 01M7B2WBQGJMVJB20VXRWABSRQ, retry 2): HTTP status client error (403 Forbidden) for url (https://us.aws.cdn.hf.co/xorbs/default/9d1c06feecdc77ebfffb0959e093a7d26be71ba494b92c1ff6f4089dc43d5c87[query omitted]) ",
+        "signed_url_expires_utc": "2026-11-13T17:15:36+00:00",
+        "seconds_until_expiry": -4579
+      }
+    ]
+  }
+]

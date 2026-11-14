@@ -124,5 +124,7 @@ def score_native_candidate(model, rows, teacher_records, masks, bank, condition,
                       "metric": "native_overlap_at_16" if metric_adapter is None else metric_adapter.metric}
             if baseline is not None:
                 record["delta_overlap"] = record["overlap"]-baseline[key]["overlap"]
+                if record.get("P_overlap_available"):
+                    record["delta_P_overlap"] = record["P_overlap"]-baseline[key]["P_overlap"]
             results[key] = record
     return results

@@ -1,9 +1,0 @@
-{
-  "version": 1,
-  "rollout_from_step": 9,
-  "rollout_max_num_seqs": 64,
-  "eval_max_num_seqs": 16,
-  "gpu_memory_utilization": 0.9,
-  "validation": "recovery_20261112_replay/runtime_acceptance.json",
-  "reason": "Throughput improvement; scientific sampling and evaluation settings unchanged; fresh jobs only."
-}

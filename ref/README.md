@@ -1,12 +1,6 @@
-# 同问题工作与 Steering 方法近邻
+# 同问题工作与Steering方法近邻
 
-2026-11-12：当前方法按[用户最新完整稿](../docs/Steering_OPD_完整研究方案.md)与
-[主计划](../docs/01_research_plan.md)定义2–2–2：T−R主方向、overlap单阈值门控、
-每轮rollout前由当前学生读取当前训练题T/R文本并逐题提取；本轮生成与学习重放固定同题向量。
-参考文本缓存、S0逐题缓存与当前学生重提分开命名，熵差独立对照，主评测无干预。
-SV Training附录C.2的全局/逐题/刷新证据见[论文设置](../docs/02_paper_settings.md)。下面仅是已有固定文献目录，
-不表示已实现新版方法或完成对应新颖性复核。Entropy-Aware OPD在新稿中提出，待
-本项目核对固定版本与公式；尚不计入本目录的九篇已归档参考。
+当前实验见[实验协议](../docs/experiment.md)，实现来源与阅读边界见[文献说明](../docs/sources.md)。
 
 核心来源包括 [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf)、[Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) 与 [CompassOPD](2609.10154v1_compass_opd.pdf)。当前已归档比较包括四篇同问题工作与五篇方法近邻，共九篇参考论文。
 
@@ -29,7 +23,7 @@ SV Training附录C.2的全局/逐题/刷新证据见[论文设置](../docs/02_pa
 | OPMD: On-Policy Mechanism Distillation Beyond Output Supervision | [PDF](2610.14022v1_opmd.pdf) | 教师状态数值对齐不保证学生后续计算可用 | §3.2；跨 family 扩展 | 构造学生能使用的内部辅助，再内化并移除辅助 |
 | Exploration via Activation-Space Steering for Reinforcement Learning with Verifiable Rewards（ASE） | [PDF](2610.27012v1_ase.pdf) | 普通 RLVR 采样重复、探索不足 | §3.2–§3.3 | 临时学生 steering 帮助训练，部署移除；**属于 RLVR 近邻，不是 OPD** |
 
-详细比较见[同问题工作、方法近邻与当前方案的区别](../docs/02_paper_settings.md)。版本、哈希与阅读范围见 [manifest.json](manifest.json)，官方正文快照见 [sources/](sources/)。
+详细比较见[同问题工作、方法近邻与当前方案的区别](../docs/sources.md)。版本、哈希与阅读范围见 [manifest.json](manifest.json)，官方正文快照见 [sources/](sources/)。
 
 这些论文的不同点是研究定位与实现路径的区别，不代表当前方案效果更好，也不代表新颖性已经成立。没有运行这些论文的训练代码或独立复现。
 

@@ -1,0 +1,28 @@
+{
+  "scope": "Replace only unexecuted CPU job preparation; preserve data/split and model assets",
+  "before": {
+    "runs/static_dual_overlap_20261114/config.json": "5733d1f755b457216e1340d6fb146b159ce7c8668214ad6198fe622f0296b1aa",
+    "runs/static_dual_overlap_20261114/jobs/alignment_and_scoring.json": "8355ed6dd18bbde687aebcba1ca923675604fd603e88799bc33e0312914d24c1",
+    "runs/static_dual_overlap_20261114/jobs/banks.json": "2ecad7d4e7f8a27165f2e841e5c9a92ffb08529f00042eb867eacb04433a128f",
+    "runs/static_dual_overlap_20261114/jobs/reference_reference.json": "4e4e1dbfce04a0985f046848320eb234d864e38ce0372e80e30b1472bfff17b4",
+    "runs/static_dual_overlap_20261114/jobs/reference_student.json": "f1b69a90ddc019891cbf6fc0729df18bc9c79af3cefc38d476fdf77e24182d60",
+    "runs/static_dual_overlap_20261114/jobs/reference_teacher.json": "8b68a33f0b1e69840fbd48556b5c645b368b8437eba9e4b071a419bcfeefbc82",
+    "runs/static_dual_overlap_20261114/preflight.json": "8e825db5c9f68ba048e0fbe73eca49d342a2f6f5a25cf3ad4804806acf5a0548"
+  },
+  "data_before": {
+    "data/static_dual_overlap_20261114/questions.json": "2a47f0d1a22ac92208f2d69c7e71f09978447d4549ac824fe9980357b8e92a24",
+    "data/static_dual_overlap_20261114/questions_source.json": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4",
+    "data/static_dual_overlap_20261114/split.json": "0e3638e66cccbc0a732c0b06f222cf7ca95e49c0952aab3b15294388c42ad8ec"
+  },
+  "after": {
+    "runs/static_dual_overlap_20261114/config.json": "f2eda08a79e15ee4b7814ed5737479bbb7007867557b7d0ebd380ce00be1d37a",
+    "runs/static_dual_overlap_20261114/jobs/alignment_and_scoring.json": "d53041a418fae2183bd1fce140c0a96a8b4b81a1115ead6d42e94bfeb139cd9c",
+    "runs/static_dual_overlap_20261114/jobs/banks.json": "c822ccd87acfd8c25af4c14f08974ebf72d911be97ad53f747c113ef9aada4e0",
+    "runs/static_dual_overlap_20261114/jobs/reference_reference.json": "cc3f66ad335ad6ca9a6ce0992a988a1e2a29d40ae4a3e99e0356fe7641921800",
+    "runs/static_dual_overlap_20261114/jobs/reference_student.json": "694e507d62200f4c242c19f5284a352afa1df2ee2a1bec1b350152ca94eeaa12",
+    "runs/static_dual_overlap_20261114/jobs/reference_teacher.json": "f01dea2387e67ed47cd82282446015eb29a16f272fdca113b24c36305e516909",
+    "runs/static_dual_overlap_20261114/preflight.json": "9ca30610c76aab2437f1a2979021064013b57e36d738b1b5e37682ee8cccc1fb"
+  },
+  "data_and_split_unchanged": true,
+  "gpu_execution_artifacts_present": false
+}

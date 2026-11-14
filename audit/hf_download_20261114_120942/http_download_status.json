@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/home/zhenning/data/miniconda3/bin/hf",
+    "download",
+    "Qwen/Qwen3.5-35B-A3B",
+    "--revision",
+    "59d61f3ce65a6d9863b86d2e96597125219dc754",
+    "--local-dir",
+    "/home/zhenning/data/huggingface_models/Qwen3.5-35B-A3B",
+    "--max-workers",
+    "1"
+  ],
+  "env_overrides": {
+    "HF_HUB_DISABLE_XET": "1",
+    "HF_HUB_DOWNLOAD_TIMEOUT": "60",
+    "HF_HUB_DISABLE_PROGRESS_BARS": "1"
+  },
+  "pid": 891638,
+  "started_at": "2026-11-14T12:11:19.659645",
+  "status": "complete",
+  "returncode": 0,
+  "finished_at": "2026-11-14T12:15:06.885838",
+  "elapsed_seconds": 227.227
+}

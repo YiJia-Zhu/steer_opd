@@ -265,7 +265,7 @@ def test_real_tokenizers_complete_source_cache_to_static_mask_chain(tmp_path, mo
         compass_job.prepare_screen(job, real_codecs)
 
 
-@pytest.mark.parametrize('metadata', ['assets/models/Qwen3.5-0.8B', 'audit/compass_span_adapter_20261113/teacher_metadata'])
+@pytest.mark.parametrize('metadata', ['assets/models/Qwen3.5-0.8B', 'assets/metadata/Qwen3.5-35B-A3B'])
 def test_actual_qwen35_dense_and_moe_text_architectures_score_on_cpu(metadata, monkeypatch):
     from transformers import AutoConfig, AutoModel
     original = AutoConfig.from_pretrained(ROOT / metadata, local_files_only=True).text_config
@@ -299,7 +299,7 @@ def test_actual_qwen35_dense_and_moe_text_architectures_score_on_cpu(metadata, m
 
 def test_campaign_builds_exactly_eight_candidates_and_native_generation_profiles(real_codecs):
     from steer_opd.compass_campaign import generation_job, make_base_job, validate_config
-    cfg = json.loads((ROOT / 'configs/compass_static_eight_20261113.json').read_text())
+    cfg = json.loads((ROOT / 'configs/static_dual_overlap.json').read_text())
     validate_config(cfg)
     questions = [{'id': 'q1', 'question': 'What is 1+1?', 'answer': '2'}]
     source = generation_job(cfg, real_codecs['student'], 'student', questions, source=True)

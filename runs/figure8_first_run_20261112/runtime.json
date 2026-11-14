@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "scheduler": "vllm_defaults",
-  "gpu_memory_utilization": 0.9,
-  "validation": "runtime_updates/20261112_default_scheduler/acceptance.json",
-  "reason": "User requested all project sequence caps and bound CUDA graph sizes removed; use vLLM defaults and resume completed requests."
-}

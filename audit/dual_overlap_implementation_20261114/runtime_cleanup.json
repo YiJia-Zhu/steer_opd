@@ -1,0 +1,18 @@
+{
+  "removed_dead_leases": 1,
+  "retained_live_leases": 0,
+  "removed_build_sources": [
+    {
+      "path": ".runtime/easysteer-build/EasySteer-baecd9698f32aadef68b41536f3db477b513a0d7",
+      "bytes": 38502878
+    },
+    {
+      "path": ".runtime/easysteer-build/EasySteer-vllm-v1-7837b07d21c0ddffd043a30001f2c5654290aec7",
+      "bytes": 109443350
+    },
+    {
+      "path": ".runtime/source_revisions",
+      "bytes": 498359
+    }
+  ]
+}

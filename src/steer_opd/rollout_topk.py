@@ -41,17 +41,14 @@ def extract_topk(token_ids, steps, k, support_size):
     return result
 
 
-def attach_token_entropy(score, token_ids, statistics):
-    if (statistics["positions"] != list(range(len(token_ids)))
-            or statistics["support_size"] != score["support_size"]
-            or statistics.get("source") != "raw_full_support_logits"):
-        raise ValueError("vLLM token entropy positions/support/source mismatch")
-    score["student_entropy"] = torch.tensor(statistics["entropy"], dtype=torch.float32)
-    score["entropy_support_size"] = statistics["support_size"]
-    validate_topk(score, token_ids, score["k"], score["support_size"])
 
 
 def validate_topk(score, token_ids, k, support_size):
+    if "byte_probs" in score:
+        from steer_opd.byte_probabilities import validate_byte_probabilities
+        validate_byte_probabilities(score["byte_probs"], len(token_ids))
+        if score.get("byte_projection_schema") != 1 or not score.get("projection_id"):
+            raise ValueError("Full byte probability cache has no projection identity")
     ids, logps, sampled = score["ids"], score["logps"], score["sampled_logps"]
     if (score.get("source") not in ROLLOUT_SOURCES or score.get("probability_mode") != "raw_logprobs"
             or score.get("k") != k or score.get("support_size") != support_size):
@@ -107,10 +104,13 @@ def tensor_hash(score):
                              "probe_topk_ids", "probe_topk_logps", "student_entropy", "teacher_entropy",
                              "probe_entropy", "teacher_sampled_logps", "full_rollout_logps",
                              "full_teacher_logps", "full_probe_logps") if key in score]
+    keys += [key for key in ("byte_probs", "common_vocab_mass") if key in score]
     for key in keys:
         tensor = score[key].cpu().contiguous()
         sha.update(f"{key}:{tensor.dtype}:{tuple(tensor.shape)}".encode())
         sha.update(tensor.numpy().tobytes())
+    if "byte_probs" in score:
+        sha.update(str(score["projection_id"]).encode())
     return sha.hexdigest()
 
 
@@ -137,14 +137,3 @@ def load_rollout_topk(output, row, k, support_size):
     if not torch.allclose(score["sampled_logps"], torch.tensor(row["sampled_logps"]), atol=1e-6, rtol=0):
         raise ValueError("Rollout sampled logprobs changed")
     return score
-
-
-def overlap_totals(student, teacher):
-    """Token sums, suitable for exact token-weighted aggregation across replies."""
-    if student["ids"].shape != teacher["ids"].shape:
-        raise ValueError("Overlap needs identical positions and K")
-    matches = student["ids"][:, :, None] == teacher["ids"][:, None, :]
-    sm, tm = matches.any(-1), matches.any(-2)
-    return {"positions": len(sm), "intersection": int(sm.sum()),
-            "student_shared_mass_sum": float((student["logps"].double().exp() * sm).sum()),
-            "teacher_shared_mass_sum": float((teacher["logps"].double().exp() * tm).sum())}

@@ -1,0 +1,15 @@
+{
+  "EasySteer": {
+    "revision": "baecd9698f32aadef68b41536f3db477b513a0d7",
+    "archive_sha256": "e9544c98441273968a70ee0ddacecd7292358b15b33de9ba09ad963490b46dbc"
+  },
+  "EasySteer-vllm-v1": {
+    "revision": "7837b07d21c0ddffd043a30001f2c5654290aec7",
+    "archive_sha256": "bd9220994f5977003b55d22a1b06a2a2d3a55b8646c19ba5c235f7acf9d22434"
+  },
+  "vllm_wheel": "0.29.0",
+  "python": ".venv-easysteer/bin/python",
+  "gpu_started": false,
+  "frontend": "baecd9698f32aadef68b41536f3db477b513a0d7",
+  "fork": "7837b07d21c0ddffd043a30001f2c5654290aec7"
+}

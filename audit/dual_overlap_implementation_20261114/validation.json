@@ -1,0 +1,75 @@
+{
+  "checked_at": "2026-11-13T18:18:28.406516+00:00",
+  "scope": "dual-overlap and EasySteer implementation/CPU validation plus user-authorized cleanup; no new model experiment",
+  "tests": {
+    "full_suite_passed": 214,
+    "full_suite_skipped": 1,
+    "latest_affected_paths_passed": 53
+  },
+  "package": {
+    "status": "passed",
+    "paper_sources_verified": 13,
+    "current_documents": 5,
+    "local_links_checked": 63,
+    "python_sources_parsed": 92,
+    "training_question_candidates": 100,
+    "schemes": 8,
+    "banks": 4,
+    "recorded_metrics": [
+      "overlap",
+      "P_overlap"
+    ],
+    "execution_hold": "awaiting_user_approval",
+    "gpu_started": false,
+    "parameter_updates": 0
+  },
+  "runtime": {
+    "pinned_fork_files_match": true,
+    "pinned_files_checked": 25,
+    "capture_api": true,
+    "selector": true,
+    "static_slerp_authoring": true,
+    "empty_and_alpha0_disable": true,
+    "slerp_registry_and_norm": true,
+    "gpu_started": false,
+    "versions": {
+      "vllm": "0.29.0",
+      "easysteer": "0.29.0",
+      "torch": "2.13.0",
+      "transformers": "5.16.1"
+    }
+  },
+  "runtime_dependencies": "pip check passed with only project source and plugin on PYTHONPATH",
+  "cleanup": {
+    "old_run_directories_removed": 6,
+    "old_docs_removed": 18,
+    "current_docs": 5,
+    "old_runs_and_audit_logical_bytes_removed": 64045021614,
+    "gib": 59.647,
+    "shared_assets_modified": false
+  },
+  "experiment": {
+    "teacher": "Qwen3.5-35B-A3B",
+    "reference": "Qwen3.5-0.8B",
+    "student": "Qwen3-4B",
+    "schemes": 8,
+    "banks": 4,
+    "slerp_alpha": 0.1,
+    "layer": 26,
+    "gate_metric": "overlap",
+    "rank_metric": "overlap",
+    "metrics": [
+      "overlap",
+      "P_overlap"
+    ],
+    "parameter_updates": 0,
+    "gpu_started": false,
+    "execution_hold": "awaiting_user_approval"
+  },
+  "remaining": [
+    "teacher full weights missing",
+    "real GPU numerical/capture/source replay and performance validation pending",
+    "EasySteer per-token perturbation norm capture remains unimplemented; flag false",
+    "new-pair full OPD/gradient target is outside this zero-update screen"
+  ]
+}
