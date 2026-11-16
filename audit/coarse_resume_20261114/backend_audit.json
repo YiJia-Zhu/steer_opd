@@ -1,41 +1,47 @@
 {
   "reference_and_source_generation": {
     "source": "scripts/generate_static_sources.py",
-    "line": 48,
+    "line": 57,
     "entrypoint": "engine.generate",
     "backend": "easysteer_vllm"
   },
   "shared_S0_activation_capture": {
     "source": "src/steer_opd/easysteer_extraction.py",
-    "line": 73,
+    "line": 88,
     "entrypoint": "hs.capture",
     "backend": "easysteer_vllm"
   },
-  "native_T_Ref_scoring": {
+  "native_teacher_scoring": {
     "source": "scripts/score_compass_sources.py",
     "line": 30,
     "entrypoint": "fixed_prefix_scores",
     "backend": "easysteer_vllm"
   },
-  "baseline_and_eight_schemes": {
-    "source": "scripts/run_static_overlap_screen.py",
-    "line": 227,
+  "baseline_and_four_fixed_schemes": {
+    "source": "scripts/run_overlap_ablation.py",
+    "line": 251,
     "entrypoint": "fixed_prefix_scores",
     "backend": "easysteer_vllm"
   },
   "fixed_prefix_engine_call": {
     "source": "src/steer_opd/easysteer_static.py",
-    "line": 185,
+    "line": 187,
     "entrypoint": "llm.generate",
     "backend": "easysteer_vllm"
   },
+  "teacher_space_S_T_scoring": {
+    "source": "src/steer_opd/teacher_screen.py",
+    "line": 212,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
   "scope": "Current zero-update panel and explicit HF acceptance/reference; legacy execution code removed",
-  "full_vocabulary_statistics": "Custom worker PyTorch aggregation on existing vLLM logits; no HF model forward",
+  "probability_statistics": "vLLM raw Top16 IDs/logprobs only; exact matching on at most 32 candidate nodes; no full-vocabulary collector",
   "cpu_work": [
     "tokenization",
     "byte/span alignment",
     "mean pooling",
-    "bank construction",
+    "T-S bank construction",
     "metrics",
     "serialization",
     "plots"

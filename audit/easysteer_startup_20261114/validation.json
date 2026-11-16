@@ -1,0 +1,142 @@
+{
+  "recorded_at": "2026-11-14T16:20:36.396209+08:00",
+  "authorization": "GPU diagnosis and small acceptance only",
+  "original_student_hf_reference_seconds": 6.951983811100945,
+  "original_easysteer_initialization_last_elapsed_seconds": 3120.424431361025,
+  "original_hang": "fork inherited threaded CPU state; reproduced stack at V2 pinned-memory torch.zeros; spawn bypasses",
+  "hf_model_forward_default": false,
+  "optional_hf_flag": "HF_PARITY=1",
+  "formal_model_backends": "easysteer/vllm",
+  "sequence_count_caps": false,
+  "default_gpu_pool": [
+    2,
+    7
+  ],
+  "gpu_results": {
+    "student": {
+      "status": "passed_at_recorded_revision",
+      "report_path": "native_validation_final/acceptance/student/easysteer/report.json",
+      "process_path": "final_student_attempt/process.json",
+      "elapsed_seconds": 41.19390633306466,
+      "report": {
+        "hf_parity": false,
+        "limits": {
+          "mean_abs_logp": 0.05,
+          "max_abs_logp": 0.2,
+          "max_byte_tv": 0.03,
+          "max_hidden_relative_l2": 0.03
+        },
+        "baseline": {
+          "mean_abs_logp": 0.0,
+          "max_abs_logp": 0.0,
+          "max_byte_tv": 5.960465898624534e-08
+        },
+        "capture_positions_tokens_and_finite_states": "passed",
+        "static": {
+          "mean_abs_logp": 0.0,
+          "max_abs_logp": 0.0,
+          "max_byte_tv": 2.9807083024024905e-08
+        },
+        "all": {
+          "mean_abs_logp": 0.0,
+          "max_abs_logp": 0.0,
+          "max_byte_tv": 5.96643090489124e-08
+        },
+        "alpha0": "passed",
+        "empty_mask": "passed",
+        "removed": "passed",
+        "source_replay": {
+          "mean_abs_logp": 0.0,
+          "max_abs_logp": 0.0,
+          "max_byte_tv": 1.2226089442536332e-16
+        }
+      }
+    },
+    "reference": {
+      "status": "passed_at_recorded_revision",
+      "report_path": "native_validation_steer_enabled/acceptance/reference/easysteer/report.json",
+      "process_path": "native_reference_attempt/process.json",
+      "elapsed_seconds": 158.20403203414753,
+      "report": {
+        "hf_parity": false,
+        "limits": {
+          "mean_abs_logp": 0.05,
+          "max_abs_logp": 0.2,
+          "max_byte_tv": 0.03,
+          "max_hidden_relative_l2": 0.03
+        },
+        "baseline": {
+          "mean_abs_logp": 0.0,
+          "max_abs_logp": 0.0,
+          "max_byte_tv": 1.1921042641915847e-07
+        }
+      }
+    },
+    "teacher": {
+      "status": "latest_TP_startup_fix_retest_not_admitted",
+      "prior_scoring_completed": true,
+      "strict_repeat_parity_passed": false,
+      "prior_repeat_drift": {
+        "mean_abs_logp": 0.08578614145517349,
+        "max_abs_logp": 0.3138265609741211,
+        "max_byte_tv": 0.045314811170101166
+      },
+      "batch_invariant_supported": false,
+      "latest_TP_fix_gpu_verified": false,
+      "blocker": "GPU2 has zero allocated memory and no compute process but reports continuous 100% utilization",
+      "repeat_policy": "T/Ref cache once and freeze; repeat drift diagnostic; student parity thresholds unchanged"
+    }
+  },
+  "cpu_tests": {
+    "passed": 123,
+    "warnings": 17,
+    "log": "cpu_tests.log"
+  },
+  "formal_panel_started": false,
+  "parameter_updates": 0,
+  "full_current_source_acceptance_receipt_created": false,
+  "source_sha256_at_summary": {
+    "scripts/bootstrap_easysteer.py": "233f84083eceb679b893829a31f60afe2f089c4caf0d86b0fad56eb6a4eb379f",
+    "scripts/check_easysteer_runtime.py": "2a0e5f97a653aab0a94e9c4fa1a6b55f1f4341929e28e5f15b085b2b23dfed5b",
+    "scripts/generate_static_sources.py": "7bf85b0bcaa92523a12a7c5cf22daa003576c7fb3ac29c34fb5256dd21055e8b",
+    "scripts/launch_static_panel.py": "50d66fb5b1c5904cbb9bc9018ee8f655c6555925155120925e130bdf5a2e464b",
+    "scripts/prepare_compass_banks.py": "c25e94b2b9131a747905dff8a9b170857c9e98a94d02a03ebadf80cfe612445c",
+    "scripts/run_compass_static_panel.py": "78d4f49c6730a91b856687c96bec0975521529555e74bf78378aef9e1a1006b1",
+    "scripts/run_on_idle_gpus.py": "06c25af22a26f588995f632486dc6946e762e0c5e005b973e956f416dcdba1aa",
+    "scripts/run_static_overlap_screen.py": "e5d32e9e6260d9cf9c4c5507d9f2dea2b97a5c26906b8918b6f9ea77bda75663",
+    "scripts/run_static_panel.sh": "9ac785ed183056b339eb1f2eb3fdbeb5da089f5ee71ec0d551f4df7dc8da2e0d",
+    "scripts/runtime_env.sh": "e79ade4720fee499eef0bc7f2dadbc7f7c00b59888c2aa976d41abacd3760a74",
+    "scripts/score_compass_sources.py": "cd478ac7c4d643b4b4dc9947599c0ce8aff57ce497e952efb6dcb598bb72faa0",
+    "scripts/show_static_progress.py": "6f6bfcd7f844f9b6a2b63ee894403a17a0c98b6d5ef9eeb3dc631f158943c470",
+    "scripts/validate_package.py": "7cc2aa2ece19bb09b7662f6ba433b48be30dad830a463e47fe11eed6fceab84a",
+    "scripts/validate_static_gpu.py": "916dc0e886fbd3e35a241af1dd772931a9c1c2e388034c0184c2ff186f5dc045",
+    "src/steer_opd/__init__.py": "e736a9fdd0959f151f782c8ab3465d276d355093442e63675c82f3e7f5f6577b",
+    "src/steer_opd/batched_controlled.py": "c49b5f46efd8d28ad1174ac91a0d51ff1eb6e69274b3534d49af9db8b3f03eef",
+    "src/steer_opd/byte_probabilities.py": "2f89f45cc1431eed642ce8d2fe88576a0957b0342cbe39fc84fd58b03708eb07",
+    "src/steer_opd/checkpoint_identity.py": "1b9c0b587c0ec1ebea2d2c6e14ebb60f25f112a4c88c470c48fc9c935de08f6d",
+    "src/steer_opd/compass_alignment.py": "761d992a37d6695b066ac8c43babaa9f4078137f77453a713f102178a47725b5",
+    "src/steer_opd/compass_banks.py": "31caf3017ec31cdf29e8d29e731f03d7968681735c159cdbb0542040c45b2859",
+    "src/steer_opd/compass_campaign.py": "5ad2c030865c514b8d2638549f7cf12ce485368c651288048af700968a34066f",
+    "src/steer_opd/compass_job.py": "74d7b1fb16e00fc59384c5f4a836888365cb8795dbf4550f3b5979db48628f3c",
+    "src/steer_opd/compass_scoring.py": "d52d6c34f496733bb2579f7d707fb023a40cf83ccc7b79a107a38426ff763998",
+    "src/steer_opd/direction_bank.py": "574887c31956fb2e2db795d9c833fd1f4114181ae5c903f9497f3aa37d28a9a6",
+    "src/steer_opd/easysteer_extraction.py": "6c69b60cbad7a0fc7ecdeed083912733dbdc91a0d538c94f4f9cd9fd359e5308",
+    "src/steer_opd/easysteer_plugin.py": "8d425c70bddffc94fe0004d8e86a364f98245212e7cda9331870ff582da9464a",
+    "src/steer_opd/easysteer_static.py": "729fc16d20a5caf7623cddc709a490a05c7f507a084c8356421d52cfc0f30fb2",
+    "src/steer_opd/easysteer_worker.py": "e973bf78d104542a933bc64ac914deacf548a8d132f86c7a710eb2298c953d71",
+    "src/steer_opd/engine_projection.py": "d7426c8a33d4a1748f61e1bf0f1d16c9f5e3dfaa7e694d98532728cd996a9f5b",
+    "src/steer_opd/execution_policy.py": "7efab92df0e0bfa5bebc2cab476f76849ab9d12c45a3da5cd12a7668e20ce6a7",
+    "src/steer_opd/experiment_runtime.py": "3b1d6249d3196515db4521ca51c3cf067ebd7188c664156b4e70ed1b46d1f90c",
+    "src/steer_opd/extraction.py": "fc7da8a2fb1080e719c0d6915d45bc8cc0f2508bb76f660fce04168dd59e3a5f",
+    "src/steer_opd/math_data.py": "95a088c1c9c027a2e4c101b6c35e7ae8fa8311e8666c652590c9b53494b82c6b",
+    "src/steer_opd/method_config.py": "70a6613a1f1c4799b9349794a7b4e86112f0d33a358c03bc4b250d065f14fdd6",
+    "src/steer_opd/operators.py": "f4dc4f960cb76da29c01681cc3b139cf974b80574be74bce3ae78c2068668cbd",
+    "src/steer_opd/overlap_tuning.py": "7f81a74e7ab17f654d856363c18650577e53cee5b0ced26c16943aa92ea1c3fe",
+    "src/steer_opd/resumable_core.py": "f83c3582ae73c80eef91fc22e34da708b8727ab1b4c050afc2bb417406565381",
+    "src/steer_opd/rollout_topk.py": "cab0788d8d339c7e056eeb880c6e15c538b4a61abcd8d27b01e7ef467ae5439f",
+    "src/steer_opd/static_masks.py": "bd0e2188e33f8c25657295ac7ceea1c5495b10bfdb71bf6c08d741dc4e71e527",
+    "src/steer_opd/static_plotting.py": "622538ae86aa3f1d12520a4829f14f5eca67d6c74e5fd62ac90aa40dc6f150aa",
+    "src/steer_opd/static_screen.py": "0f7ae1c5529ef2b7cfb8fa7d9d00d22cadfa20a24026e3dfbf87b0f5f3e0db70",
+    "src/steer_opd/steering.py": "1ba88da11f2b538977e94ed5d47362f87fb56849de488e9aef5d38148aa4b682"
+  }
+}

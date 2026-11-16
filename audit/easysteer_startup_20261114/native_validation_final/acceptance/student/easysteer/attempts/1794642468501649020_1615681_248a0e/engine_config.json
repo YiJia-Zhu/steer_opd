@@ -1,0 +1,15 @@
+{
+  "seed": 42,
+  "tensor_parallel_size": 1,
+  "max_model_len": 256,
+  "dtype": "bfloat16",
+  "head_dtype": "float32",
+  "native_support_size": 151669,
+  "cuda_home": "/usr/local/cuda-13.0",
+  "worker_multiproc_method": "spawn",
+  "batch_invariant": true,
+  "prefix_caching": false,
+  "gpu_memory_utilization": 0.75,
+  "resolved_max_num_seqs": 1024,
+  "resolved_max_num_batched_tokens": 16384
+}

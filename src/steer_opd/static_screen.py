@@ -13,6 +13,7 @@ from steer_opd.direction_bank import bank_vectors
 from steer_opd.overlap_tuning import position_metrics
 from steer_opd.resumable_core import digest, score_hidden
 from steer_opd.static_masks import native_overlap, validate_static_mask
+from steer_opd.strength_schedule import row_strength
 
 
 def candidate_vectors(bank, row, condition):
@@ -60,7 +61,7 @@ def score_batch(model, rows, *, vectors=None, gates=None, operator="slerp", alph
             for i, row in enumerate(rows):
                 start = len(row["prompt_token_ids"])-1
                 scores = score_hidden(model, hidden[i, start:lengths[i]], k=k, chunk=chunk,
-                                      sampled=row["token_ids"], include_entropy=True)
+                                      sampled=row["token_ids"])
                 scores["relative_perturbation"] = ({str(l): ratios[i, start:lengths[i]].cpu()
                     for l, ratios in controller.perturbations.items()} if controller else {})
                 results.append(scores)
@@ -71,11 +72,11 @@ def score_batch(model, rows, *, vectors=None, gates=None, operator="slerp", alph
 
 
 def score_native_candidate(model, rows, teacher_records, masks, bank, condition, *,
-                           baseline=None, batch_size=4, chunk=128, metric_adapter=None):
+                           baseline=None, batch_size=4, chunk=128, metric_adapter=None, strength_schedule=None):
     """Native by default; cross-tokenizer scores need an explicit metric adapter."""
     if batch_size < 1 or len({row.get("key", row["id"]) for row in rows}) != len(rows):
         raise ValueError("Invalid batch size or duplicate response keys")
-    prepared, vectors, metadata = [], [], []
+    prepared, vectors, metadata,alphas = [], [], [],[]
     for row in rows:
         key = row.get("key", row["id"])
         artifact = masks[key]
@@ -88,15 +89,17 @@ def score_native_candidate(model, rows, teacher_records, masks, bank, condition,
             native_overlap(teacher_records[key]["ids"], teacher_records[key]["ids"], identity)
         elif identity["metric"] != metric_adapter.metric:
             raise ValueError("Candidate metric differs from the frozen source metric")
+        strength=row_strength(condition,row,strength_schedule)
         if condition is None:
             values, vector_id, requested = None, None, [False]*len(source_gates)
         else:
             if condition["gate"] not in ("all", "static_overlap"):
                 raise ValueError("Static scorer accepts all/static_overlap only")
-            values, vector_id = candidate_vectors(bank, row, condition)
+            values, vector_id = candidate_vectors(bank, row, {**condition,'alpha':strength['effective_alpha']})
             requested = [True]*len(source_gates) if condition["gate"] == "all" else source_gates
+        alphas.append(strength['effective_alpha'])
         nonzero = values is not None and any(bool(torch.count_nonzero(v)) for v in values.values())
-        enabled = nonzero and (condition.get("alpha", .1) != 0 if condition and condition.get("operator", "slerp") == "slerp" else True)
+        enabled = nonzero and (strength['effective_alpha'] != 0 if condition and condition.get("operator", "slerp") == "slerp" else True)
         actual = [bool(g and enabled) for g in requested]
         prepared.append(actual)
         vectors.append(values)
@@ -104,16 +107,16 @@ def score_native_candidate(model, rows, teacher_records, masks, bank, condition,
                          "source_overlap": torch.tensor([float("nan") if v is None else v for v in artifact["source_overlap"]], dtype=torch.float64),
                          "requested_mask": torch.tensor(requested), "steering_mask": torch.tensor(actual),
                          "zero_vector_no_intervention": bool(condition is not None and not nonzero),
-                         "vector_id": vector_id, "condition": condition,
+                         "vector_id": vector_id, "condition": condition,**strength,
                          "binding": digest({"mask_id": artifact["mask_id"], "vector_id": vector_id,
-                                            "condition": condition, "row": row})})
+                                            "condition": condition, "row": row,'strength':strength})})
     results = {}
     for begin in range(0, len(rows), batch_size):
         subset = rows[begin:begin+batch_size]
         scores = score_batch(model, subset, vectors=vectors[begin:begin+batch_size] if condition else None,
             gates=prepared[begin:begin+batch_size] if condition else None,
             operator=condition.get("operator", "slerp") if condition else "slerp",
-            alpha=condition.get("alpha", .1) if condition else .1, chunk=chunk)
+            alpha=(alphas[begin:begin+batch_size] if condition else .1), chunk=chunk)
         for j, (row, score) in enumerate(zip(subset, scores), begin):
             key = row.get("key", row["id"])
             metrics = (position_metrics(score, teacher_records[key]) if metric_adapter is None else

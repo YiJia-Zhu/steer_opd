@@ -1,4 +1,4 @@
-"""Cross-tokenizer span semantics, metric identity and eight-way integration."""
+"""Cross-tokenizer span semantics, metric identity and four-way integration."""
 
 import copy
 import hashlib
@@ -61,19 +61,21 @@ def test_byte_decoder_covers_all_bytes_and_space():
     assert table['Ġ'] == 32 and table['Ċ'] == 10
 
 
-def test_common_three_way_span_and_mean_likelihood_not_sum_or_string_probability():
+def test_teacher_student_span_mean_likelihood_not_sum_or_string_probability():
     s = ToyCodec({0: b"<eos>", 1: b"a", 2: b"b", 3: b"c"})
     t = ToyCodec({0: b"<eos>", 11: b"ab", 12: b"c"})
-    r = ToyCodec({0: b"<eos>", 21: b"a", 22: b"bc"})
-    plan = align_response([1, 2, 3, 0], s, {"teacher": t, "reference": r})
-    assert plan["units"][0]["ranges"] == {"student": [0, 3], "teacher": [0, 2], "reference": [0, 2]}
+    plan = align_response([1, 2, 3, 0], s, {"teacher": t})
+    assert plan["units"][0]["ranges"] == {"student": [0, 2], "teacher": [0, 1]}
+    assert plan['schema']==2 and plan['alignment_roles']==['student','teacher']
     assert plan["alignment_mask"] == [True, True, True, False]
     def record(lps):
         return {"sampled_logps": torch.tensor(lps), "ids": torch.zeros(len(lps), 16, dtype=torch.int32), "logps": torch.zeros(len(lps), 16)}
-    scores = span_scores(plan, {"student": record([-1., -2., -3., -4.]), "teacher": record([-.4, -.8]), "reference": record([-1., -2.])})
-    assert scores["unit_mean_logps"][0]["student"] == pytest.approx(-2)
-    assert scores["teacher_family_shift"][:3].tolist() == pytest.approx([.9]*3)
-    assert torch.isnan(scores["teacher_family_shift"][-1])
+    scores = span_scores(plan, {"student": record([-1., -2., -3., -4.]), "teacher": record([-.4, -.8])})
+    assert scores["unit_mean_logps"][0]["student"] == pytest.approx(-1.5)
+    assert scores['unit_mean_logps'][0]['teacher']==pytest.approx(-.4)
+    assert set(scores['broadcast_mean_logps'])=={'teacher','student'}
+    assert 'teacher_family_shift' not in scores
+    assert torch.isnan(scores['broadcast_mean_logps']['student'][-1])
 
 
 def test_utf8_split_tokens_form_one_safe_unit():
@@ -87,7 +89,7 @@ def test_utf8_split_tokens_form_one_safe_unit():
 @pytest.fixture(scope="module")
 def real_codecs():
     return {role: ByteLevelCodec(AutoTokenizer.from_pretrained(ROOT / "assets/models" / name, local_files_only=True))
-            for role, name in [("student", "Qwen3-4B"), ("teacher", "Qwen3.5-0.8B"), ("reference", "Qwen3.5-0.8B")]}
+            for role, name in [("student", "Qwen3-4B"), ("teacher", "Qwen3.5-0.8B")]}
 
 
 @pytest.mark.parametrize("text", [' hello world', '中文🙂 café', '1+1=2\n', 'é ㍿test'])
@@ -95,7 +97,7 @@ def test_real_qwen_tokenizers_keep_exact_generated_bytes_and_own_ids(real_codecs
     s = real_codecs["student"]
     ids = s.encode(text)
     generated = s.bytes(ids)
-    plan = align_response(ids+[s.tokenizer.eos_token_id], s, {r: real_codecs[r] for r in ("teacher", "reference")})
+    plan = align_response(ids+[s.tokenizer.eos_token_id], s, {r: real_codecs[r] for r in ("teacher",)})
     assert hashlib.sha256(generated).hexdigest() == plan["response_utf8_sha256"]
     assert plan["native_response_ids"]["student"] == ids
     assert all(real_codecs[r].bytes(v) == generated for r, v in plan["native_response_ids"].items())
@@ -106,7 +108,7 @@ def test_actual_noncanonical_student_tokenization_is_preserved(real_codecs):
     s = real_codecs["student"]
     by_byte = {v: k for k, v in s.raw.items() if len(v) == 1 and k not in s.special}
     ids = [by_byte[bytes([c])] for c in b'hello']
-    plan = align_response(ids, s, {"teacher": real_codecs["teacher"], "reference": real_codecs["reference"]})
+    plan = align_response(ids, s, {"teacher": real_codecs["teacher"]})
     assert plan["native_response_ids"]["student"] == ids
     assert len(plan["native_response_ids"]["teacher"]) < len(ids)
     assert plan["units"][0]["ranges"]["student"] == [0, 5]
@@ -119,52 +121,51 @@ def test_missing_exact_bytes_are_rejected_instead_of_normalized_or_replaced():
 
 
 def test_zero_directions_are_shared_and_never_fall_back_to_other_questions():
-    pooled = {qid: {"usable": True, "layers": {"2": {"pools": [torch.ones(16)*v, torch.ones(16)*v, torch.ones(16)*v],
-        "norms": [torch.ones(3), torch.ones(2), torch.ones(4)]}}} for qid, v in [('q1', 1), ('q2', 2)]}
+    pooled = {qid: {"usable": True, "layers": {"2": {"pools": [torch.ones(16)*v, torch.ones(16)*v],
+        "norms": [torch.ones(3), torch.ones(4)]}}} for qid, v in [('q1', 1), ('q2', 2)]}
     banks, _ = make_common_banks(pooled, [2], {"checkpoint": "S0", "step": 0})
-    assert len(banks) == 4
+    assert len(banks) == 2
     for bank in banks.values():
         assert not bank_vectors(bank, 'q1')[0][2].any()
         assert bank["valid_ids"] == ['q1', 'q2']
 
 
-def test_cross_tokenizer_all_eight_paths_keep_frozen_masks_and_score_only_aligned_units(tmp_path, monkeypatch):
+def test_cross_tokenizer_all_four_paths_keep_frozen_masks_and_score_only_aligned_units(tmp_path, monkeypatch):
     raw = {i: bytes([33+i]) for i in range(47)}; raw[0] = b"<eos>"
     sraw, traw = {**raw, 3: b"c", 4: b"d", 5: b"e"}, {**raw, 13: b"c", 14: b"d", 15: b"e"}
     s, t = ToyCodec(sraw), ToyCodec(traw)
     rows = [{"id": 'q1', "key": 'r1', "prompt_token_ids": [1, 2], "token_ids": [3, 4, 5, 0], "steering": False},
             {"id": 'q2', "key": 'r2', "prompt_token_ids": [1, 2], "token_ids": [4, 5, 0], "steering": False}]
-    plans = {r['key']: align_response(r['token_ids'], s, {'teacher': t, 'reference': t}) for r in rows}
+    plans = {r['key']: align_response(r['token_ids'], s, {'teacher': t}) for r in rows}
     native_rows = [{**r, 'token_ids': plans[r['key']]['native_response_ids']['teacher']} for r in rows]
     teachers = {r['key']: v for r, v in zip(rows, score_batch(tiny(4), native_rows))}
-    refs = {r['key']: v for r, v in zip(rows, score_batch(tiny(5), native_rows))}
     source = {r['key']: v for r, v in zip(rows, score_batch(tiny(3), rows))}
-    adapter = AlignedMetricAdapter(plans, s, t, refs)
+    adapter = AlignedMetricAdapter(plans, s, t)
     identity = {'student_checkpoint': 'S0', 'teacher_checkpoint': 'T', 'student_tokenizer_sha256': s.mapping_sha256,
         'teacher_tokenizer_sha256': t.mapping_sha256, 'support_id': 'separate_native_supports', 'metric': METRIC,
         'student_score_sha256': 's', 'teacher_score_sha256': 't'}
     masks = {r['key']: freeze_static_mask(r, adapter(r['key'], source[r['key']], teachers[r['key']])['overlap'], .5,
         identity, alignment_mask=plans[r['key']]['alignment_mask']) for r in rows}
     original = copy.deepcopy(masks)
-    pooled = {qid: {'usable': True, 'layers': {'2': {'pools': [torch.arange(16).float()+i, torch.arange(16).flip(0).float(), torch.ones(16)*i],
-        'norms': [torch.ones(2)*10]*3}}} for i, qid in enumerate(['q1', 'q2'], 1)}
+    pooled = {qid: {'usable': True, 'layers': {'2': {'pools': [torch.arange(16).float()+i, torch.ones(16)*i],
+        'norms': [torch.ones(2)*10]*2}}} for i, qid in enumerate(['q1', 'q2'], 1)}
     banks, _ = make_common_banks(pooled, [2], {'checkpoint': 'S0', 'step': 0})
     model = tiny(3)
     baseline = score_native_candidate(model, rows, teachers, masks, next(iter(banks.values())), None, metric_adapter=adapter)
     count = 0
-    for direction in ('T-S', 'T-R'):
+    for direction in ('T-S',):
         for granularity in ('global', 'per_question'):
             for gate in ('all', 'static_overlap'):
                 condition = {'direction': direction, 'granularity': granularity, 'gate': gate, 'layers': [2], 'operator': 'slerp', 'alpha': .1}
                 result = score_native_candidate(model, rows, teachers, masks, banks[f'{direction}_{granularity}'], condition, baseline=baseline, metric_adapter=adapter)
                 assert all(v['metric'] == METRIC and v['parameter_updates'] == 0 for v in result.values())
                 assert all(torch.isnan(v['overlap'][-1]) and not v['alignment_mask'][-1] for v in result.values())
-                assert all(torch.isfinite(v['teacher_family_shift'][:-1]).all() for v in result.values())
+                assert all('teacher_family_shift' not in v for v in result.values())
                 count += 1
-    assert count == 8 and masks == original
+    assert count == 4 and masks == original
     from steer_opd import compass_scoring, resumable_core
     monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
-    module = importlib.import_module('run_static_overlap_screen')
+    module = importlib.import_module('run_overlap_ablation')
     monkeypatch.setattr(module, 'ROOT', tmp_path)
     monkeypatch.setattr(resumable_core, 'require_gpu', lambda: None)
     monkeypatch.setattr(compass_scoring, 'load_text_scorer', lambda *args: model)
@@ -192,7 +193,7 @@ def test_text_wrapper_and_native_valid_support_mask_keep_probabilities_finite():
     row = {'prompt_token_ids': [1, 2], 'token_ids': [3, 4]}
     record = score_batch(model, [row])[0]
     assert not (record['ids'] == 46).any() and torch.isfinite(record['sampled_logps']).all()
-    assert torch.isfinite(record['entropy']).all()
+    assert torch.isfinite(record['logps']).all() and record['ids'].shape == (2,16)
 
 
 def test_alignment_mask_preserves_missing_values_and_excludes_eos_from_gate():
@@ -231,8 +232,8 @@ def test_real_tokenizers_complete_source_cache_to_static_mask_chain(tmp_path, mo
         'source': 'vllm_rollout_raw_logprobs', 'support_size': s.support_size, 'k': 16, 'probability_mode': 'raw_logprobs'}
     row = commit_topk_response(tmp_path / 'source', row, source)
     atomic_json(tmp_path / 'rows.json', [row])
-    pooled = {'q1': {'usable': True, 'layers': {'26': {'pools': [torch.arange(16).float(), torch.ones(16), torch.zeros(16)],
-                                                        'norms': [torch.ones(2)*10]*3}}}}
+    pooled = {'q1': {'usable': True, 'layers': {'26': {'pools': [torch.arange(16).float(), torch.zeros(16)],
+                                                        'norms': [torch.ones(2)*10]*2}}}}
     banks, _ = make_common_banks(pooled, [26], {'checkpoint': 'S0', 'step': 0})
     paths, conditions = {}, []
     for name, bank in banks.items():
@@ -240,27 +241,32 @@ def test_real_tokenizers_complete_source_cache_to_static_mask_chain(tmp_path, mo
         for gate in ['all', 'static_overlap']:
             conditions.append({'id': f'{name}_{gate}', 'bank': name, 'direction': bank['method']['direction'],
                 'granularity': bank['method']['granularity'], 'gate': gate, 'layers': [26], 'operator': 'slerp', 'alpha': .1})
-    job = {'stage': 'static_overlap_screen', 'optimizer_updates': 0, 'student': 'S0', 'teacher': 'T', 'reference': 'R',
+    job = {'stage': 'static_overlap_screen', 'optimizer_updates': 0, 'student': 'S0', 'teacher': 'T',
            'identity': {'metric': METRIC}, 'rows': 'rows.json', 'questions': 'questions.json', 'alignment_dir': 'align',
-           'source_dir': 'source', 'support_size': s.support_size, 'teacher_scores': 'T_scores', 'reference_scores': 'R_scores',
+           'source_dir': 'source', 'support_size': s.support_size, 'teacher_scores': 'T_scores',
            'banks': paths, 'conditions': conditions, 'threshold': .6, 'output': 'result'}
     _, _, native_rows, _ = compass_job.prepare_plans(job, real_codecs)
-    for role in ['teacher', 'reference']:
+    for role in ['teacher']:
         c = real_codecs[role]
         native_row = native_rows[role][0]; length = len(native_row['token_ids'])
-        binding = digest({'row': native_row, 'checkpoint': job[role], 'tokenizer': c.mapping_sha256, 'support_id': c.support_id})
+        binding = compass_job.native_score_binding(job, role, native_row, c)
         score = {'ids': torch.arange(8, 24, dtype=torch.int32).repeat(length, 1),
                  'logps': (-4.-torch.arange(16)*.1).repeat(length, 1), 'sampled_logps': torch.full((length,), -6.), 'binding': binding}
         atomic_torch(tmp_path / job[f'{role}_scores'] / 'r1.pt', score)
     prepared = compass_job.prepare_screen(job, real_codecs)
-    assert len(prepared[3]) == 4 and len(job['conditions']) == 8
+    assert len(prepared[3]) == 2 and len(job['conditions']) == 4
     artifact = prepared[1]['r1']
     assert artifact['schema'] == 2 and artifact['alignment_mask'][-1] is False
     assert artifact['requested_mask'][-1] is False and artifact['source_overlap'][-1] is None
     assert artifact['identity']['student_tokenizer_sha256'] != artifact['identity']['teacher_tokenizer_sha256']
+    assert artifact['identity']['metric_version'] == 4
+    assert artifact['identity']['matching_rule_version'] == 'native_token_prefix_compatibility_v1'
     assert compass_job.prepare_screen(job, real_codecs)[1] == prepared[1]
     native = torch.load(tmp_path / 'T_scores/r1.pt', weights_only=True)
-    native['binding'] = 'wrong'; atomic_torch(tmp_path / 'T_scores/r1.pt', native)
+    native['binding'] = digest({'row':native_rows['teacher'][0], 'checkpoint':job['teacher'],
+                               'tokenizer':real_codecs['teacher'].mapping_sha256,
+                               'support_id':real_codecs['teacher'].support_id})
+    atomic_torch(tmp_path / 'T_scores/r1.pt', native)
     with pytest.raises(ValueError, match='cache has changed'):
         compass_job.prepare_screen(job, real_codecs)
 
@@ -292,14 +298,14 @@ def test_actual_qwen35_dense_and_moe_text_architectures_score_on_cpu(metadata, m
     rows = [{'prompt_token_ids': [1, 2], 'token_ids': [3, 4, 5]}, {'prompt_token_ids': [1], 'token_ids': [2]}]
     scores = score_batch(model, rows)
     assert [len(s['sampled_logps']) for s in scores] == [3, 1]
-    assert all(torch.isfinite(s['sampled_logps']).all() and torch.isfinite(s['entropy']).all() for s in scores)
+    assert all(torch.isfinite(s['sampled_logps']).all() and torch.isfinite(s['logps']).all() for s in scores)
     single = score_batch(model, rows[:1])[0]
     torch.testing.assert_close(scores[0]['logps'], single['logps'], atol=1e-5, rtol=1e-5)
 
 
-def test_campaign_builds_exactly_eight_candidates_and_native_generation_profiles(real_codecs):
+def test_campaign_builds_fixed_and_annealed_candidates_and_native_generation_profiles(real_codecs):
     from steer_opd.compass_campaign import generation_job, make_base_job, validate_config
-    cfg = json.loads((ROOT / 'configs/static_dual_overlap.json').read_text())
+    cfg = json.loads((ROOT / 'configs/ablation.json').read_text())
     validate_config(cfg)
     questions = [{'id': 'q1', 'question': 'What is 1+1?', 'answer': '2'}]
     source = generation_job(cfg, real_codecs['student'], 'student', questions, source=True)
@@ -313,10 +319,13 @@ def test_campaign_builds_exactly_eight_candidates_and_native_generation_profiles
     job = make_base_job(cfg, real_codecs, 'rows.json')
     assert job['execution_hold'] == cfg['execution_hold']
     assert job['backend'] == 'easysteer'
-    assert len(job['conditions']) == 8 and len(job['banks']) == 4
+    assert len(job['conditions']) == 4 and len(job['banks']) == 2
     assert all(c['layers'] == [26] and c['alpha'] == .1 for c in job['conditions'])
     with pytest.raises(ValueError, match='zero updates'):
         validate_config({**cfg, 'optimizer_updates': 1})
+    for phase in ('param','baseline'):
+        with pytest.raises(ValueError,match='Only the overlap phase'):
+            validate_config({**cfg,'phase':phase})
 
 
 def test_plotting_keeps_requested_first_three_and_marks_unscored_positions(tmp_path):

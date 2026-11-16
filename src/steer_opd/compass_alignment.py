@@ -2,7 +2,7 @@
 
 Independent implementation from the paper while the requested code URL is
 unavailable. Span-mean likelihoods are scores, not complete string-event
-probabilities. The byte-continuation Top16 metric below is a project metric,
+probabilities. The prefix-compatible Top16 metric below is a project metric,
 not an upstream Compass metric or native cross-vocabulary token-ID overlap.
 """
 
@@ -67,21 +67,6 @@ class ByteLevelCodec:
         except KeyError as error:
             raise ValueError("Undefined token in source text") from error
 
-    def event(self, token):
-        token = int(token)
-        # Top16 is a cardinality metric: do not merge distinct EOS IDs or drop
-        # matching controls. P_overlap intentionally uses coarser EOS/control classes.
-        if token in self.special:
-            return "control:"+self.token_names[token]
-        if not self.raw.get(token):
-            return None
-        return "bytes:"+self.raw[token].hex()
-
-    @property
-    def event_vocabulary(self):
-        if not hasattr(self, "_event_vocabulary"):
-            self._event_vocabulary = {self.event(t) for t in self.valid_ids} - {None}
-        return self._event_vocabulary
 
 
 def align_response(source_ids, student_codec, scoring_codecs):
@@ -135,7 +120,8 @@ def align_response(source_ids, student_codec, scoring_codecs):
             lo, hi = ranges["student"]
             mask[lo:hi] = [True]*(hi-lo)
             positions[lo:hi] = [index]*(hi-lo)
-    result = {"schema": 1, "method": "compass_a4_common_byte_boundaries_mean_logp",
+    result = {"schema": 2, "method": "common_utf8_boundaries_mean_native_logp_v2",
+              "alignment_roles": list(codecs),
               "source_token_ids": source_ids, "native_response_ids": ids,
               "response_utf8_sha256": hashlib.sha256(raw).hexdigest(), "response_text": text,
               "tokenizer_mapping_sha256": {r: c.mapping_sha256 for r, c in codecs.items()},
@@ -175,77 +161,53 @@ def span_scores(plan, records):
     result = {"unit_mean_logps": units, "broadcast_mean_logps": broadcast,
               "alignment_mask": torch.tensor(plan["alignment_mask"]),
               "aggregation": "mean_native_token_logp_within_shared_span_not_string_probability"}
-    if "teacher" in broadcast and "reference" in broadcast:
-        result["teacher_family_shift"] = broadcast["teacher"]-broadcast["reference"]
     return result
 
 
 def aligned_metrics(plan, student, teacher, student_codec, teacher_codec):
-    """Project native Top16 actions to exact next-token bytes at span starts.
-
-    Broadcast to that span's student tokens, matching A.4's credit assignment.
-    No renormalization or transported full teacher distribution is implied.
-    """
+    """Maximum compatible candidate/mass matching at common span starts."""
     if plan["tokenizer_mapping_sha256"]["student"] != student_codec.mapping_sha256 or plan["tokenizer_mapping_sha256"]["teacher"] != teacher_codec.mapping_sha256:
         raise ValueError("Metric codec differs from the frozen alignment")
+    from steer_opd.prefix_matching import (maximum_topk_matching, probability_overlap,
+        METRIC_VERSION, RULE_VERSION, P_DEFINITION, TOPK_TIE_POLICY, TOP_K)
+    from steer_opd.static_masks import validate_native_score
     n = len(plan["source_token_ids"])
-    from steer_opd.byte_probabilities import probability_overlap, validate_byte_probabilities
+    validate_native_score(student, n, student_codec.support_size)
+    validate_native_score(teacher, len(plan["native_response_ids"]["teacher"]), teacher_codec.support_size)
     fields = {k: torch.full((n,), float("nan"), dtype=torch.float64) for k in
               ("overlap", "P_overlap", "student_shared_mass", "teacher_shared_mass",
-               "student_event_coverage", "teacher_event_coverage", "student_vocab_coverage",
-               "teacher_vocab_coverage", "student_common_vocab_mass", "teacher_common_vocab_mass")}
-    def vocabulary(codec):
-        if not hasattr(codec, "_metric_event_vocabulary"):
-            codec._metric_event_vocabulary = {codec.event(t) for t in codec.valid_ids} - {None}
-        return codec._metric_event_vocabulary
-    vocabularies = {"student": vocabulary(student_codec), "teacher": vocabulary(teacher_codec)}
-    dual = "byte_probs" in student and "byte_probs" in teacher
-    if dual:
-        validate_byte_probabilities(student["byte_probs"], n)
-        validate_byte_probabilities(teacher["byte_probs"], len(plan["native_response_ids"]["teacher"]))
-        valid_units = [u for u in plan["units"] if u["valid"]]
-        p_values = iter(probability_overlap(
-            student["byte_probs"][[u["ranges"]["student"][0] for u in valid_units]],
-            teacher["byte_probs"][[u["ranges"]["teacher"][0] for u in valid_units]]).tolist())
+               "student_top16_mass", "teacher_top16_mass")}
+    valid_units = [u for u in plan["units"] if u["valid"]]
+    p_values = iter(probability_overlap(student, teacher, student_codec, teacher_codec,
+        student_positions=[u["ranges"]["student"][0] for u in valid_units],
+        teacher_positions=[u["ranges"]["teacher"][0] for u in valid_units]).tolist())
     per_unit = []
-    def events(codec, score, position):
-        result = {}
-        for token, lp in zip(score["ids"][position], score["logps"][position]):
-            event = codec.event(token)
-            if event is not None:
-                result[event] = result.get(event, 0.)+float(lp.double().exp())
-        return result
     for unit in plan["units"]:
         if not unit["valid"]:
             per_unit.append(None)
             continue
         lo, hi = unit["ranges"]["student"]
         tlo, _ = unit["ranges"]["teacher"]
-        a, b = events(student_codec, student, lo), events(teacher_codec, teacher, tlo)
-        common = a.keys() & b.keys()
-        values = {"overlap": len(common)/16, "student_shared_mass": sum(a[x] for x in common),
-                  "teacher_shared_mass": sum(b[x] for x in common),
-                  "student_event_coverage": len(a)/16, "teacher_event_coverage": len(b)/16,
-                  "student_vocab_coverage": sum(student_codec.event(t) in vocabularies["teacher"] for t in student["ids"][lo])/16,
-                  "teacher_vocab_coverage": sum(teacher_codec.event(t) in vocabularies["student"] for t in teacher["ids"][tlo])/16}
-        if student_codec.mapping_sha256 == teacher_codec.mapping_sha256:
-            # Exact compatible-tokenizer regression, including duplicate byte aliases.
-            si, ti = student["ids"][lo], teacher["ids"][tlo]
-            values["overlap"] = float((si[:, None] == ti[None, :]).any(-1).double().mean())
-        if dual:
-            values["P_overlap"] = next(p_values)
-            for role, score, pos in [("student", student, lo), ("teacher", teacher, tlo)]:
-                if "common_vocab_mass" in score:
-                    values[f"{role}_common_vocab_mass"] = float(score["common_vocab_mass"][pos])
+        pairs = maximum_topk_matching(student["ids"][lo], teacher["ids"][tlo], student_codec, teacher_codec)
+        sp = student["logps"][lo].double().exp()
+        tp = teacher["logps"][tlo].double().exp()
+        values = {"overlap": len(pairs)/TOP_K, "P_overlap": next(p_values),
+                  "student_shared_mass": sum(float(sp[i]) for i, _ in pairs),
+                  "teacher_shared_mass": sum(float(tp[j]) for _, j in pairs),
+                  "student_top16_mass": float(sp.sum()), "teacher_top16_mass": float(tp.sum()),
+                  "top16_matching_indices": pairs}
         for key, value in values.items():
-            fields[key][lo:hi] = value
+            if key in fields:
+                fields[key][lo:hi] = value
         per_unit.append(values)
-    return {**fields, "metric": METRIC, "metric_version": 2, "P_overlap_available": dual,
+    return {**fields, "metric": METRIC, "metric_version": METRIC_VERSION, "P_overlap_available": True,
+            "matching_rule_version": RULE_VERSION, "topk_tie_policy": TOPK_TIE_POLICY, "returned_top_k": TOP_K,
+            "shared_mass_definition": "mass_of_deterministic_maximum_cardinality_matching_not_P_overlap",
             "valid_span_count": sum(bool(u["valid"]) for u in plan["units"]),
             "total_span_count": len(plan["units"]),
             "alignment_id": plan["alignment_id"], "alignment_mask": torch.tensor(plan["alignment_mask"]),
             "unit_metrics": per_unit, "metric_position_semantics": "shared_span_start_broadcast_to_student_tokens",
             "paper_native_overlap_at_16": fields["overlap"] if student_codec.mapping_sha256 == teacher_codec.mapping_sha256 else None,
             "native_token_ids_comparable": student_codec.mapping_sha256 == teacher_codec.mapping_sha256,
-            "P_overlap_definition": "full_native_probability_first_byte_pushforward_sum_min",
+            "P_overlap_definition": P_DEFINITION,
             "metric_origin": "rethinking_top16_cross_family_adaptation_not_original_native_metric"}

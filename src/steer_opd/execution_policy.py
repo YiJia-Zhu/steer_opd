@@ -1,7 +1,7 @@
 """Explicit experiment holds and default vLLM scheduler requirements."""
 
 
-POLICY_KEYS = ("execution_hold", "execution_blockers", "gpu_acceptance_receipt", "gpu_acceptance_binding")
+POLICY_KEYS = ("execution_hold", "execution_blockers", "gpu_acceptance_receipt", "gpu_acceptance_binding", "stop_after")
 SEQUENCE_LIMIT_OPTIONS = frozenset({
     "max_num_seqs", "max_num_active_seqs", "vllm_max_num_seqs",
     "num_seqs", "num_seq", "seq_num", "max-num-seqs",

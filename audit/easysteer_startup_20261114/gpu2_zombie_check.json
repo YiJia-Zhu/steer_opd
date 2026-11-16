@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-11-14T17:07:26.438501+08:00",
+  "visible_zombies": [
+    {
+      "pid": 1677788,
+      "ppid": 2086596,
+      "uid": 30003,
+      "state": "Z",
+      "comm": "sh",
+      "fd_size": "FDSize:\t0"
+    },
+    {
+      "pid": 1677840,
+      "ppid": 2086596,
+      "uid": 30003,
+      "state": "Z",
+      "comm": "sh",
+      "fd_size": "FDSize:\t0"
+    },
+    {
+      "pid": 1678974,
+      "ppid": 2086596,
+      "uid": 30003,
+      "state": "Z",
+      "comm": "sh",
+      "fd_size": "FDSize:\t0"
+    }
+  ],
+  "visible_uninterruptible_processes": [],
+  "accessible_own_gpu2_holders": [],
+  "fuser": {
+    "code": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "kernel_log_and_systemwide_handles_require_admin": true,
+  "signals_sent": false
+}

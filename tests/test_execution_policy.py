@@ -11,15 +11,16 @@ from steer_opd.resumable_core import ROOT, read_json
 
 
 @pytest.mark.parametrize("entry", ["panel_cli", "panel_execute", "score",
-                                  "banks", "screen_cli", "screen_run", "static_generate"])
+                                  "banks", "screen_cli", "screen_run", "static_generate", "capture"])
 def test_selected_hold_blocks_each_stage_before_models_gpus_or_artifact_writes(entry, tmp_path, monkeypatch):
     monkeypatch.syspath_prepend(str(ROOT / "scripts"))
-    cfg = read_json(ROOT / "configs/static_dual_overlap.json")
+    cfg = read_json(ROOT / "configs/ablation.json")
     assert cfg["execution_hold"] == "awaiting_user_approval"
-    modules = {"panel_cli": "run_compass_static_panel", "panel_execute": "run_compass_static_panel",
+    modules = {"panel_cli": "run_ablation", "panel_execute": "run_ablation",
                "score": "score_compass_sources",
-               "banks": "prepare_compass_banks", "screen_cli": "run_static_overlap_screen",
-               "screen_run": "run_static_overlap_screen", "static_generate": "generate_static_sources"}
+               "banks": "prepare_compass_banks", "screen_cli": "run_overlap_ablation",
+               "screen_run": "run_overlap_ablation", "static_generate": "generate_static_sources",
+               "capture":"capture_student_activations"}
     module = importlib.import_module(modules[entry])
     monkeypatch.setattr(module, "read_json", lambda _: cfg)
     monkeypatch.setattr(module, "ROOT", tmp_path, raising=False)
@@ -34,6 +35,8 @@ def test_selected_hold_blocks_each_stage_before_models_gpus_or_artifact_writes(e
         action = lambda: module.execute(cfg)
     elif entry == "banks":
         action = lambda: module.build(cfg)
+    elif entry == 'capture':
+        action = lambda: module.capture(cfg)
     elif entry == "screen_run":
         action = lambda: module.run(cfg, None, None, None, None)
     else:
@@ -50,7 +53,7 @@ def test_selected_hold_blocks_each_stage_before_models_gpus_or_artifact_writes(e
 
 
 def test_removing_user_hold_does_not_silently_ignore_protocol_blockers():
-    cfg = read_json(ROOT / "configs/static_dual_overlap.json")
+    cfg = read_json(ROOT / "configs/ablation.json")
     cfg.pop("execution_hold")
     with pytest.raises(RuntimeError, match="prerequisites remain"):
         require_execution_allowed(cfg)
@@ -59,7 +62,7 @@ def test_removing_user_hold_does_not_silently_ignore_protocol_blockers():
 @pytest.mark.parametrize("cap", ["max_num_seqs", "max_num_active_seqs", "vllm_max_num_seqs",
                                "cudagraph_capture_sizes", "max_cudagraph_capture_size"])
 def test_new_panel_rejects_nested_manual_scheduler_caps(cap):
-    cfg = read_json(ROOT / "configs/static_dual_overlap.json")
+    cfg = read_json(ROOT / "configs/ablation.json")
     cfg["engine_options"] = {cap: 16}
     with pytest.raises(ValueError, match="scheduling at its defaults"):
         validate_config(cfg)
@@ -67,7 +70,7 @@ def test_new_panel_rejects_nested_manual_scheduler_caps(cap):
 
 def test_standalone_score_rejects_scheduler_caps_before_input_preparation(tmp_path, monkeypatch):
     monkeypatch.syspath_prepend(str(ROOT / "scripts"))
-    module = importlib.import_module("run_static_overlap_screen")
+    module = importlib.import_module("run_overlap_ablation")
     monkeypatch.setattr(module, "read_json", lambda _: {"max_num_seqs": 16})
     monkeypatch.setattr(sys, "argv", ["screen", "--job", "unused.json", "--execute"])
     monkeypatch.setattr(module, "prepare", lambda _: pytest.fail("Manual cap reached preparation"))

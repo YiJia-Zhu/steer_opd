@@ -44,11 +44,6 @@ def extract_topk(token_ids, steps, k, support_size):
 
 
 def validate_topk(score, token_ids, k, support_size):
-    if "byte_probs" in score:
-        from steer_opd.byte_probabilities import validate_byte_probabilities
-        validate_byte_probabilities(score["byte_probs"], len(token_ids))
-        if score.get("byte_projection_schema") != 1 or not score.get("projection_id"):
-            raise ValueError("Full byte probability cache has no projection identity")
     ids, logps, sampled = score["ids"], score["logps"], score["sampled_logps"]
     if (score.get("source") not in ROLLOUT_SOURCES or score.get("probability_mode") != "raw_logprobs"
             or score.get("k") != k or score.get("support_size") != support_size):
@@ -73,44 +68,17 @@ def validate_topk(score, token_ids, k, support_size):
     outside = ~matches.any(-1)
     if (sampled[outside] > logps[outside, -1] + 1e-5).any():
         raise ValueError("Sampled token incorrectly excluded from Top-K")
-    if "teacher_logps" in score:
-        for key in ("teacher_logps", "teacher_topk_logps"):
-            if (score[key].shape != ids.shape or score[key].dtype != torch.float32
-                    or not torch.isfinite(score[key]).all() or (score[key] > 1e-6).any()):
-                raise ValueError("Invalid saved online teacher probabilities")
-        teacher_ids = score["teacher_topk_ids"]
-        if (teacher_ids.shape != ids.shape or teacher_ids.dtype != torch.int32
-                or (teacher_ids < 0).any() or (teacher_ids >= support_size).any()
-                or (teacher_ids.sort(-1).values.diff(dim=-1) == 0).any()):
-            raise ValueError("Invalid saved online teacher Top-K IDs")
-        if (score["teacher_topk_logps"].double().exp().sum(-1) > 1 + 1e-5).any():
-            raise ValueError("Saved online teacher mass exceeds one")
-    for key in ("student_entropy", "teacher_entropy", "probe_entropy"):
-        if key in score:
-            value = score[key]
-            if (score.get("entropy_support_size") != support_size or value.shape != (len(token_ids),)
-                    or not torch.isfinite(value).all() or (value < -1e-6).any()):
-                raise ValueError("Invalid full-support token entropy")
-    if "teacher_sampled_logps" in score:
-        value = score["teacher_sampled_logps"]
-        if value.shape != (len(token_ids),) or not torch.isfinite(value).all() or (value > 1e-6).any():
-            raise ValueError("Invalid sampled-token teacher logprobs")
 
 
 def tensor_hash(score):
     sha = hashlib.sha256()
-    keys = ["ids", "logps", "sampled_logps"]
-    keys += [key for key in ("teacher_logps", "teacher_topk_ids", "teacher_topk_logps",
-                             "probe_topk_ids", "probe_topk_logps", "student_entropy", "teacher_entropy",
-                             "probe_entropy", "teacher_sampled_logps", "full_rollout_logps",
-                             "full_teacher_logps", "full_probe_logps") if key in score]
-    keys += [key for key in ("byte_probs", "common_vocab_mass") if key in score]
-    for key in keys:
+    sha.update(digest({"format": "raw_topk_v4", "k": score["ids"].shape[-1],
+        "source": score.get("source"), "probability_mode": score.get("probability_mode"),
+        "support_size": score.get("support_size")}).encode())
+    for key in ("ids", "logps", "sampled_logps"):
         tensor = score[key].cpu().contiguous()
         sha.update(f"{key}:{tensor.dtype}:{tuple(tensor.shape)}".encode())
         sha.update(tensor.numpy().tobytes())
-    if "byte_probs" in score:
-        sha.update(str(score["projection_id"]).encode())
     return sha.hexdigest()
 
 

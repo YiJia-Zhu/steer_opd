@@ -1,26 +1,34 @@
-"""Frozen-student body-token encoding and explicit HF reference pooling."""
-import re
+"""SV-training answer-token means, with the same bounded-context text reading."""
 import torch
 
 
-def encode_content(tokenizer, text, with_offsets=False):
-    encoded = tokenizer(text, add_special_tokens=False, return_offsets_mapping=True)
-    structural = [m.span() for m in re.finditer(r"</?(?:think|tool_response)>|<\|[^>]+\|>", text)]
-    excluded = set(tokenizer.all_special_ids)
-    mask = [token not in excluded and b > a and not any(a < end and b > begin for begin, end in structural)
-            for token, (a, b) in zip(encoded["input_ids"], encoded["offset_mapping"])]
-    if with_offsets:
-        return encoded["input_ids"], mask, encoded["offset_mapping"]
-    return encoded["input_ids"], mask
+def encode_answer(tokenizer, prompt_text, text, max_context_len=2048):
+    """Match sv_training.acts: tokenize prompt+stripped answer, then keep [:limit].
+
+    The separately tokenized prompt length defines the answer boundary, as in
+    upstream mean_hidden_all_layers. Every retained answer token is pooled,
+    including reasoning/control markers; correctness and finish_reason are unused.
+    """
+    if type(max_context_len) is not int or max_context_len < 2:
+        raise ValueError('SV max_context_len must be an integer >= 2')
+    if getattr(tokenizer, 'truncation_side', 'right') != 'right':
+        raise ValueError('SV-training extraction requires right context truncation')
+    text = (text or '').strip()
+    prefix = tokenizer(prompt_text, add_special_tokens=False)['input_ids']
+    encoded = tokenizer(prompt_text + text, add_special_tokens=False, return_offsets_mapping=True)
+    full = encoded['input_ids']; retained = full[:max_context_len]; boundary = len(prefix)
+    response = retained[boundary:] if text and boundary > 0 else []
+    offsets = [(max(0, a-len(prompt_text)), max(0, b-len(prompt_text)))
+               for a,b in encoded['offset_mapping'][boundary:len(retained)]] if response else []
+    return {'input_ids':retained, 'prompt_ids':retained[:boundary], 'response_ids':response,
+            'offsets':offsets, 'body_mask':[True]*len(response),
+            'original_response_tokens':max(0,len(full)-boundary),
+            'retained_response_tokens':len(response), 'max_context_len':max_context_len,
+            'context_truncated':len(full)>max_context_len,
+            'pooling':'sv_training_all_retained_answer_tokens'}
 
 
-def pool_question(model, tokenizer, item, records, layers, token_capture=None, cache_dtype=torch.bfloat16, allow_zero=False):
-    if any(r["finish_reason"] == "length" or not r["text"].strip() for r in records):
-        return {"usable": False, "reason": "empty_or_truncated"}
-    for row in records:
-        words = row["text"].split()
-        if len(words) > 128 and len(set(words[-128:])) < 8:
-            return {"usable": False, "reason": "severe_exact_repetition"}
+def pool_question(model, tokenizer, item, records, layers, allow_zero=False, max_context_len=2048):
     captured = {}
     handles = []
     for layer in layers:
@@ -30,31 +38,16 @@ def pool_question(model, tokenizer, item, records, layers, token_capture=None, c
     result = {str(layer): {"pools": [], "norms": []} for layer in layers}
     device = model.lm_head.weight.device
     try:
-        for record_index, row in enumerate(records):
-            response, mask, offsets = encode_content(tokenizer, row["text"], with_offsets=True)
-            if not any(mask):
+        for row in records:
+            encoded = encode_answer(tokenizer,item.get('reader_prompt_text',item.get('student_prompt_text')),row.get('text'),max_context_len)
+            response, mask = encoded['response_ids'],encoded['body_mask']
+            if not response:
                 return {"usable": False, "reason": "no_answer_content"}
-            prefix = item["student_prompt_ids"]
-            tokens = torch.tensor([prefix + response], device=device)
+            prefix = encoded['prompt_ids']
+            tokens = torch.tensor([encoded['input_ids']], device=device)
             captured.clear()
             with torch.inference_mode():
                 model.model(input_ids=tokens, use_cache=False)
-            if token_capture is not None:
-                # Row0 is the last prompt state: it predicts the first answer
-                # token. Rows1..L are the observed answer states used for Phi.
-                token_capture(record_index, {
-                    "student_prompt_ids": torch.tensor(prefix, dtype=torch.int32),
-                    "student_response_ids": torch.tensor(response, dtype=torch.int32),
-                    "response_offsets": torch.tensor(offsets, dtype=torch.int32),
-                    "offset_semantics": "student_tokenizer_offset_mapping",
-                    "body_mask": torch.tensor(mask, dtype=torch.bool),
-                    "state_input_positions": torch.arange(len(prefix) - 1, len(prefix) + len(response)),
-                    "prediction_state_rows": torch.arange(len(response)),
-                    "response_token_state_rows": torch.arange(1, len(response) + 1),
-                    "states": {str(layer): captured[layer][0, len(prefix) - 1:].detach().to(
-                        device="cpu", dtype=cache_dtype).contiguous() for layer in layers},
-                    "source_dtypes": {str(layer): str(captured[layer].dtype) for layer in layers},
-                    "cache_dtype": str(cache_dtype), "steering": False})
             for layer in layers:
                 states = captured[layer][0, len(prefix):].float()[torch.tensor(mask, device=device)]
                 result[str(layer)]["pools"].append(states.mean(0).cpu())
@@ -68,10 +61,3 @@ def pool_question(model, tokenizer, item, records, layers, token_capture=None, c
     finally:
         for handle in handles:
             handle.remove()
-
-
-def usable_text(record):
-    if record.get("finish_reason") == "length" or not record.get("text", "").strip():
-        return False
-    words = record["text"].split()
-    return len(words) <= 128 or len(set(words[-128:])) >= 8

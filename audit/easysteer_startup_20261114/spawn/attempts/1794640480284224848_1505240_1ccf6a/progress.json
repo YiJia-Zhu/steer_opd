@@ -1,0 +1,22 @@
+{
+  "stage": "init_spawn",
+  "attempt_id": "1794640480284224848_1505240_1ccf6a",
+  "pid": 1505240,
+  "status": "failed",
+  "first_started_at": "2026-11-14T15:14:40.284358+08:00",
+  "started_at": "2026-11-14T15:14:40.284358+08:00",
+  "updated_at": "2026-11-14T15:15:41.211671+08:00",
+  "elapsed_seconds": 60.927404527086765,
+  "active_elapsed_seconds": 60.927404527086765,
+  "wall_since_first_start_seconds": 60.927316,
+  "completed": 0,
+  "committed": 0,
+  "resumed": 0,
+  "total": 1,
+  "unit": "request",
+  "eta_seconds": null,
+  "eta_basis": "unavailable",
+  "phase": "initializing",
+  "completed_tokens_this_attempt": 0,
+  "completed_token_per_second": 0.0
+}

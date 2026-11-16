@@ -1,0 +1,29 @@
+{
+  "status": "completed",
+  "scope": "User requested removal of reference-side steering and its dedicated calibration artifacts",
+  "removed_directories": [
+    {
+      "path": "data/representation_mapping_20261114",
+      "files": 3
+    },
+    {
+      "path": "audit/fused_tr_20261114",
+      "files": 1
+    },
+    {
+      "path": "runs/static_fused_tr_20261114",
+      "files": 6
+    }
+  ],
+  "student_direction": "T-S",
+  "schemes": 4,
+  "banks": 2,
+  "gpu_started": false,
+  "validation": {
+    "cpu_tests_passed": 134,
+    "cpu_tests_failed": 0,
+    "package_check": "passed",
+    "manual_launcher_preview": "passed",
+    "held_cpu_preparation": "passed"
+  }
+}

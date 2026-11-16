@@ -1,0 +1,48 @@
+{
+  "recorded_at_unix": 1794656241.316338,
+  "scope": "source_overlap_only",
+  "launch": {
+    "pid": 2653208,
+    "started_at_unix": 1794656143.5407565,
+    "gpu_ids": [
+      6,
+      7
+    ],
+    "stop_after": "source_overlap",
+    "run_name": "source_overlap_v1",
+    "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/logs/source_overlap_v1_launcher.log",
+    "command": [
+      "bash",
+      "scripts/run_ablation.sh",
+      "--run"
+    ]
+  },
+  "current_overlap_panel": {
+    "fixed_schemes": 4,
+    "shared_no_sv_baseline": true,
+    "running_sv_schemes": 0
+  },
+  "annealing": "future actual training batches; no question-order schedule in current overlap",
+  "checks": {
+    "cpu_pytest_passed": 147,
+    "package": "passed",
+    "shell_preview": "passed",
+    "shell_syntax": "passed",
+    "diff_whitespace": "passed"
+  },
+  "storage": {
+    "mount_free_bytes": 3407425622016,
+    "destination_free_bytes_at_check": 42594574336,
+    "xfs_project_id": 21003,
+    "project_scope": "/local_nvme/data/zhenning",
+    "external_storage_authorized": false,
+    "root_user_hard_quota_GiB": 137,
+    "guard": "actual destination quota checked before saving source probabilities and before native scoring"
+  },
+  "source_sha256": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4",
+  "template_hold": "awaiting_user_approval",
+  "run_scope": "source_overlap",
+  "sv_injection": false,
+  "opd": false,
+  "status": "startup_validation_running"
+}

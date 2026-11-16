@@ -1,0 +1,27 @@
+{
+  "status": "running",
+  "gpu_pool": [
+    6,
+    7
+  ],
+  "teacher_sv_questions": 1000,
+  "select": 700,
+  "confirm": 300,
+  "schemes": [
+    5,
+    6,
+    7,
+    8
+  ],
+  "teacher_layer": 29,
+  "alpha": 0.1,
+  "sv_context": 2048,
+  "parameter_updates": 0,
+  "startup_validation": "passed",
+  "validation_binding": "04604fb13a459ca830675f1f91ab39066fbc0dae1cac6bc24a643760186764f3",
+  "cpu_tests_passed": 199,
+  "gpu_acceptance_receipt": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/metadata/acceptance/passed.json",
+  "run_dir": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1",
+  "log": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/logs/launcher.log",
+  "template_execution_hold": "awaiting_user_approval"
+}

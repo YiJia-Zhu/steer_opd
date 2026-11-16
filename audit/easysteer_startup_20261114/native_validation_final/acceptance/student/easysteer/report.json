@@ -1,0 +1,33 @@
+{
+  "hf_parity": false,
+  "limits": {
+    "mean_abs_logp": 0.05,
+    "max_abs_logp": 0.2,
+    "max_byte_tv": 0.03,
+    "max_hidden_relative_l2": 0.03
+  },
+  "baseline": {
+    "mean_abs_logp": 0.0,
+    "max_abs_logp": 0.0,
+    "max_byte_tv": 5.960465898624534e-08
+  },
+  "capture_positions_tokens_and_finite_states": "passed",
+  "static": {
+    "mean_abs_logp": 0.0,
+    "max_abs_logp": 0.0,
+    "max_byte_tv": 2.9807083024024905e-08
+  },
+  "all": {
+    "mean_abs_logp": 0.0,
+    "max_abs_logp": 0.0,
+    "max_byte_tv": 5.96643090489124e-08
+  },
+  "alpha0": "passed",
+  "empty_mask": "passed",
+  "removed": "passed",
+  "source_replay": {
+    "mean_abs_logp": 0.0,
+    "max_abs_logp": 0.0,
+    "max_byte_tv": 1.2226089442536332e-16
+  }
+}

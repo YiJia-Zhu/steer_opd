@@ -1,11 +1,24 @@
-"""Validated axes for the frozen-student eight-scheme screen."""
+"""Reader-space T-S/student and S-T/teacher intervention definitions."""
 from dataclasses import asdict, dataclass
 import math
 
 from steer_opd.operators import validate_operator
 
 
-DIRECTION_ROLES = {'T-S': ('teacher', 'student'), 'T-R': ('teacher', 'reference')}
+DIRECTION_VERSION = 'sv_training_teacher_self_answer_mean_v2'
+DIRECTION_ROLES = {'T-S': ('teacher', 'student'), 'S-T': ('student', 'teacher')}
+TEACHER_DIRECTION_VERSION = 'sv_training_student_teacher_answer_mean_teacher_space_v1'
+DIRECTION_VERSIONS = {'T-S': DIRECTION_VERSION, 'S-T': TEACHER_DIRECTION_VERSION}
+
+
+def reader_direction(role):
+    if role not in ('student', 'teacher'):
+        raise ValueError('The direction reader must be student or teacher')
+    return 'T-S' if role == 'student' else 'S-T'
+
+
+def reader_layers(config, role):
+    return config['layers'] if role == 'student' else config['teacher_layers']
 
 
 @dataclass(frozen=True)
@@ -24,9 +37,9 @@ class Method:
     def __post_init__(self):
         validate_operator(self.operator, self.rho if self.operator == 'additive' else self.alpha)
         if self.direction not in DIRECTION_ROLES:
-            raise ValueError('direction must be T-S or T-R')
+            raise ValueError('The current screen supports only T-S or S-T')
         if self.granularity not in ('global', 'per_question') or self.extractor != 'initial':
-            raise ValueError('This screen uses global/per_question directions from frozen S0')
+            raise ValueError('Use global/per_question directions from the frozen reader')
         if (not self.layers or any(type(layer) is not int or layer < 0 for layer in self.layers)
                 or len(set(self.layers)) != len(self.layers)):
             raise ValueError('Layers must be unique nonnegative block indices')

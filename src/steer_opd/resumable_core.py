@@ -94,8 +94,6 @@ def score_hidden(model, hidden, k=16, candidates=None, chunk=128, sampled=None, 
     ids, logps, sampled_lps, undefined_mass, excluded_mass = [], [], [], [], []
     own_ids, own_logps = [], []
     entropies = []
-    byte_chunks, common_chunks = [], []
-    projection = getattr(model, "_opd_byte_projection", None)
     token_vocab_size = getattr(model, "_defined_vocab_size", model.config.vocab_size)
     for start in range(0, len(hidden), chunk):
         logits = project_logits(model, hidden[start:start + chunk], full_vocab=True)
@@ -111,13 +109,8 @@ def score_hidden(model, hidden, k=16, candidates=None, chunk=128, sampled=None, 
                 model._opd_valid_output_mask = valid
             supported = supported.masked_fill(~valid, -1e30)
         lp = supported.log_softmax(-1)
-        if projection is not None:
-            from steer_opd.byte_probabilities import summarize_logprobs
-            stats = summarize_logprobs(lp, projection)
-            byte_chunks.append(stats["byte_probs"].cpu())
-            common_chunks.append(stats["common_vocab_mass"].cpu())
         if include_entropy:
-            entropies.append((stats["entropy"] if projection is not None else -(lp.exp() * lp).sum(-1)).cpu())
+            entropies.append((-(lp.exp() * lp).sum(-1)).cpu())
         if candidates is None:
             values, selected = lp.topk(k, dim=-1)
         else:
@@ -137,10 +130,6 @@ def score_hidden(model, hidden, k=16, candidates=None, chunk=128, sampled=None, 
     result = {"ids": torch.cat(ids), "logps": torch.cat(logps),
             "sampled_logps": torch.cat(sampled_lps) if sampled_lps else None,
             "undefined_mass": torch.cat(undefined_mass), "excluded_mass": torch.cat(excluded_mass)}
-    if projection is not None:
-        result.update(byte_probs=torch.cat(byte_chunks), common_vocab_mass=torch.cat(common_chunks),
-                      projection_id=projection["projection_id"], byte_projection_schema=1,
-                      byte_class_semantics=projection["class_semantics"])
     if own_topk:
         result["own_ids"], result["own_logps"] = torch.cat(own_ids), torch.cat(own_logps)
     if include_entropy:

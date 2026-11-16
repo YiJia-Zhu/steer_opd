@@ -1,0 +1,20 @@
+{
+  "pid": 1516600,
+  "start_ticks": 186881116,
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "240",
+    ".venv-easysteer/bin/python",
+    ".runtime/diagnostics/init_engine.py",
+    "--method",
+    "spawn"
+  ],
+  "created_at": "2026-11-14T07:18:01.284471+00:00",
+  "status": "launched",
+  "gpu_ids": [
+    7
+  ],
+  "child_pid": 1516803
+}

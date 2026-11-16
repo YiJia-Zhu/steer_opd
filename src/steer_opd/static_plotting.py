@@ -31,16 +31,23 @@ def plot_comparisons(rows, baseline, candidate, output, *, first=3, requested_ke
             x = list(range(len(before)))
             with (output / f"{key}.csv").open("w", newline="") as stream:
                 writer = csv.writer(stream)
-                writer.writerow(["prediction_idx", f"baseline_{metric}", f"candidate_{metric}", "delta_pp", "requested", "actual", "metric_valid"])
-                writer.writerows((i, before[i], after[i], 100*(after[i]-before[i]), int(requested[i]), int(mask[i]), int(valid[i])) for i in x)
+                writer.writerow(["prediction_idx", f"baseline_{metric}", f"candidate_{metric}", "delta_pp", "requested", "actual", "metric_valid",'strength_policy','schedule_index','effective_alpha','intervention_role','mask_semantics'])
+                writer.writerows((i, before[i], after[i], 100*(after[i]-before[i]), int(requested[i]), int(mask[i]), int(valid[i]),
+                    b.get('strength_policy','fixed'),b.get('schedule_index'),b.get('effective_alpha'),
+                    b.get('intervention_role','student'),b.get('steering_mask_semantics','native_student_positions')) for i in x)
             fig, axes = plt.subplots(2, 1, figsize=(12, 5), sharex=True, gridspec_kw={"height_ratios": [3, 1]})
             axes[0].plot(x, before, color="#2563eb", lw=.9, label="Whole-source no SV")
             axes[0].plot(x, after, color="#ea580c", lw=.9, label="Fixed-mask intervention")
-            axes[0].scatter([i for i in x if mask[i] and valid[i]], after[mask & valid], color="#dc2626", s=10, label="Actual steer")
+            teacher=b.get('intervention_role')=='teacher'
+            steer_label='Teacher SV span (mapped)' if teacher else 'Actual steer'
+            axes[0].scatter([i for i in x if mask[i] and valid[i]], after[mask & valid], color="#dc2626", s=10, label=steer_label)
             if (mask & ~valid).any():
                 axes[0].scatter([i for i in x if mask[i] and not valid[i]], [.02]*int((mask & ~valid).sum()),
                     transform=axes[0].get_xaxis_transform(), marker="|", color="#dc2626", label="Steer, metric unavailable")
-            axes[0].set(ylabel="P_overlap" if metric == "P_overlap" else "Overlap@16", ylim=(-.02, 1.02), title=f"{key}: same source prefixes, zero updates")
+            strength_label=(f"; {b['strength_policy']}, idx={b.get('schedule_index')}, alpha={b['effective_alpha']:.4g}"
+                            if 'effective_alpha' in b else '')
+            role_label='; teacher intervention, student frozen' if teacher else ''
+            axes[0].set(ylabel="P_overlap" if metric == "P_overlap" else "Overlap@16", ylim=(-.02, 1.02), title=f"{key}: same source prefixes, zero updates{role_label}{strength_label}")
             axes[0].legend(loc="best")
             axes[1].plot(x, 100*(after-before), color="#7c3aed", lw=.8)
             axes[1].axhline(0, color="gray", lw=.5)
@@ -51,7 +58,11 @@ def plot_comparisons(rows, baseline, candidate, output, *, first=3, requested_ke
             pdf.savefig(fig)
             plt.close(fig)
             manifest["rows"].append({"key": key, "mask_id": b["mask_id"], "binding": b["binding"],
+                                     'intervention_role':b.get('intervention_role','student'),
+                                     'steering_mask_semantics':b.get('steering_mask_semantics','native_student_positions'),
                                      "positions": len(x), "steered": int(mask.sum()), "metric_valid_positions": int(valid.sum()),
+                                     'strength_policy':b.get('strength_policy'),'schedule_index':b.get('schedule_index'),
+                                     'effective_alpha':b.get('effective_alpha'),
                                      "metric": b.get("metric", "native_overlap_at_16")})
     manifest["files"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in output.iterdir() if p.suffix in (".png", ".svg", ".csv", ".pdf")}
     atomic_json(output / "manifest.json", manifest)

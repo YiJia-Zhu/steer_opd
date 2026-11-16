@@ -1,0 +1,44 @@
+{
+  "scope": "fixed_and_annealed_zero_update_overlap_panel",
+  "date": "2026-11-14",
+  "schemes": 8,
+  "banks": 2,
+  "shared_no_sv_baseline": true,
+  "base_alpha": 0.1,
+  "peak_alpha": 0.2,
+  "formula": "2*a*max(1-idx/80,0)",
+  "schedule_id": "837b36b141bcc5e9333e81d6c47c7e097b5a3e850c2d3f48b2356bfc84c172fa",
+  "total": 100,
+  "cutoff": 80,
+  "clock": "frozen_question_assignment_zero_update_diagnostic",
+  "training_annealing_implemented": false,
+  "engine_calls": "one complete call per candidate with precomputed request scales",
+  "zero_alpha": "skip direction lookup and pass steering=False",
+  "unfiltered_zero_strength_questions": {
+    "select": 14,
+    "confirm": 6
+  },
+  "nominal_discrete_mean_alpha": 0.081,
+  "checks": {
+    "pytest": {
+      "passed": 144,
+      "warnings": 17
+    },
+    "package_validation": "passed",
+    "shell_preview": "passed",
+    "held_cpu_preparation": "passed",
+    "git_diff_check": "passed",
+    "bash_syntax": "passed"
+  },
+  "inputs_byte_identical_to_original": true,
+  "input_sha256": {
+    "questions_source.json": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4",
+    "questions.json": "2a47f0d1a22ac92208f2d69c7e71f09978447d4549ac824fe9980357b8e92a24",
+    "split.json": "0e3638e66cccbc0a732c0b06f222cf7ca95e49c0952aab3b15294388c42ad8ec"
+  },
+  "execution_hold": "awaiting_user_approval",
+  "gpu_started": false,
+  "parameter_updates": 0,
+  "gpu_annealing_validation": "pending_explicit_manual_run",
+  "default_run_name": "anneal_v1"
+}

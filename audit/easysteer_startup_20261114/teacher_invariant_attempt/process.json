@@ -1,0 +1,213 @@
+{
+  "started_at": "2026-11-14T07:55:44.124679+00:00",
+  "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "600",
+    ".venv-easysteer/bin/python",
+    ".runtime/diagnostics/validate_mode.py",
+    ".runtime/diagnostics/teacher_invariant_job.json",
+    "teacher"
+  ],
+  "gpus": [
+    {
+      "index": 2,
+      "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 0,
+      "has_compute_process": false,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 7,
+      "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 0,
+      "has_compute_process": false,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    }
+  ],
+  "before": [
+    [
+      {
+        "index": 0,
+        "uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 1,
+        "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 2,
+        "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 0,
+        "utilization": 0,
+        "has_compute_process": false,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 3,
+        "uuid": "GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 4,
+        "uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64639,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 5,
+        "uuid": "GPU-17f76845-5d79-933c-affa-2ef7cec12651",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 6,
+        "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 7,
+        "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 0,
+        "utilization": 0,
+        "has_compute_process": false,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      }
+    ],
+    [
+      {
+        "index": 0,
+        "uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 1,
+        "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 2,
+        "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 0,
+        "utilization": 0,
+        "has_compute_process": false,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 3,
+        "uuid": "GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 4,
+        "uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64639,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 5,
+        "uuid": "GPU-17f76845-5d79-933c-affa-2ef7cec12651",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 6,
+        "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 64641,
+        "utilization": 0,
+        "has_compute_process": true,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      },
+      {
+        "index": 7,
+        "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+        "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+        "memory_mib": 0,
+        "utilization": 0,
+        "has_compute_process": false,
+        "project_owned": false,
+        "driver_version": "580.126.20"
+      }
+    ]
+  ],
+  "supervisor_pid": 1644568,
+  "queue_wait_seconds": 2.301625723950565,
+  "source_revision": {
+    "id": "1b25910fd0d1966b0d27e4dc683fefbe990da2034a8d8920d9e887c2e3357cbc",
+    "bundle": ".runtime/source_revisions/1b25910fd0d1966b0d27e4dc683fefbe990da2034a8d8920d9e887c2e3357cbc/source_bundle.json"
+  },
+  "pid": 1644671,
+  "child_start_ticks": 187107403,
+  "exit_code": 1,
+  "elapsed_seconds": 36.62714856886305,
+  "finished_at": "2026-11-14T07:56:20.765421+00:00"
+}

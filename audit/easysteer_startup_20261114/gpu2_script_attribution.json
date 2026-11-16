@@ -1,0 +1,53 @@
+{
+  "checked_at": "2026-11-14T17:10:05.342773+08:00",
+  "zombies": [
+    {
+      "pid": 1677788,
+      "exists": true,
+      "status": [
+        "Name:\tsh",
+        "State:\tZ (zombie)",
+        "PPid:\t2086596",
+        "FDSize:\t0",
+        "Threads:\t1"
+      ],
+      "cmdline_bytes": 0,
+      "fd_scan_error": "PermissionError"
+    },
+    {
+      "pid": 1677840,
+      "exists": true,
+      "status": [
+        "Name:\tsh",
+        "State:\tZ (zombie)",
+        "PPid:\t2086596",
+        "FDSize:\t0",
+        "Threads:\t1"
+      ],
+      "cmdline_bytes": 0,
+      "fd_scan_error": "PermissionError"
+    },
+    {
+      "pid": 1678974,
+      "exists": true,
+      "status": [
+        "Name:\tsh",
+        "State:\tZ (zombie)",
+        "PPid:\t2086596",
+        "FDSize:\t0",
+        "Threads:\t1"
+      ],
+      "cmdline_bytes": 0,
+      "fd_scan_error": "PermissionError"
+    }
+  ],
+  "gpu2_query": "2, GPU-351e102b-8c81-a10b-a483-483f0d69828c, 0 MiB, 585 MiB, 100 %",
+  "compute_apps": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c, 1946498, /opt/venv/bin/python, 68728 MiB\nGPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 1801614, /local_nvme/data/hongru/code/SearchRM/SearchRM-OpenSeeker-Test/.runtime-slime-py312/bin/python, 412 MiB\nGPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 1801777, sglang::scheduler_TP0, 54236 MiB\nGPU-17f76845-5d79-933c-affa-2ef7cec12651, 1801778, sglang::scheduler_TP1, 54236 MiB",
+  "gpu2_pmon": "# gpu         pid   type     sm    mem    enc    dec    jpg    ofa    command \n# Idx           #    C/G      %      %      %      %      %      %    name \n    2          -     -      -      -      -      -      -      -    -              \n",
+  "fuser": {
+    "returncode": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "accessible_own_holders": []
+}

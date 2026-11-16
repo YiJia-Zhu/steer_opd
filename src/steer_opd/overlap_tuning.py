@@ -1,5 +1,8 @@
 """Paired fixed-prefix metric summaries and select-only threshold calibration."""
 import math
+from bisect import bisect_left, bisect_right
+from collections import Counter
+from itertools import accumulate
 import numpy as np
 import torch
 
@@ -42,17 +45,33 @@ def paired_summary(records, baseline, seed=42, bootstrap_samples=2000):
 
 
 def calibrate_threshold(values, target_rate, comparison, *, lower_bound=None):
-    values = [float(value) for value in values]
-    if not values or not all(math.isfinite(value) for value in values):
+    """Count each score once; Top16 count-overlap has at most 17 bins.
+
+    Keep the original strict comparison, nextafter candidates and lower-threshold
+    tie break. Continuous metrics also avoid rescanning all N observations for
+    every candidate: O(N + U log U), where U is the number of distinct scores.
+    """
+    counts = Counter()
+    for value in values:
+        value = float(value)
+        if not math.isfinite(value):
+            raise ValueError("Calibration needs finite training/dev observations")
+        counts[value] += 1
+    if not counts:
         raise ValueError("Calibration needs finite training/dev observations")
     if not 0 < target_rate < 1 or comparison not in ("lt", "gt"):
         raise ValueError("Invalid gate calibration")
-    candidates = set(values)
-    candidates.update(math.nextafter(value, math.inf if comparison == "lt" else -math.inf) for value in values)
+    scores = sorted(counts)
+    cumulative = [0, *accumulate(counts[value] for value in scores)]
+    total = cumulative[-1]
+    candidates = set(scores)
+    candidates.update(math.nextafter(value, math.inf if comparison == "lt" else -math.inf) for value in scores)
     if lower_bound is not None:
         candidates = {max(lower_bound, value) for value in candidates}
     def rate(threshold):
-        return sum(value < threshold if comparison == "lt" else value > threshold for value in values) / len(values)
+        selected = (cumulative[bisect_left(scores, threshold)] if comparison == "lt" else
+                    total-cumulative[bisect_right(scores, threshold)])
+        return selected / total
     threshold = min(candidates, key=lambda value: (abs(rate(value) - target_rate), value))
     return {"threshold": threshold, "target_rate": target_rate, "observed_rate": rate(threshold),
-            "positions": len(values), "comparison": comparison}
+            "positions": total, "comparison": comparison}

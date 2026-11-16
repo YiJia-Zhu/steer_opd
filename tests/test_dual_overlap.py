@@ -1,17 +1,13 @@
-"""Full-distribution metric and pinned-runner coordinate contracts on CPU."""
+"""Raw Top16 metrics, capture and ordinary vLLM resume contracts on CPU."""
 import copy
 import csv
 import importlib
 import json
 from types import SimpleNamespace as NS
 
-import numpy as np
 import pytest
 import torch
 
-from steer_opd.byte_probabilities import (BYTE_CLASSES, projection_spec, probability_overlap,
-    summarize_logits, validate_byte_probabilities, validate_projection)
-from steer_opd.engine_projection import ProjectionCollector, install_projection, select_prediction_statistics
 from steer_opd.compass_alignment import METRIC, align_response, aligned_metrics
 from steer_opd.compass_scoring import AlignedMetricAdapter, AlignedTeacherRecords
 from steer_opd.static_masks import freeze_static_mask, validate_static_mask
@@ -29,124 +25,35 @@ def codec(teacher=False):
     return result
 
 
-def test_full_mass_first_byte_eos_controls_and_undefined_padded_rows():
-    c = codec(); c.raw.pop(45); c.valid_ids.remove(45)
-    spec = projection_spec(c, codec(True))
-    logits = torch.full((1, 49), -torch.inf)
-    # Large padded/undefined logits must not enter the denominator.
-    logits[0, [1, 2, 3, 0, 46, 45, 47, 48]] = torch.tensor([0., 0., 0., 0., 0., 100., 100., 100.])
-    result = summarize_logits(logits, spec)
-    assert result['byte_probs'][0, ord('a')] == pytest.approx(.6)
-    assert result['byte_probs'][0, 256] == pytest.approx(.2)
-    assert result['byte_probs'][0, 257] == pytest.approx(.2)
-    assert result['entropy'].item() == pytest.approx(np.log(5))
-    validate_projection(result, spec, 1)
-    validate_byte_probabilities(result['byte_probs'].double())
-    damaged = {**result, 'projection_id': 'wrong'}
-    with pytest.raises(ValueError, match='identity'):
-        validate_projection(damaged, spec, 1)
-    with pytest.raises(ValueError, match='normalized'):
-        validate_byte_probabilities(result['byte_probs']*.9)
-
-
-def test_probability_overlap_has_full_tail_and_different_tokenization_can_agree():
-    s, t = codec(), codec(True)
-    # No same full token bytes; both distributions still predict next byte a.
-    a = torch.full((1, 47), -torch.inf); a[0, 2] = 0
-    b = torch.full((1, 47), -torch.inf); b[0, 2] = 0
-    sa, tb = summarize_logits(a, projection_spec(s, t)), summarize_logits(b, projection_spec(t, s))
-    assert probability_overlap(sa['byte_probs'], tb['byte_probs']).item() == 1
-    # Full tail matters even when Top16 is unchanged.
-    p = torch.zeros(1, BYTE_CLASSES); p[0, [97, 98]] = torch.tensor([.7, .3])
-    q = torch.zeros_like(p); q[0, [97, 99]] = torch.tensor([.7, .3])
-    assert probability_overlap(p, q).item() == pytest.approx(.7)
-    assert probability_overlap(p, p).item() == 1
-    assert probability_overlap(p, q).item() == probability_overlap(q, p).item()
-
-
 def test_aligned_dual_metrics_broadcast_common_start_and_leave_terminal_missing():
     s, t = codec(), codec(True)
-    plan = align_response([1, 4, 0], s, {'teacher': t, 'reference': t})
+    plan = align_response([1, 4, 0], s, {'teacher': t})
     def record(c, other, n):
-        score = summarize_logits(torch.zeros(n, 47), projection_spec(c, other))
-        return {**score, 'ids': torch.arange(16).repeat(n, 1), 'logps': torch.full((n, 16), -5.),
+        return {'ids': torch.arange(16).repeat(n, 1), 'logps': torch.full((n, 16), -5.),
                 'sampled_logps': torch.full((n,), -5.)}
     a, b = record(s, t, 3), record(t, s, len(plan['native_response_ids']['teacher']))
     metrics = aligned_metrics(plan, a, b, s, t)
     assert metrics['P_overlap_available'] and torch.isnan(metrics['P_overlap'][-1])
     assert torch.isfinite(metrics['P_overlap'][:-1]).all()
-    adapter = AlignedMetricAdapter({'r': plan}, s, t, {'r': b}, require_dual=True)
+    adapter = AlignedMetricAdapter({'r': plan}, s, t, require_dual=True)
     adapter('r', a, b)
-    with pytest.raises(ValueError, match='identity'):
-        adapter('r', {**a, 'projection_id': 'old_vocab'}, b)
-
-
-def fake_runner():
-    def prompt(logits_fn, hidden, batch, *unused):
-        return torch.cat([logits_fn(part) for part in hidden.split(2)])
-    model = NS(compute_logits=lambda hidden: hidden)
-    def sample(hidden, batch, grammar):
-        return model.compute_logits(hidden[batch.logits_indices])
-    return NS(prompt_logprobs_worker=NS(compute_prompt_logprobs=prompt), sample=sample,
-              model=model, batch_sharder=None)
-
-
-def test_v2_prompt_chunks_interleaved_requests_and_decode_positions():
-    spec = projection_spec(codec(), codec(True))
-    runner = fake_runner(); collector = install_projection(runner, spec)
-    logits = torch.randn(5, 47, generator=torch.Generator().manual_seed(8))
-    batch = NS(req_ids=['b-uuid', 'a-uuid'], query_start_loc_np=np.array([0, 3, 5]),
-               num_computed_tokens_np=np.array([4, 10]))
-    observed = runner.prompt_logprobs_worker.compute_prompt_logprobs(lambda x: x, logits, batch, None, None, None)
-    torch.testing.assert_close(observed, logits)  # Hook never changes the model output.
-    b = collector.pop('b'); a = collector.pop('a-uuid')
-    assert b['positions'] == [4, 5, 6] and a['positions'] == [10, 11]
-    expected = summarize_logits(logits, spec)['byte_probs']
-    torch.testing.assert_close(b['byte_probs'], expected[:3])
-    torch.testing.assert_close(a['byte_probs'], expected[3:])
-    # Decode request order can change independently of previous prefill order.
-    decode = NS(req_ids=['a-uuid', 'b-uuid'], positions=torch.tensor([12, 7]),
-                logits_indices=torch.tensor([0, 1]), cu_num_logits_np=np.array([0, 1, 2]), num_draft_tokens=0)
-    torch.testing.assert_close(runner.sample(logits[:2], decode, None), logits[:2])
-    assert collector.pop('a')['positions'] == [12]
-    assert collector.pop('b')['positions'] == [7]
-    decode.num_draft_tokens = 1
-    with pytest.raises(RuntimeError, match='Speculative'):
-        runner.sample(logits[:2], decode, None)
-
-
-def test_collector_recompute_consistency_missing_rows_and_tp_mismatch():
-    spec = projection_spec(codec())
-    collect = ProjectionCollector(spec)
-    logits = torch.zeros(2, 47)
-    collect.add('0-uuid', [2, 3], logits)
-    collect.add('0-uuid', [3], logits[1:])
-    different = logits[1:].clone(); different[0, 4] = 3
-    with pytest.raises(ValueError, match='Repeated'):
-        collect.add('0-uuid', [3], different)
-    record = collect.pop('0')
-    row = {'prompt_token_ids': [1, 2, 3], 'token_ids': [4, 5]}
-    selected = select_prediction_statistics([None, record, record], row)
-    assert len(selected['byte_probs']) == 2
-    with pytest.raises(ValueError, match='missing'):
-        select_prediction_statistics([record], {**row, 'token_ids': [4, 5, 6]})
-    corrupt = copy.deepcopy(record); corrupt['common_vocab_mass'] += .1
-    with pytest.raises(ValueError, match='parallel'):
-        select_prediction_statistics([record, corrupt], row)
+    with pytest.raises(ValueError, match='alignment plan'):
+        adapter('r', {**a, 'ids': a['ids'][:, :15], 'logps': a['logps'][:, :15]}, b)
 
 
 def test_capture_pool_preserves_raw_body_means_not_prediction_rows(monkeypatch):
     from steer_opd import easysteer_extraction as ex
-    monkeypatch.setattr(ex, 'encode_content', lambda *args, **kwargs: ([3, 4, 5], [False, True, True], [(0,1),(1,2),(2,3)]))
+    monkeypatch.setattr(ex, 'encode_answer', lambda *args, **kwargs: {
+        'prompt_ids':[1,2],'response_ids':[3,4,5],'body_mask':[True]*3,'offsets':[(0,1),(1,2),(2,3)],
+        'original_response_tokens':20,'retained_response_tokens':3,'max_context_len':5,
+        'context_truncated':True,'pooling':'sv_training_all_retained_answer_tokens'})
     states = {26: torch.tensor([[100., 100.], [90., 90.], [1., 3.], [5., 7.]])}
-    saved = []
-    result = ex.pooled_capture(None, {'student_prompt_ids': [1, 2]}, [{'text': 'abc'}]*3,
-                               [states]*3, [26], lambda i, payload: saved.append(payload))
+    result = ex.pooled_capture(None, {'student_prompt_text': 'prompt'}, [{'text': 'abc','finish_reason':'length'}]*2,
+                               [states]*2, [26])
     assert result['usable']
-    torch.testing.assert_close(result['layers']['26']['pools'][0], torch.tensor([3., 5.]))
-    assert saved[0]['state_input_positions'].tolist() == [1, 2, 3, 4]
-    assert saved[0]['prediction_state_rows'].tolist() == [0, 1, 2]
-    assert saved[0]['states']['26'].dtype == torch.bfloat16
+    torch.testing.assert_close(result['layers']['26']['pools'][0], torch.tensor([32., 100./3]))
+    torch.testing.assert_close(result['layers']['26']['norms'][0],states[26][1:].norm(dim=-1))
+    assert set(result)=={'usable','layers'}
 
 
 @pytest.mark.parametrize('gate', ['overlap', 'P_overlap'])
@@ -156,12 +63,12 @@ def test_dual_complete_chain_plots_summary_and_resume_without_model(tmp_path, mo
     from steer_opd.static_screen import score_batch
     s, t = codec(), codec(True)
     rows = [{'id':'q', 'key':'r', 'prompt_token_ids':[1,2], 'token_ids':[1,4,0], 'steering':False}]
-    plan = align_response(rows[0]['token_ids'], s, {'teacher':t, 'reference':t})
-    model = tiny(3); model._opd_byte_projection = projection_spec(s, t)
-    native_model = tiny(4); native_model._opd_byte_projection = projection_spec(t, s)
+    plan = align_response(rows[0]['token_ids'], s, {'teacher':t})
+    model = tiny(3)
+    native_model = tiny(4)
     native_row = {**rows[0], 'token_ids':plan['native_response_ids']['teacher']}
     teacher = score_batch(native_model, [native_row])[0]
-    adapter = AlignedMetricAdapter({'r':plan}, s, t, {'r':teacher}, require_dual=True)
+    adapter = AlignedMetricAdapter({'r':plan}, s, t, require_dual=True)
     source = score_batch(model, rows)[0]; metrics = adapter('r', source, teacher)
     identity = {k:k for k in ('student_checkpoint','teacher_checkpoint','student_tokenizer_sha256',
         'teacher_tokenizer_sha256','support_id','student_score_sha256','teacher_score_sha256')}
@@ -170,11 +77,11 @@ def test_dual_complete_chain_plots_summary_and_resume_without_model(tmp_path, mo
         alignment_mask=plan['alignment_mask'], source_metrics={k:metrics[k] for k in ['overlap','P_overlap']})
     assert validate_static_mask(mask, rows[0])[-1] is False
     original = copy.deepcopy(mask)
-    pool = {'q': {'usable':True, 'layers':{'2':{'pools':[torch.arange(16).float(),torch.ones(16),torch.zeros(16)],
-                                                 'norms':[torch.ones(2)*10]*3}}}}
+    pool = {'q': {'usable':True, 'layers':{'2':{'pools':[torch.arange(16).float(),torch.zeros(16)],
+                                                 'norms':[torch.ones(2)*10]*2}}}}
     banks, _ = make_common_banks(pool, [2], {'checkpoint':'S0','step':0})
     monkeypatch.syspath_prepend(str(ROOT/'scripts'))
-    module = importlib.import_module('run_static_overlap_screen')
+    module = importlib.import_module('run_overlap_ablation')
     monkeypatch.setattr(module,'ROOT',tmp_path)
     monkeypatch.setattr(resumable_core,'require_gpu',lambda:None)
     monkeypatch.setattr(compass_scoring,'load_text_scorer',lambda *args:model)
@@ -247,24 +154,27 @@ def test_upstream_fingerprint_separates_payload_slerp_layer_selector_and_normali
         assert base != fingerprint(request({**values,field:replacement}))
 
 
-def test_full_byte_cache_hash_detects_tail_changes():
+def test_top16_cache_hash_detects_probability_and_protocol_changes():
     from steer_opd.rollout_topk import tensor_hash
     record = {'ids':torch.arange(16).reshape(1,16), 'logps':torch.full((1,16),-5.),
-              'sampled_logps':torch.tensor([-5.]), 'byte_probs':torch.ones(1,258)/258,
-              'projection_id':'native'}
+              'sampled_logps':torch.tensor([-5.]), 'source':'vllm_rollout_raw_logprobs',
+              'support_size':47,'probability_mode':'raw_logprobs'}
     before = tensor_hash(record)
-    record['byte_probs'][0,200] += .001; record['byte_probs'][0,201] -= .001
+    record['logps'][0,15] -= .1
+    assert tensor_hash(record) != before
+    before = tensor_hash(record)
+    record['support_size'] = 48
     assert tensor_hash(record) != before
 
 
-def test_native_source_generation_commits_dual_statistics_and_resumes_without_engine(tmp_path, monkeypatch):
+def test_native_source_generation_commits_only_top16_and_resumes_without_engine(tmp_path, monkeypatch):
     import sys
     from types import ModuleType
     from steer_opd.rollout_topk import load_rollout_topk
     monkeypatch.syspath_prepend(str(ROOT/'scripts'))
     module = importlib.import_module('generate_static_sources')
     monkeypatch.setattr(module, 'project_path', lambda p: tmp_path/p)
-    c = codec(); monkeypatch.setattr(module, 'load_codecs', lambda _: {'student':c, 'teacher':c, 'reference':c})
+    c = codec(); monkeypatch.setattr(module, 'load_codecs', lambda _: {'student':c, 'teacher':c})
     vllm = ModuleType('vllm'); vllm.SamplingParams = lambda **kwargs: NS(**kwargs)
     params = ModuleType('vllm.sampling_params'); params.RequestOutputKind = NS(FINAL_ONLY='final')
     monkeypatch.setitem(sys.modules,'vllm',vllm); monkeypatch.setitem(sys.modules,'vllm.sampling_params',params)
@@ -272,15 +182,13 @@ def test_native_source_generation_commits_dual_statistics_and_resumes_without_en
     lp = {i:NS(logprob=-5.-.01*i,rank=i+1) for i in range(16)}
     sample = NS(token_ids=[1],text='a',finish_reason='stop',stop_reason=0,logprobs=[lp])
     output = NS(request_id='0-uuid',finished=True,outputs=[sample],prompt_token_ids=[7,8,9])
-    stats = summarize_logits(torch.zeros(1,47),projection_spec(c,c))
     class Engine:
         def generate(self,prompts,options,**kwargs):
             assert len(prompts)==len(requests) and options[0].logprobs==16
             assert kwargs['steering'] is False
             return [output]
         def collective_rpc(self,name,args):
-            assert name=='project_pop_byte_statistics' and args==('0-uuid',)
-            return [{**stats,'positions':[2]}]
+            pytest.fail('Generation must use ordinary vLLM logprobs without a probability RPC')
     calls=[]
     def create(*args,**kwargs): calls.append(kwargs); return Engine()
     monkeypatch.setattr(module,'create_engine',create)
@@ -289,14 +197,16 @@ def test_native_source_generation_commits_dual_statistics_and_resumes_without_en
     module.generate(job)
     row=json.loads((tmp_path/'source/q_0.json').read_text())
     score=load_rollout_topk(tmp_path/'source',row,16,47)
-    assert score['byte_probs'].shape==(1,258) and row['steering_mask']==[False]
+    assert score['ids'].shape == score['logps'].shape == (1,16) and row['steering_mask']==[False]
+    assert not any('probs' in name for name in score)
+    assert not (tmp_path/'source/projection.pt').exists()
     module.generate(job)
     assert (tmp_path/'source/complete.json').is_file()
-    assert len(calls)==1  # Reuse completed source and its full-byte distribution.
+    assert len(calls)==1  # Reuse the completed sparse source cache.
 
 
 def test_native_support_crops_qwen3_and_nested_qwen35_heads():
-    from steer_opd.engine_projection import crop_native_support
+    from steer_opd.easysteer_static import crop_native_support
     for nested, native, padded in [(False,151669,151936),(True,248077,248320)]:
         head=NS(logits_processor=NS(org_vocab_size=padded))
         model=NS(language_model=head) if nested else head

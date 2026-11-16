@@ -6,8 +6,11 @@
   "static_slerp_authoring": true,
   "empty_and_alpha0_disable": true,
   "public_generate_api": true,
+  "steering_engine_enabled": true,
+  "worker_start_method": "spawn",
   "slerp_registry_and_norm": true,
   "gpu_started": false,
+  "cuda_home": "/usr/local/cuda-13.0",
   "versions": {
     "vllm": "0.29.0",
     "easysteer": "0.29.0",

@@ -4,7 +4,7 @@
 
 | 来源 | 本次使用的结论与核对范围 |
 |---|---|
-| [Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) | Top-k token集合交集/ k、相容性与长轨迹机制；本地原fork配方与当前跨tokenizer适配区分。下一字节sum(min)是本项目扩展，不能归给原文 |
+| [Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) | Top-k token集合交集/ k、相容性与长轨迹机制；本地原fork配方与当前跨tokenizer适配区分。前缀兼容最大匹配计数/概率质量是本项目扩展，不能归给原文 |
 | [CompassOPD](../ref/2609.10154v1_compass_opd.pdf) | 教师同家族likelihood shift；§5.1使用verl训练、vLLM采样/教师评分；A.4跨分词共同span平均原生logp与广播。本项目依据论文独立实现，未定位用户所指官方仓库 |
 | [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf) | 同一学生读取参考/自身文本、全局/逐题方向及C.2刷新。官方acts.py使用HF逐题提取，不据其vLLM生成推断提取也用vLLM |
 | [ACSD](../ref/2609.38342v1_acsd.pdf) | §3.2–3.4预算/固定激活向量；token先单位化不同于本项目原始正文逐题均值，不为效率直接替换 |

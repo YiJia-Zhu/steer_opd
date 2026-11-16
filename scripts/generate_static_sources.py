@@ -3,12 +3,10 @@
 import argparse
 
 from steer_opd.compass_job import load_codecs, model_path, project_path
-from steer_opd.byte_probabilities import projection_spec
 from steer_opd.easysteer_static import create_engine
-from steer_opd.engine_projection import select_prediction_statistics
 from steer_opd.execution_policy import require_default_scheduler_options, require_execution_allowed
-from steer_opd.experiment_runtime import initialize_stage, Progress, StageCheckpoint
-from steer_opd.resumable_core import atomic_json, atomic_torch, read_json, digest
+from steer_opd.experiment_runtime import initialize_stage, Progress, StageCheckpoint, require_artifact_space
+from steer_opd.resumable_core import atomic_json, read_json, digest
 from steer_opd.rollout_topk import commit_topk_response, extract_topk
 
 
@@ -18,6 +16,18 @@ def generate(job):
     if any(r.get('seed') != 42 for r in job['requests']):
         raise ValueError('Every request must use seed=42')
     output=project_path(job['output'])
+    if job.get('reuse_committed_texts'):
+        from steer_opd.compass_campaign import validate_teacher_text_reuse
+        count=validate_teacher_text_reuse(job)
+        with Progress(output,'reference_teacher',count,show_bar=False) as progress:
+            progress.resume(count)
+        return
+    if job.get('reuse_committed_rollout'):
+        from steer_opd.compass_campaign import validate_source_rollout_reuse
+        count=validate_source_rollout_reuse(job)
+        with Progress(output,'source',count,show_bar=False) as progress:
+            progress.resume(count)
+        return
     if job.get('bind_checkpoint_content'):
         from steer_opd.checkpoint_identity import checkpoint_content_id
         job={**job,'model_content_id':checkpoint_content_id(model_path(job['model']),receipt_dir=output/'provenance/checkpoints')}
@@ -31,12 +41,11 @@ def generate(job):
         atomic_json(output/'job.json',{'job':job,'hash':job_hash})
         codecs=load_codecs(job);codec=codecs[job['role']]
         source=bool(job.get('save_rollout_top_k'))
-        projection=output/'projection.pt' if source else None
-        if projection:atomic_torch(projection,projection_spec(codec,codecs['teacher']))
         engine=create_engine(model_path(job['model']),codec.support_size,
             max_model_len=job['max_tokens']+max(len(r['prompt_token_ids']) for r in requests),
-            projection_path=projection,tensor_parallel_size=job.get('tensor_parallel_size',1),
-            gpu_memory_utilization=job['gpu_memory_utilization'],capture_sampled=source,
+            tensor_parallel_size=job.get('tensor_parallel_size',1),
+            gpu_memory_utilization=job['gpu_memory_utilization'],
+            batch_invariant=job['role']=='student',
             prefix_caching=job.get('enable_prefix_caching',True),seed=42,progress=progress)
         from vllm import SamplingParams
         from vllm.sampling_params import RequestOutputKind
@@ -49,7 +58,10 @@ def generate(job):
                                     steering=False,use_tqdm=progress.engine_tqdm)
         if len(outputs)!=len(requests):raise RuntimeError('Incomplete generation batch')
         progress.finished_call(len(requests))
-        files=[output/'job.json']+([projection] if projection else [])
+        if source:
+            positions=sum(len(response.outputs[0].token_ids) for response in outputs)
+            require_artifact_space(output,positions*(16*8+4))
+        files=[output/'job.json']
         with progress.phase_scope('save_complete_batch'):
             for request,response in zip(requests,outputs):
                 if list(response.prompt_token_ids)!=request['prompt_token_ids']:raise ValueError('Generation changed prompt order/tokens')
@@ -61,8 +73,6 @@ def generate(job):
                 if job.get('model_content_id'):row['model_content_id']=job['model_content_id']
                 if source:
                     score=extract_topk(row['token_ids'],sample.logprobs,16,codec.support_size)
-                    stats=select_prediction_statistics(engine.collective_rpc('project_pop_byte_statistics',args=(response.request_id,)),row)
-                    score.update(stats,student_entropy=stats['entropy'],entropy_support_size=codec.support_size)
                     row.update(steering_mask=[False]*len(row['token_ids']),token_record_schema=2)
                     commit_topk_response(output,row,score);files.append(output/'topk'/f"{row['key']}.pt")
                 else:atomic_json(output/f"{row['key']}.json",row)

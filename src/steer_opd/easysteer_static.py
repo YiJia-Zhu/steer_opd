@@ -8,7 +8,6 @@ back to a different backend. False explicitly disables inherited steering.
 import os
 from pathlib import Path
 import sys
-import sysconfig
 from contextlib import nullcontext
 
 import torch
@@ -34,8 +33,11 @@ def require_easysteer_gpu(max_gpus=1):
 
 def build_spec(row, gates, vectors, *, operator="slerp", alpha=0.1, mode="fixed_prefix"):
     validate_operator(operator, alpha if operator == "slerp" else 1.0)
+    # The unsteered tail needs neither a selector nor direction materialization.
+    if operator == "slerp" and alpha == 0:
+        return False
     clause = selector_for_predictions(row, gates, mode=mode)
-    if clause is None or (operator == "slerp" and alpha == 0):
+    if clause is None:
         return False
     vectors = {layer: value for layer, value in vectors.items() if bool(torch.count_nonzero(value))}
     if not vectors:
@@ -50,7 +52,7 @@ def build_spec(row, gates, vectors, *, operator="slerp", alpha=0.1, mode="fixed_
         apply=ApplySpec(**clause), name=f"static-{row.get('key', row['id'])}")])
 
 
-def engine_options():
+def engine_options(*,batch_invariant=False):
     require_easysteer()
     site = Path(__file__).resolve().parents[2] / ".runtime/easysteer-plugin"
     if not list(site.glob("steer_opd_easysteer_plugin-*.dist-info/entry_points.txt")):
@@ -63,35 +65,39 @@ def engine_options():
     if str(site) not in existing:
         os.environ["PYTHONPATH"] = os.pathsep.join([str(site), *filter(None, existing)])
     os.environ["VLLM_USE_V2_MODEL_RUNNER"] = "1"
-    return {"steer_algorithms": ["direct", ALGORITHM], "steer_graph_mode": "split",
+    # CPU tensor work and the progress thread precede engine startup. Forking
+    # that process can deadlock in the V2 runner's pinned-memory torch.zeros.
+    os.environ['VLLM_WORKER_MULTIPROC_METHOD']='spawn'
+    os.environ['VLLM_BATCH_INVARIANT']='1' if batch_invariant else '0'
+    return {"enable_steer_vector":True,"steer_algorithms": ["direct", ALGORITHM], "steer_graph_mode": "split",
             "enable_prefix_caching": False}
 
 
-def create_engine(model_path, support_size, *, max_model_len, projection_path=None,
+def create_engine(model_path, support_size, *, max_model_len,
                   tensor_parallel_size=1, gpu_memory_utilization=.75,
-                  capture_sampled=False, prefix_caching=False, seed=42, progress=None):
+                  prefix_caching=False, seed=42, progress=None,batch_invariant=False):
     """Shared native inference/scoring engine; leave sequence scheduling automatic."""
-    from steer_opd.experiment_runtime import compute_required
+    from steer_opd.experiment_runtime import compute_required, engine_startup_guard, cuda_toolkit
     compute_required()
+    cuda = cuda_toolkit(sys.prefix)
+    os.environ["CUDA_HOME"] = str(cuda)
+    os.environ["PATH"] = os.pathsep.join([str(Path(sys.prefix)/"bin"), str(cuda/"bin"), os.environ.get("PATH", "")])
     require_easysteer_gpu(max_gpus=tensor_parallel_size)
     if torch.cuda.device_count() != tensor_parallel_size:
         raise ValueError("Engine tensor parallelism differs from admitted GPUs")
-    cuda = Path(sysconfig.get_path("purelib")) / "nvidia/cu13"
-    if (cuda / "bin/nvcc").is_file():
-        # The CPU orchestration shell may have sourced the other venv. JIT
-        # tools and spawned workers must use this interpreter's CUDA toolkit.
-        os.environ["CUDA_HOME"] = str(cuda)
-        os.environ["PATH"] = os.pathsep.join([str(Path(sys.prefix)/"bin"), str(cuda/"bin"), os.environ.get("PATH", "")])
     os.environ["STEER_OPD_STATIC_SUPPORT"] = str(support_size)
-    os.environ["STEER_OPD_CAPTURE_SAMPLED_BYTES"] = "1" if capture_sampled else "0"
-    if projection_path:
-        os.environ["STEER_OPD_BYTE_PROJECTION"] = str(projection_path)
-    else:
-        os.environ.pop("STEER_OPD_BYTE_PROJECTION", None)
-    options = engine_options()
+    options = engine_options(batch_invariant=batch_invariant)
     options["enable_prefix_caching"] = prefix_caching
+    if tensor_parallel_size>1:
+        # The pinned TP startup stalled in FlashInfer autotune during GPU
+        # testing. Skip that startup pass; retain normal inference kernels.
+        options['enable_flashinfer_autotune']=False
+    from steer_opd.resumable_core import read_json
+    if 'vision_config' in read_json(Path(model_path)/'config.json'):
+        # All experiment inputs are text. Skip unused image/video profiling.
+        options['limit_mm_per_prompt']={'image':0,'video':0}
     from vllm import LLM
-    with progress.phase_scope('engine_initialization') if progress else nullcontext():
+    with (progress.phase_scope('engine_initialization') if progress else nullcontext()), engine_startup_guard():
         engine = LLM(model=str(model_path), dtype="bfloat16", tensor_parallel_size=tensor_parallel_size, seed=seed,
         hf_overrides={"head_dtype": "float32"},
         max_model_len=max_model_len, gpu_memory_utilization=gpu_memory_utilization,
@@ -103,6 +109,8 @@ def create_engine(model_path, support_size, *, max_model_len, projection_path=No
         atomic_json(progress.attempt/'engine_config.json', {
             'seed':seed,'tensor_parallel_size':tensor_parallel_size,'max_model_len':max_model_len,
             'dtype':'bfloat16','head_dtype':'float32','native_support_size':support_size,
+            'cuda_home':str(cuda),'worker_multiproc_method':'spawn',
+            'batch_invariant':batch_invariant,
             'prefix_caching':prefix_caching,'gpu_memory_utilization':gpu_memory_utilization,
             'resolved_max_num_seqs':config.scheduler_config.max_num_seqs,
             'resolved_max_num_batched_tokens':config.scheduler_config.max_num_batched_tokens})
@@ -113,7 +121,7 @@ def fixed_prefix_inputs(rows, *, include_sampled=False):
     return [{"prompt_token_ids": row["prompt_token_ids"]+(row["token_ids"] if include_sampled else row["token_ids"][:-1])} for row in rows]
 
 
-def fixed_prefix_scores(llm, rows, specs, *, k=16, include_sampled=False, collect_byte_probs=False, progress=None):
+def fixed_prefix_scores(llm, rows, specs, *, k=16, include_sampled=False, progress=None):
     """Batch all source prefixes; one output step supplies the last logits.
 
     The sampled output is discarded. Prompt logprobs give predictions 0..N-2;
@@ -173,12 +181,6 @@ def fixed_prefix_scores(llm, rows, specs, *, k=16, include_sampled=False, collec
             if any(token not in entries for token, entries in zip(row["token_ids"], steps)):
                 raise ValueError("Missing observed-token raw logprob in prompt scoring")
             record["sampled_logps"] = torch.tensor([float(entries[token].logprob) for token, entries in zip(row["token_ids"], steps)])
-        if collect_byte_probs:
-            from steer_opd.engine_projection import select_prediction_statistics
-            if not include_sampled:
-                raise ValueError("Complete prompt scoring is required for aligned byte statistics")
-            stats = llm.collective_rpc("project_pop_byte_statistics", args=(output.request_id,))
-            record.update(select_prediction_statistics(stats, row))
         results[request_index]=record
     inputs=fixed_prefix_inputs(rows, include_sampled=include_sampled)
     # One uninterrupted public engine call; parse scores only after it returns.
@@ -187,3 +189,14 @@ def fixed_prefix_scores(llm, rows, specs, *, k=16, include_sampled=False, collec
     if len(outputs)!=len(rows): raise RuntimeError("Engine returned an incomplete fixed-prefix batch")
     for index, output in enumerate(outputs): accept(index, output)
     return [results[i] for i in range(len(rows))]
+
+
+def crop_native_support(model, support):
+    """Exclude padded head rows for Qwen3 and nested Qwen3.5 model layouts."""
+    owner = model
+    while not hasattr(owner, "logits_processor") and hasattr(owner, "language_model"):
+        owner = owner.language_model
+    processor = getattr(owner, "logits_processor", None)
+    if processor is None or not 16 <= support <= processor.org_vocab_size:
+        raise ValueError("Invalid native output support or unsupported model head layout")
+    processor.org_vocab_size = support

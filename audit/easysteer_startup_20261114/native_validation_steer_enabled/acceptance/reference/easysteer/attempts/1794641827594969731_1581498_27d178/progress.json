@@ -1,0 +1,22 @@
+{
+  "stage": "validate_reference_easysteer",
+  "attempt_id": "1794641827594969731_1581498_27d178",
+  "pid": 1581498,
+  "status": "complete",
+  "first_started_at": "2026-11-14T15:37:07.595072+08:00",
+  "started_at": "2026-11-14T15:37:07.595072+08:00",
+  "updated_at": "2026-11-14T15:39:39.852142+08:00",
+  "elapsed_seconds": 152.25713423709385,
+  "active_elapsed_seconds": 152.25713423709385,
+  "wall_since_first_start_seconds": 152.257071,
+  "completed": 1,
+  "committed": 1,
+  "resumed": 0,
+  "total": 1,
+  "unit": "check",
+  "eta_seconds": 0.0,
+  "eta_basis": "completed_requests_this_attempt",
+  "phase": "numerical_parity",
+  "completed_tokens_this_attempt": 0,
+  "completed_token_per_second": 0.0
+}

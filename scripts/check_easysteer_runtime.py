@@ -9,13 +9,14 @@ import inspect
 import json
 from pathlib import Path
 import sysconfig
-
-cuda=Path(sysconfig.get_path('purelib'))/'nvidia/cu13'
-if (cuda/'bin/nvcc').is_file():os.environ['CUDA_HOME']=str(cuda)
+import sys
 
 import torch
+from steer_opd.experiment_runtime import cuda_toolkit
+cuda=cuda_toolkit(sys.prefix)
+os.environ['CUDA_HOME']=str(cuda)
 import easysteer.capture as hs
-from steer_opd.easysteer_static import build_spec, require_easysteer
+from steer_opd.easysteer_static import build_spec, require_easysteer,engine_options
 from steer_opd.easysteer_plugin import ALGORITHM
 from vllm.capture import SelectSpec
 from vllm.model_hooks.steering.algorithms.registry import ALGORITHM_REGISTRY
@@ -25,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     require_easysteer()
+    assert engine_options()['enable_steer_vector'] is True
+    assert os.environ['VLLM_WORKER_MULTIPROC_METHOD']=='spawn'
     site = Path(sysconfig.get_path('purelib'))
     checked = 0
     for entry in json.loads((ROOT/'ref/easysteer_runtime/manifest.json').read_text())['files']:
@@ -55,7 +58,8 @@ def main():
     assert torch.allclose(changed.norm(dim=-1),hidden.norm(dim=-1),atol=1e-5)
     checks = {'pinned_fork_files_match':True, 'pinned_files_checked':checked, 'capture_api':True,
         'selector':True,'static_slerp_authoring':True,'empty_and_alpha0_disable':True,'public_generate_api':True,
-        'slerp_registry_and_norm':True,'gpu_started':False,
+        'steering_engine_enabled':True,'worker_start_method':'spawn',
+        'slerp_registry_and_norm':True,'gpu_started':False,'cuda_home':str(cuda),
         'versions':{p:metadata.version(p) for p in ['vllm','easysteer','torch','transformers']}}
     output = ROOT/'audit/dual_overlap_implementation_20261114/runtime_cpu_check.json'
     output.parent.mkdir(parents=True,exist_ok=True)

@@ -1,0 +1,22 @@
+{
+  "stage": "validate_teacher_easysteer",
+  "attempt_id": "1794643177535136775_1662293_4bb179",
+  "pid": 1662293,
+  "status": "interrupted",
+  "first_started_at": "2026-11-14T15:59:37.535227+08:00",
+  "started_at": "2026-11-14T15:59:37.535227+08:00",
+  "updated_at": "2026-11-14T16:07:20.178114+08:00",
+  "elapsed_seconds": 462.6429450188298,
+  "active_elapsed_seconds": 462.6429450188298,
+  "wall_since_first_start_seconds": 462.642895,
+  "completed": 0,
+  "committed": 0,
+  "resumed": 0,
+  "total": 1,
+  "unit": "check",
+  "eta_seconds": null,
+  "eta_basis": "unavailable",
+  "phase": "initializing",
+  "completed_tokens_this_attempt": 0,
+  "completed_token_per_second": 0.0
+}

@@ -1,0 +1,29 @@
+{
+  "pid": 2933787,
+  "started_at_unix": 1794658548.8010488,
+  "gpu_ids": [
+    6,
+    7
+  ],
+  "run_name": "overlap4_v1",
+  "stop_after": "panel",
+  "roles": [
+    "student",
+    "teacher"
+  ],
+  "scheme_ids": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "old_run_deleted": true,
+  "automatic_opd": false,
+  "parameter_updates": 0,
+  "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/logs/overlap4_v1_launcher.log",
+  "command": [
+    "bash",
+    "scripts/run_ablation.sh",
+    "--run"
+  ]
+}

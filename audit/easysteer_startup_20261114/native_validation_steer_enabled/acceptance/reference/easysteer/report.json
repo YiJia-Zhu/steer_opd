@@ -1,0 +1,14 @@
+{
+  "hf_parity": false,
+  "limits": {
+    "mean_abs_logp": 0.05,
+    "max_abs_logp": 0.2,
+    "max_byte_tv": 0.03,
+    "max_hidden_relative_l2": 0.03
+  },
+  "baseline": {
+    "mean_abs_logp": 0.0,
+    "max_abs_logp": 0.0,
+    "max_byte_tv": 1.1921042641915847e-07
+  }
+}

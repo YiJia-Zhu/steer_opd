@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Start a project command after two consecutive idle-GPU observations.
 
-This is admission checking, not a machine-wide resource reservation. Never
-terminates any process. GPU UUIDs, command, child PID and exit code are recorded.
+This is admission checking, not a machine-wide resource reservation. Cleanup
+targets only its own command's session. GPU UUIDs, PID and exit code are recorded.
 """
 
 import argparse
@@ -119,6 +119,51 @@ def tee_process(child,log,console=None):
     return child.wait()
 
 
+def stop_owned_group(child,start_ticks,grace=10):
+    """Finish cleanup even if a second Ctrl+C/TERM arrives; never follow PID reuse."""
+    if start_ticks is None:return
+    try:
+        proc=Path(f'/proc/{child.pid}')
+        fields=(proc/'stat').read_text().rsplit(')',1)[1].split()
+        if int(fields[19])!=start_ticks:return
+        if fields[0]!='Z' and ((proc/'cwd').resolve()!=ROOT or os.getpgid(child.pid)!=child.pid or os.getsid(child.pid)!=child.pid):
+            raise RuntimeError('Refusing to stop a process outside its own session')
+    except FileNotFoundError:
+        # An exited leader may leave workers. Only its original group can
+        # retain this PGID, and the scan below checks project ownership.
+        members=[]
+        for proc in Path('/proc').iterdir():
+            if not proc.name.isdigit():continue
+            try:
+                fields=(proc/'stat').read_text().rsplit(')',1)[1].split()
+                if (fields[0]!='Z' and int(fields[2])==child.pid and int(fields[3])==child.pid
+                        and int(fields[19])>=start_ticks and process_ticks(int(proc.name)) is not None):members.append(proc)
+            except OSError:pass
+        if not members:return
+    handlers={s:signal.getsignal(s) for s in (signal.SIGINT,signal.SIGTERM)}
+    for s in handlers:signal.signal(s,signal.SIG_IGN)
+    try:
+        try:os.killpg(child.pid,signal.SIGTERM)
+        except ProcessLookupError:pass
+        try:child.wait(timeout=grace)
+        except subprocess.TimeoutExpired:pass
+        # The leader can exit before its EngineCore; identify surviving members.
+        for path in Path('/proc').iterdir():
+            if not path.name.isdigit():continue
+            try:
+                fields=(path/'stat').read_text().rsplit(')',1)[1].split()
+                own=(fields[0]!='Z' and int(fields[2])==child.pid and int(fields[3])==child.pid
+                     and process_ticks(int(path.name)) is not None)
+            except (OSError,ValueError,IndexError):continue
+            if own:
+                try:os.killpg(child.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+                break
+        child.wait()
+    finally:
+        for s,handler in handlers.items():signal.signal(s,handler)
+
+
 def main():
     def interrupted(signum,frame):
         raise KeyboardInterrupt(f'signal {signum}')
@@ -203,12 +248,7 @@ def main():
             record["exit_code"]=tee_process(child,log)
         except BaseException as error:
             record["error"]=repr(error)
-            if child.poll() is None and process_ticks(child.pid)==record["child_start_ticks"]:
-                os.killpg(child.pid,signal.SIGTERM)
-                try: child.wait(timeout=30)
-                except subprocess.TimeoutExpired:
-                    if process_ticks(child.pid)==record["child_start_ticks"]: os.killpg(child.pid,signal.SIGKILL)
-                    child.wait()
+            stop_owned_group(child,record['child_start_ticks'])
             record["exit_code"]=child.returncode
             raise
         finally:

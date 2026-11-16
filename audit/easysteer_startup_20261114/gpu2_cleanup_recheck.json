@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-11-14T16:41:05.664519+08:00",
+  "gpu_stats_csv": "0, 68737 MiB, 585 MiB, 0 %\n1, 0 MiB, 585 MiB, 0 %\n2, 0 MiB, 585 MiB, 100 %\n3, 0 MiB, 585 MiB, 0 %\n4, 54649 MiB, 587 MiB, 83 %\n5, 54231 MiB, 585 MiB, 93 %\n6, 0 MiB, 585 MiB, 0 %\n7, 0 MiB, 585 MiB, 0 %\n",
+  "compute_apps_csv": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c, 1785758, /opt/venv/bin/python, 68728 MiB\nGPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 1801614, /local_nvme/data/hongru/code/SearchRM/SearchRM-OpenSeeker-Test/.runtime-slime-py312/bin/python, 412 MiB\nGPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0, 1801777, sglang::scheduler_TP0, 54222 MiB\nGPU-17f76845-5d79-933c-affa-2ef7cec12651, 1801778, sglang::scheduler_TP1, 54222 MiB\n",
+  "known_diagnostic_pids": [
+    1292757,
+    1293590,
+    1661834,
+    1662231,
+    1662293,
+    1663107,
+    1663304,
+    1663374
+  ],
+  "known_diagnostic_pids_still_present": [],
+  "fuser_current_user": {
+    "returncode": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "own_fd_scan_gpu2_holders": [],
+  "fd_scan_limit": "Current user accessible processes only; denied sh processes confirmed zombies with FDSize=0; system-wide root inspection unavailable",
+  "sudo_noninteractive": "password required; no privileged operation performed",
+  "gpu_reset_attempted": false,
+  "interpretation": "No verified experiment process remains; GPU2 allocated process memory is 0MiB with normal 585MiB driver reserve, but driver still reports utilization100; GPU/driver busy state suspected, internal cause unconfirmed"
+}

@@ -1,0 +1,25 @@
+{
+  "pid": 1615647,
+  "start_ticks": 187059644,
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "600",
+    ".venv-easysteer/bin/python",
+    "scripts/validate_static_gpu.py",
+    "--job",
+    ".runtime/diagnostics/validation_final_job.json",
+    "--role",
+    "teacher",
+    "--backend",
+    "easysteer"
+  ],
+  "created_at": "2026-11-14T07:47:46.572504+00:00",
+  "status": "launched",
+  "gpu_ids": [
+    2,
+    7
+  ],
+  "child_pid": 1618708
+}

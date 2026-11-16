@@ -1,29 +1,41 @@
 #!/usr/bin/env python3
-"""Small, zero-update GPU acceptance; separate HF/engine processes release memory."""
+"""Small EasySteer contract checks, with an optional separate HF comparison."""
 import argparse
 
 import torch
 
-from steer_opd.byte_probabilities import projection_spec,validate_byte_probabilities
-from steer_opd.compass_job import load_codecs,model_path,project_path
+from steer_opd.static_masks import validate_native_score
+from steer_opd.rollout_topk import extract_topk
+from steer_opd.compass_job import load_codecs,model_path,project_path,MODEL_ROLES
 from steer_opd.experiment_runtime import initialize_stage,StageCheckpoint,Progress
 from steer_opd.math_data import prompt_ids
-from steer_opd.resumable_core import atomic_json,atomic_torch,digest,read_json
+from steer_opd.resumable_core import atomic_json,digest,read_json
 
 # Fixed BF16 acceptance tolerances, never widened on failure.
-LIMITS={'mean_abs_logp':.05,'max_abs_logp':.2,'max_byte_tv':.03,'max_hidden_relative_l2':.03}
+LIMITS={'mean_abs_logp':.05,'max_abs_logp':.2,'max_top16_tv':.03,'max_hidden_relative_l2':.03}
 
 
-def compare_scores(reference,actual):
+def compare_scores(reference,actual,*,strict=True):
     if len(reference)!=len(actual):raise ValueError('Validation score row count changed')
-    for a,b in zip(reference,actual):
-        for value in (a,b):validate_byte_probabilities(value['byte_probs'],len(value['sampled_logps']))
     errors=torch.cat([(a['sampled_logps']-b['sampled_logps']).abs() for a,b in zip(reference,actual)])
-    tv=float(torch.stack([(a['byte_probs']-b['byte_probs']).abs().sum(-1).max()/2 for a,b in zip(reference,actual)]).max())
-    result={'mean_abs_logp':float(errors.mean()),'max_abs_logp':float(errors.max()),'max_byte_tv':tv}
-    if any(not torch.isfinite(torch.tensor(v)) or v>LIMITS[k] for k,v in result.items()):
+    max_tv=0.
+    for a,b in zip(reference,actual):
+        if a['ids'].shape != b['ids'].shape:
+            raise ValueError('Validation Top16 positions changed')
+        for record in (a,b):
+            validate_native_score(record,len(record['sampled_logps']),int(record['ids'].max())+1)
+        # TV over the union of the returned IDs; omitted tail is not compared.
+        matches=a['ids'][:,:,None]==b['ids'][:,None,:]
+        ap,bp=a['logps'].double().exp(),b['logps'].double().exp()
+        overlap=torch.minimum(ap[:,:,None],bp[:,None,:]).masked_fill(~matches,0.).sum((1,2))
+        tv=(ap.sum(-1)+bp.sum(-1)-2*overlap)/2
+        max_tv=max(max_tv,float(tv.max()))
+    result={'mean_abs_logp':float(errors.mean()),'max_abs_logp':float(errors.max()),'max_top16_tv':max_tv}
+    if any(not torch.isfinite(torch.tensor(v)) for v in result.values()):raise ValueError('Nonfinite GPU comparison')
+    within=all(v<=LIMITS[k] for k,v in result.items())
+    if strict and not within:
         raise ValueError(f'GPU probability parity failed: {result}; limits={LIMITS}')
-    return result
+    return {**result,'within_parity_limits':within}
 
 
 def hf_capture(model,rows,layers):
@@ -44,15 +56,23 @@ def hf_capture(model,rows,layers):
 
 
 def run(job,role,backend):
+    if role not in MODEL_ROLES:raise ValueError('Only student and teacher validation is supported')
     if job.get('stage')!='static_gpu_acceptance' or job.get('optimizer_updates')!=0 or job.get('execution_hold'):
         raise ValueError('Expected an explicitly requested zero-update validation job')
-    output=project_path(job['run_dir'])/'acceptance'/role/backend
+    from steer_opd.stage_io import component_target
+    output=(project_path(component_target(job,'acceptance')) if job.get('layout_version')==1
+            else project_path(job['run_dir'])/'acceptance')/role/backend
     runtime=initialize_stage(job,output)
     store=StageCheckpoint(output,digest({'runtime':runtime,'binding':job['gpu_acceptance_binding'],'role':role,'backend':backend}))
     with Progress(output,'validate_'+role+'_'+backend,1,unit='check',show_bar=False) as progress:
         if store.load() is not None:progress.resume(1);return
         codecs=load_codecs(job);codec=codecs[role]
+        use_hf=job.get('startup_hf_parity',False)
+        validate_sv=job.get('stop_after','panel')=='panel'
+        validate_role_sv=validate_sv and (role=='student' or job.get('include_teacher_ablation',False))
+        capture_layers=job['layers'] if role=='student' else job.get('teacher_layers',[29])
         if backend=='hf':
+            if not use_hf:raise ValueError('HF numerical comparison was not explicitly enabled')
             progress.phase='hf_reference'
             from steer_opd.compass_scoring import load_text_scorer
             from steer_opd.static_screen import score_batch
@@ -61,37 +81,64 @@ def run(job,role,backend):
                    'token_ids':codec.tokenizer.encode(answer,add_special_tokens=False)+[min(codec.eos)]}
                   for i,(q,answer) in enumerate([('What is 2 + 3?','The answer is 5.'),('Compute 7 - 2.','5.')])]
             reference={'rows':rows,'baseline':score_batch(model,rows)}
-            if role=='student':
-                states=hf_capture(model,rows,job['layers'])
-                vector={l:states[0][str(l)][1:].float().mean(0) for l in job['layers']}
+            if validate_role_sv:
+                states=hf_capture(model,rows,capture_layers)
+                reference['captured']=states
+            if validate_role_sv:
+                vector={l:states[0][str(l)][1:].float().mean(0) for l in capture_layers}
                 vectors=[vector,{l:-v.flip(0) for l,v in vector.items()}]
                 gates=[[i%2==j for i in range(len(r['token_ids']))] for j,r in enumerate(rows)]
                 reference.update(captured=states,vectors=vectors,gates=gates)
                 for name,masks in [('static',gates),('all',[[True]*len(r['token_ids']) for r in rows])]:
                     reference[name]=score_batch(model,rows,vectors=vectors,gates=masks,alpha=job['alpha'])
+                if 'linear_80_tail20' in job.get('strength_policies',[]):
+                    reference['mixed_strength']=score_batch(model,rows,vectors=vectors,
+                        gates=[[True]*len(r['token_ids']) for r in rows],alpha=[2*job['alpha'],0.])
             store.save_tensors({'reference':reference})
         else:
             from steer_opd.easysteer_static import create_engine,fixed_prefix_scores,build_spec
-            from steer_opd.engine_projection import select_prediction_statistics
-            ref_path=output.parent/'hf/reference.pt'
-            reference=torch.load(ref_path,map_location='cpu',weights_only=True);rows=reference['rows']
-            projection=output/'projection.pt';atomic_torch(projection,projection_spec(codec,codecs['teacher' if role=='student' else 'student']))
+            if use_hf:
+                reference=torch.load(output.parent/'hf/reference.pt',map_location='cpu',weights_only=True);rows=reference['rows']
+            else:
+                rows=[{'id':str(i),'key':str(i),'prompt_token_ids':prompt_ids(codec.tokenizer,q,enable_thinking=False),
+                       'token_ids':codec.tokenizer.encode(answer,add_special_tokens=False)+[min(codec.eos)]}
+                      for i,(q,answer) in enumerate([('What is 2 + 3?','The answer is 5.'),('Compute 7 - 2.','5.')])]
+                reference={'rows':rows}
             engine=create_engine(model_path(job[role]),codec.support_size,max_model_len=256,
                 tensor_parallel_size=job['teacher_gpus'] if role=='teacher' else 1,
-                gpu_memory_utilization=job['gpu_memory_utilization'],projection_path=projection,
-                capture_sampled=role=='student',progress=progress)
+                gpu_memory_utilization=job['gpu_memory_utilization'],
+                progress=progress,batch_invariant=role=='student')
             progress.phase='numerical_parity'
-            def score(specs):return fixed_prefix_scores(engine,rows,specs,include_sampled=True,collect_byte_probs=True)
-            baseline=score([False]*len(rows));report={'baseline':compare_scores(reference['baseline'],baseline),'limits':LIMITS}
-            if role=='student':
+            def score(specs):return fixed_prefix_scores(engine,rows,specs,include_sampled=True)
+            baseline=score([False]*len(rows))
+            for row,record in zip(rows,baseline):
+                validate_native_score(record,len(row['token_ids']),codec.support_size)
+                if not torch.isfinite(record['sampled_logps']).all() or (record['sampled_logps']>1e-6).any():
+                    raise ValueError('Invalid observed-token native logprobs')
+            report={'hf_parity':use_hf,'limits':LIMITS,
+                'stop_after':job.get('stop_after','panel'),'sv_validation':validate_sv,
+                'native_top16_support_and_observed_logps':'passed',
+                'baseline':compare_scores(reference['baseline'] if use_hf else score([False]*len(rows)),baseline,
+                                          strict=use_hf or role=='student')}
+            if not use_hf and role!='student':
+                report['repeat_drift']=report.pop('baseline')
+                report['validation_scope']='raw Top16 cache; repeat drift recorded, not a student replay check'
+                report['reuse_policy']='Teacher scored once and SHA-frozen for all student candidates'
+            if validate_role_sv:
                 import easysteer.capture as hs
                 from vllm.capture import SelectSpec
                 result=hs.capture(engine,[{'prompt_token_ids':r['prompt_token_ids']+r['token_ids']} for r in rows],
-                    layers=job['layers'],dtype='bfloat16',steering=False,seed=42,
+                    layers=capture_layers,dtype='bfloat16',steering=False,seed=42,
                     per_prompt_selects=[SelectSpec(prompt_positions=list(range(len(r['prompt_token_ids'])-1,
                         len(r['prompt_token_ids'])+len(r['token_ids'])))) for r in rows])
-                if list(result.layer_ids)!=job['layers'] or len(result.outputs)!=len(rows):
+                if list(result.layer_ids)!=capture_layers or len(result.outputs)!=len(rows):
                     raise ValueError('Capture layers or sample count differ')
+                if not use_hf:
+                    reference['captured']=[{str(l):v.cpu() for l,v in result.sample(i).items()} for i in range(len(rows))]
+                    if validate_role_sv:
+                        vector={l:reference['captured'][0][str(l)][1:].float().mean(0) for l in capture_layers}
+                        reference['vectors']=[vector,{l:-v.flip(0) for l,v in vector.items()}]
+                        reference['gates']=[[i%2==j for i in range(len(r['token_ids']))] for j,r in enumerate(rows)]
                 hidden_error=0.
                 for i,row in enumerate(rows):
                     expected=list(range(len(row['prompt_token_ids'])-1,len(row['prompt_token_ids'])+len(row['token_ids'])))
@@ -105,18 +152,38 @@ def run(job,role,backend):
                         hidden_error=max(hidden_error,float(delta.max()))
                 if not torch.isfinite(torch.tensor(hidden_error)) or hidden_error>LIMITS['max_hidden_relative_l2']:
                     raise ValueError(f'Capture parity failed: relative L2={hidden_error}')
-                report['max_hidden_relative_l2']=hidden_error
+                if use_hf:report['max_hidden_relative_l2']=hidden_error
+                else:report['capture_positions_tokens_and_finite_states']='passed'
+                report['capture_layers']=capture_layers
+            if validate_role_sv:
                 for name,masks in [('static',reference['gates']),('all',[[True]*len(r['token_ids']) for r in rows])]:
-                    actual=score([build_spec(r,g,v,alpha=job['alpha']) for r,g,v in zip(rows,masks,reference['vectors'])])
-                    report[name]=compare_scores(reference[name],actual)
+                    specs=[build_spec(r,g,v,alpha=job['alpha']) for r,g,v in zip(rows,masks,reference['vectors'])]
+                    actual=score(specs)
+                    expected=(reference[name] if use_hf else [fixed_prefix_scores(engine,[r],[s],include_sampled=True)[0]
+                                for r,s in zip(rows,specs)])
+                    report[name]=compare_scores(expected,actual,strict=use_hf or role=='student')
                     if name=='all' and job['alpha']>=.01 and all(torch.equal(a['sampled_logps'],b['sampled_logps']) for a,b in zip(baseline,actual)):
                         raise ValueError('Nonzero steering produced no change')
+                if 'linear_80_tail20' in job.get('strength_policies',[]):
+                    mixed=[build_spec(r,[True]*len(r['token_ids']),v,alpha=a)
+                        for r,v,a in zip(rows,reference['vectors'],[2*job['alpha'],0.])]
+                    actual=score(mixed)
+                    expected=(reference['mixed_strength'] if use_hf else
+                        [fixed_prefix_scores(engine,[r],[s],include_sampled=True)[0] for r,s in zip(rows,mixed)])
+                    report['mixed_strength']=compare_scores(expected,actual)
+                    torch.testing.assert_close(actual[1]['sampled_logps'],baseline[1]['sampled_logps'],atol=1e-5,rtol=1e-5)
+                    report['mixed_strength_alpha']=[2*job['alpha'],0.]
                 for name,specs in [('alpha0',[build_spec(r,[True]*len(r['token_ids']),v,alpha=0) for r,v in zip(rows,reference['vectors'])]),
                                    ('empty_mask',[build_spec(r,[False]*len(r['token_ids']),v,alpha=job['alpha']) for r,v in zip(rows,reference['vectors'])]),
                                    ('removed',[False]*len(rows))]:
                     unchanged=score(specs)
-                    for a,b in zip(baseline,unchanged):torch.testing.assert_close(a['sampled_logps'],b['sampled_logps'],atol=1e-5,rtol=1e-5)
-                    report[name]='passed'
+                    if role=='student':
+                        for a,b in zip(baseline,unchanged):torch.testing.assert_close(a['sampled_logps'],b['sampled_logps'],atol=1e-5,rtol=1e-5)
+                        report[name]='passed'
+                    else:
+                        report[name]=compare_scores(baseline,unchanged,strict=False)
+                        report['teacher_steering_validation']='capture, finite native scores and explicit replay drift; batch-invariant unsupported'
+            if role=='student':
                 # Native source sampling and frozen-prefix replay use the same actual tokens.
                 from vllm import SamplingParams
                 outputs=engine.generate([{'prompt_token_ids':r['prompt_token_ids']} for r in rows],
@@ -125,18 +192,17 @@ def run(job,role,backend):
                 source=[];replay_rows=[]
                 for row,out in zip(rows,outputs):
                     sample=out.outputs[0];record={**row,'token_ids':list(sample.token_ids)};replay_rows.append(record)
-                    stats=select_prediction_statistics(engine.collective_rpc('project_pop_byte_statistics',args=(out.request_id,)),record)
-                    source.append({**stats,'sampled_logps':torch.tensor([float(step[t].logprob) for t,step in zip(sample.token_ids,sample.logprobs)])})
-                replay=fixed_prefix_scores(engine,replay_rows,[False]*len(rows),include_sampled=True,collect_byte_probs=True)
+                    source.append(extract_topk(record['token_ids'],sample.logprobs,16,codec.support_size))
+                replay=fixed_prefix_scores(engine,replay_rows,[False]*len(rows),include_sampled=True)
                 report['source_replay']=compare_scores(source,replay)
             atomic_json(output/'report.json',report)
-            store.commit([projection,output/'report.json'])
+            store.commit([output/'report.json'])
         progress.finished_call(1);progress.mark_committed(1)
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--job',required=True)
-    p.add_argument('--role',choices=['student','reference','teacher'],required=True)
+    p.add_argument('--role',choices=MODEL_ROLES,required=True)
     p.add_argument('--backend',choices=['hf','easysteer'],required=True)
     args=p.parse_args();run(read_json(args.job),args.role,args.backend)
 

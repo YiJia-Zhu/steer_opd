@@ -1,0 +1,22 @@
+{
+  "stage": "validate_student_easysteer",
+  "attempt_id": "1794642184734675223_1600162_05ef04",
+  "pid": 1600162,
+  "status": "complete",
+  "first_started_at": "2026-11-14T15:43:04.734781+08:00",
+  "started_at": "2026-11-14T15:43:04.734781+08:00",
+  "updated_at": "2026-11-14T15:44:03.501596+08:00",
+  "elapsed_seconds": 58.76688891509548,
+  "active_elapsed_seconds": 58.76688891509548,
+  "wall_since_first_start_seconds": 58.766819,
+  "completed": 1,
+  "committed": 1,
+  "resumed": 0,
+  "total": 1,
+  "unit": "check",
+  "eta_seconds": 0.0,
+  "eta_basis": "completed_requests_this_attempt",
+  "phase": "numerical_parity",
+  "completed_tokens_this_attempt": 0,
+  "completed_token_per_second": 0.0
+}

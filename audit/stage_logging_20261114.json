@@ -1,0 +1,21 @@
+{
+  "time": "2026-11-14T19:50:28.569937+08:00",
+  "scope": "stage_console_logging_only",
+  "outer_tqdm": false,
+  "native_easysteer_vllm_tqdm": true,
+  "console": [
+    "timestamped_stage_start_end",
+    "duration",
+    "cache_reuse",
+    "errors",
+    "native_engine_output"
+  ],
+  "heartbeat": "files_only_every_15_seconds",
+  "structured_events": "preserved_in_events_jsonl_and_progress_json",
+  "native_completed_vs_committed": "preserved",
+  "cpu_tests_passed": 147,
+  "package_validation": "passed",
+  "cpu_preview_passed": true,
+  "gpu_resumed": false,
+  "experiment_state": "paused_by_user"
+}

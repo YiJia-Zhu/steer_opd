@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "gpu_executed": false,
+  "template_hold": "awaiting_user_approval",
+  "actual_alpha_change": ".1 -> .2",
+  "reused": {
+    "teacher": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/references/teacher",
+      "artifact_id": "d275a4e5a514754ec9d1709221dd70aaf6e2cec583143a1943006dd6b18304f2"
+    },
+    "student": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/source",
+      "artifact_id": "b8726dfc764bf1a24326dd988aefdfa4bdf8689db8dff400b8246bf2bd32d7a0"
+    },
+    "capture_student": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/activations",
+      "artifact_id": "c4f9a282c433637278d98475667a91580ec4ab932977c7e81bca876100f9c017"
+    },
+    "bank_student": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/banks",
+      "artifact_id": "026f455e0c380448e8e46ef53397abc073b716fa6fd2a20e7040b45f675aabbe"
+    },
+    "alignment": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/alignment",
+      "artifact_id": "964558fa9c5d02c90f4da023dad1a0e9821a986e2128ba94fcd3c4fcf3dc5dc2"
+    },
+    "native_teacher": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/native_scores/teacher",
+      "artifact_id": "a175af3d516a9421097742e6b8cc6a2f8f8722c1081e92be9846a452ad08c9a5"
+    },
+    "source_metrics": {
+      "owner": "runs/ablation/overlap/overlap4_1000_v1/alignment",
+      "artifact_id": "27b60e78c7e6612c67227822a80725294f76701db137f73dde5d528094536ca0"
+    }
+  },
+  "original_input_and_commit_sha256": {
+    "data/ablation/overlap/questions_source.json": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4",
+    "data/ablation/overlap/questions.json": "2a47f0d1a22ac92208f2d69c7e71f09978447d4549ac824fe9980357b8e92a24",
+    "data/ablation/overlap/split.json": "0e3638e66cccbc0a732c0b06f222cf7ca95e49c0952aab3b15294388c42ad8ec",
+    "data/ablation/overlap_1000/questions_source.json": "d79313a68a05ebdbe4f1ce082b9efe89a65bd058135c6e7cd2ab162a8197eccb",
+    "data/ablation/overlap_1000/questions.json": "0b0c3f77ee12d275027fcdf01fa14f1d7b0fd1e93e0c61883ef5942d8ae2f814",
+    "data/ablation/overlap_1000/split.json": "80f27a2f903f14c2dfcfa0dafccf0572c1dfe13f47d5d0b8a84c2fdaf87b0f2c",
+    "runs/ablation/overlap/overlap4_1000_v1/references/teacher/complete.json": "a2b4c601c4ae29a80f8be9c56485bffba6eabb51a34add3f97a08386dfe8e4bc",
+    "runs/ablation/overlap/overlap4_1000_v1/source/complete.json": "04972e9e8e7b93434361b7aea10f27a7f34adf6ce6769f73ab84ac1c417229dd",
+    "runs/ablation/overlap/overlap4_1000_v1/activations/complete.json": "b8fc8578de1dec65aff0b1d3f8d78744dbc0884e6e02c6d6b7f044e81bad3b22",
+    "runs/ablation/overlap/overlap4_1000_v1/banks/complete.json": "a8f98443988ff7fb9cf35d121d698cfaa6f7302064b026bdf844a89868bcf2d0"
+  },
+  "new_layout_file_count": 31,
+  "new_layout_total_bytes": 4324268,
+  "training_and_evaluation_stages_created": false,
+  "cpu_tests_passed": 191,
+  "package_validation": "passed",
+  "shell_syntax": "passed"
+}

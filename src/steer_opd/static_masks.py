@@ -114,13 +114,13 @@ def native_overlap(student_ids, teacher_ids, identity):
     return (a[:, :, None] == b[:, None, :]).any(-1).double().mean(-1)
 
 
-def validate_native_score(score, length, support_size):
+def validate_native_score(score, length, support_size, *, k=16):
     ids, logps = score["ids"], score["logps"]
-    if (ids.shape != (length, 16) or logps.shape != ids.shape or not 16 <= support_size
+    if (ids.shape != (length, k) or logps.shape != ids.shape or not 1 <= k <= support_size
             or ids.dtype.is_floating_point or ids.dtype == torch.bool
             or (ids < 0).any() or (ids >= support_size).any()
             or not torch.isfinite(logps).all() or (logps > 1e-6).any()
             or (logps.diff(dim=-1) > 1e-6).any()
             or (logps.double().exp().sum(-1) > 1+1e-5).any()
             or (ids.sort(-1).values.diff(dim=-1) == 0).any()):
-        raise ValueError("Invalid native Top16 probability cache")
+        raise ValueError("Invalid raw Top-K probability cache")

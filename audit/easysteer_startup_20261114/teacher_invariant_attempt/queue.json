@@ -1,0 +1,21 @@
+{
+  "pid": 1644568,
+  "start_ticks": 187107168,
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "600",
+    ".venv-easysteer/bin/python",
+    ".runtime/diagnostics/validate_mode.py",
+    ".runtime/diagnostics/teacher_invariant_job.json",
+    "teacher"
+  ],
+  "created_at": "2026-11-14T07:55:41.823176+00:00",
+  "status": "launched",
+  "gpu_ids": [
+    2,
+    7
+  ],
+  "child_pid": 1644671
+}

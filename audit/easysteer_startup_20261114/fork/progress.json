@@ -1,0 +1,22 @@
+{
+  "stage": "init_fork",
+  "attempt_id": "1794640336803700516_1497517_7c1669",
+  "pid": 1497517,
+  "status": "running",
+  "first_started_at": "2026-11-14T15:12:16.803809+08:00",
+  "started_at": "2026-11-14T15:12:16.803809+08:00",
+  "updated_at": "2026-11-14T15:13:31.814248+08:00",
+  "elapsed_seconds": 75.01051561208442,
+  "active_elapsed_seconds": 75.01051561208442,
+  "wall_since_first_start_seconds": 75.010447,
+  "completed": 0,
+  "committed": 0,
+  "resumed": 0,
+  "total": 1,
+  "unit": "request",
+  "eta_seconds": null,
+  "eta_basis": "unavailable",
+  "phase": "initializing",
+  "completed_tokens_this_attempt": 0,
+  "completed_token_per_second": 0.0
+}

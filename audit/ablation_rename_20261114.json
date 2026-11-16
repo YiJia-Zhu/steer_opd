@@ -1,0 +1,31 @@
+{
+  "status": "completed",
+  "experiment": "ablation",
+  "phase": "overlap",
+  "phase_completed": false,
+  "planned_phases": [
+    "param",
+    "baseline"
+  ],
+  "plan": "docs/ablation.md",
+  "shell": "scripts/run_ablation.sh",
+  "python": "scripts/run_ablation.py",
+  "launcher": "scripts/launch_ablation.py",
+  "configuration": "configs/ablation.json",
+  "output_pattern": "runs/ablation/overlap/<RUN_NAME>/",
+  "default_run_name": "v1",
+  "prepared_run": "runs/ablation/overlap/prepared",
+  "input_data": "data/ablation/overlap",
+  "source_sha256": "c000d5875eb6944eaac179dc92a0ebd4abd0dfefc8021cdcff1230d1d200e7e4",
+  "split_sha256": "0e3638e66cccbc0a732c0b06f222cf7ca95e49c0952aab3b15294388c42ad8ec",
+  "select_questions": 70,
+  "confirm_questions": 30,
+  "rebuilt_previous_cpu_preparation": true,
+  "previous_cpu_config_sha256": "215d9a149d660ff24146b07af919bc1b700871d51f5b4f7b84cc78ff3ba32e91",
+  "cpu_tests_passed": 134,
+  "package_validation": "passed",
+  "launcher_preview": "passed",
+  "held_cpu_preparation": "passed",
+  "gpu_started": false,
+  "student_updates": 0
+}

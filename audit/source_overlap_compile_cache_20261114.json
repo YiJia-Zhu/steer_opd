@@ -1,0 +1,7 @@
+{
+  "old_cache": "/local_nvme/data/zhenning/working_tmp/steer_opd/.cache/vllm/torch_compile_cache/torch_aot_compile/c6ca0e9c82e1e43cdd9d4b7adef7eee5f58a2a3a1030fab34b80a087670465c4",
+  "quarantine": "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/quarantined_compile_cache/ref_1794656340794673607",
+  "reason": "Qwen3.5 AOT restore called size on optional None; recompile with current text-only inputs",
+  "code_or_weights_changed": false,
+  "validation_limits_changed": false
+}

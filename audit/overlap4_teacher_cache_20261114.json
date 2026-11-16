@@ -1,0 +1,7 @@
+{
+  "old_cache": "/local_nvme/data/zhenning/working_tmp/steer_opd/.cache/vllm/torch_compile_cache/torch_aot_compile/dfbfe144136920ca76552b813c729e4c3a443db7b1f904866aa4efe7d02106d0",
+  "quarantine": "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/quarantined_compile_cache/teacher_tp2_1794657705976428759",
+  "reason": "old AOT restore uses size on optional None under text-only startup",
+  "code_or_weights_changed": false,
+  "thresholds_changed": false
+}

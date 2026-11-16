@@ -1,6 +1,6 @@
 # 同问题工作与Steering方法近邻
 
-当前实验见[实验协议](../docs/experiment.md)，实现来源与阅读边界见[文献说明](../docs/sources.md)。
+当前实验见[实验协议](../docs/ablation.md)，实现来源与阅读边界见[文献说明](../docs/sources.md)。
 
 核心来源包括 [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf)、[Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) 与 [CompassOPD](2609.10154v1_compass_opd.pdf)。当前已归档比较包括四篇同问题工作与五篇方法近邻，共九篇参考论文。
 
