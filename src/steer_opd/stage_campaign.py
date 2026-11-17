@@ -20,6 +20,13 @@ from steer_opd.stage_io import artifact_dir,component_target,metadata_dir,projec
 from steer_opd.strength_schedule import confirm_with_counterparts
 
 
+def token_metric_value(metrics):
+    """Read the stored token mean, including the original overlap field name."""
+    if 'token_weighted_value' in metrics:
+        return metrics['token_weighted_value']
+    return metrics['token_weighted_overlap16']
+
+
 def data_contract(cfg,codecs):
     source=project(cfg['input_data_dir'])/'questions_source.json'
     if not source.exists():raise FileNotFoundError('Prepare a frozen INPUT_DATA_DIR before running this parameter set')
@@ -212,7 +219,7 @@ def write_summary(cfg,source_summaries,records):
         return
     file=root/'comparison.csv'
     columns=['split','scheme','direction','intervention_role','metric','questions','question_weighted_value',
-             'question_weighted_delta_pp','token_weighted_delta_pp']
+             'question_weighted_delta_pp','token_value','token_weighted_delta_pp']
     with file.open('w',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=columns);writer.writeheader()
         for split,values in source_summaries.items():
@@ -220,7 +227,8 @@ def write_summary(cfg,source_summaries,records):
                 for metric,value in summary['metrics'].items():
                     writer.writerow({'split':split,'scheme':name,'direction':summary['condition']['direction'],
                         'intervention_role':summary.get('intervention_role','student'),'metric':metric,
-                        **{k:value[k] for k in columns[5:]}})
+                        **{k:value[k] for k in columns[5:] if k!='token_value'},
+                        'token_value':token_metric_value(value)})
     lines=['# Overlap结果汇总','',f"RUN_NAME={cfg['run_name']}，PARAM_NAME={cfg['param_name']}。0次参数更新。",'',
            '| 划分 | 方案 | 干预对象 | Δoverlap（pp，题目等权） | ΔP_overlap（pp，题目等权） |',
            '|---|---|---|---:|---:|']

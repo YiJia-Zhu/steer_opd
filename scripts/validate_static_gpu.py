@@ -71,6 +71,9 @@ def run(job,role,backend):
         validate_sv=job.get('stop_after','panel')=='panel'
         validate_role_sv=validate_sv and (role=='student' or job.get('include_teacher_ablation',False))
         capture_layers=job['layers'] if role=='student' else job.get('teacher_layers',[29])
+        operator=job.get('operator','slerp')
+        def scaled(v,strength):
+            return {l:value*strength for l,value in v.items()} if operator=='additive' else v
         if backend=='hf':
             if not use_hf:raise ValueError('HF numerical comparison was not explicitly enabled')
             progress.phase='hf_reference'
@@ -90,7 +93,8 @@ def run(job,role,backend):
                 gates=[[i%2==j for i in range(len(r['token_ids']))] for j,r in enumerate(rows)]
                 reference.update(captured=states,vectors=vectors,gates=gates)
                 for name,masks in [('static',gates),('all',[[True]*len(r['token_ids']) for r in rows])]:
-                    reference[name]=score_batch(model,rows,vectors=vectors,gates=masks,alpha=job['alpha'])
+                    reference[name]=score_batch(model,rows,vectors=[scaled(v,job['alpha']) for v in vectors],
+                        gates=masks,operator=operator,alpha=job['alpha'] if operator=='slerp' else 1.)
                 if 'linear_80_tail20' in job.get('strength_policies',[]):
                     reference['mixed_strength']=score_batch(model,rows,vectors=vectors,
                         gates=[[True]*len(r['token_ids']) for r in rows],alpha=[2*job['alpha'],0.])
@@ -110,6 +114,8 @@ def run(job,role,backend):
                 progress=progress,batch_invariant=role=='student')
             progress.phase='numerical_parity'
             def score(specs):return fixed_prefix_scores(engine,rows,specs,include_sampled=True)
+            def spec(row,mask,vector,*,alpha):
+                return build_spec(row,mask,scaled(vector,alpha),operator=operator,alpha=alpha)
             baseline=score([False]*len(rows))
             for row,record in zip(rows,baseline):
                 validate_native_score(record,len(row['token_ids']),codec.support_size)
@@ -155,9 +161,12 @@ def run(job,role,backend):
                 if use_hf:report['max_hidden_relative_l2']=hidden_error
                 else:report['capture_positions_tokens_and_finite_states']='passed'
                 report['capture_layers']=capture_layers
+                report['operator']=operator
+                report['strength']=job['alpha']
+                report['additive_scaling']='raw_mean_difference_v1' if operator=='additive' else None
             if validate_role_sv:
                 for name,masks in [('static',reference['gates']),('all',[[True]*len(r['token_ids']) for r in rows])]:
-                    specs=[build_spec(r,g,v,alpha=job['alpha']) for r,g,v in zip(rows,masks,reference['vectors'])]
+                    specs=[spec(r,g,v,alpha=job['alpha']) for r,g,v in zip(rows,masks,reference['vectors'])]
                     actual=score(specs)
                     expected=(reference[name] if use_hf else [fixed_prefix_scores(engine,[r],[s],include_sampled=True)[0]
                                 for r,s in zip(rows,specs)])
@@ -165,7 +174,7 @@ def run(job,role,backend):
                     if name=='all' and job['alpha']>=.01 and all(torch.equal(a['sampled_logps'],b['sampled_logps']) for a,b in zip(baseline,actual)):
                         raise ValueError('Nonzero steering produced no change')
                 if 'linear_80_tail20' in job.get('strength_policies',[]):
-                    mixed=[build_spec(r,[True]*len(r['token_ids']),v,alpha=a)
+                    mixed=[spec(r,[True]*len(r['token_ids']),v,alpha=a)
                         for r,v,a in zip(rows,reference['vectors'],[2*job['alpha'],0.])]
                     actual=score(mixed)
                     expected=(reference['mixed_strength'] if use_hf else
@@ -173,8 +182,8 @@ def run(job,role,backend):
                     report['mixed_strength']=compare_scores(expected,actual)
                     torch.testing.assert_close(actual[1]['sampled_logps'],baseline[1]['sampled_logps'],atol=1e-5,rtol=1e-5)
                     report['mixed_strength_alpha']=[2*job['alpha'],0.]
-                for name,specs in [('alpha0',[build_spec(r,[True]*len(r['token_ids']),v,alpha=0) for r,v in zip(rows,reference['vectors'])]),
-                                   ('empty_mask',[build_spec(r,[False]*len(r['token_ids']),v,alpha=job['alpha']) for r,v in zip(rows,reference['vectors'])]),
+                for name,specs in [('alpha0',[spec(r,[True]*len(r['token_ids']),v,alpha=0) for r,v in zip(rows,reference['vectors'])]),
+                                   ('empty_mask',[spec(r,[False]*len(r['token_ids']),v,alpha=job['alpha']) for r,v in zip(rows,reference['vectors'])]),
                                    ('removed',[False]*len(rows))]:
                     unchanged=score(specs)
                     if role=='student':

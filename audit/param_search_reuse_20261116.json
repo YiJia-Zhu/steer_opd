@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "valid_questions": 1000,
+  "cache_hits": {
+    "data": {
+      "owner": "outputs/step_0_data/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1",
+      "artifact_id": "f5fd07cd3cd390a912c52004a09c071cd06d1aaa3888a40d7e21e83f79202531"
+    },
+    "teacher": {
+      "owner": "outputs/step_1_rollout/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/teacher",
+      "artifact_id": "d275a4e5a514754ec9d1709221dd70aaf6e2cec583143a1943006dd6b18304f2"
+    },
+    "student": {
+      "owner": "outputs/step_1_rollout/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/student",
+      "artifact_id": "b8726dfc764bf1a24326dd988aefdfa4bdf8689db8dff400b8246bf2bd32d7a0"
+    },
+    "capture_student": {
+      "owner": "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/reader_student/activations",
+      "artifact_id": "c4f9a282c433637278d98475667a91580ec4ab932977c7e81bca876100f9c017"
+    },
+    "capture_teacher": {
+      "owner": "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/activations",
+      "artifact_id": "777bf78b16685f51844ae1f24ef0f6e0b5c741d0d1eddd43bda9bf88b3e08b90"
+    },
+    "bank_student": {
+      "owner": "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/reader_student/banks",
+      "artifact_id": "026f455e0c380448e8e46ef53397abc073b716fa6fd2a20e7040b45f675aabbe"
+    },
+    "bank_teacher": {
+      "owner": "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/banks",
+      "artifact_id": "42fe186eb87a5cfea08625a9d35a1b7c16a58b0a88b1356a5a8ee69f52174216"
+    },
+    "alignment": {
+      "owner": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/alignment",
+      "artifact_id": "964558fa9c5d02c90f4da023dad1a0e9821a986e2128ba94fcd3c4fcf3dc5dc2"
+    },
+    "native_teacher": {
+      "owner": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/native_scores/teacher",
+      "artifact_id": "a175af3d516a9421097742e6b8cc6a2f8f8722c1081e92be9846a452ad08c9a5"
+    },
+    "source_metrics": {
+      "owner": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/source_metrics",
+      "artifact_id": "27b60e78c7e6612c67227822a80725294f76701db137f73dde5d528094536ca0"
+    }
+  },
+  "gpu_executed": false
+}

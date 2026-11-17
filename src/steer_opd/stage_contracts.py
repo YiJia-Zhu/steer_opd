@@ -92,4 +92,5 @@ def screen(cfg,role,conditions,parents,rows):
         'gpu_memory_utilization':cfg['gpu_memory_utilization'],
         'batch_size':cfg['student_score_batch_size'] if role=='student' else cfg['teacher_score_batch_size']},parents=parents,
         code=('scripts/run_overlap_ablation.py','src/steer_opd/teacher_screen.py',
-              'src/steer_opd/static_screen.py','src/steer_opd/operators.py','src/steer_opd/easysteer_plugin.py'))
+              'src/steer_opd/static_screen.py','src/steer_opd/operators.py','src/steer_opd/easysteer_plugin.py',
+              'src/steer_opd/cpu_metrics.py','src/steer_opd/raw_additive.py'))

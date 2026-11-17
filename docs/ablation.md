@@ -1,10 +1,69 @@
 # Ablation 实验计划
 
-实验统一命名为`ablation`，按`overlap → param → baseline`推进。100题及1000题的原T−S四方案均已完成。2026-11-16教师空间S−T的1000题补充实验已获授权启动，师生EasySteer小样本验收已通过，当前提取教师SV。param参数实验、训练消融与baseline方法对比均为后续计划。
+实验按ablation结构筛选、param参数实验及后续baseline方法对比分阶段推进，当前模型计算仍为固定前缀overlap、0次更新。原100／1000题T−S及1000题教师S−T四组均已完成，结果见[overlap.md](overlap.md#7-新增实测1000题教师空间s−t消融2026-11-16)。S−T四组的alpha=.05／.1／.2强度扫描已于2026-11-17 02:12:57全部完成，两部分的双指标、图表和汇总齐全，GPU6／7已释放。OPD、退火和方法baseline未启动；新增层位／方式网格按下节授权执行。
 
-## 当前授权：1000题教师S−T补充实验
+## 当前授权运行：固定S−T／all／global
 
-本轮按文末补跑设置，在GPU6、7运行教师S−T方案5–8，SV使用完整1000题，沿原700／300源回答评分；复用原始师生回答、学生capture和概率缓存，并使用原T−S已提交无SV基线。师生GPU小样本验收已通过，正在提取教师侧SV。固定Slerp0.1、教师层29、读取总长2048、0次更新，到overlap／P_overlap图停止；不进入OPD、退火、param或baseline网格。模板hold保留，原100／1000题四组结果不改。
+按用户最新指令，下一轮只保留教师空间S−T的all／global方案，搜索以下三轴；完整待实现项同步于[TODO](../TODO.md)。2026-11-17用户明确要求使用物理GPU2／3启动并复用已有结果；网格已接入入口，219项CPU测试及包检查通过，两组旧结果和源缓存已核验。旧三档配置与结果保持冻结。
+
+| 参数轴 | 搜索范围 |
+|---|---|
+| 提取／注入层 | 教师40 blocks的50%／75%／100%，0-based19／29／39；同层提取与注入 |
+| 注入方式 | Slerp、直接加法 |
+| 强度 | 两种方式均为0.05／0.1／0.3／0.5 |
+| 固定项 | S−T、教师注入、all预测位置、global方向、1000题、700／300划分、2048提取上下文、seed42、0次更新 |
+
+共3×2×4=24组配置，各做Select／Confirm；层29的Slerp .05／.1两组优先核验复用，预计新增22组。已有.2保留作历史对照，不重复计算。师生回答、原生概率与对齐复用；新增层19／39的SV捕获与bank，每层在不同方式／强度间共用。
+
+保持已有预测位置、FP32正文池化及Slerp实现，避免混入额外协议变化；第39层取final norm之前的block输出并在同处注入。加法沿原始global均值差分d，h'=h+alpha*d；Slerp沿其单位方向，alpha为角度比例，两者各自解释强度，不额外加入激活范数缩放。新层位与加法调用链须先完成CPU核对及相应GPU验收；范围止于双指标图和汇总。官方mask／数值复现对照、OPD及独立评测另列。
+
+2026-11-17 14:48:51已启动，监督器PID2522901；两组旧结果已纳入汇总，首个新增点（层19、Slerp .05）于14:50:48通过师生GPU验收，现进入教师层19的SV提取。实时阶段以search_progress.json和日志为准。
+
+当前入口：`scripts/run_param_search.py --run --gpu-ids 2,3`。搜索名`st_all_global_L19_L29_L39_ops_n1000_seed42_v2`，新点命名`n1000_<operator><alpha>_S26_T<layer>_seed42_st_all_global_v2`；step6同名搜索目录保存`search_progress.json`、`logs/search.log`、`comparison.csv`和来源索引。GPU验收绑定注入方式／强度／层号，通过后执行；每点串行、最多两卡、只用指定空闲卡。旧两点只选取scheme_05参与新汇总，原四组文件保持。所有点报告700题Select和300题Confirm，按Select题目等权Δoverlap选参。空间按每点约4.32GiB保守准入预算检查，当前约114GiB；不是最终实测占用承诺，空间不足可保留已提交阶段后恢复。
+
+## 已完成参数实验：S−T强度扫描
+
+该扫描启动时未记录完整参数范围，因此从已完成alpha=.1、教师层29出发执行了下列最小强度扫描。2026-11-17用户明确的后续完整范围已补入[TODO](../TODO.md)：同层提取／注入50%／75%／100%深度，Slerp／直接加法，两种方式均搜索0.05／0.1／0.3／0.5。本节保留已完成小范围实验的实际设置，完整网格按上节的新身份执行，旧三档保持冻结。
+
+| 轴 | 本轮范围 |
+|---|---|
+| 方案 | S−T方案5–8：all／static_overlap × global／per_question |
+| Slerp alpha | 0.05、0.1、0.2；0.1直接引用已完成ablation，不重复运行 |
+| 教师层 | 固定0-based29；层位扫描暂不自动加入 |
+| 静态门控 | 固定overlap、目标20%，只在原700题Select校准；原300题Confirm沿用阈值 |
+| 数据／SV | 原1000题；SV仍在本题／全1000题池提取，总上下文2048，seed42 |
+| 选择 | 每个方案按Select题目等权Δoverlap选择参数；全部参数同时留档Confirm，Confirm不参与排名 |
+| 基线 | 原1000题T−S已提交学生无SVbaseline及冻结教师评分，共同基线不变 |
+| 执行／停止 | GPU6、7，最多两卡，参数点串行；只做overlap，不执行OPD、退火或独立测试 |
+
+旧扫描定义保存在其冻结search_request.json中；唯一模板parameter_search现定义上节的新网格。模板execution_hold保持，显式运行入口生成各参数独立执行配置。旧RUN_NAME=param，各参数目录使用n1000_slerp<alpha>_S26_T29_seed42_st_only_v1；总表在step6/param对应的st_strength_L29_n1000_seed42_v1目录。取值是本轮补充的实施默认范围，不能称原MD已经规定。
+
+按Select题目等权Δoverlap选择的结果如下，Confirm不参与选择。数值均为相对共同无SV基线的百分点变化；完整三档表见[参数汇总](../outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_strength_L29_n1000_seed42_v1/analysis.md)。
+
+跨参数comparison.csv同时记录value／delta_pp及token_value／token_delta_pp：前一对按题目平均，后一对按所有有效学生token位置平均。value和token_value均为注入后的绝对指标，取值0–1；delta列为相对共同无SV基线的百分点变化。单参数CSV保留原题目平均列名question_weighted_value／question_weighted_delta_pp和token_weighted_delta_pp，并同样增加token_value。两种指标分别占一行，整体统计包含未注入位置。已有CSV从已冻结summaries读取token平均值补齐，不重新评分或改变排名。
+
+| 方案 | 选定alpha | Select Δoverlap（pp） | Confirm Δoverlap（pp） | Confirm ΔP_overlap（pp） |
+|---|---:|---:|---:|---:|
+| 5 all／global | .2 | +.7656 | +.7277 | +.6936 |
+| 6 all／per_question | .1 | +.4709 | +.4362 | +.4535 |
+| 7 static_overlap／global | .2 | +.5682 | +.5426 | +.3217 |
+| 8 static_overlap／per_question | .2 | +.4715 | +.4460 | +.2509 |
+
+```bash
+source scripts/runtime_env.sh
+CUDA_VISIBLE_DEVICES='' "$STEER_OPD_PYTHON" scripts/run_param_search.py --check
+"$STEER_OPD_PYTHON" scripts/run_param_search.py --status
+```
+
+以上搜索身份已完成并冻结。CPU优化后源码身份已改变，后续新实验须另行定义新搜索／参数身份，不能对本轮原身份再次--run。
+
+数据、师生回答、两侧池化／bank、对齐、原生概率和源指标按科学合同与SHA复用ablation。改变alpha只新增候选评分、漂移诊断与图；单独核验原alpha=.1参考结果，不改名冒充重算。新教师baseline／重放／候选使用无损gzip的.pt.gz，保留原始tensor位模式、dtype及全部诊断字段，StageCheckpoint按提交清单自动读取；不删除原未压缩ablation结果。alpha=.2曾因空间预检停止，2026-11-17用户清理后可用约79 GiB，在原身份下恢复并完成，未重算已完成的.05／.1。
+
+教师S−T的CPU指标按题使用spawn多进程，默认STEER_OPD_METRIC_WORKERS=16，不超过进程CPU亲和性可用核数；设为1可使用串行参考。每个worker仅接收CPU概率及tokenizer字节映射，每worker固定1个Torch线程，同一评分阶段复用进程池，最多提交2×worker数的题目。结果按原题目顺序返回，匹配、概率、NaN、逐span诊断及完整候选提交规则保持。执行进程数和spawn方式记录在events.jsonl的cpu_metric_execution事件，helper源码纳入候选复用身份。原生概率采集、GPU前向及gzip写盘方式保持。
+
+128道真实Select题／447283个有效span的CPU验证：单进程首次53.27秒、重复54.52秒；8进程首次25.50秒、复用池10.49秒；16进程首次43.51秒、复用池4.48秒。所有返回字段及tensor位模式与串行参考一致；计时包含对应批次的进程通信，首次另含进程启动，未测正式全量端到端加速。证据audit/cpu_parallel_benchmark_20261117.json。本优化已在alpha=.2按原冻结代码完整结束后启用；安装后的17项针对性CPU测试及包检查通过。本轮三档结果均使用原代码，后续新实验使用新参数／搜索身份。
+
+Confirm仍使用本题per_question SV；global仍使用全部1000题，所以该划分是内部复核，不是独立未见验证集。参数结果只说明教师分布适配，后续学生学习收益须独立验证。
 
 ## 已完成：1000题原四方案
 
@@ -151,3 +210,13 @@ step0保存数据；step1分别保存teacher／student；step2按reader保存cap
 复用原1000题师生回答、学生capture／bank（共同有效集相同时）、原生教师评分、对齐和源指标，不重新生成回答。STUDENT_BASELINE_RUN指向原1000题step3参数根，复用其Select／Confirm已提交学生baseline，确保与原T−S比较使用完全相同的无SV分布。历史mask仅允许去除direction_version／direction_versions字段；旧mask须按当前源prefix完整重建核验，概率SHA、指标定义、阈值、位置和gate不得改变。教师重放漂移单独报告。
 
 入口参数：TEACHER_ABLATION=1、SCHEME_IDS=5,6,7,8、QUESTION_COUNT=1000、CONFIRM_TOP_N=4、GPU_IDS=6,7；STUDENT_BASELINE_RUN显式选择已完成1000题根。新教师capture／注入须先通过本次EasySteer GPU验收；模板execution_hold不变，仅独立运行配置承载本次授权。
+
+
+## 后续OPD的两种loss路线（2026-11-17补充）
+
+默认传统OPD，只需S／T；可选steer+CompassOPD，增加教师同家族Ref（默认Qwen3.5-0.8B）与训练前学生冻结副本S_ref。两路线统一参考CompassOPD附录A.4，按共同文本span平均各模型原生观察token logp；Compass的学生锚点项逐学生token计算。Ref只参与可选loss，不参与当前overlap或SV方向；当前教师S−T方案不变。
+
+loss组件与CPU核对已补充，公式及边界见[完整方案§9.4](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)和[实现说明](implementation.md#后续训练loss组件传统opdcompassopd)。step4已接入固定verl版本的训练入口、FSDP loss与EasySteer评分桥接，尚待多卡GPU验收；当前参数搜索到overlap图停止，未自动开启OPD或方法baseline。
+
+
+用户后续明确选择verl作为OPD训练框架。本轮授权范围为代码与CPU核验，训练准备默认学生两卡FSDP、教师独立两卡TP2，保留传统OPD／CompassOPD选择；实际参数与GPU需在正式训练前固定并验收。入口及多卡／恢复细节见[实现说明](implementation.md#基于verl的step4训练入口代码已接入gpu待验收)。现有overlap配置和运行身份不改，不启动训练或独立测试。

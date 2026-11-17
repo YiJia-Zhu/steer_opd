@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Launch the current overlap phase of ablation; param/baseline remain planned."""
+"""Launch frozen-prefix ablation or parameter overlap experiments; zero OPD updates."""
 import argparse
 import math
 import os
@@ -51,7 +51,8 @@ def parser():
     p.add_argument('--stop-after',choices=['source_overlap','panel'],default='panel',
         help='Stop after unsteered source overlap plots; panel requires explicit selection')
     p.add_argument('--strength-policies',choices=['fixed'],default='fixed',help='Overlap uses fixed strength only; annealing belongs to future training')
-    p.add_argument('--phase',choices=['overlap'],default='overlap',help='Current implemented phase; param/baseline are planned')
+    p.add_argument('--phase',choices=['overlap'],default='overlap',help='Frozen-prefix overlap only; OPD and method baselines are not implemented')
+    p.add_argument('--operator',choices=['slerp','additive'],default='slerp')
     p.add_argument('--alpha',type=float,default=.1);p.add_argument('--layer',type=int,default=26)
     p.add_argument('--gate-metric',choices=['overlap','P_overlap'],default='overlap')
     p.add_argument('--rank-metric',choices=['overlap','P_overlap'],default='overlap')
@@ -61,6 +62,7 @@ def parser():
     p.add_argument('--reference-max-tokens',type=int,default=12288);p.add_argument('--source-max-tokens',type=int,default=7168)
     p.add_argument('--sv-max-context-len',type=int,default=2048,help='Prompt+answer limit for SV-training activation extraction')
     p.add_argument('--reference-temperature',type=float,default=.7);p.add_argument('--reference-top-p',type=float,default=.95)
+    p.add_argument('--candidate-tensor-compression',choices=['none','gzip'],default='none')
     p.add_argument('--confirm-top-n',type=int,default=None)
     p.add_argument('--hf-parity',type=int,choices=[0,1],default=0,help='Optional HF numerical comparison; default uses EasySteer only')
     return p
@@ -82,7 +84,7 @@ def build_config(args):
     cfg=read_json(ROOT/'configs/ablation.json')
     cfg.update(id=f'{args.run_name}_{args.phase}',experiment=args.run_name,phase=args.phase,
         run_name=args.run_name,param_name=args.param_name,question_count=args.question_count,input_data_dir=args.input_data_dir,
-        scheme_ids=ids,alpha=args.alpha,layers=[args.layer],
+        scheme_ids=ids,operator=args.operator,alpha=args.alpha,layers=[args.layer],
         stop_after=args.stop_after,
         strength_policies=policies,
         gate_metric=args.gate_metric,rank_metric=args.rank_metric,gate_target_rate=args.gate_target_rate,
@@ -94,6 +96,7 @@ def build_config(args):
         include_teacher_ablation=bool(args.teacher_ablation),teacher_layers=[args.teacher_layer],
         teacher_direction_version=TEACHER_DIRECTION_VERSION,
         startup_hf_parity=bool(args.hf_parity))
+    if args.candidate_tensor_compression!='none':cfg['candidate_tensor_compression']=args.candidate_tensor_compression
     if args.student_baseline_run:
         if not args.teacher_ablation or any(int(s.removeprefix('scheme_'))<5 for s in ids):
             raise ValueError('An external student baseline is only for teacher-only schemes 5..8')
@@ -121,6 +124,8 @@ def run_validation(cfg,gpu_ids,config_path):
                         for role in MODEL_ROLES}
         binding=digest({'source_revision':source_revision()[0],'checkpoints':identities,
                         'student':cfg['student'],'layers':cfg['layers'],'alpha':cfg['alpha'],
+                        'operator':cfg.get('operator','slerp'),
+                        'additive_scaling':'raw_mean_difference_v1' if cfg.get('operator')=='additive' else None,
                         'teacher_gpus':cfg['teacher_gpus'],'hf_parity':cfg.get('startup_hf_parity',False),
                         'direction_version':cfg['direction_version'],
                         'sv_max_context_len':cfg['sv_max_context_len'],
@@ -182,12 +187,14 @@ def main():
         else:print(f'No execution yet: {run}')
         return
     print(f"RUN_NAME={cfg['run_name']}; PARAM_NAME={cfg['param_name']}\nRun: {run}\nGPU pool (physical IDs): {args.gpu_ids}; teacher TP={cfg['teacher_gpus']}",flush=True)
-    print(f"Experiment: {cfg['experiment']} / {cfg['phase']} (incomplete); param/baseline are planned",flush=True)
+    print(f"Experiment: {cfg['experiment']} / {cfg['phase']}; frozen prefixes; optimizer updates=0",flush=True)
     print(f"Questions: {cfg['question_count']}; select fraction={cfg['select_fraction']}; confirm schemes={cfg['confirm_top_n']}; data={cfg['data_dir']}",flush=True)
     print(f"Stop after: {cfg['stop_after']}; source_overlap skips teacher answer generation, SV capture/banks/injection and OPD",flush=True)
-    print(f"Slerp={cfg['alpha']}, layer={cfg['layers']}, seed=42; gate={cfg['gate_metric']}, rank={cfg['rank_metric']}",flush=True)
+    print(f"Operator={cfg.get('operator','slerp')}, strength={cfg['alpha']}, layer={cfg['layers']}, seed=42; gate={cfg['gate_metric']}, rank={cfg['rank_metric']}",flush=True)
     print(f"SV extraction: all samples, mean over retained answer tokens; prompt+answer limit={cfg['sv_max_context_len']}; no finish/correctness/repetition filter",flush=True)
-    print('Direction: T-S; compare four fixed-strength schemes and one shared baseline',flush=True)
+    roles={c['steer_role'] for c in scheme_conditions(cfg)}
+    print('Direction: S-T in teacher space; four schemes with a frozen student baseline' if roles=={'teacher'}
+          else 'Directions: selected student T-S / optional teacher S-T schemes; shared no-SV baseline',flush=True)
     if cfg.get('include_teacher_ablation'):
         print(f"Teacher ablation: S-T in teacher space, layer={cfg['teacher_layers']}; schemes 5..8; student stays unsteered",flush=True)
     print('Annealing is deferred to actual training batches; no question-order annealing in overlap',flush=True)

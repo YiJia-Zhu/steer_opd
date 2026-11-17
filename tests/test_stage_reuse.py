@@ -252,7 +252,8 @@ def test_mocked_whole_campaign_reuses_upstreams_and_rebuilds_candidates(cfg,code
             summaries={}
             for condition in job['conditions']:
                 commit(folder/condition['id'],{'alpha':condition['alpha']})
-                values={'questions':1,'question_weighted_value':.3,'question_weighted_delta_pp':1.,'token_weighted_delta_pp':1.}
+                values={'questions':1,'question_weighted_value':.3,'question_weighted_delta_pp':1.,
+                        'token_weighted_value':.35,'token_weighted_delta_pp':1.}
                 summaries[condition['id']]={'condition':condition,'question_weighted_delta_pp':1.,
                     'metrics':{name:values for name in ('overlap','P_overlap')}}
             atomic_json(folder/'summaries.json',summaries)

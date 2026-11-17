@@ -2,7 +2,7 @@
 
 ## Current authorization and experiment
 
-2026-11-16最新授权：用户要求补跑教师S−T实验，SV使用完整1000题，允许GPU验收和方案5–8的Select／Confirm overlap评分及图表，到图停止，0次OPD更新。当前0／1繁忙，使用空闲物理GPU6／7，最多两卡且不停止他人进程。参数名n1000_slerp0.1_S26_T29_seed42_st_only_v1；教师层29、Slerp0.1、SV总上下文2048，原700／300划分。复用已完成1000题师生回答、学生capture、原生T评分、对齐和源指标；不重新生成回答。教师只在自身空间提取H_T(S回答)−H_T(T回答)，新增capture／bank后沿固定学生文本评分。显式student_baseline_run引用原1000题已提交学生无SVbaseline，兼容检查只允许历史mask中的方向元数据字段差异，源prefix／概率／指标／阈值／实际gate必须完全一致。原结果不改，模板hold保持；该明确新授权取代下文“仅CPU／禁止启动”的历史限制。
+2026-11-17最新授权：用户明确启动扩展参数搜索，仅使用物理GPU2／3，已有结果核验复用。固定S−T／教师空间／all／global／方案5，提取与注入同层，教师0-based19／29／39 × Slerp／additive × alpha=.05／.1／.3／.5，共24组，层29的Slerp .05／.1两组引用原完成结果，预计新增22组；旧.2仅保留历史结果。原1000题及700／300划分、上下文2048、seed42、预测位置和FP32池化不变。additive严格为h+alpha×原始global均值差分，系数一次，无额外范数缩放；Slerp仍沿单位方向。层39取final norm前block输出。先CPU检查与逐点GPU验收，再算双指标／图／汇总，0次更新，不做OPD／退火／baseline／独立评测。入口scripts/run_param_search.py，唯一模板parameter_search定义网格，模板hold保持，独立验收配置执行；新搜索身份st_all_global_L19_L29_L39_ops_n1000_seed42_v2，参数名以st_all_global_v2结尾。复用源生成／概率／对齐／同层capture与bank；启用16进程CPU指标与无损gzip。运行中不改冻结Python源码或配置，旧搜索身份与结果不覆盖。此授权取代下文历史GPU／param限制。CPU回归219项及包检查通过，两组旧结果完整性及上游复用已CPU核验。
 
 实验统一命名ablation，唯一执行计划docs/ablation.md，唯一配置configs/ablation.json，手动入口scripts/run_ablation.sh，主编排scripts/run_ablation.py。当前phase=overlap；原100/1000题T−S四组已完成，新增教师S−T待GPU验收；param参数实验与baseline方法对比均为后续计划，不自动执行。新输出遵循输出结构.md：outputs/step_<编号>_<阶段>/<RUN_NAME>/<模型组合>/<训练数据集>/<shared或测试集>/<PARAM_NAME>/，RUN_NAME表示ablation／param／compar；100／1000题输入现均在step0各自PARAM_NAME下，划分与内容不变；原runs／data／logs已移除。完整研究稿保留方法背景，实验进度以ablation计划为准。
 

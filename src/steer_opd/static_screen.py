@@ -21,6 +21,9 @@ def candidate_vectors(bank, row, condition):
             or bank["method"]["direction"] != condition["direction"]
             or bank["method"]["granularity"] != condition["granularity"]):
         raise ValueError("Static candidate bank direction/granularity/S0 identity mismatch")
+    if condition.get('operator')=='additive' and condition.get('additive_scaling')=='raw_mean_difference_v1':
+        from steer_opd.raw_additive import raw_global_vectors
+        return raw_global_vectors(bank,condition['layers'],condition['alpha'])
     return bank_vectors(bank, row["id"], operator=condition.get("operator", "slerp"),
                         alpha=condition.get("alpha", 0.1), rho=condition.get("rho"),
                         layers=condition["layers"])

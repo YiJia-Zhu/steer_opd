@@ -1,0 +1,711 @@
+{
+  "official_commit": "198fdbd917e9d7234f734aa8eb754faa408bd2e6",
+  "source_revision": "c29e374f87c25a2418ccfaab8a53aa8aea1864544fc39274d399f7319229633d",
+  "gpu_started": false,
+  "production_code_changed": false,
+  "source_files": {
+    "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/activations/pooled.pt": "060e7b8763b69176a29d5d4a00dc8f92d630e4bbba4dceaab4d19f6abba31171",
+    "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/banks/S-T_global.pt": "d1c16e936b02ac7f30c5e807df980b4e972f619e54df9911a5483ce79f8fe207",
+    "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/banks/S-T_per_question.pt": "611bff4c1e5e14f42ea6d1d8e1f7d70f958d0b0d6c331f1463f220409ca1b4b1",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3-10473_0.pt": "9065a562a7096609296cfb68d60402b55289aa8b3921878640610bbcba21d9f9",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3-20396_0.pt": "c3e4210eeb96689e9d092502e5cb80742f4ce3c31fdb547a081eed9fd6cbc990",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-795667_0.pt": "f07dc7e113e902dab4d58355c7decb8ee7e04e80a5b0b4923d44a15904c0b451",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-179451_0.pt": "419f68ccf75a58dc8e1eaf6b4d4929ee18a2a3649f88d6fdf6cd7a338a4fff67",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-714825_0.pt": "87003bad927342517b4e0779295292d230f77d05a0202c6fc314dad05abfd99d",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-553306_0.pt": "b19c3f8976a3217db9cd01fe78705eb957eaa2dadea9b99ab6d2df2429c1c26d",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-489710_0.pt": "2c321f236f1b8c4dad9ff7179d675cd912e2146dd82e8a3787dab00311d14133",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-753305_0.pt": "3b9b146c6be3d2ec89be11b2787672fca427ea32ca1ff778812bc2fb5819ed66",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-009767_0.pt": "085144b1303d0b7d65911dcaa44e4306279bb1ba3c1148a3720f58df8e09a928",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-588153_0.pt": "9e99ba2aa33cb80419e22e3f80662cd32a2c58b1c36fdba44e3f92e6a351b7c4",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-344207_0.pt": "0a18c20b98b657295064d324c1a3be72645bc654525f22e09817cf8d81676286",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-397562_0.pt": "d2495bd1e708ca0b735d9f2265e208d9d83cc7fb88eb818e6bc2bda22b31ff13",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-127253_0.pt": "fc494a16a3c6925622be0e402261f4e3291922c7feca6047864165047c4d21fe",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-612451_0.pt": "bc8033c00dd0e365b4942a1a3863bde0802e34fa90761dae65e685abff7cc10c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-785408_0.pt": "8202a5b936e03065fa523da17e8f8be345c82c96404c99cd5f50d5faec98c922",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_05/ot3m-013266_0.pt": "2ad90fff1804efd904b7c394b8024916056a40739e914c0e54d15d357369333b",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3-10473_0.pt": "3bdf3348148bf275d08831eb17eed552a0c90067faa0bed1cc3195c793befb2c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3-20396_0.pt": "b3508ff8211cbcd579e1fea7b86171b3dcea89753c1db203718828ef3c5b82a1",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-795667_0.pt": "ca3943d6b727b6ad12a626dc48465354a9303f9c8991173b61b8b508273b281e",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-179451_0.pt": "982da21e3c1e82f348c1f401d959b5979dec11ee5380b1facdd7e0a461b3ccaf",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-714825_0.pt": "8db482f3d6d5de9715bc5ca741089e4289efde0d1b5da5606fe84cd11254be20",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-553306_0.pt": "320c69057076c751131df7cf7177f9eb848c40ccb9ac0de5e058879852ff56d5",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-489710_0.pt": "c98e5194692be1865fcff12ea9df3a1475cb987bb70ea30c31fa0868fd6698b2",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-753305_0.pt": "595b5bc83061371018ff5497b896260d98aec231f497aeaee2b5badd1b8eead8",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-009767_0.pt": "f9b39c7066e27e71348abd0118eb2a485cbab15a230a758d520802c6b6d8c83c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-588153_0.pt": "d7102acd9579cf4dff1a155f540b255ff6a1acb45677e3ab3cd75211dd738f61",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-344207_0.pt": "20d78a258635b48a735132bb6390d63483165c73b7d5bdbacd37326d26572bc3",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-397562_0.pt": "aca947719c878709be0848db833538788e90cadfd168b628392cba9351d35610",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-127253_0.pt": "191e3d6a749481c39a02427213982510e328ba7312c1b947cafc004999b57c05",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-612451_0.pt": "c2c3e945437dfc6c30cb16fdc11a6f6cf9f6cfd5d2781d1d511fb5552a9ea39f",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-785408_0.pt": "dfe617ec47d7245399f8d595a0967f7ff90d4ac0528bc5f5a13ad4c9998fce11",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/scheme_06/ot3m-013266_0.pt": "4afe6fb1046215a161ea057c42e4468cf36b18204bb61e659536c4ab98312dc8",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3-00063_0.pt": "3eaec885c6c196d78271fafde02521d8784a933f7a02c7d5137593d8cccefa2b",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3-00078_0.pt": "f16e9ad4d1d832a0044d9d119c96a9b075bd4e742feed3aea0f39a23f733b6bc",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-027824_0.pt": "ecf1abc47fd8bfacb0041018635b0d02e67612fb565bdb9296fc4764902ed5e3",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-484714_0.pt": "ba8513454d1fa7cca9c11e8784ef64f5f088fc326ea2a3d90dffd84085212c20",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-792495_0.pt": "e0d2d355b1a0ac6cc631e6db6e2896e55cb6bc36c824272fcef369bee9c73971",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-576510_0.pt": "665cf9ddba0210370b1076b473bb64a5f30cb37ea78acf270ecd16f8e9850146",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-063556_0.pt": "a3ccf8254eb2046ea0c3f3607d48a27f8c0131bd716aa4f659343b775f87e6e6",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-592683_0.pt": "bc72159fe63f131acb494cee06831b358a8d353f266e3344404dfe2c7920f38c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-512262_0.pt": "61211e741d65cd4760992b35f6b12454d4cd336d664f946ecd61eacc48debb5f",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-825622_0.pt": "6898f9b751917941fd6843950dfdfe5847f29870f4f78bf8d1b588f5fc45ae0f",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-381913_0.pt": "ef0b8b4ded1691efddef055fde5bf316a1c69e453ba871cbd679012712be430c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-690855_0.pt": "68b378bf908f3613edebb19c7377ad12921e40a4c6726468e766d93dff66ac2e",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-261303_0.pt": "73609d438a3cd7368c458e8de87415c04b0b0bf9f622ddcc8a581846b6d96fa9",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-564365_0.pt": "92c4e39dc46eb7821d0f42d6119432a4a1f9aef8f99466af158b2de8759ad3b1",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-228552_0.pt": "07a4ecc197a44f9663b3283ab2f6b729dd2525523a889932f4036a22f74bd3bc",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_05/ot3m-514013_0.pt": "2f1c805729a897fe3c00f2b823fbdd8e2b0a5a20380509cd8a4bc8e0111e077a",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3-00063_0.pt": "15c3df37b5da7a820f6700e0227367c5df8ff39bd1b8aa4ac0602d6581ab5eb5",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3-00078_0.pt": "f263225c4143d814f4068cb8160a9d72d51e4382dce30fc7077c32779d294a8b",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-027824_0.pt": "9859726e23a95fab1ca1eb98cac9520db42f9ca011dc558d2b9a542ee1bd485e",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-484714_0.pt": "732f68722bc775cbe691dd4dcdb19195cff6d3bc3603ae139c4df4ab2f72ab45",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-792495_0.pt": "df8c1ab26f9468e83f631b8cfa752d7447d6464376c8034805a24783bc350818",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-576510_0.pt": "1cd1ad53febabe93ec48bcabad7bdc50f845c7c1accb1e8401f7b1c4acf541af",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-063556_0.pt": "90634024475078654975b94a1988aa2077aa1de3e04d5659121feae6fba5c593",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-592683_0.pt": "e3066ac7097b07c9d321781b89e5867158951cd26d7bed40338579e2b4e13ceb",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-512262_0.pt": "c20d509541c8ce8a736bd64211cd483de67fea00797c774febc5494d6f6ad140",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-825622_0.pt": "e3e6533f8c62c66881ef311a5459cbed78295a288315d486142a0c40df91ca8a",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-381913_0.pt": "179b48bc735da3798986bfbdc5ec3bfe7c21c37cb9bd629472f91eea6dbf486c",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-690855_0.pt": "ccb2814df5e3c8703e6fcc5971f4edd0225813fd9c1c5fddc666f92cc6c1cc9a",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-261303_0.pt": "cdb8fcbc0d272acc8e453e3bb19f487450e152409b48f0f36738c530cac7e4f4",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-564365_0.pt": "ada0d18f451822f56336418a9b311578762f9865254f584cd6a0d2977f912fa6",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-228552_0.pt": "a65eb5a4b45b395119c3672c33c173ed1e34110bf151736700df9f26f64f65c2",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/scheme_06/ot3m-514013_0.pt": "a45860a0baaf11d2409f5c097827154a9226529dcb66ef72930e76a6d97bcd27"
+  },
+  "pinned_source_matches": {
+    "acts": true,
+    "generate": true,
+    "train": true,
+    "vectors": true
+  },
+  "bank_checks": {
+    "questions": 1000,
+    "reader": "teacher",
+    "direction": "S-T",
+    "all_raw_differences_exact": true,
+    "global_matches_official_mean_exact": true,
+    "all_unit_directions_match_official_exact": true,
+    "zero_directions": 0,
+    "per_question_to_global_cosine": {
+      "mean": 0.7740316987037659,
+      "min": 0.4165308475494385,
+      "p05": 0.6255590915679932,
+      "median": 0.7830067873001099,
+      "p95": 0.8834686875343323,
+      "max": 0.939915120601654
+    },
+    "per_question_raw_norm": {
+      "mean": 1.3430925607681274,
+      "min": 0.7616639137268066,
+      "p05": 1.0361697673797607,
+      "median": 1.3451188802719116,
+      "p95": 1.6655972003936768,
+      "max": 1.9562151432037354
+    },
+    "global_raw_norm": 1.0321171283721924,
+    "fp32_vs_bf16_rounded_pool_direction_cosine": {
+      "mean": 0.9999769926071167,
+      "min": 0.9998880624771118,
+      "p05": 0.9999417066574097,
+      "median": 0.9999824166297913,
+      "p95": 0.9999934434890747,
+      "max": 0.9999963045120239
+    }
+  },
+  "bindings": {
+    "all_1000_question_ids_covered": true,
+    "saved_records_checked": [
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3-10473",
+        "key": "ot3-10473_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3-20396",
+        "key": "ot3-20396_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-795667",
+        "key": "ot3m-795667_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-179451",
+        "key": "ot3m-179451_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-714825",
+        "key": "ot3m-714825_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-553306",
+        "key": "ot3m-553306_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-489710",
+        "key": "ot3m-489710_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-753305",
+        "key": "ot3m-753305_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-009767",
+        "key": "ot3m-009767_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-588153",
+        "key": "ot3m-588153_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-344207",
+        "key": "ot3m-344207_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-397562",
+        "key": "ot3m-397562_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-127253",
+        "key": "ot3m-127253_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-612451",
+        "key": "ot3m-612451_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-785408",
+        "key": "ot3m-785408_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_05",
+        "qid": "ot3m-013266",
+        "key": "ot3m-013266_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3-10473",
+        "key": "ot3-10473_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3-20396",
+        "key": "ot3-20396_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-795667",
+        "key": "ot3m-795667_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-179451",
+        "key": "ot3m-179451_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-714825",
+        "key": "ot3m-714825_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-553306",
+        "key": "ot3m-553306_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-489710",
+        "key": "ot3m-489710_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-753305",
+        "key": "ot3m-753305_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-009767",
+        "key": "ot3m-009767_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-588153",
+        "key": "ot3m-588153_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-344207",
+        "key": "ot3m-344207_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-397562",
+        "key": "ot3m-397562_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-127253",
+        "key": "ot3m-127253_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-612451",
+        "key": "ot3m-612451_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-785408",
+        "key": "ot3m-785408_0",
+        "matches": true
+      },
+      {
+        "split": "select",
+        "scheme": "scheme_06",
+        "qid": "ot3m-013266",
+        "key": "ot3m-013266_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3-00063",
+        "key": "ot3-00063_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3-00078",
+        "key": "ot3-00078_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-027824",
+        "key": "ot3m-027824_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-484714",
+        "key": "ot3m-484714_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-792495",
+        "key": "ot3m-792495_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-576510",
+        "key": "ot3m-576510_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-063556",
+        "key": "ot3m-063556_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-592683",
+        "key": "ot3m-592683_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-512262",
+        "key": "ot3m-512262_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-825622",
+        "key": "ot3m-825622_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-381913",
+        "key": "ot3m-381913_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-690855",
+        "key": "ot3m-690855_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-261303",
+        "key": "ot3m-261303_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-564365",
+        "key": "ot3m-564365_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-228552",
+        "key": "ot3m-228552_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_05",
+        "qid": "ot3m-514013",
+        "key": "ot3m-514013_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3-00063",
+        "key": "ot3-00063_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3-00078",
+        "key": "ot3-00078_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-027824",
+        "key": "ot3m-027824_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-484714",
+        "key": "ot3m-484714_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-792495",
+        "key": "ot3m-792495_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-576510",
+        "key": "ot3m-576510_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-063556",
+        "key": "ot3m-063556_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-592683",
+        "key": "ot3m-592683_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-512262",
+        "key": "ot3m-512262_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-825622",
+        "key": "ot3m-825622_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-381913",
+        "key": "ot3m-381913_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-690855",
+        "key": "ot3m-690855_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-261303",
+        "key": "ot3m-261303_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-564365",
+        "key": "ot3m-564365_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-228552",
+        "key": "ot3m-228552_0",
+        "matches": true
+      },
+      {
+        "split": "confirm",
+        "scheme": "scheme_06",
+        "qid": "ot3m-514013",
+        "key": "ot3m-514013_0",
+        "matches": true
+      }
+    ]
+  },
+  "geometry_and_outcome": {
+    "select": {
+      "global_delta_pp": 0.7367540867071319,
+      "per_question_delta_pp": 0.4709096961197593,
+      "per_question_improved_questions": 653,
+      "questions": 700,
+      "corr_alignment_vs_global_minus_per_question_gain": -0.382159850707021
+    },
+    "confirm": {
+      "global_delta_pp": 0.7077311463276997,
+      "per_question_delta_pp": 0.4361572634980245,
+      "per_question_improved_questions": 277,
+      "questions": 300,
+      "corr_alignment_vs_global_minus_per_question_gain": -0.2927866849571282
+    }
+  },
+  "slerp_numerics": [
+    {
+      "dtype": "torch.float32",
+      "alpha": 0.05,
+      "max_abs_error": 1.1920928955078125e-06,
+      "relative_l2_error": 1.1673252231503284e-07,
+      "bitwise_equal": false,
+      "both_finite": true
+    },
+    {
+      "dtype": "torch.float32",
+      "alpha": 0.1,
+      "max_abs_error": 1.1920928955078125e-06,
+      "relative_l2_error": 1.101250788337893e-07,
+      "bitwise_equal": false,
+      "both_finite": true
+    },
+    {
+      "dtype": "torch.float32",
+      "alpha": 0.2,
+      "max_abs_error": 1.430511474609375e-06,
+      "relative_l2_error": 1.1073789352167296e-07,
+      "bitwise_equal": false,
+      "both_finite": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "alpha": 0.05,
+      "max_abs_error": 0.015625,
+      "relative_l2_error": 0.00010694502270780504,
+      "bitwise_equal": false,
+      "both_finite": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "alpha": 0.1,
+      "max_abs_error": 0.015625,
+      "relative_l2_error": 0.0001717757259029895,
+      "bitwise_equal": false,
+      "both_finite": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "alpha": 0.2,
+      "max_abs_error": 0.015625,
+      "relative_l2_error": 0.0002301678468938917,
+      "bitwise_equal": false,
+      "both_finite": true
+    }
+  ],
+  "position_protocol": {
+    "official_labels_mask_positions": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "our_prediction_state_positions": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "same": false,
+    "our_minus_official": [
+      -1,
+      -1,
+      -1,
+      -1
+    ]
+  },
+  "pooling_numerics": [
+    {
+      "dtype": "torch.float32",
+      "layer": 0,
+      "last_layer": false,
+      "max_abs_error": 0.0,
+      "relative_l2_error": 0.0,
+      "equal_after_bf16_round": false,
+      "bitwise_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "layer": 1,
+      "last_layer": false,
+      "max_abs_error": 0.0,
+      "relative_l2_error": 0.0,
+      "equal_after_bf16_round": false,
+      "bitwise_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "layer": 2,
+      "last_layer": true,
+      "max_abs_error": 0.8582812547683716,
+      "relative_l2_error": 0.9793268442153931,
+      "equal_after_bf16_round": false,
+      "bitwise_equal": false
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "layer": 0,
+      "last_layer": false,
+      "max_abs_error": 2.9637478291988373e-05,
+      "relative_l2_error": 0.0014233737019822001,
+      "equal_after_bf16_round": true,
+      "bitwise_equal": false
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "layer": 1,
+      "last_layer": false,
+      "max_abs_error": 2.7582980692386627e-05,
+      "relative_l2_error": 0.0015710039297118783,
+      "equal_after_bf16_round": true,
+      "bitwise_equal": false
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "layer": 2,
+      "last_layer": true,
+      "max_abs_error": 0.8563044667243958,
+      "relative_l2_error": 0.9793137311935425,
+      "equal_after_bf16_round": false,
+      "bitwise_equal": false
+    }
+  ]
+}

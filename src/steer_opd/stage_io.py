@@ -21,7 +21,7 @@ def safe_name(value):
 def default_param_name(cfg):
     layer=(f"S{cfg['layers'][0]}_T{cfg['teacher_layers'][0]}" if cfg.get('include_teacher_ablation')
            else f"layer{cfg['layers'][0]}")
-    label=f"n{cfg['question_count']}_slerp{cfg['alpha']:g}_{layer}_seed{cfg['seed']}"
+    label=f"n{cfg['question_count']}_{cfg.get('operator','slerp')}{cfg['alpha']:g}_{layer}_seed{cfg['seed']}"
     for key,default,tag in [('gate_metric','overlap','gate'),('rank_metric','overlap','rank'),('gate_target_rate',.2,'rate'),
         ('reference_max_tokens',12288,'Tgen'),('source_max_tokens',7168,'Sgen'),
         ('sv_max_context_len',2048,'ctx'),('reference_temperature',.7,'Ttemp'),('reference_top_p',.95,'Tp')]:

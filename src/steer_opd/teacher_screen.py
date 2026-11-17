@@ -9,6 +9,7 @@ from steer_opd.overlap_tuning import paired_summary
 from steer_opd.resumable_core import atomic_json, digest, read_json
 from steer_opd.static_masks import validate_native_score
 from steer_opd.static_screen import candidate_vectors
+from steer_opd.cpu_metrics import MetricExecutor
 
 
 def project_teacher_mask(plan, student_mask, teacher_length):
@@ -56,7 +57,7 @@ def teacher_requests(rows, masks, native_rows, plans, bank, condition, build_spe
             a,b=unit['ranges']['student'];c,d=unit['ranges']['teacher']
             mapped_requested[a:b]=[any(native_requested[c:d])]*(b-a)
             mapped_actual[a:b]=[any(native_actual[c:d])]*(b-a)
-        specs.append(build_spec(native,native_actual,values,alpha=alpha) if enabled else False)
+        specs.append(build_spec(native,native_actual,values,operator=condition.get('operator','slerp'),alpha=alpha) if enabled else False)
         vectors.append(values);gates.append(native_actual)
         meta={'mask_id':masks[key]['mask_id'],'source_binding':masks[key]['source_binding'],
             'condition':condition,'vector_id':vector_id,'intervention_role':'teacher',
@@ -154,15 +155,19 @@ def run_teacher_screen(job, rows, masks, teachers, banks):
                     'paired_student':fixed_identity,'protocol':'teacher_st_fixed_student_v1'})
     names=['baseline','teacher_unsteered_replay',*[c['id'] for c in job['conditions']]]
     if len(set(names))!=len(names):raise ValueError('Teacher candidate IDs overlap reserved baseline/replay names')
-    stores={name:StageCheckpoint(output/name,digest({'phase':binding,'candidate':name})) for name in names}
+    stores={name:StageCheckpoint(output/name,digest({'phase':binding,'candidate':name}),
+            tensor_compression=job.get('candidate_tensor_compression','none')) for name in names}
     ready={name:store.load_tensors([safe_key(r) for r in rows]) for name,store in stores.items()}
-    with Progress(output,'teacher_fixed_prefix_screen',len(rows)*len(names),unit='score',show_bar=False) as progress:
+    with Progress(output,'teacher_fixed_prefix_screen',len(rows)*len(names),unit='score',show_bar=False) as progress, \
+            MetricExecutor(adapter,progress=progress) as metric_executor:
         progress.resume(sum(len(v) for v in ready.values() if v is not None))
         def records(scores, meta):
             result={}
-            for row,score,metadata in zip(rows,scores,meta):
+            inputs=[(safe_key(row),student[safe_key(row)],score) for row,score in zip(rows,scores)]
+            metrics=metric_executor.compute(inputs)
+            for row,score,metadata,(metric_key,metric) in zip(rows,scores,meta,metrics):
                 key=safe_key(row);validate_native_score(score,len(native_rows[key]['token_ids']),support)
-                metric=adapter(key,student[key],score)
+                if metric_key!=key:raise ValueError('CPU metric worker changed source order')
                 result[key]={**score,**metric,**metadata,'native_score_role':'teacher',
                     'fixed_student_identity':fixed_identity,'parameter_updates':0}
             return result
@@ -218,7 +223,8 @@ def run_teacher_screen(job, rows, masks, teachers, banks):
                         scores.extend(score_batch(model,native[begin:begin+size],
                             vectors=vectors[begin:begin+size] if condition and condition['alpha']!=0 else None,
                             gates=gates[begin:begin+size] if condition and condition['alpha']!=0 else None,
-                            alpha=condition['alpha'] if condition else 0.))
+                            operator=condition.get('operator','slerp') if condition else 'slerp',
+                            alpha=(condition['alpha'] if condition.get('operator','slerp')=='slerp' else 1.) if condition else 0.))
             with progress.phase_scope('compute_teacher_metrics',condition=name):
                 values=records(scores,meta)
                 for key,value in values.items():

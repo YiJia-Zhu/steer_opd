@@ -3,6 +3,8 @@ from contextlib import contextmanager
 from functools import lru_cache
 from datetime import datetime, timezone
 import hashlib
+import gzip
+import io
 import fcntl
 import importlib.metadata
 import json
@@ -304,15 +306,20 @@ class StageCheckpoint:
     """One manifest commits a complete engine call, never individual requests."""
     schema = "engine_call_v1"
 
-    def __init__(self, output, binding):
+    def __init__(self, output, binding, *, tensor_compression=None):
         self.output = Path(output)
         self.path = self.output / "complete.json"
         self.binding = binding
         identity = self.output / "stage_input.json"
-        if identity.exists() and read_json(identity) != {"binding": binding, "schema": self.schema}:
+        saved = read_json(identity) if identity.exists() else None
+        self.tensor_compression = (saved.get('tensor_compression','none') if saved and tensor_compression is None
+                                   else tensor_compression or 'none')
+        if self.tensor_compression not in ('none','gzip'):raise ValueError('Unknown lossless tensor compression')
+        expected = {"binding": binding, "schema": self.schema}
+        if self.tensor_compression!='none':expected['tensor_compression']=self.tensor_compression
+        if saved is not None and saved != expected:
             raise ValueError("Stage input identity changed")
-        if not identity.exists():
-            atomic_json(identity, {"binding": binding, "schema": self.schema})
+        if saved is None:atomic_json(identity,expected)
 
     def load(self):
         if not self.path.exists():
@@ -408,7 +415,15 @@ class StageCheckpoint:
             return None
         if set(value["record_keys"]) != set(keys):
             raise ValueError("Committed stage response keys changed")
-        return {key: torch.load(self.output / f"{key}.pt", map_location="cpu", weights_only=True) for key in keys}
+        compression=value.get('tensor_compression','none')
+        if compression not in ('none','gzip'):raise ValueError('Unknown committed tensor compression')
+        result={}
+        for key in keys:
+            if compression=='gzip':
+                source=io.BytesIO(gzip.decompress((self.output/f'{key}.pt.gz').read_bytes()))
+            else:source=self.output/f'{key}.pt'
+            result[key]=torch.load(source,map_location='cpu',weights_only=True)
+        return result
 
     def save_tensors(self, records, extra_files=()):
         if self.path.exists():
@@ -417,10 +432,21 @@ class StageCheckpoint:
         for key, record in records.items():
             if Path(key).name != key or key in (".", ".."):
                 raise ValueError("Unsafe response key")
-            path = self.output / f"{key}.pt"
-            atomic_torch(path, record)
+            if self.tensor_compression=='gzip':
+                path=self.output/f'{key}.pt.gz';path.parent.mkdir(parents=True,exist_ok=True)
+                buffer=io.BytesIO();torch.save(record,buffer)
+                packed=gzip.compress(buffer.getvalue(),compresslevel=6,mtime=0)
+                tmp=path.with_name(path.name+f'.tmp.{os.getpid()}')
+                with tmp.open('wb') as stream:
+                    stream.write(packed);stream.flush();os.fsync(stream.fileno())
+                os.replace(tmp,path)
+            else:
+                path = self.output / f"{key}.pt"
+                atomic_torch(path, record)
             files.append(path)
-        self.commit(files, record_keys=list(records))
+        metadata={'record_keys':list(records)}
+        if self.tensor_compression!='none':metadata['tensor_compression']=self.tensor_compression
+        self.commit(files,**metadata)
 
 
 @contextmanager

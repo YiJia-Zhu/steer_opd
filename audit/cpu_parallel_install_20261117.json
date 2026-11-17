@@ -1,0 +1,65 @@
+{
+  "status": "applied",
+  "updated_unix": 1794852791.136644,
+  "scope": "S-T CPU metric evaluation",
+  "workers": 16,
+  "gpu_experiments_started": 0,
+  "validation_exit_code": 0,
+  "validation_log": "audit/cpu_parallel_installed_validation_20261117.log",
+  "source_revision": "f2648997a81c74206e8b75c694e204d8fbcc6789ffc2989cc7f565bb293974e1",
+  "files": [
+    {
+      "path": "src/steer_opd/cpu_metrics.py",
+      "before_sha256": null,
+      "after_sha256": "838acd57cd4f579c07c0f89db64354ecdeb1ffea15f1dd3cde4a19886d78a5ed"
+    },
+    {
+      "path": "src/steer_opd/teacher_screen.py",
+      "before_sha256": "2c3cd07af83c39af749a75245889301ed44e13c8e580a17e5bf995d2cd752191",
+      "after_sha256": "b51a9c8dcf78b6aef20537137bca143cff205b39cd526a2b49ea81f801e89f92"
+    },
+    {
+      "path": "src/steer_opd/stage_contracts.py",
+      "before_sha256": "a1cf9fe01437315b17267c30face37291f5fec7d082973f5736e7d939b13d07c",
+      "after_sha256": "add3421dd9155999c98e6f4ab2ab001e4a1205fd0bbfc4a4145f7644abcc371b"
+    },
+    {
+      "path": "scripts/runtime_env.sh",
+      "before_sha256": "e79ade4720fee499eef0bc7f2dadbc7f7c00b59888c2aa976d41abacd3760a74",
+      "after_sha256": "906d14b489e65e2e17300bacc0a0ec79dd2181a4dc5c364806442fd2cd41c597"
+    },
+    {
+      "path": "tests/test_cpu_metrics.py",
+      "before_sha256": null,
+      "after_sha256": "5b41d5901e05bd06220818cff8c9f035776aeeb78445eb1b8cac2d1930bed199"
+    },
+    {
+      "path": "docs/ablation.md",
+      "before_sha256": "6f0b5ecabee7c48159e046ef16dce9e8f93e1a8586e0d6db0dbf9f1c5e5058c7",
+      "after_sha256": "77977438803108bca8986c9586580cdede0ac9a86a52ba1570fd14db8b1d1169"
+    }
+  ],
+  "completed_search": {
+    "status": "complete",
+    "pid": 163110,
+    "started_at": "2026-11-17T00:57:47.471516+08:00",
+    "total": 3,
+    "completed": 3,
+    "gpu_pool": "6,7",
+    "parameter_updates": 0,
+    "current": {
+      "alpha": 0.2,
+      "teacher_layer": 29,
+      "param_name": "n1000_slerp0.2_S26_T29_seed42_st_only_v1",
+      "source_run": "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.2_S26_T29_seed42_st_only_v1",
+      "kind": "new_parameter_run",
+      "gate_target_rate": 0.2
+    },
+    "updated_at": "2026-11-17T00:57:58.622687+08:00",
+    "storage_check": {
+      "required_bytes": 6542410933,
+      "available_bytes": 84995051520
+    },
+    "finished_at": "2026-11-17T02:12:57.518388+08:00"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "pid": 2717828,
+  "start_ticks": 212993267,
+  "started_at": "2026-11-17T15:50:02.787175+08:00",
+  "gpu_ids": [
+    0,
+    1
+  ],
+  "parameter_search_pid": 2522901,
+  "parameter_source_hash_unchanged": true,
+  "source_revision": "287af959e251765adb035824002792ea8721bcbefc58bebd1a1333c878636069",
+  "console_log": "exploration/launch.console.log",
+  "summary_dir": "outputs/step_6_summary/exploration/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_direction_design_n1000_seed42_v1",
+  "status": "stopped_while_queued_no_gpu_calls",
+  "parameter_updates": 0,
+  "reason": "Isolate exploration two-GPU admission from running parameter search; superseded by v2"
+}

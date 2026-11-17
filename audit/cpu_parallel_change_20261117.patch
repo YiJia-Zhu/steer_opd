@@ -1,0 +1,264 @@
+--- /dev/null
++++ b/src/steer_opd/cpu_metrics.py
+@@ -0,0 +1,116 @@
++"""Ordered, bounded CPU metric workers; GPU models remain in the parent."""
++
++from collections import deque
++from concurrent.futures import ProcessPoolExecutor
++import multiprocessing
++import os
++from types import SimpleNamespace
++
++import torch
++
++
++_WORKER_CODECS = None
++
++
++def worker_count(requested=None):
++    value = os.environ.get('STEER_OPD_METRIC_WORKERS', '16') if requested is None else requested
++    try:
++        count = int(value)
++    except (TypeError, ValueError) as error:
++        raise ValueError('STEER_OPD_METRIC_WORKERS must be a positive integer') from error
++    if count < 1:
++        raise ValueError('STEER_OPD_METRIC_WORKERS must be a positive integer')
++    available = len(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity') else (os.cpu_count() or 1)
++    return min(count, available)
++
++
++def _codec_state(codec):
++    # The tokenizer/model is intentionally excluded from worker payloads.
++    return {name: getattr(codec, name) for name in
++            ('raw', 'eos', 'special', 'mapping_sha256', 'support_size')} | {
++                'token_names': getattr(codec, 'token_names', {})}
++
++
++def _initialize(student_codec, teacher_codec):
++    global _WORKER_CODECS
++    os.environ['CUDA_VISIBLE_DEVICES'] = ''
++    torch.set_num_threads(1)
++    torch.set_num_interop_threads(1)
++    _WORKER_CODECS = (SimpleNamespace(**student_codec), SimpleNamespace(**teacher_codec))
++
++
++def _score(task):
++    from steer_opd.compass_alignment import aligned_metrics, span_scores
++    key, plan, student, teacher = task
++    likelihoods = span_scores(plan, {'student': student, 'teacher': teacher})
++    metrics = aligned_metrics(plan, student, teacher, *_WORKER_CODECS)
++    return key, {**metrics, **likelihoods}
++
++
++def _score_fields(record):
++    fields = {name: record[name] for name in ('ids', 'logps', 'sampled_logps')}
++    if any(value.device.type != 'cpu' for value in fields.values()):
++        raise ValueError('CPU metric workers require CPU probability tensors')
++    return fields
++
++
++class MetricExecutor:
++    """Reuse one spawn pool across candidates, preserving the serial row order.
++
++    Each worker uses the existing metric functions without changing arithmetic,
++    matching, diagnostics or NaNs. At most twice the worker count is submitted;
++    a full candidate still commits only after every row succeeds.
++    """
++
++    def __init__(self, adapter, *, workers=None, progress=None):
++        self.adapter = adapter
++        self.workers = worker_count(workers)
++        self.progress = progress
++        self.pool = None
++
++    def __enter__(self):
++        return self
++
++    def __exit__(self, *exc):
++        if self.pool is not None:
++            self.pool.shutdown(wait=True, cancel_futures=True)
++
++    def compute(self, records):
++        """Return (key, metrics) in input order, raising on worker failure."""
++        if self.workers == 1 or len(records) < 2:
++            return [(key, self.adapter(key, student, teacher)) for key, student, teacher in records]
++        if self.pool is None:
++            count = min(self.workers, len(records))
++            self.pool = ProcessPoolExecutor(max_workers=count,
++                mp_context=multiprocessing.get_context('spawn'), initializer=_initialize,
++                initargs=(_codec_state(self.adapter.student_codec), _codec_state(self.adapter.teacher_codec)))
++            self.workers = count
++            if self.progress is not None:
++                self.progress.event('cpu_metric_execution', workers=count, start_method='spawn',
++                    torch_threads_per_worker=1, max_in_flight=2*count,
++                    ordered_results=True, gpu_models_in_workers=False)
++        records = iter(records)
++        pending = deque()
++
++        def submit():
++            try:
++                key, student, teacher = next(records)
++            except StopIteration:
++                return False
++            task = (key, self.adapter.plans[key], _score_fields(student), _score_fields(teacher))
++            pending.append(self.pool.submit(_score, task))
++            return True
++
++        try:
++            for _ in range(2*self.workers):
++                if not submit():
++                    break
++            result = []
++            while pending:
++                result.append(pending.popleft().result())
++                submit()
++            return result
++        except BaseException:
++            for future in pending:
++                future.cancel()
++            raise
+--- a/src/steer_opd/teacher_screen.py
++++ b/src/steer_opd/teacher_screen.py
+@@ -9,6 +9,7 @@
+ from steer_opd.resumable_core import atomic_json, digest, read_json
+ from steer_opd.static_masks import validate_native_score
+ from steer_opd.static_screen import candidate_vectors
++from steer_opd.cpu_metrics import MetricExecutor
+ 
+ 
+ def project_teacher_mask(plan, student_mask, teacher_length):
+@@ -157,13 +158,16 @@
+     stores={name:StageCheckpoint(output/name,digest({'phase':binding,'candidate':name}),
+             tensor_compression=job.get('candidate_tensor_compression','none')) for name in names}
+     ready={name:store.load_tensors([safe_key(r) for r in rows]) for name,store in stores.items()}
+-    with Progress(output,'teacher_fixed_prefix_screen',len(rows)*len(names),unit='score',show_bar=False) as progress:
++    with Progress(output,'teacher_fixed_prefix_screen',len(rows)*len(names),unit='score',show_bar=False) as progress, \
++            MetricExecutor(adapter,progress=progress) as metric_executor:
+         progress.resume(sum(len(v) for v in ready.values() if v is not None))
+         def records(scores, meta):
+             result={}
+-            for row,score,metadata in zip(rows,scores,meta):
++            inputs=[(safe_key(row),student[safe_key(row)],score) for row,score in zip(rows,scores)]
++            metrics=metric_executor.compute(inputs)
++            for row,score,metadata,(metric_key,metric) in zip(rows,scores,meta,metrics):
+                 key=safe_key(row);validate_native_score(score,len(native_rows[key]['token_ids']),support)
+-                metric=adapter(key,student[key],score)
++                if metric_key!=key:raise ValueError('CPU metric worker changed source order')
+                 result[key]={**score,**metric,**metadata,'native_score_role':'teacher',
+                     'fixed_student_identity':fixed_identity,'parameter_updates':0}
+             return result
+--- a/src/steer_opd/stage_contracts.py
++++ b/src/steer_opd/stage_contracts.py
+@@ -92,4 +92,5 @@
+         'gpu_memory_utilization':cfg['gpu_memory_utilization'],
+         'batch_size':cfg['student_score_batch_size'] if role=='student' else cfg['teacher_score_batch_size']},parents=parents,
+         code=('scripts/run_overlap_ablation.py','src/steer_opd/teacher_screen.py',
+-              'src/steer_opd/static_screen.py','src/steer_opd/operators.py','src/steer_opd/easysteer_plugin.py'))
++              'src/steer_opd/static_screen.py','src/steer_opd/operators.py','src/steer_opd/easysteer_plugin.py',
++              'src/steer_opd/cpu_metrics.py'))
+--- a/scripts/runtime_env.sh
++++ b/scripts/runtime_env.sh
+@@ -35,4 +35,5 @@
+ export TOKENIZERS_PARALLELISM=false
+ export OMP_NUM_THREADS=8
+ export OPENBLAS_NUM_THREADS=8
++export STEER_OPD_METRIC_WORKERS="${STEER_OPD_METRIC_WORKERS:-16}"
+ mkdir -p "$TMPDIR" "$RAY_TMPDIR" "$HF_HOME" "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR" "$CUDA_CACHE_PATH"
+--- /dev/null
++++ b/tests/test_cpu_metrics.py
+@@ -0,0 +1,80 @@
++"""CPU processes must preserve the complete metric packet and surface errors."""
++import copy
++
++import pytest
++import torch
++
++from steer_opd.compass_alignment import align_response
++from steer_opd.compass_scoring import AlignedMetricAdapter
++from steer_opd.cpu_metrics import MetricExecutor, worker_count
++from test_dual_overlap import codec
++
++
++def assert_packet_equal(actual, expected):
++    if torch.is_tensor(expected):
++        assert actual.dtype == expected.dtype and actual.shape == expected.shape
++        torch.testing.assert_close(actual, expected, rtol=0, atol=0, equal_nan=True)
++        assert torch.equal(actual.contiguous().view(torch.uint8), expected.contiguous().view(torch.uint8))
++    elif isinstance(expected, dict):
++        assert list(actual) == list(expected)
++        for key in expected:
++            assert_packet_equal(actual[key], expected[key])
++    elif isinstance(expected, (list, tuple)):
++        assert type(actual) == type(expected) and len(actual) == len(expected)
++        for a, b in zip(actual, expected):
++            assert_packet_equal(a, b)
++    else:
++        assert actual == expected
++
++
++def fixture():
++    s, t = codec(), codec(True)
++    plan = align_response([1, 4, 1, 4, 0], s, {'teacher': t})
++    generator = torch.Generator().manual_seed(42)
++    records = []
++    for key in ['q3', 'q1', 'q2']:
++        def record(n):
++            return {'ids': torch.stack([torch.randperm(47, generator=generator)[:16] for _ in range(n)]).int(),
++                    'logps': torch.full((n, 16), -5.), 'sampled_logps': -torch.rand(n, generator=generator)}
++        records.append((key, record(5), record(4)))
++    adapter = AlignedMetricAdapter({key: copy.deepcopy(plan) for key, *_ in records}, s, t)
++    return adapter, records
++
++
++def test_spawn_preserves_all_fields_bits_order_and_reuses_pool():
++    adapter, rows = fixture()
++    with MetricExecutor(adapter, workers=1) as serial:
++        expected = serial.compute(rows)
++    with MetricExecutor(adapter, workers=2) as parallel:
++        actual = parallel.compute(rows)
++        first_pool = parallel.pool
++        again = parallel.compute(rows[::-1])
++        assert parallel.pool is first_pool
++    assert_packet_equal(actual, expected)
++    assert_packet_equal(again, expected[::-1])
++    assert not torch.cuda.is_initialized()
++
++
++def test_worker_error_propagates_without_partial_results():
++    adapter, rows = fixture()
++    rows[1][1]['ids'][0, 0] = 1000
++    with MetricExecutor(adapter, workers=2) as parallel:
++        with pytest.raises(ValueError):
++            parallel.compute(rows)
++
++
++def test_completed_or_single_row_work_does_not_create_a_pool(monkeypatch):
++    adapter, rows = fixture()
++    monkeypatch.setattr('steer_opd.cpu_metrics.ProcessPoolExecutor', lambda **kw: pytest.fail('No pool needed'))
++    with MetricExecutor(adapter, workers=2) as parallel:
++        assert parallel.pool is None
++        assert len(parallel.compute(rows[:1])) == 1
++        assert parallel.pool is None
++
++
++def test_worker_count_respects_affinity_and_rejects_invalid_values(monkeypatch):
++    monkeypatch.setattr('os.sched_getaffinity', lambda _: {0, 1})
++    assert worker_count(8) == 2
++    for bad in (0, -1, 'bad'):
++        with pytest.raises(ValueError):
++            worker_count(bad)
+--- a/docs/ablation.md
++++ b/docs/ablation.md
+@@ -27,7 +27,11 @@
+ "$STEER_OPD_PYTHON" scripts/run_param_search.py --status
+ ```
+ 
+-数据、师生回答、两侧池化／bank、对齐、原生概率和源指标按科学合同与SHA复用ablation。改变alpha只新增候选评分、漂移诊断与图；单独核验原alpha=.1参考结果，不改名冒充重算。新教师baseline／重放／候选使用无损gzip的.pt.gz，保留原始tensor位模式、dtype及全部诊断字段，StageCheckpoint按提交清单自动读取；不删除原未压缩ablation结果。当前盘可用空间约12 GiB，参数点串行提交，使用压缩控制新增存储。
++数据、师生回答、两侧池化／bank、对齐、原生概率和源指标按科学合同与SHA复用ablation。改变alpha只新增候选评分、漂移诊断与图；单独核验原alpha=.1参考结果，不改名冒充重算。新教师baseline／重放／候选使用无损gzip的.pt.gz，保留原始tensor位模式、dtype及全部诊断字段，StageCheckpoint按提交清单自动读取；不删除原未压缩ablation结果。2026-11-17用户清理后实测可用约79 GiB；alpha=.05与.1已完成／复用，剩余.2在原身份下恢复，参数点串行提交。
++
++教师S−T的CPU指标按题使用spawn多进程，默认STEER_OPD_METRIC_WORKERS=16，不超过进程CPU亲和性可用核数；设为1可使用串行参考。每个worker仅接收CPU概率及tokenizer字节映射，每worker固定1个Torch线程，同一评分阶段复用进程池，最多提交2×worker数的题目。结果按原题目顺序返回，匹配、概率、NaN、逐span诊断及完整候选提交规则保持。执行进程数和spawn方式记录在events.jsonl的cpu_metric_execution事件，helper源码纳入候选复用身份。原生概率采集、GPU前向及gzip写盘方式保持。
++
++128道真实Select题／447283个有效span的CPU验证：单进程首次53.27秒、重复54.52秒；8进程首次25.50秒、复用池10.49秒；16进程首次43.51秒、复用池4.48秒。所有返回字段及tensor位模式与串行参考一致；计时包含对应批次的进程通信，首次另含进程启动，未测正式全量端到端加速。证据audit/cpu_parallel_benchmark_20261117.json。本优化在当前alpha=.2按原冻结代码完整结束后启用，不混改运行中的Select／Confirm身份；后续新实验使用新参数／搜索身份。
+ 
+ Confirm仍使用本题per_question SV；global仍使用全部1000题，所以该划分是内部复核，不是独立未见验证集。参数结果只说明教师分布适配，后续学生学习收益须独立验证。
+ 

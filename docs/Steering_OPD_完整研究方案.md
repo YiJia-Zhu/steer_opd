@@ -123,6 +123,8 @@ BSD 使用外部教师文本作为特权上下文，通过学生同构的自教�
 | T | 强教师，生成参考回答并提供源前缀概率 | 冻结 |
 | S0 | 当前零更新筛选及全局/逐题缓存的学生提取者 | 冻结 |
 | Sθ | 后续OPD前的当前学生，可用于刷新回答和方向 | 提取/rollout时不更新，学习前向后更新 |
+| R（可选） | 仅CompassOPD loss使用的教师同家族弱参考，默认Qwen3.5-0.8B | 冻结，不注入SV |
+| S_ref（可选） | 仅CompassOPD loss使用的训练前学生冻结副本 | 冻结，不随Sθ更新 |
 
 T−S两端始终由同一个学生checkpoint、同一层、同一聊天模板和hook读取。当前使用S0；未来学生变化后须重新计算相应概率、激活和方向身份。
 
@@ -253,13 +255,37 @@ S0读取T/S2048-token上下文内保留的回答，正文原始激活分别池�
 方向在候选内固定，先后层历史影响由模型正确前向体现，不能把中层注入近似成只改输出logits。
 分别按题目等权统计DeltaOverlap与DeltaP_overlap，另报token加权、区间、触发率；扰动量目前HF参考可得，EasySteer逐token扰动留档尚待补齐，不能视为完成；保存源与候选两套概率和实际mask。
 
-### 9.4 后续OPD目标不能混淆行为与学习条件
+### 9.4 后续训练loss：默认传统OPD，可选steer+CompassOPD
 
-只在同源回答学习前向注入时，rollout行为分布无SV、学习分布有SV，这不再是旧both路径。
-现有实现对阶段不同的任务要求显式candidate_rkl；本次没有更换训练目标或开启loss-only任务。
-若按源mask二次生成并在新轨迹以相同mask学习，行为概率和教师评分须来自新实际前缀，
-不能复用源回答概率充当受控行为概率。两种方式均可研究，但阶段和预算必须分别标明并匹配。
-当前静态方法不新增KL研究轴；确定阶段后采用可支持该阶段的共同目标，不把不同目标差异归因于mask。
+训练目标与SV方向独立选择。默认`loss_type=traditional_opd`，只需要可训练学生Sθ和冻结教师T；当前选定的教师空间S−T方向仍按§9.8提取并注入教师。这里“S／T两模型”表示训练角色，不改变SV减法顺序。可选`loss_type=compass_opd`时增加教师同家族弱参考R（默认Qwen3.5-0.8B）及训练前学生冻结副本S_ref，形成steer+CompassOPD；R仅用于输出似然评分，不恢复任何T−R激活融合或映射权重。
+
+两条路线均按CompassOPD §2、§3式(4)及附录A.4处理tokenizer：保留学生实际生成的原生token；将同一回答文本交给教师自身tokenizer，Compass路线再增加R的分词；按共同UTF-8安全文本边界划分span。各模型在span内对观察token的原生条件logp取平均。不能形成一致边界的位置、控制token和终止EOS目标由alignment mask排除，不参与loss。Top16 overlap仍只作诊断或门控，不代替观察动作的logp，也不对两方词表ID直接计算KL。
+
+记\(\bar\ell_M(u)\)为模型M在共同span u内的平均原生logp，\(u(t)\)为学生token t所在span。传统跨tokenizer OPD使用
+
+$$
+A_t^{\mathrm{OPD}}=\operatorname{sg}[\bar\ell_T(u(t))-\bar\ell_{S_\theta}(u(t))].
+$$
+
+CompassOPD使用
+
+$$
+A_t^{\mathrm{Compass}}=\operatorname{sg}\left[\bar\ell_T(u(t))-\bar\ell_R(u(t))-\lambda\left(\log S_\theta(y_t\mid c_t)-\log S_{\mathrm{ref}}(y_t\mid c_t)\right)\right].
+$$
+
+教师侧T−R的span差分广播给该span内每个学生token；学生锚定项保留逐学生token计算，不能再对其做span平均。\(\lambda\)的代码名为`anchor_coef`，默认0.5（论文设置），与SV注入强度alpha独立。若教师注入SV，式中的T为当前受控教师T_SV；R和S_ref保持无SV。该组合需要实验验证，不能将其称为原始CompassOPD已经验证的设置。
+
+两条路线共用对有效学生token平均的采样策略梯度代理：
+
+$$
+\mathcal L=-\frac{\sum_t m_t A_t\log S_\theta(y_t\mid c_t)}{\sum_t m_t}.
+$$
+
+整个优势停止梯度，只有当前学生的原生token logp保留梯度；T、R与S_ref均冻结。默认只做当前学生的on-policy rollout；复用多轮轨迹、PPO比率／clip或学习前向单独注入学生时，需要另外明确行为策略与学习策略关系，不能直接把此loss称为已完成的完整训练器。
+
+实现见[训练loss组件](../src/steer_opd/training/losses.py)与[角色／默认设置](../src/steer_opd/training/config.py)，依据论文独立实现，尚未核验官方训练源码。已补充基于固定verl版本的同步FSDP训练入口、EasySteer评分桥接、权重同步与checkpoint恢复，细节见[训练实现](implementation.md#基于verl的step4训练入口代码已接入gpu待验收)；CPU接口／梯度验证已通过，多卡GPU验收与实际训练尚未执行。当前overlap入口不调用本组件，不加载Ref或学生锚点，不解除模板hold，也不启动训练。
+
+学生更新或实际rollout前缀变化后，重算相应教师／Ref／S_ref的观察token评分；当前学生学习logp必须来自新的带梯度前向。当前冻结S0的overlap文件不能直接作为后续学生更新的训练概率或梯度。
 
 ### 9.5 当前静态算法
 
@@ -316,7 +342,7 @@ T沿同一源文本批量评分，计算两种师生overlap
 | 同家族 较低 overlap | 教师更强，但初始学生状态上的相容性较差 | 最清楚的机制验证与允许的收敛场景 |
 | 跨家族 | 教师明显更强，且词表比较／评分路径可复现 | 验证是否真正改善跨家族迁移 |
 
-每个教师 $T$ 配一个其同家族参考 $R$。不能把一个已经经过教师蒸馏的衍生模型随意标成“独立跨家族”，应披露架构来源、tokenizer 来源和后训练来源。
+仅CompassOPD loss路线为教师 $T$ 配其同家族参考 $R$，并保留训练前学生的冻结锚点；默认传统OPD只用S／T。不能把一个已经经过教师蒸馏的衍生模型随意标成“独立跨家族”，应披露架构来源、tokenizer 来源和后训练来源。
 
 在可比设置中扩展到至少两种学生骨干或两个学生规模，避免把单一模型的适配现象写成通用结论。模型型号以权重和评分接口实际可得为准，不预设某一配对一定低 overlap 或一定蒸馏失败。
 
@@ -462,7 +488,7 @@ $$
 
 ### 12.1 输出空间的两种对齐
 
-第一种是对已发生文本动作评分：各模型重新分词学生已生成的文本，按共同UTF-8安全span聚合观察token的条件logp。当前保留依据CompassOPD附录A.4独立实现的原生token平均logp诊断。[2]
+第一种是对已发生文本动作评分：各模型重新分词学生已生成的文本，按共同UTF-8安全span聚合观察token的条件logp。依据CompassOPD附录A.4独立实现原生token平均logp对齐，后续传统OPD与CompassOPD两条loss路线共用此规则（§9.4）。[2]
 
 第二种是比较同一可见前缀下的下一步候选：在两方原生token完整字节间建立前缀兼容关系，以最大匹配分别衡量Top16候选数与Top16原始概率质量，不展开额外续写分支。
 

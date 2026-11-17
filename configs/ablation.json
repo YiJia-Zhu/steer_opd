@@ -92,5 +92,45 @@
     "6": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1"
   },
   "stage_inputs": {},
-  "stop_after": "panel"
+  "stop_after": "panel",
+  "parameter_search": {
+    "search_name": "st_all_global_L19_L29_L39_ops_n1000_seed42_v2",
+    "alphas": [
+      0.05,
+      0.1,
+      0.3,
+      0.5
+    ],
+    "teacher_layers": [
+      19,
+      29,
+      39
+    ],
+    "gate_target_rate": 0.2,
+    "scheme_ids": [
+      5
+    ],
+    "stop_after": "overlap",
+    "student_baseline_run": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1",
+    "reference_run": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1",
+    "operators": [
+      "slerp",
+      "additive"
+    ],
+    "additive_scaling": "raw_mean_difference_v1",
+    "completed_references": [
+      {
+        "operator": "slerp",
+        "alpha": 0.05,
+        "teacher_layer": 29,
+        "run": "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.05_S26_T29_seed42_st_only_v1"
+      },
+      {
+        "operator": "slerp",
+        "alpha": 0.1,
+        "teacher_layer": 29,
+        "run": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1"
+      }
+    ]
+  }
 }

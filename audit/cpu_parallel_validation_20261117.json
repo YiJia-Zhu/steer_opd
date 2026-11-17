@@ -1,0 +1,28 @@
+{
+  "created_unix": 1794850740.302847,
+  "status": "applied",
+  "scope": "Teacher S-T CPU metric evaluation",
+  "regression_tests": {
+    "passed": 207,
+    "seconds": 25.66,
+    "workspace": "isolated CPU copy"
+  },
+  "final_16_worker_default_targeted_tests": {
+    "passed": 17,
+    "seconds": 5.21
+  },
+  "benchmark": "audit/cpu_parallel_benchmark_20261117.json",
+  "patch": "audit/cpu_parallel_change_20261117.patch",
+  "activation_plan": ".runtime/cpu_parallel_work/install_plan.json",
+  "workers": 16,
+  "original_run_unchanged": true,
+  "GPU_models_loaded_for_optimization": false,
+  "installed_package_validation": "passed",
+  "activation_record": "audit/cpu_parallel_install_20261117.json",
+  "installed_targeted_tests": {
+    "passed": 17,
+    "seconds": 5.37
+  },
+  "installed_validation_log": "audit/cpu_parallel_installed_validation_20261117.log",
+  "source_revision": "f2648997a81c74206e8b75c694e204d8fbcc6789ffc2989cc7f565bb293974e1"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "running",
+  "pid": 2522901,
+  "start_ticks": 212626157,
+  "started_at": "2026-11-17T14:48:51.687884+08:00",
+  "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+  "gpu_ids": [
+    2,
+    3
+  ],
+  "command": [
+    "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+    "scripts/run_param_search.py",
+    "--run",
+    "--gpu-ids",
+    "2,3"
+  ],
+  "console_log": ".runtime/expanded_search_20261117.console.log",
+  "search_dir": "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_all_global_L19_L29_L39_ops_n1000_seed42_v2",
+  "source_revision": "287af959e251765adb035824002792ea8721bcbefc58bebd1a1333c878636069",
+  "config_sha256": "eb1b0832450244d3ec55da30b2af1445f5976b40ceb2431669df760f584dc083",
+  "total": 24,
+  "reuse": 2,
+  "new": 22,
+  "optimizer_updates": 0,
+  "last_verified_stage": "activations_teacher_layer19",
+  "first_point_gpu_acceptance": "passed",
+  "reused_completed_points": 2
+}

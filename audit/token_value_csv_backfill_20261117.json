@@ -1,0 +1,193 @@
+{
+  "created_at": "2026-11-17T13:52:07.833222+08:00",
+  "column": "token_value",
+  "definition": "candidate metric averaged over all valid student-token positions; raw ratio in [0,1]",
+  "existing_columns_unchanged": true,
+  "frozen_metric_sources_unchanged": true,
+  "new_model_calls": 0,
+  "parameter_updates": 0,
+  "files": [
+    {
+      "path": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/comparison.csv",
+      "rows": 16,
+      "before_sha256": "b1b6c3b6f6965ae4c539690a54b16ee7202e3c15628568887872ddef2f9992ac",
+      "after_sha256": "6e631f67d5e0c9ca7ad22040f41bcb4cc713d5ec828d021fbebfeddc95fc164c",
+      "columns": [
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/comparison.csv",
+      "rows": 16,
+      "before_sha256": "0ed5225f661d21ca4b97ed00d544b02116007c2990d33b0c48699c8cdaa838de",
+      "after_sha256": "48c1d4ba3b86af00cf5032a0d186394dfbda02add572982221a9437fdf6661d5",
+      "columns": [
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_slerp0.1_layer26_seed42_v1/comparison.csv",
+      "rows": 12,
+      "before_sha256": "fe6a5169128f2de64865723ec9939f47d87bb12b7f6c5bffefa5495f90a932ec",
+      "after_sha256": "01f9b37944a957be7d0b5ba73e19720f8758b23f95dd117d11c36b986208c7de",
+      "columns": [
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.05_S26_T29_seed42_st_only_v1/comparison.csv",
+      "rows": 16,
+      "before_sha256": "0df6aa2cc27e5dcd575aa84a4f3973f20f512bcba8fe0e87ca47313fd99deaed",
+      "after_sha256": "c2a2140bc5aa803ae3ff9aae1551d2af789ee6ae03c587d820f925a2b45d4258",
+      "columns": [
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.2_S26_T29_seed42_st_only_v1/comparison.csv",
+      "rows": 16,
+      "before_sha256": "afc8aa1755375b2f26dcadd957d347b48d8f654543c5c7cdfcc008e1441d6f22",
+      "after_sha256": "79e9db7eb64dc2223b657821b608557d37a4545f77dc3ef350beb35eebbb2764",
+      "columns": [
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_strength_L29_n1000_seed42_v1/comparison.csv",
+      "rows": 48,
+      "before_sha256": "13522f6a80a0d5cef4148444f9592ed88eb4c56dda78f5ba34eb43e600d2d306",
+      "after_sha256": "4ac0dedb2ca230162e0e64e057206ff24f4c132846929fc394d02e22d4af4832",
+      "columns": [
+        "alpha",
+        "teacher_layer",
+        "scheme",
+        "gate",
+        "granularity",
+        "split",
+        "metric",
+        "questions",
+        "value",
+        "delta_pp",
+        "token_value",
+        "token_delta_pp",
+        "origin"
+      ]
+    },
+    {
+      "path": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_vs_n1000_slerp0.1_layer26_seed42_v1/comparison.csv",
+      "rows": 28,
+      "before_sha256": "3df9bd0141b178cd8788de668079fc9ef11526044cdb65fd0bad8ee705044a23",
+      "after_sha256": "e2939a0d4469640aebb42ab3cef380332f8b3ef1bc49c17277bd1e2671b3841d",
+      "columns": [
+        "samples",
+        "split",
+        "scheme",
+        "direction",
+        "intervention_role",
+        "metric",
+        "questions",
+        "question_weighted_value",
+        "question_weighted_delta_pp",
+        "token_value",
+        "token_weighted_delta_pp"
+      ]
+    }
+  ],
+  "metric_sources": {
+    "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/summaries.json": "fee9c5d69862277742d57d9f7fb29c1efc9f0ad3c8d01d42a5997bd895c7a933",
+    "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/summaries.json": "774612dca9ef1634ab1571c1e99e894eb4724e667f33a4204f7b23ad0c08ecc0",
+    "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_slerp0.1_layer26_seed42_v1/summaries.json": "f4847053389b48b08143c1861bff47ad7ecd7b731b966bc533c8be522d4c4a40",
+    "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.05_S26_T29_seed42_st_only_v1/summaries.json": "aecf72c9aa079d6f849697cf7069a9c31401ccd03e66f849e63a8a90dd98ef0d",
+    "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.2_S26_T29_seed42_st_only_v1/summaries.json": "9f96db2415653cfb7f3d7d2146fdb2c08fb14ed0d695fef64420874b21a49ad1",
+    "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_strength_L29_n1000_seed42_v1/metadata/source_index.json": "def3984f0c1175f94bb3c277ce9df0b080b8290ac7c8ee0132e31034b80bf8bd",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.05_S26_T29_seed42_st_only_v1/select/teacher/summaries.json": "ee6dd23326f9595806f95dba78cd07759e0253325b0a2c64988fa9ef1f7c0085",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.05_S26_T29_seed42_st_only_v1/confirm/teacher/summaries.json": "8110e2658812bff2a114232915b51ef7dd7e1946e13f724d17a8d703cb2e2854",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/select/teacher/summaries.json": "5ca0d37197402b3316c4233e8a2c18010b7ba9734a8e7d8ee99dbeaa75bba77e",
+    "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/confirm/teacher/summaries.json": "d88a0ebea2f7044766f181c8e65495836912c8f690fcff4794a9a81c684a2b0d",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.2_S26_T29_seed42_st_only_v1/select/teacher/summaries.json": "3aaacfd92f1bd61de3f5a5cde0cdd377cfbd8f0d2ec11017d42ba20c6381ee65",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.2_S26_T29_seed42_st_only_v1/confirm/teacher/summaries.json": "496db77baeadb42364bd2aa7a13421bdb4deaa1f4869c49483107016f034b2a1",
+    "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_vs_n1000_slerp0.1_layer26_seed42_v1/metadata/source_index.json": "9237cc853b37645cfc1e3f0454b6e2c894da0d1007b94fdec33c3f8786061e3b"
+  },
+  "updated_derived_source_indices": [
+    {
+      "path": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_vs_n1000_slerp0.1_layer26_seed42_v1/metadata/source_index.json",
+      "before": {
+        "original_analysis": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_vs_n1000_slerp0.1_layer26_seed42_v1/metadata/original_analysis.md",
+        "original_analysis_sha256": "f3d70fc2d88296f4548308aa8d53e46db9218bf0a8bf248ee06f2f4dcf20fa5f",
+        "sources": {
+          "100": {
+            "csv": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_slerp0.1_layer26_seed42_v1/comparison.csv",
+            "sha256": "fe6a5169128f2de64865723ec9939f47d87bb12b7f6c5bffefa5495f90a932ec"
+          },
+          "1000": {
+            "csv": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/comparison.csv",
+            "sha256": "0ed5225f661d21ca4b97ed00d544b02116007c2990d33b0c48699c8cdaa838de"
+          }
+        },
+        "parameter_updates": 0,
+        "new_model_calls": 0
+      },
+      "after": {
+        "original_analysis": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_vs_n1000_slerp0.1_layer26_seed42_v1/metadata/original_analysis.md",
+        "original_analysis_sha256": "f3d70fc2d88296f4548308aa8d53e46db9218bf0a8bf248ee06f2f4dcf20fa5f",
+        "sources": {
+          "100": {
+            "csv": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_slerp0.1_layer26_seed42_v1/comparison.csv",
+            "sha256": "01f9b37944a957be7d0b5ba73e19720f8758b23f95dd117d11c36b986208c7de"
+          },
+          "1000": {
+            "csv": "outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1/comparison.csv",
+            "sha256": "48c1d4ba3b86af00cf5032a0d186394dfbda02add572982221a9437fdf6661d5"
+          }
+        },
+        "parameter_updates": 0,
+        "new_model_calls": 0
+      }
+    }
+  ]
+}

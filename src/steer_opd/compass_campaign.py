@@ -47,7 +47,7 @@ def validate_config(cfg):
     if type(cfg.get('sv_max_context_len')) is not int or cfg['sv_max_context_len'] < 2:
         raise ValueError('Set sv_max_context_len >= 2 for the SV-training extraction protocol')
     from steer_opd.operators import validate_operator
-    validate_operator('slerp',cfg['alpha'])
+    validate_operator(cfg.get('operator','slerp'),cfg['alpha'])
     if LINEAR in cfg.get('strength_policies',['fixed']):
         validate_operator('slerp',2*cfg['alpha'])
     layers=cfg['layers']
@@ -91,7 +91,7 @@ def scheme_conditions(cfg):
                 index=len(conditions)+1
                 conditions.append({'id':f'scheme_{index:02d}','direction':'T-S',
                     'gate':gate,'granularity':granularity,'bank':f'T-S_{granularity}',
-                    'operator':'slerp','alpha':cfg['alpha'],'layers':cfg['layers'],
+                    'operator':cfg.get('operator','slerp'),'alpha':cfg['alpha'],'layers':cfg['layers'],
                     'strength_policy':policy,'paired_condition_id':f'scheme_{index+4 if index<=4 else index-4:02d}',
                     'direction_version':DIRECTION_VERSION})
     if policies==['fixed']:
@@ -104,14 +104,19 @@ def scheme_conditions(cfg):
             for granularity in ('global','per_question'):
                 conditions.append({'id':f'scheme_{len(conditions)+1:02d}', 'direction':'S-T',
                     'steer_role':'teacher','gate':gate,'granularity':granularity,
-                    'bank':f'S-T_{granularity}','operator':'slerp','alpha':cfg['alpha'],
+                    'bank':f'S-T_{granularity}','operator':cfg.get('operator','slerp'),'alpha':cfg['alpha'],
                     'layers':cfg['teacher_layers'],'strength_policy':'fixed',
                     'direction_version':TEACHER_DIRECTION_VERSION})
     selected=cfg.get('scheme_ids',[c['id'] for c in conditions])
     if (not selected or len(set(selected))!=len(selected)
             or set(selected)-{c['id'] for c in conditions}):
         raise ValueError(f'Select unique scheme IDs from scheme_01..scheme_{len(conditions):02d}')
-    return [c for c in conditions if c['id'] in selected]
+    chosen=[c for c in conditions if c['id'] in selected]
+    if cfg.get('operator','slerp')=='additive':
+        if any(c['id']!='scheme_05' for c in chosen):
+            raise ValueError('Raw additive search requires S-T/all/global scheme_05 only')
+        for c in chosen:c['additive_scaling']='raw_mean_difference_v1'
+    return chosen
 
 
 def prepare_questions(cfg, codecs):
@@ -307,6 +312,8 @@ def make_base_job(cfg, codecs, rows):
         backend=cfg["screen_backend"], batch_size=cfg["student_score_batch_size"],
         teacher_batch_size=cfg["teacher_score_batch_size"],
         gpu_memory_utilization=cfg["gpu_memory_utilization"], chunk=cfg["logit_chunk_size"])
+    if cfg.get('candidate_tensor_compression'):
+        job['candidate_tensor_compression']=cfg['candidate_tensor_compression']
     job.update(require_dual_metrics=cfg.get("require_dual_metrics", True),
         seed=cfg["seed"], reproducibility_protocol=1, resume_granularity="engine_call",
         bind_checkpoint_content=cfg.get("bind_checkpoint_content", False),

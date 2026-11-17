@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-11-17T15:47:59.434358+08:00",
+  "scope": "VERL training adapter implementation and CPU validation only",
+  "verl_revision": "61adb0c7eb90730306e7794c2bf248331211e657",
+  "verl_archive_sha256": "8fdbb0f301a769b432db0c8fa847ebaa41f0471a91a748b4b2fcd1685ff755fb",
+  "training_gpu_started": false,
+  "optimizer_updates": 0,
+  "gpu_acceptance": "pending",
+  "cpu_tests": {
+    "passed": 45,
+    "exit_code": 0,
+    "log": ".runtime/verl_training/tests_complete.log"
+  },
+  "package_check": "passed; reports isolated under .runtime/verl_training to preserve existing audits",
+  "training_python_modules_parsed": 13,
+  "default_loss": "traditional_opd",
+  "optional_loss": "compass_opd",
+  "default_student_physical_gpus": [
+    0,
+    1
+  ],
+  "default_teacher_physical_gpus": [
+    2,
+    3
+  ],
+  "active_overlap_source_revision_unchanged": true,
+  "active_overlap_template_unchanged": true,
+  "dependency_cleanup_note": "CPU test process exited 0; third-party multiprocess ResourceTracker.__del__ emitted an AttributeError during interpreter exit. GPU worker cleanup is not yet validated.",
+  "source_sha256": {
+    "src/steer_opd/training/__init__.py": "125e07d33e38f0cdff1d9231da8bbd2618067fac3ade7da91466008cd95be88f",
+    "src/steer_opd/training/__main__.py": "42fa3d0382b1cba4f34023666b01227d18e0263d851f7bd60025f43d2a53914d",
+    "src/steer_opd/training/config.py": "77174ce0b8f872aa0ae49882d51a2482c69de9a33ee139c22c799eb0c724ca68",
+    "src/steer_opd/training/losses.py": "b4cb1acea73772522ad6eef81329bffec0d3f07eade587eb1326da6ac4db90e4",
+    "src/steer_opd/training/scorer_client.py": "1145771f6cdedd302b186365864a28bf37de127e3d692be7228a5d5ea0e0f130",
+    "src/steer_opd/training/scorer_service.py": "5f01944cd5e6fc740186316878b273442b5bbe163760262f7ea94473b846dd2a",
+    "src/steer_opd/training/scoring.py": "f8f174b69f8acbe014f6be7ed3f56b827fd64abad895ebb3a13f403a1f4c98c2",
+    "src/steer_opd/training/verl_adapter.py": "ada321b07f8ab47287f195ec1f52fd45ab17980262a0e4d1c1b23d54c2dcc714",
+    "src/steer_opd/training/verl_agent.py": "debebccafd3091c551ec636fbfde1e021546685672ad9898006981f98f694004",
+    "src/steer_opd/training/verl_entry.py": "ba75a31e0a2f931226592deca854847a687d8457d81de3878b6758286785e1d7",
+    "src/steer_opd/training/verl_plan.py": "9a5af61007a0cb5007fd1ff2054fbe3a0ba5762d85bf9dfb16a7f5e749fed284",
+    "src/steer_opd/training/verl_reward.py": "a27cfa2acf0cbd27519fb33fed28cd17ba3463ecc7dd2bb0fe86c815a22e5b60",
+    "src/steer_opd/training/verl_trainer.py": "15cb0fc43749896e43a1f631567779ce767d09c3e7fc6084e7fbb066c74762c1"
+  }
+}

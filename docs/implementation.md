@@ -160,3 +160,80 @@ Qwen3.5 GDN_ATTN不支持当前batch-invariant。T仅评分一次、SHA冻结供
 SV提取采用sv_training规则：1000题全部参与，教师/学生回答的正确性、finish_reason和重复程度均不作为过滤条件；以prompt+strip后的回答右截断至sv_max_context_len=2048，在prompt之后所有保留回答token上平均所选block激活。仅无回答token时跳过。教师生成上限12288、学生源生成上限7168；2048仅约束SV读取，不截短原始生成或教师前缀评分。
 
 当前存储策略为pooled_only：EasySteer与HF路径均在内存中池化，移除逐token状态序列化回调，只提交pooled.pt及小型元数据，再构造SV bank。旧capture清理先完整校验，hidden_state_cleanup.json保留原complete清单，原子更新保留文件清单后删除teacher/student原始状态；中断后可续清理。原pooled.pt不改，bank和已完成候选结果不改。artifact_index仅索引实际保留文件。
+
+
+## 后续训练loss组件：传统OPD／CompassOPD
+
+[training/losses.py](../src/steer_opd/training/losses.py)提供可求梯度的采样OPD loss；[training/config.py](../src/steer_opd/training/config.py)定义默认设置与所需角色。已接入下述固定verl版本的step4训练入口和评分桥接，尚未GPU验收；现有overlap／参数实验入口及配置身份保持，本轮不启动训练。
+
+| loss_type | 所需模型／策略 | 监督信号 |
+|---|---|---|
+| traditional_opd（默认） | 当前学生Sθ、冻结教师T | 同一span内平均logp的T−Sθ差分，停止梯度后广播到学生token |
+| compass_opd | Sθ、T、教师同家族弱Ref，加训练前学生冻结副本S_ref | 同一span的T−Ref差分，减去逐学生token的anchor_coef×(log Sθ−log S_ref) |
+
+Compass路线默认Ref路径assets/models/Qwen3.5-0.8B、anchor_coef=0.5，锚点系数与steer alpha分别定义。S_ref在首次更新前从学生初始化冻结，不能被当前学生checkpoint替代。两路线共用相同的文本span对齐程序，S_ref沿原始学生token逐位置评分；只有Sθ的loss前向保留梯度。当前S−T干预教师时，T的评分可来自T_SV，Ref与S_ref均保持无SV。Ref不参与SV提取／注入，未重新引入T−R激活融合。
+
+Tokenizer复用[compass_alignment.py](../src/steer_opd/compass_alignment.py)的align_response：学生实际采样ID不变，各评分者独立重分词同一精确响应字节；span内按各自原生token的观察logp求平均，再广播到学生位置。不能一致重建响应字节的样本拒绝，不能形成共同边界的位置由mask排除。loss不读取Top16候选或overlap数值；教师、Ref和锚点只需观察token原生logp。实现依据本地[CompassOPD论文](../ref/2609.10154v1_compass_opd.pdf)§2、§3式(4)、§4及附录A.4，尚未核验官方训练源码。
+
+`distillation_loss`返回loss、loss_sum、valid_tokens、alignment_mask、停止梯度的advantages及教师信号／学生位移。传统路线拒绝额外Ref评分；Compass路线缺少Ref或冻结学生锚点会报错。`token_mean_loss`按有效token数合并不同长度回答，避免按回答等权改变训练权重；完全没有有效对齐token的样本须由后续训练器明确跳过或报错。
+
+只读预览（不加载模型，不写实验输出）：
+
+```bash
+source scripts/runtime_env.sh
+CUDA_VISIBLE_DEVICES='' "$STEER_OPD_PYTHON" -m steer_opd.training
+CUDA_VISIBLE_DEVICES='' "$STEER_OPD_PYTHON" -m steer_opd.training --loss compass_opd --anchor-coef 0.5
+```
+
+未来正式训练配置可在唯一模板的派生配置中用`training_loss`选择路线；没有该字段时默认traditional_opd。当前正在执行的overlap模板不改，避免使冻结参数搜索身份变化。配置示意如下，仅供后续训练使用：
+
+```json
+{
+  "training_loss": {
+    "loss_type": "compass_opd",
+    "anchor_coef": 0.5,
+    "reference_model": "assets/models/Qwen3.5-0.8B"
+  }
+}
+```
+
+CPU预览已核验Ref与T的家族／权重及SV身份；真实运行前仍需通过多卡GPU验收，检查实际显存、权重同步、评分与带梯度更新。优化器、训练恢复与新轨迹评分已接入下述verl入口。新的rollout或checkpoint重算对应原生评分；学生学习logp使用新的带梯度前向。loss组件按自身源码与复用的对齐源码单独记录SHA，当前overlap源码身份与运行配置保持。
+
+
+## 基于verl的step4训练入口（代码已接入，GPU待验收）
+
+用户指定以verl为训练框架。本实现固定官方源码revision `61adb0c7eb90730306e7794c2bf248331211e657`，使用该版本仍提供的同步RayPPOTrainer入口和FSDP worker；通过公开`set_loss_fn`接口安装采样OPD loss，不改上游文件，不启用其按原生教师ID计算的Top-K KL。源码归档在项目.runtime/verl_training，归档SHA与实际Python／YAML源码在预览时核验；.venv-opd运行学生端，.venv-easysteer运行教师端，两套vLLM不混装。
+
+入口为[verl_entry.py](../src/steer_opd/training/verl_entry.py)，可用[run_verl.sh](../src/steer_opd/training/run_verl.sh)调用；[verl_plan.py](../src/steer_opd/training/verl_plan.py)集中定义训练准备默认值。这些值是代码准备默认值，尚未作为正式训练实验执行；教师层位／强度应在overlap选参完成后显式确定，不将默认层29／Slerp0.1视为最终选参结论。
+
+| 项目 | 当前准备配置 |
+|---|---|
+| GPU划分 | 学生物理0／1：FSDP训练与vLLM rollout分时；教师物理2／3：EasySteer TP2；两组可显式修改且必须不相交 |
+| 数据 | 原1000题保持；700题Select供学生更新，300题Confirm保留，不自动跑验证或benchmark；SV仍使用原1000题global bank，Confirm不称独立未见验证集 |
+| 训练 | 全局batch16、每卡microbatch1、100个更新批次、学习率1e-6；固定强度，不执行退火 |
+| on-policy约束 | 每批新rollout只更新一次；ppo_epochs=1，mini_batch_size=全局batch，n=1，temperature=1／top_p=1／top_k=-1 |
+| 学生数值 | 每个采样请求seed42；FSDP／学生vLLM启用batch-invariant，保留自动引擎调度；不承诺跨硬件逐bit一致 |
+| 教师注入 | S−T／global／all，同层bank核验；Slerp或原始差分加法，系数只乘一次；学生rollout和训练前向不注入 |
+| 存储 | 只保存各模型观察token logp及请求身份，不落盘训练Top16或逐token隐状态；每10步保存verl训练checkpoint，最多保留1份 |
+| 显存准备值 | 教师TP2 fraction0.60；Compass额外Ref0.06、冻结S₀0.18在教师组首卡分进程共用；学生rollout0.4，FSDP参数／优化器offload；均尚待GPU实测 |
+
+执行链：当前学生生成→verl重算当前学生无梯度logp→独立EasySteer进程组对同一文本批量评分→共同span对齐并冻结优势→学生带梯度前向→FSDP按全局有效token数同步更新→verl同步rollout权重。Ref和冻结初始学生仅在Compass路线启动，各自使用独立进程和原生tokenizer；教师侧首卡共享显存的配置必须另做验收，CPU通过不代表显存已足够。
+
+[verl_adapter.py](../src/steer_opd/training/verl_adapter.py)校验评分顺序与学生实际token ID，排除未对齐／EOS／padding，只把有效位置交给worker；完全无有效位置的样本权重为0，整批无有效位置则拒绝更新。各microbatch loss按dp_size／全局有效token数缩放，经FSDP跨卡平均得到正确的全局token均值；不添加PPO clip、任务正确性奖励、额外KL或优势标准化。verl rollout阶段的零奖励仅为接口占位，在actor更新前由真实OPD优势完整替换。
+
+[scorer_service.py](../src/steer_opd/training/scorer_service.py)持有冻结评分引擎，整批调用返回后按SHA提交观察logp；[scorer_client.py](../src/steer_opd/training/scorer_client.py)通过项目内请求队列取回结果。缓存绑定完整prefix、tokenizer对齐、模型内容、SV及训练代码身份；新的学生轨迹重算冻结模型评分，相同冻结评分条件可复用；当前学生训练logp始终来自带梯度的新前向。学生优化器／调度器／数据迭代恢复以verl已提交checkpoint为准，尚未保存的更新会重做，不能用评分缓存冒充参数checkpoint。
+
+只读检查与CPU准备示例：
+
+```bash
+bash src/steer_opd/training/run_verl.sh --check
+bash src/steer_opd/training/run_verl.sh --check --loss compass_opd
+# 本地固定源码尚不存在时，仅下载框架源码，不下载模型：
+bash src/steer_opd/training/run_verl.sh --bootstrap-source --check
+# CPU导出700／300 parquet并冻结配置，不占GPU：
+bash src/steer_opd/training/run_verl.sh --prepare --run-name verl_st_trial_v1
+```
+
+准备产物位于outputs/step_4_train/ablation/<模型组合>/<训练数据集>/shared/<参数名>/，metadata保留计划、完整verl配置与来源SHA，data保存训练／Confirm parquet，scorer保存每批实际请求／原生评分／角色日志，checkpoints由verl管理。当前不修改正在执行的configs/ablation.json，也不更改其execution_hold；训练配置从唯一模板读取共同模型／数据定义后独立冻结。
+
+`--run`另要求与完整训练plan binding匹配的GPU验收凭据，检查通过之前不会启动Ray／模型。当前尚未生成该训练凭据，未做多卡前后向、实际权重同步或断点恢复的GPU实测；已有overlap验收不能替代训练验收。本轮只完成代码、真实verl接口的CPU检查和文档，不启动训练。

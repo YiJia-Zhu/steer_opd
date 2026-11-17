@@ -19,6 +19,7 @@ else
 fi
 STOP_AFTER="${STOP_AFTER:-panel}" # Four zero-update overlap comparisons; source_overlap skips SV.
 ABLATION_PHASE="${ABLATION_PHASE:-overlap}" # Only overlap is implemented; param/baseline are planned.
+OPERATOR="${OPERATOR:-slerp}"          # slerp or raw additive (teacher scheme 5 only)
 ALPHA="${ALPHA:-0.1}"                 # Fixed Slerp alpha for the later SV panel
 LAYER="${LAYER:-26}"                  # 0-based block output; 26 = 75% of Qwen3-4B's 36 blocks
 GATE_METRIC="${GATE_METRIC:-overlap}"  # overlap or P_overlap; both are always recorded
@@ -33,6 +34,7 @@ SV_MAX_CONTEXT_LEN="${SV_MAX_CONTEXT_LEN:-2048}" # SV-training: read prompt+answ
 REFERENCE_TEMPERATURE="${REFERENCE_TEMPERATURE:-0.7}"
 REFERENCE_TOP_P="${REFERENCE_TOP_P:-0.95}"
 # CONFIRM_TOP_N defaults to every selected family; both splits compare all eight when enabled.
+CANDIDATE_TENSOR_COMPRESSION="${CANDIDATE_TENSOR_COMPRESSION:-none}" # Lossless gzip for parameter search output.
 HF_PARITY="${HF_PARITY:-0}"           # 0 = EasySteer-only startup; 1 = optional HF numerical comparison
 # Both metrics use raw Top16; P_overlap never renormalizes the retained mass.
 # Seed stays 42. No sequence-count or CUDA-graph-size limits are imposed.
@@ -51,9 +53,9 @@ exec "$STEER_OPD_PYTHON" scripts/launch_ablation.py "${1:---check}" \
     --phase "$ABLATION_PHASE" \
     --stop-after "$STOP_AFTER" \
     --strength-policies "$STRENGTH_POLICIES" \
-    --alpha "$ALPHA" --layer "$LAYER" --gate-metric "$GATE_METRIC" --rank-metric "$RANK_METRIC" \
+    --operator "$OPERATOR" --alpha "$ALPHA" --layer "$LAYER" --gate-metric "$GATE_METRIC" --rank-metric "$RANK_METRIC" \
     --gate-target-rate "$GATE_TARGET_RATE" --teacher-tp "$TEACHER_TP" --gpu-memory "$GPU_MEMORY" \
     --wait-seconds "$WAIT_SECONDS" --reference-max-tokens "$REFERENCE_MAX_TOKENS" \
     --source-max-tokens "$SOURCE_MAX_TOKENS" --reference-temperature "$REFERENCE_TEMPERATURE" \
     --sv-max-context-len "$SV_MAX_CONTEXT_LEN" \
-    --reference-top-p "$REFERENCE_TOP_P" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"
+    --reference-top-p "$REFERENCE_TOP_P" --candidate-tensor-compression "$CANDIDATE_TENSOR_COMPRESSION" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"
