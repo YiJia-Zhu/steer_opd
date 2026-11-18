@@ -185,6 +185,7 @@ def test_native_source_generation_commits_only_top16_and_resumes_without_engine(
     class Engine:
         def generate(self,prompts,options,**kwargs):
             assert len(prompts)==len(requests) and options[0].logprobs==16
+            assert options[0].presence_penalty==2.
             assert kwargs['steering'] is False
             return [output]
         def collective_rpc(self,name,args):
@@ -193,7 +194,8 @@ def test_native_source_generation_commits_only_top16_and_resumes_without_engine(
     def create(*args,**kwargs): calls.append(kwargs); return Engine()
     monkeypatch.setattr(module,'create_engine',create)
     job = {'output':'source','role':'student','model':'S0','save_rollout_top_k':16,'support_size':47,
-           'requests':requests,'max_tokens':4,'temperature':1.,'top_p':1.,'gpu_memory_utilization':.75}
+           'requests':requests,'max_tokens':4,'temperature':1.,'top_p':1.,'gpu_memory_utilization':.75,
+           'presence_penalty':2.}
     module.generate(job)
     row=json.loads((tmp_path/'source/q_0.json').read_text())
     score=load_rollout_topk(tmp_path/'source',row,16,47)

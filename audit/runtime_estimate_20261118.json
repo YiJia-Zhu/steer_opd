@@ -1,0 +1,315 @@
+{
+  "generated_at": "2026-11-18T00:59:38.839197+08:00",
+  "scope": "current formal_v5 completed steps 1-8; no new GPU execution or runtime-code/config changes",
+  "source_files": {
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/logs/training_events.jsonl": {
+      "bytes_at_capture": 3707519,
+      "sha256_of_captured_prefix": "f702e6860645ec77e2279c2418aa9e256e93322ffe4b4ca2b3924d1a7d8e575f",
+      "append_only_log": true
+    },
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/logs/console.log": {
+      "bytes_at_capture": 222241,
+      "sha256_of_captured_prefix": "f29cc7cc61dedb06af29b3d3b6a83b5c53f5e91961e7c3103886b3eb4a3d8d9a",
+      "append_only_log": true
+    },
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/metadata/plan.json": {
+      "bytes_at_capture": 10974,
+      "sha256_of_captured_prefix": "638eb613ec8a5effc8c42d16e1dda625aa10d82a8f67a6d9119366cef854b2d0",
+      "append_only_log": false
+    },
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/metadata/verl_config.json": {
+      "bytes_at_capture": 48977,
+      "sha256_of_captured_prefix": "d51d4a4e65b5a3df81b7592c4e10ca3557ce71ec7aba6bd23d9e2b77d2175693",
+      "append_only_log": false
+    },
+    "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_all_global_L19_L29_L39_ops_n1000_seed42_v2/stage_timing_cases.csv": {
+      "bytes_at_capture": 5306,
+      "sha256_of_captured_prefix": "d12c71ab534ee0ad665afed505dc9ce87dce644e93070c263863e5d56badb6fe",
+      "append_only_log": false
+    },
+    "outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_all_global_L19_L29_L39_ops_n1000_seed42_v2/stage_timing.md": {
+      "bytes_at_capture": 1806,
+      "sha256_of_captured_prefix": "cabf5885bba935b4e326b87c49f8cf79e4b3ce66cfd410d48948cffa61c6e1dd",
+      "append_only_log": false
+    }
+  },
+  "training_run": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45",
+  "plan_binding": "3eb46fa90aa8f718e28f78ac877b68b95d38a831fec17b226803a909754e6d97",
+  "sources_match_frozen_plan": {
+    "src/steer_opd/training/verl_trainer.py": true,
+    "src/steer_opd/training/scorer_service.py": true,
+    "src/steer_opd/training/verl_adapter.py": true,
+    "src/steer_opd/training/verl_plan.py": true
+  },
+  "opd": {
+    "steps": [
+      {
+        "step": 1,
+        "student_vllm_generation_seconds": 180.72209040168673,
+        "student_logprob_seconds": 29.47938886890188,
+        "teacher_scoring_phase_seconds": 82.88645637407899,
+        "cpu_overlap_seconds": 11.840415786020458,
+        "advantage_and_mask_gap_seconds": 17.6507568359375,
+        "student_update_seconds": 115.61115731438622,
+        "weight_sync_seconds": 1.6978588849306107,
+        "upstream_update_actor_seconds": 228.07684501679614,
+        "step_seconds": 440.1438952740282,
+        "response_tokens_mean": 3080.60546875,
+        "total_tokens": 816227.0,
+        "other_seconds": 0.2557708080857992,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.07716452004387975,
+          "cpu_tokenizer_span_alignment": 7.653095760848373,
+          "teacher_model_wake": 1.4479864039458334,
+          "teacher_wake_ack": 1.579517011065036,
+          "teacher_model_scoring": 58.83164467103779,
+          "teacher_model_sleep": 1.403174553066492,
+          "teacher_sleep_ack": 1.4821184859611094,
+          "other_seconds": 13.262915925122797
+        }
+      },
+      {
+        "step": 2,
+        "student_vllm_generation_seconds": 194.40838027186692,
+        "student_logprob_seconds": 31.558411370031536,
+        "teacher_scoring_phase_seconds": 88.92232299875468,
+        "cpu_overlap_seconds": 7.959778042975813,
+        "advantage_and_mask_gap_seconds": 18.88622498512268,
+        "student_update_seconds": 121.51571433106437,
+        "weight_sync_seconds": 2.0518800672143698,
+        "upstream_update_actor_seconds": 237.37114980397746,
+        "step_seconds": 465.55620634229854,
+        "response_tokens_mean": 3351.453125,
+        "total_tokens": 884096.0,
+        "other_seconds": 0.25349427526816726,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.07952239783480763,
+          "cpu_tokenizer_span_alignment": 7.72791354637593,
+          "teacher_model_wake": 1.5263453586958349,
+          "teacher_wake_ack": 1.693067372776568,
+          "teacher_model_scoring": 62.36189364083111,
+          "teacher_model_sleep": 1.4194067963398993,
+          "teacher_sleep_ack": 1.4937031427398324,
+          "other_seconds": 15.566222898196429
+        }
+      },
+      {
+        "step": 3,
+        "student_vllm_generation_seconds": 187.14930397225544,
+        "student_logprob_seconds": 29.43725695926696,
+        "teacher_scoring_phase_seconds": 85.29042245913297,
+        "cpu_overlap_seconds": 7.475303494371474,
+        "advantage_and_mask_gap_seconds": 18.209253072738647,
+        "student_update_seconds": 115.96776492521167,
+        "weight_sync_seconds": 2.125043645966798,
+        "upstream_update_actor_seconds": 227.05461325589567,
+        "step_seconds": 445.93023102683946,
+        "response_tokens_mean": 3190.2890625,
+        "total_tokens": 845246.0,
+        "other_seconds": 0.275882497895509,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.0800569118000567,
+          "cpu_tokenizer_span_alignment": 7.413179545197636,
+          "teacher_model_wake": 1.4690087661147118,
+          "teacher_wake_ack": 1.581352440174669,
+          "teacher_model_scoring": 59.612153520807624,
+          "teacher_model_sleep": 1.4149548253044486,
+          "teacher_sleep_ack": 1.4901029537431896,
+          "other_seconds": 15.113577087409794
+        }
+      },
+      {
+        "step": 4,
+        "student_vllm_generation_seconds": 186.51177222188562,
+        "student_logprob_seconds": 28.748640531674027,
+        "teacher_scoring_phase_seconds": 84.35341849317774,
+        "cpu_overlap_seconds": 7.5036935224197805,
+        "advantage_and_mask_gap_seconds": 17.802422046661377,
+        "student_update_seconds": 113.38473306084052,
+        "weight_sync_seconds": 1.9819865706376731,
+        "upstream_update_actor_seconds": 223.17917025880888,
+        "step_seconds": 440.58287282893434,
+        "response_tokens_mean": 3146.00390625,
+        "total_tokens": 830557.0,
+        "other_seconds": 0.29620638163760304,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.08959649689495564,
+          "cpu_tokenizer_span_alignment": 7.154727233108133,
+          "teacher_model_wake": 1.486572481226176,
+          "teacher_wake_ack": 1.5847787372767925,
+          "teacher_model_scoring": 58.485153139103204,
+          "teacher_model_sleep": 1.4078555316664279,
+          "teacher_sleep_ack": 1.5589221380650997,
+          "other_seconds": 15.480240748729557
+        }
+      },
+      {
+        "step": 5,
+        "student_vllm_generation_seconds": 205.09653759375215,
+        "student_logprob_seconds": 31.34519218886271,
+        "teacher_scoring_phase_seconds": 90.3582369289361,
+        "cpu_overlap_seconds": 8.055283466819674,
+        "advantage_and_mask_gap_seconds": 19.14039707183838,
+        "student_update_seconds": 123.2732185232453,
+        "weight_sync_seconds": 2.0451665460132062,
+        "upstream_update_actor_seconds": 240.91030635731295,
+        "step_seconds": 479.5628444701433,
+        "response_tokens_mean": 3401.17578125,
+        "total_tokens": 897045.0,
+        "other_seconds": 0.24881215067580342,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.07808857224881649,
+          "cpu_tokenizer_span_alignment": 8.551422948949039,
+          "teacher_model_wake": 1.4481128631159663,
+          "teacher_wake_ack": 1.5919969361275434,
+          "teacher_model_scoring": 63.99900862388313,
+          "teacher_model_sleep": 1.4148268420249224,
+          "teacher_sleep_ack": 1.4998844978399575,
+          "other_seconds": 14.63783534988761
+        }
+      },
+      {
+        "step": 6,
+        "student_vllm_generation_seconds": 202.27743163472041,
+        "student_logprob_seconds": 31.641905246768147,
+        "teacher_scoring_phase_seconds": 90.56918195821345,
+        "cpu_overlap_seconds": 8.07540900958702,
+        "advantage_and_mask_gap_seconds": 19.247181177139282,
+        "student_update_seconds": 124.77973269298673,
+        "weight_sync_seconds": 2.0343368658795953,
+        "upstream_update_actor_seconds": 242.76179924234748,
+        "step_seconds": 478.8831025348045,
+        "response_tokens_mean": 3411.44921875,
+        "total_tokens": 901059.0,
+        "other_seconds": 0.2579239495098591,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.07949620299041271,
+          "cpu_tokenizer_span_alignment": 6.926784973125905,
+          "teacher_model_wake": 1.442574939224869,
+          "teacher_wake_ack": 1.5897971470840275,
+          "teacher_model_scoring": 63.979834402911365,
+          "teacher_model_sleep": 1.4139387621544302,
+          "teacher_sleep_ack": 1.4887275150977075,
+          "other_seconds": 16.50454171700403
+        }
+      },
+      {
+        "step": 7,
+        "student_vllm_generation_seconds": 195.48220688616857,
+        "student_logprob_seconds": 30.605742778163403,
+        "teacher_scoring_phase_seconds": 85.56279413215816,
+        "cpu_overlap_seconds": 7.7156255026347935,
+        "advantage_and_mask_gap_seconds": 18.419034957885742,
+        "student_update_seconds": 117.67838799906895,
+        "weight_sync_seconds": 1.9761768062599003,
+        "upstream_update_actor_seconds": 229.51689227391034,
+        "step_seconds": 457.74311224836856,
+        "response_tokens_mean": 3262.7578125,
+        "total_tokens": 862526.0,
+        "other_seconds": 0.3031431860290468,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.08351719006896019,
+          "cpu_tokenizer_span_alignment": 7.409387031104416,
+          "teacher_model_wake": 1.4957259511575103,
+          "teacher_wake_ack": 1.5855224151164293,
+          "teacher_model_scoring": 61.36715852515772,
+          "teacher_model_sleep": 1.4208031338639557,
+          "teacher_sleep_ack": 1.5920104989781976,
+          "other_seconds": 13.525198471732438
+        }
+      },
+      {
+        "step": 8,
+        "student_vllm_generation_seconds": 207.28678481001407,
+        "student_logprob_seconds": 31.97500581899658,
+        "teacher_scoring_phase_seconds": 92.10633693821728,
+        "cpu_overlap_seconds": 8.16421532118693,
+        "advantage_and_mask_gap_seconds": 19.61686110496521,
+        "student_update_seconds": 125.38904255116358,
+        "weight_sync_seconds": 2.035299480892718,
+        "upstream_update_actor_seconds": 245.3684668680653,
+        "step_seconds": 486.83251597732306,
+        "response_tokens_mean": 3473.8203125,
+        "total_tokens": 915650.0,
+        "other_seconds": 0.2589699518866837,
+        "teacher_children": {
+          "student_model_optimizer_offload": 0.08250356605276465,
+          "cpu_tokenizer_span_alignment": 8.328096433077008,
+          "teacher_model_wake": 1.444149614777416,
+          "teacher_wake_ack": 1.5876488192006946,
+          "teacher_model_scoring": 66.18209477793425,
+          "teacher_model_sleep": 1.4130395259708166,
+          "teacher_sleep_ack": 1.5014129662886262,
+          "other_seconds": 14.424580375663936
+        }
+      }
+    ],
+    "means": {
+      "student_vllm_generation_seconds": 194.86681347404374,
+      "student_logprob_seconds": 30.598942970333155,
+      "teacher_scoring_phase_seconds": 87.50614628533367,
+      "cpu_overlap_seconds": 8.348715518251993,
+      "advantage_and_mask_gap_seconds": 18.621516406536102,
+      "student_update_seconds": 119.69996892474592,
+      "weight_sync_seconds": 1.993468608474359,
+      "upstream_update_actor_seconds": 234.27990538463928,
+      "step_seconds": 461.9043475878425,
+      "response_tokens_mean": 3289.6943359375,
+      "total_tokens": 869050.75,
+      "other_seconds": 0.26877540012355894
+    },
+    "teacher_children_means": {
+      "student_model_optimizer_offload": 0.08124323224183172,
+      "cpu_tokenizer_span_alignment": 7.645575933973305,
+      "teacher_model_wake": 1.4700595472822897,
+      "teacher_wake_ack": 1.59921010985272,
+      "teacher_model_scoring": 61.852367662708275,
+      "teacher_model_sleep": 1.413499996298924,
+      "teacher_sleep_ack": 1.513360274839215,
+      "other_seconds": 14.814389071718324
+    },
+    "startup_before_initial_eval_seconds": 145.49733114242554,
+    "initial_eval_seconds": 130.52460245694965,
+    "budget_steps": 100,
+    "eval_calls": 6,
+    "checkpoint_calls": 5,
+    "checkpoint_seconds": null,
+    "train_only_estimate_seconds": 46190.43475878425,
+    "startup_plus_100_steps_plus_6_eval_estimate_seconds": 47119.07970466837,
+    "eval_estimation_rule": "later evaluation calls use step-0 duration as a proxy; no checkpoint save observed in this sample",
+    "gradient_timing_scope": "differentiable forward + backward + optimizer + FSDP communication and residency overhead combined; no separate forward/backward/optimizer measurements",
+    "advantage_timing_scope": "gap between cpu_top16_overlap end and student_update start; includes attach_advantages and handover checks"
+  },
+  "param": {
+    "sample_count": 10,
+    "sample_cases": [
+      "n1000_slerp0.1_S26_T19_seed42_st_all_global_v2",
+      "n1000_slerp0.3_S26_T19_seed42_st_all_global_v2",
+      "n1000_slerp0.5_S26_T19_seed42_st_all_global_v2",
+      "n1000_additive0.1_S26_T19_seed42_st_all_global_v2",
+      "n1000_additive0.3_S26_T19_seed42_st_all_global_v2",
+      "n1000_additive0.5_S26_T19_seed42_st_all_global_v2",
+      "n1000_slerp0.5_S26_T29_seed42_st_all_global_v2",
+      "n1000_additive0.05_S26_T29_seed42_st_all_global_v2",
+      "n1000_additive0.3_S26_T29_seed42_st_all_global_v2",
+      "n1000_additive0.5_S26_T29_seed42_st_all_global_v2"
+    ],
+    "means": {
+      "launch_to_finish_wall_seconds": 1321.9320302963256,
+      "startup_validation_seconds": 97.73218600749969,
+      "baseline_metrics_and_save_seconds": 146.78743669986724,
+      "engine_initialization_seconds": 78.9290439072065,
+      "no_sv_replay_gpu_seconds": 232.67810100018977,
+      "sv_injection_gpu_seconds": 235.32475308487193,
+      "explicit_cpu_metrics_seconds": 71.0022670991253,
+      "replay_and_sv_gzip_commit_seconds": 155.50713503360748,
+      "plot_seconds": 5.395418992266059,
+      "other_preparation_validation_io_and_gaps_seconds": 298.5756884716917
+    },
+    "new_cases": 22,
+    "reused_cases": 2,
+    "normal_22_case_estimate_seconds": 29082.504666519162,
+    "first_new_layer_capture_seconds_L39": 305.9,
+    "queue_interruptions_and_new_layer_capture_excluded_from_normal_case_means": true
+  }
+}

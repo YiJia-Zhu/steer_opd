@@ -39,7 +39,7 @@
 - [x] 固定T−S方向，教师文本与普通学生源rollout构成唯一方向文本对；仅S0 capture正文并构建2份bank。
 - [x] 接入EasySteer原生生成、S0指定层capture、T批量评分及固定mask前向，无人工seq上限；保留HF显式参考。
 - [x] 使用上游steering配置指纹，补模型内容hash与离线缓存绑定，保留池化均值/范数、位置与mask，不保存逐token隐状态。
-- [x] 每请求seed=42，固定Python/NumPy/PyTorch/vLLM与子进程hash seed；保留代码/环境/权重/引擎身份。
+- [x] 基础seed42；overlap／SV每请求42。OPD每道题4条rollout固定42／43／44／45，跨题和批次复用，worker分发前逐题核验；评测每请求42。恢复稳定，记录实际seed与多样性，旧策略训练已停止并排除。
 - [x] 恢复改为整批阶段/完整候选提交：一次公开generate/capture连续运行，返回后保存和原子提交；未提交整批重算，已完成阶段/候选复用。移除逐请求检查点与自定义调度循环；CPU故障测试覆盖SIGTERM/SIGKILL及提交边界。
 - [x] 实时tqdm/console.log、结构化事件/心跳、阶段起止/耗时/ETA与只读进度查看；保留后续训练需要的中间产物。
 - [x] 清理旧运行结果、重复Markdown与历史审计快照，保留核心研究稿、必要输入/源码及删除清单。
@@ -60,7 +60,7 @@
 - [x] 优化源指标复用及双指标阈值校准：排序count累计计数代替逐阈值全量扫描，保留overlap/P_overlap兼容；255484位置验证两项阈值及100题mask完全一致。
 - [ ] 实测时间/显存/吞吐；提前不承诺提速倍数。
 
-[当前配置](configs/ablation.json) · [实验协议](docs/ablation.md) · [实现说明](docs/implementation.md)
+[当前配置](configs/ablation.json) · [实验协议](docs/ablation.md) · [实现说明](docs/代码框架逻辑.md)
 
 - [x] 1000题CPU数据准备及来源留档完成：原100题保留、新增900道去重数学题，冻结700/300；161项CPU测试及包检查通过。
 - [x] 完成1000题overlap的GPU验收及四方案700题select/300题confirm计算；结果已交用户分析复核；新输入保留原100题并补充900题，原100题输入和结果不改。
@@ -95,4 +95,6 @@
 - [x] 增加默认traditional_opd（S／T）与可选compass_opd（S／T／教师同家族Ref，加冻结初始学生锚点）的loss配置、角色声明及可微分loss组件；Ref仅用于后者，不恢复T−R激活方案。
 - [x] 两路线复用CompassOPD附录A.4文本span对齐；原生span平均logp与逐token学生锚点分别实现，loss不使用Top16 overlap替代概率；补充梯度／mask／长度加权CPU验证。
 - [x] 基于固定verl源码接入同步on-policy训练入口、学生FSDP loss、独立EasySteer教师／可选Ref及冻结S_ref评分、优化器／权重同步／checkpoint恢复调用链；CPU验证实际DataProto、packed位置与全局token梯度。当前overlap参数搜索及其冻结配置不改。
-- [ ] 训练GPU验收：双卡学生前后向、教师组评分与可选Ref／S_ref显存共存、实际权重同步、保存恢复及吞吐／空间；本轮不启动训练，不能用overlap凭据替代训练凭据。
+- [x] 改为总共两卡共享：一次准入，学生卸载确认后逐个唤醒T／可选Ref／S_ref，评分后确认休眠再允许学生前向；sleep1保留CPU权重，使用v2身份，不套用旧四卡准备配置。
+- [x] 兼容超参继承固定Rethinking-OPD：batch64、n4、dynamic bsz／32768 token、AdamW lr1e-6、7168回答、save20；已讨论项与两卡卸载等适配记录在plan，不声称完整loss与官方相同。
+- [ ] 训练GPU验收：同两卡上的sleep／wake、学生卸载与显存释放、逐角色评分、实际前后向／权重同步／保存恢复／吞吐和空间；本轮不启动训练，不能用overlap或旧四卡凭据替代。

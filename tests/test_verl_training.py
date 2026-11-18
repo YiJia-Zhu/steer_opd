@@ -22,11 +22,12 @@ def upstream():
     return verl
 
 
-def test_disjoint_physical_pools_and_batch_divisibility():
-    with pytest.raises(ValueError,match='disjoint'):VerlSettings(teacher_gpus=(1,2))
+def test_exact_shared_physical_pool_and_batch_divisibility():
+    assert VerlSettings().gpu_pool==(0,1)
     with pytest.raises(ValueError,match='divide'):VerlSettings(train_batch_size=3)
-    with pytest.raises(ValueError,match='TP=2'):VerlSettings(teacher_gpus=(2,))
-    with pytest.raises(ValueError,match='headroom'):VerlSettings(teacher_memory=.8)
+    with pytest.raises(ValueError,match='two shared'):VerlSettings(gpu_pool=(0,))
+    with pytest.raises(ValueError,match='two shared'):VerlSettings(gpu_pool=(0,1,2,3))
+    with pytest.raises(ValueError,match='unique'):VerlSettings(gpu_pool=(0,0))
 
 
 def test_verl_recipe_uses_one_on_policy_update_and_no_native_id_kl():
@@ -39,8 +40,17 @@ def test_verl_recipe_uses_one_on_policy_update_and_no_native_id_kl():
     assert cfg['critic.enable'] is False
     assert cfg['actor_rollout_ref.actor.use_kl_loss'] is False
     assert cfg['actor_rollout_ref.rollout.temperature']==1.
-    assert plan['train_questions']==700 and plan['confirm_used_for_training'] is False
-    assert plan['settings']['student_gpus']==[0,1]
+    assert cfg['actor_rollout_ref.rollout.calculate_log_probs'] is True
+    assert cfg['data.max_response_length']==16384
+    assert cfg['actor_rollout_ref.rollout.max_model_len']>=cfg['data.max_prompt_length']+cfg['data.max_response_length']
+    assert plan['settings']['score_max_model_len']>cfg['actor_rollout_ref.rollout.max_model_len']
+    assert cfg['actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode']=='raw_logprobs'
+    assert cfg['algorithm.rollout_correction']['bypass_mode'] is True
+    assert cfg['algorithm.rollout_correction']['rollout_is'] is None
+    assert 'student_logprob' not in plan['phase_order']
+    assert plan['train_questions']==1024 and plan['data_policy']=='all_train'
+    assert 'confirm_questions' not in plan and plan['train_split']=='all'
+    assert plan['settings']['gpu_pool']==[0,1]
     assert plan['execution_hold']=='awaiting_user_approval'
 
 
@@ -50,7 +60,8 @@ def reply_and_batch(kind='traditional_opd'):
              'prompts':torch.tensor([[0,7,8]]),
              'attention_mask':torch.tensor([[0,1,1,1,1,1,1,0]]),
              'response_mask':torch.tensor([[1,1,1,1,0]]),
-             'old_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]])}
+             'old_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]]),
+             'rollout_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]])}
     reply={'alignment':plan,'teacher_logps':teacher}
     if kind=='compass_opd':reply.update(reference_logps=torch.tensor([-1.5,-2.]),student_anchor_logps=torch.tensor([-2.,-2.,-2.,-4.]))
     return settings,reply,SimpleNamespace(batch=tensors,meta_info={})
@@ -96,7 +107,8 @@ def test_actual_verl_packed_output_shift_and_public_loss_signature(upstream):
         'attention_mask':torch.tensor([[0,1,1,1,1],[1,1,1,0,0]]),
         'position_ids':torch.tensor([[0,0,1,2,3],[0,1,2,0,0]]),
         'response_mask':torch.tensor([[1,0,1],[1,0,0]]),
-        'advantages':torch.tensor([[2.,0.,-1.],[3.,0.,0.]])},batch_size=[2])
+        'advantages':torch.tensor([[2.,0.,-1.],[3.,0.,0.]]),
+        'rollout_log_probs':torch.tensor([[-1.5,-2.5,-3.5],[-6.5,0.,0.]])},batch_size=[2])
     packed=left_right_2_no_padding(data)
     tu.assign_non_tensor(packed,batch_num_tokens=3,dp_size=2)
     logp=torch.tensor([-1.,-2.,-3.,-4.,-5.,-6.,-7.],requires_grad=True)
@@ -105,6 +117,9 @@ def test_actual_verl_packed_output_shift_and_public_loss_signature(upstream):
     expected=torch.zeros(7);expected[0]=-4/3;expected[2]=2/3;expected[5]=-2.
     torch.testing.assert_close(logp.grad,expected)
     assert 'actor/pg_loss' in metrics
+    assert metrics['actor/train_rollout_logprob_abs_diff_mean'].aggregate()==pytest.approx(1.)
+    assert metrics['actor/train_rollout_logprob_signed_diff_mean'].aggregate()==pytest.approx(1.)
+    assert metrics['actor/train_rollout_logprob_abs_diff_max'].aggregate()==pytest.approx(.5)
 
 
 def test_real_dataproto_preserves_custom_masks_when_sent_to_worker(upstream):
@@ -127,20 +142,22 @@ def test_hydra_config_matches_pinned_fsdp_worker_and_disables_validation(upstrea
     assert cfg.trainer.use_v1 is False
     assert cfg.trainer.test_freq==-1 and cfg.trainer.val_before_train is False
     assert cfg.trainer.n_gpus_per_node==2
-    assert cfg.actor_rollout_ref.actor.ppo_mini_batch_size==16
+    assert cfg.actor_rollout_ref.actor.ppo_mini_batch_size==32
     assert cfg.reward.custom_reward_function.name=='compute_score'
+    assert cfg.algorithm.rollout_correction.bypass_mode
+    assert cfg.algorithm.rollout_correction.rollout_is is None
 
 
-def test_cpu_parquet_export_preserves_select_confirm_separation(tmp_path):
+def test_cpu_parquet_export_includes_every_training_question_without_a_split(tmp_path):
     from steer_opd.training.verl_entry import prepare_data
     import pandas as pd
     plan=build_verl_plan(read_json(ROOT/'configs/ablation.json'))
     plan['output']=str(tmp_path)
     root=prepare_data(plan)
-    train=pd.read_parquet(root/'data/train.parquet');confirm=pd.read_parquet(root/'data/confirm.parquet')
-    assert len(train)==700 and len(confirm)==300
-    train_ids={r['question_id'] for r in train.extra_info};confirm_ids={r['question_id'] for r in confirm.extra_info}
-    assert not train_ids&confirm_ids
+    train=pd.read_parquet(root/'data/train.parquet')
+    assert len(train)==1024 and not (root/'data/confirm.parquet').exists()
+    train_ids={r['question_id'] for r in train.extra_info}
+    assert train_ids=={r['id'] for r in read_json(ROOT/plan['input_data_dir']/'questions_source.json')}
     assert set(train.data_source)=={'steer_opd'}
     assert all(r['ground_truth']=='' for r in train.reward_model)
     prepare_data(plan)  # Same bytes are accepted on CPU resume, without overwriting them.
@@ -154,16 +171,23 @@ def test_unaccepted_or_mutated_training_plan_cannot_start_gpu_work():
     with pytest.raises(ValueError,match='content identity'):validate_receipt(plan,None)
 
 
-def test_each_student_request_uses_seed_42_without_mutating_shared_sampling_params(upstream,monkeypatch):
+def test_student_request_uses_assigned_seed_without_mutating_shared_sampling_params(upstream,monkeypatch):
     import asyncio
     from verl.experimental.agent_loop.single_turn_agent_loop import SingleTurnAgentLoop
-    from steer_opd.training.verl_agent import ConstantSeedAgentLoop
-    async def run(self,params,priority=0,**kwargs):return params,priority
+    from steer_opd.training.verl_agent import TrajectorySeedAgentLoop
+    async def run(self,params,priority=0,**kwargs):return SimpleNamespace(extra_fields={},params=params,priority=priority)
     monkeypatch.setattr(SingleTurnAgentLoop,'run',run)
     original={'temperature':1.,'seed':17}
-    obj=object.__new__(ConstantSeedAgentLoop)
-    params,priority=asyncio.run(obj.run(original,priority=3))
-    assert params['seed']==42 and priority==3 and original['seed']==17
+    obj=object.__new__(TrajectorySeedAgentLoop)
+    result=asyncio.run(obj.run(original,priority=3,steer_opd_rollout_seed=44,steer_opd_presence_penalty=2.))
+    assert result.params['seed']==44 and result.priority==3 and original['seed']==17
+    assert result.extra_fields['steer_opd_rollout_seed']==44
+    assert result.params['presence_penalty']==2. and 'presence_penalty' not in original
+    assert result.extra_fields['steer_opd_presence_penalty']==2.
+    with pytest.raises(ValueError,match='Missing driver-assigned'):
+        asyncio.run(obj.run(original))
+    with pytest.raises(ValueError,match='Missing driver-assigned presence penalty'):
+        asyncio.run(obj.run(original,steer_opd_rollout_seed=44))
 
 
 def test_compass_gpu_receipt_must_cover_both_extra_frozen_scorers(tmp_path):
@@ -171,7 +195,9 @@ def test_compass_gpu_receipt_must_cover_both_extra_frozen_scorers(tmp_path):
     from steer_opd.resumable_core import atomic_json
     plan=build_verl_plan(read_json(ROOT/'configs/ablation.json'),loss=TrainingLossConfig(loss_type='compass_opd'))
     receipt={'status':'passed','plan_binding':plan['binding'],'loss_type':'compass_opd',
-             'roles':['student_fsdp_rollout','teacher_scoring']}
+             'roles':['student_fsdp_rollout','teacher_scoring'],
+             'student_logprob_source':plan['student_logprob_source'],
+             'resource_mode':'shared_two_gpu','phase_handover_test':'passed'}
     path=tmp_path/'receipt.json';atomic_json(path,receipt)
     with pytest.raises(ValueError,match='exact plan'):validate_receipt(plan,path)
     receipt['roles']+=['reference_scoring','student_anchor_scoring'];atomic_json(path,receipt)

@@ -1,0 +1,55 @@
+{
+  "scope": "unified training-pool and recipe changes; CPU only",
+  "gpu_started": false,
+  "optimizer_updates": 0,
+  "data": {
+    "input_data_dir": "outputs/step_0_data/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1024_all_train_seed42_v1",
+    "questions": 1024,
+    "preserved_base_questions": 1000,
+    "added_questions": 24,
+    "question_source_sha256": "3550b0c9245a0057d8f83b66ac80addf06c2f921734d2182ce9b3e2c95f62faa",
+    "train_ids_sha256": "9b7179c6d312295e6a9fb578c8958057ab5491581a0e75d2675e3e0c41bd4f38",
+    "split_created": false,
+    "exact_question_overlap_with_benchmarks": 0
+  },
+  "recipe": {
+    "sv": "teacher S-T/global/all/slerp0.1",
+    "teacher_layer": 29,
+    "train_questions": 1024,
+    "questions_per_step": 32,
+    "rollouts_per_question": 4,
+    "trajectories_per_step": 128,
+    "maximum_steps": 64,
+    "epochs_at_maximum": 2,
+    "evaluation_steps": [
+      0,
+      16,
+      32,
+      48,
+      64
+    ],
+    "checkpoint_steps": [
+      20,
+      40,
+      60,
+      64
+    ],
+    "retention_policy": "minimal_v1",
+    "template_execution_hold": "awaiting_user_approval"
+  },
+  "validation": {
+    "cpu_tests_passed": 403,
+    "cpu_tests_seconds": 45.89,
+    "test_log": ".runtime/full_pipeline_1024_cpu_checks_20261118.txt",
+    "trainer_config_composition": "passed",
+    "real_tokenizer_data_handoff_and_sha_commit": "passed",
+    "bash_syntax": "passed",
+    "package_check": "blocked by a pre-existing documentation link to a removed historical outputs/step_6_summary artifact",
+    "gpu_acceptance": "pending"
+  },
+  "changed_launch_sources_sha256": {
+    "scripts/run_full_pipeline.sh": "3725ea0b976d01db622530d4cab0e1e771eaedb7e6707d0caca5cae506e862ad",
+    "scripts/run_full_pipeline.py": "809be493db4f6ade145129db69c9cd9870299de8d1a7d5811adaf721de203962",
+    "scripts/launch_ablation.py": "250b6786463806c2502d493cda6cab4305c6d65eab14ea8a4e69c73fe6249778"
+  }
+}

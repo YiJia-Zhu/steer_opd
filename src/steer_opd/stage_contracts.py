@@ -8,7 +8,8 @@ from steer_opd.resumable_core import digest
 from steer_opd.method_config import DIRECTION_VERSIONS, reader_direction, reader_layers
 
 GEN_CODE=('scripts/generate_static_sources.py','src/steer_opd/rollout_topk.py',
-          'src/steer_opd/easysteer_static.py','src/steer_opd/easysteer_worker.py')
+          'src/steer_opd/easysteer_static.py','src/steer_opd/easysteer_worker.py',
+          'src/steer_opd/generation_policy.py')
 CAP_CODE=('src/steer_opd/extraction.py','src/steer_opd/easysteer_extraction.py','src/steer_opd/easysteer_static.py',
           'src/steer_opd/easysteer_worker.py')
 BANK_CODE=('src/steer_opd/compass_banks.py','src/steer_opd/direction_bank.py')
@@ -30,6 +31,7 @@ def runtime_key(python):
 
 
 def generation(cfg,role,questions,codec,model_id,runtime):
+    from steer_opd.generation_policy import presence_penalty
     source=role=='student'
     requests=[{'id':q['id'],'prompt':prompt_ids(codec.tokenizer,q['question'],cfg['enable_thinking']),
                'seed':42} for q in questions]
@@ -37,7 +39,7 @@ def generation(cfg,role,questions,codec,model_id,runtime):
         'decode_cuda_graph':cfg.get('decode_cuda_graph',True),'head_dtype':'float32',
         'max_tokens':cfg['source_max_tokens'] if source else cfg['reference_max_tokens'],
         'temperature':1. if source else cfg['reference_temperature'],
-        'top_p':1. if source else cfg['reference_top_p'],'top_k':-1,'presence_penalty':0.,
+        'top_p':1. if source else cfg['reference_top_p'],'top_k':-1,'presence_penalty':presence_penalty(cfg),
         'seed':42,'dtype':'bfloat16','logprobs':16 if source else None,'normalization':'raw',
         'tensor_parallel_size':1 if source else cfg['teacher_gpus'],
         'gpu_memory_utilization':cfg['gpu_memory_utilization'],'batch_invariant':source,
@@ -46,18 +48,20 @@ def generation(cfg,role,questions,codec,model_id,runtime):
 
 def capture(cfg,role,model_id,codec,parents,runtime):
     direction=reader_direction(role)
+    code=CAP_CODE+(('scripts/capture_student_activations.py',) if cfg.get('data_policy')=='all_train' else ())
     return contract('capture_'+role,{'model_content_id':model_id,'codec':codec_key(codec),
         'layers':reader_layers(cfg,role),'context_len':cfg['sv_max_context_len'],
         'pooling':'sv_training_all_retained_answer_tokens','direction_version':DIRECTION_VERSIONS[direction],
         'tensor_parallel_size':cfg['teacher_gpus'] if role=='teacher' else 1,
         'gpu_memory_utilization':cfg['gpu_memory_utilization'],'backend':cfg['extraction_backend'],
-        'batch_invariant':role=='student','runtime':runtime},parents=parents,code=CAP_CODE)
+        'batch_invariant':role=='student','runtime':runtime},parents=parents,code=code)
 
 
 def bank(cfg,role,own_capture,common_ids):
+    code=BANK_CODE+(('scripts/prepare_compass_banks.py',) if cfg.get('data_policy')=='all_train' else ())
     return contract('bank_'+role,{'direction':reader_direction(role),'layers':reader_layers(cfg,role),
         'valid_question_ids':list(common_ids),'pooling_and_scaling':'raw_difference_mean_before_unit_norm_own_reader_median_norm',
-        'injection_alpha_is_not_a_bank_dependency':True},parents={'capture':own_capture},code=BANK_CODE)
+        'injection_alpha_is_not_a_bank_dependency':True},parents={'capture':own_capture},code=code)
 
 
 def alignment(cfg,source,codecs):

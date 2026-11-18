@@ -46,7 +46,7 @@ def select_expansion(base, candidates, count, codecs, max_prompt_tokens, enable_
     return selected,dict(rejected)
 
 
-def local_candidates(folder, count, seed):
+def local_candidates(folder, count, seed, *, excluded_ids=()):
     """Uniform row sampling over all local math rows, before question deduplication."""
     import pyarrow as pa
     import pyarrow.compute as pc
@@ -64,7 +64,16 @@ def local_candidates(folder, count, seed):
             math_total+=len(math_rows);ends.append(math_total)
         global_offset+=pf.metadata.num_rows
     if not math_total:raise ValueError('No math rows in the existing local dataset')
-    sampled=random.Random(seed).sample(range(math_total),min(math_total,count*5))
+    excluded=set(excluded_ids)
+    if excluded:
+        rng=random.Random(seed);sampled=[];seen=set()
+        available=sum(f'ot3m-{i:06d}' not in excluded for i in range(math_total))
+        while len(sampled)<min(available,count*5):
+            ordinal=rng.randrange(math_total)
+            if ordinal in seen or f'ot3m-{ordinal:06d}' in excluded:continue
+            seen.add(ordinal);sampled.append(ordinal)
+    else:
+        sampled=random.Random(seed).sample(range(math_total),min(math_total,count*5))
     groups=defaultdict(list)
     for order,ordinal in enumerate(sampled):
         shard_index=bisect_right(ends,ordinal);shard=shards[shard_index]
@@ -99,7 +108,8 @@ def local_candidates(folder, count, seed):
         done+=1
         if done%10==0:print(f'Local math sampling: {done} shards, {len(decoded)}/{len(sampled)} candidate rows',flush=True)
     return [decoded[i] for i in range(len(sampled))],{
-        'sampling':'seeded_uniform_math_rows_then_deduplicate_questions_and_check_native_prompt_lengths',
+        'sampling':('seeded_uniform_math_rows_excluding_existing_ids' if excluded else
+                    'seeded_uniform_math_rows_then_deduplicate_questions_and_check_native_prompt_lengths'),
         'seed':seed,'math_rows':math_total,'sampled_candidate_rows':len(sampled),'shards':used}
 
 
@@ -131,7 +141,15 @@ def prepare(cfg):
         questions=read_json(source)
     else:
         # Shared assets are read-only links; only generated artifacts use project_path.
-        candidates,provenance=local_candidates(ROOT/cfg['local_dataset'],count,cfg['seed'])
+        if cfg.get('data_policy')=='all_train':
+            candidates,provenance=local_candidates(ROOT/cfg['local_dataset'],max(1,count-len(base)),cfg['seed'],
+                excluded_ids={q['id'] for q in base})
+            from steer_opd.training.benchmarks import benchmark_rows
+            benchmarks,_=benchmark_rows(base)
+            reserved={' '.join(r['extra_info']['question'].split()) for r in benchmarks}
+            candidates=[q for q in candidates if ' '.join(q['question'].split()) not in reserved]
+        else:
+            candidates,provenance=local_candidates(ROOT/cfg['local_dataset'],count,cfg['seed'])
         questions,rejected=select_expansion(base,candidates,count,codecs,cfg['max_prompt_tokens'],cfg['enable_thinking'])
         frozen_json(source,questions)
         frozen_json(manifest_path,{'schema':'local_ot3_expansion_v1','created_at':timestamp(),
@@ -145,6 +163,10 @@ def prepare(cfg):
     if len(questions)!=count or any(actual.get(k)!=v for k,v in expected.items()):
         raise ValueError('Expanded pool must preserve the original questions')
     prepared=prepare_questions(cfg,codecs)
+    if cfg.get('data_policy')=='all_train':
+        print({'questions':len(prepared),'preserved_base':len(base),'training_questions':len(prepared),
+            'data_policy':'all_train','source':str(source),'gpu_started':False},flush=True)
+        return
     split=read_json(data/'split.json')
     if imported is not None and (input_dir/'split.json').exists():
         old=read_json(input_dir/'split.json')

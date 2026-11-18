@@ -7,7 +7,8 @@ from steer_opd.compass_scoring import load_text_scorer
 from steer_opd.execution_policy import require_execution_allowed
 from steer_opd.resumable_core import digest, read_json
 from steer_opd.static_screen import score_batch
-from steer_opd.experiment_runtime import initialize_stage, StageCheckpoint, Progress, require_artifact_space
+from steer_opd.experiment_runtime import initialize_stage, Progress, require_artifact_space
+from steer_opd.tensor_checkpoint import StageCheckpoint
 
 
 def score(job,role):

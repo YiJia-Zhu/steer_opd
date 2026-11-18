@@ -1,8 +1,12 @@
 # Ablation 实验计划
 
-实验按ablation结构筛选、param参数实验及后续baseline方法对比分阶段推进，当前模型计算仍为固定前缀overlap、0次更新。原100／1000题T−S及1000题教师S−T四组均已完成，结果见[overlap.md](overlap.md#7-新增实测1000题教师空间s−t消融2026-11-16)。S−T四组的alpha=.05／.1／.2强度扫描已于2026-11-17 02:12:57全部完成，两部分的双指标、图表和汇总齐全，GPU6／7已释放。OPD、退火和方法baseline未启动；新增层位／方式网格按下节授权执行。
+当前全流程使用同一1024题训练池：保留原1000题并按seed42同源补充24题，不再划分Select／Confirm。1024题共同用于SV提取、overlap及OPD；固定global／all／Slerp0.1、教师第29层，每步32题×4条回答，最多64步，每16步及末步评测裸学生，step0也评测。入口及参数见[代码框架§8.1](代码框架逻辑.md#81-环境和手动入口)。本次已在CPU冻结题集并验证代码，GPU训练未启动。下文Select／Confirm及参数搜索设置属于原冻结实验，不用于新的全流程。
 
-## 当前授权运行：固定S−T／all／global
+当前新配置的存储策略为`minimal_v1`：新建SV pool在bank全部提交校验后清理，OPD只临时保留当前批过程数据，长期保留标量及最近完整checkpoint。历史实验输出保持原字节，模板hold不解除；细则见[代码框架§8.5](代码框架逻辑.md#85-最小保留策略)。
+
+以下记录此前按ablation结构筛选、param参数实验及baseline方法对比规划的实验，其模型计算为固定前缀overlap、0次更新。原100／1000题T−S及1000题教师S−T四组均已完成，结果见[overlap.md](overlap.md#7-新增实测1000题教师空间s−t消融2026-11-16)。S−T四组的alpha=.05／.1／.2强度扫描已于2026-11-17 02:12:57全部完成，两部分的双指标、图表和汇总齐全。历史执行范围以各自冻结配置为准。
+
+## 历史参数搜索授权：固定S−T／all／global
 
 按用户最新指令，下一轮只保留教师空间S−T的all／global方案，搜索以下三轴；完整待实现项同步于[TODO](../TODO.md)。2026-11-17用户明确要求使用物理GPU2／3启动并复用已有结果；网格已接入入口，219项CPU测试及包检查通过，两组旧结果和源缓存已核验。旧三档配置与结果保持冻结。
 
@@ -212,11 +216,12 @@ step0保存数据；step1分别保存teacher／student；step2按reader保存cap
 入口参数：TEACHER_ABLATION=1、SCHEME_IDS=5,6,7,8、QUESTION_COUNT=1000、CONFIRM_TOP_N=4、GPU_IDS=6,7；STUDENT_BASELINE_RUN显式选择已完成1000题根。新教师capture／注入须先通过本次EasySteer GPU验收；模板execution_hold不变，仅独立运行配置承载本次授权。
 
 
-## 后续OPD的两种loss路线（2026-11-17补充）
+## OPD训练路线与执行记录
 
-默认传统OPD，只需S／T；可选steer+CompassOPD，增加教师同家族Ref（默认Qwen3.5-0.8B）与训练前学生冻结副本S_ref。两路线统一参考CompassOPD附录A.4，按共同文本span平均各模型原生观察token logp；Compass的学生锚点项逐学生token计算。Ref只参与可选loss，不参与当前overlap或SV方向；当前教师S−T方案不变。
+默认traditional OPD，可选CompassOPD；方法公式见[研究方案§9.4](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)，当前共同参数、两卡分时布局、每step生成／评分／overlap／更新／评测和操作命令统一见[代码框架逻辑](代码框架逻辑.md)。此处仅记录执行范围与历史身份。
 
-loss组件与CPU核对已补充，公式及边界见[完整方案§9.4](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)和[实现说明](implementation.md#后续训练loss组件传统opdcompassopd)。step4已接入固定verl版本的训练入口、FSDP loss与EasySteer评分桥接，尚待多卡GPU验收；当前参数搜索到overlap图停止，未自动开启OPD或方法baseline。
+用户已授权并执行过`verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45`：初始Qwen3-4B、传统OPD、教师S−T／global／all、层29／Slerp.1、两张空闲卡共享。该次执行采用每题四个seed42／43／44／45，跨题／批次复用；不按回答正确性筛选，不开启baseline比较、退火或其他超参数训练。种子策略与重跑边界见[重跑审计](../audit/training_rollout_seed_slots_restart_20261117.json)。
 
+该次训练于2026-11-18按用户要求停止，已完成68次更新，停止时最近完整checkpoint为step60，见[停止记录](../audit/opd_user_stop_20261118.json)。v3重复采样标为invalid_sampling，v4整批递增seed被替换且0次更新；这些来源不能静默接续为有效新训练。当前生成默认和概率来源已在后续代码中调整，旧formal_v5实测不冒充新配置结果；本次文档整理不恢复训练，模板hold保持。
 
-用户后续明确选择verl作为OPD训练框架。本轮授权范围为代码与CPU核验，训练准备默认学生两卡FSDP、教师独立两卡TP2，保留传统OPD／CompassOPD选择；实际参数与GPU需在正式训练前固定并验收。入口及多卡／恢复细节见[实现说明](implementation.md#基于verl的step4训练入口代码已接入gpu待验收)。现有overlap配置和运行身份不改，不启动训练或独立测试。
+训练内accuracy使用独立带gold的MATH-500／AIME2025，Confirm不作独立测试；与1000题SV池仅核对过完全相同题目，未声称语义去重。每步overlap的监控开关、更新前口径、TensorBoard和原文／资源日志只在[代码框架§3](代码框架逻辑.md#3-opd训练内部逐阶段拆开)及[§8.4](代码框架逻辑.md#84-日志tensorboard与恢复排查)维护。耗时与停止前预算见[运行时间](目前代码估计运行时间.md)。

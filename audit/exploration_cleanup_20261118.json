@@ -1,0 +1,174 @@
+{
+  "status": "deleted",
+  "requested_by": "user",
+  "scope": "All exploration experiments, including confirmed OPD diagnostics and teacher benchmarks",
+  "started_at": "2026-11-18T20:30:05.813722+08:00",
+  "targets": [
+    {
+      "path": "outputs/step_3_overlap/exploration",
+      "files": 25352,
+      "apparent_bytes": 17843214799,
+      "allocated_bytes_before": 17898278912
+    },
+    {
+      "path": "outputs/step_1_rollout/exploration",
+      "files": 3004,
+      "apparent_bytes": 121716527,
+      "allocated_bytes_before": 128118784
+    },
+    {
+      "path": "outputs/step_2_sv/exploration",
+      "files": 304,
+      "apparent_bytes": 1974791362,
+      "allocated_bytes_before": 1975758848
+    },
+    {
+      "path": "outputs/step_6_summary/exploration",
+      "files": 328,
+      "apparent_bytes": 58861459,
+      "allocated_bytes_before": 59801600
+    },
+    {
+      "path": "outputs/step_3_overlap/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_fixed_prefix_S0_vs_step60_n64_seed42_v1",
+      "files": 29,
+      "apparent_bytes": 39384670,
+      "allocated_bytes_before": 39452672
+    },
+    {
+      "path": "outputs/step_3_overlap/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_teacher_wrong_answer_prefix_n48_seed42_v1",
+      "files": 19,
+      "apparent_bytes": 23640962,
+      "allocated_bytes_before": 23691264
+    },
+    {
+      "path": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_learning_diagnosis_formal_v5_seed42_v1",
+      "files": 45,
+      "apparent_bytes": 4349646,
+      "allocated_bytes_before": 4468736
+    },
+    {
+      "path": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_repetition_research_20261118_v1",
+      "files": 18,
+      "apparent_bytes": 4843211,
+      "allocated_bytes_before": 4882432
+    },
+    {
+      "path": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_compass_decode_pp2_S20_S40_S60_n530_k16_seed42_v1",
+      "files": 2,
+      "apparent_bytes": 799,
+      "allocated_bytes_before": 8192
+    },
+    {
+      "path": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_pp2_only_S20_S40_S60_n530_seed42_v1",
+      "files": 2,
+      "apparent_bytes": 1728,
+      "allocated_bytes_before": 8192
+    },
+    {
+      "path": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_pp2_len16384_S20_S40_S60_n530_seed42_v1",
+      "files": 2,
+      "apparent_bytes": 1930,
+      "allocated_bytes_before": 8192
+    },
+    {
+      "path": "outputs/step_5_eval/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/teacher_native_vs_st_T29_slerp0.1_n530_seed42_v1",
+      "files": 23,
+      "apparent_bytes": 968010,
+      "allocated_bytes_before": 1040384
+    },
+    {
+      "path": "outputs/step_5_eval/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/teacher_native_vs_st_T29_slerp0.1_n530_seed42_v2",
+      "files": 35,
+      "apparent_bytes": 54544503,
+      "allocated_bytes_before": 54652928
+    },
+    {
+      "path": "outputs/step_5_eval/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_compass_decode_pp2_S20_S40_S60_n530_k16_seed42_v1",
+      "files": 25,
+      "apparent_bytes": 1027454,
+      "allocated_bytes_before": 1097728
+    },
+    {
+      "path": "outputs/step_5_eval/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_pp2_only_S20_S40_S60_n530_seed42_v1",
+      "files": 20,
+      "apparent_bytes": 2982160,
+      "allocated_bytes_before": 3039232
+    },
+    {
+      "path": "outputs/step_5_eval/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/MATH500_AIME2025/opd_pp2_len16384_S20_S40_S60_n530_seed42_v1",
+      "files": 21,
+      "apparent_bytes": 3019372,
+      "allocated_bytes_before": 3076096
+    },
+    {
+      "path": "exploration",
+      "files": 339,
+      "apparent_bytes": 5291380,
+      "allocated_bytes_before": 6160384
+    },
+    {
+      "path": ".runtime/diagnostics/opd_learning_20261118",
+      "files": 12,
+      "apparent_bytes": 8056417343,
+      "allocated_bytes_before": 8056451072
+    },
+    {
+      "path": ".runtime/diagnostics/opd_rollout_logprob_implementation_20261118",
+      "files": 16,
+      "apparent_bytes": 181099,
+      "allocated_bytes_before": 229376
+    },
+    {
+      "path": "docs/OPD学习效果排查_20261118.md",
+      "files": 1,
+      "apparent_bytes": 3259,
+      "allocated_bytes_before": 4096
+    },
+    {
+      "path": "docs/OPD重复生成排查与WSP文献.md",
+      "files": 1,
+      "apparent_bytes": 21016,
+      "allocated_bytes_before": 24576
+    },
+    {
+      "path": "audit/presence_penalty_eval_protocol_correction_20261118.json",
+      "files": 1,
+      "apparent_bytes": 1155,
+      "allocated_bytes_before": 4096
+    }
+  ],
+  "fixed_literature_preserved": [
+    {
+      "from": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_repetition_research_20261118_v1/sources",
+      "to": "ref/opd_repetition_literature_20261118/sources"
+    },
+    {
+      "from": "outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_repetition_research_20261118_v1/source_manifest.json",
+      "to": "ref/opd_repetition_literature_20261118/source_manifest.json"
+    }
+  ],
+  "protected_sha256": {
+    "configs/ablation.json": "eb1b0832450244d3ec55da30b2af1445f5976b40ceb2431669df760f584dc083",
+    "docs/Steering_OPD_完整研究方案.md": "cdfbf98a214e3c874b0e04ff25223519d1a6b805944cae59cf521261087b7cf6",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v3_overlap/metadata/plan.json": "b72b9e46e6d6ad00912c94b790fbfd24be57698f3ff8e3f6b4a163cfe279b344",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v4_seedseq/metadata/plan.json": "14849e26dc430537acfa5fc5da1e63445653a573725d1328c6138510fac6e3dc",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/metadata/plan.json": "638eb613ec8a5effc8c42d16e1dda625aa10d82a8f67a6d9119366cef854b2d0",
+    "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/banks/S-T_global.pt": "d1c16e936b02ac7f30c5e807df980b4e972f619e54df9911a5483ce79f8fe207"
+  },
+  "expected_reclaimed_allocated_bytes": 28260257792,
+  "backup_created": false,
+  "finished_at": "2026-11-18T20:30:06.582513+08:00",
+  "targets_absent": true,
+  "protected_files_unchanged": true,
+  "deleted_files": 29599,
+  "documentation_updated": [
+    "AGENTS.md",
+    "docs/OPD概率来源统一与Top16方案分析.md",
+    "docs/implementation.md",
+    "docs/目前代码估计运行时间.md"
+  ],
+  "mainline_plan": "OPD training, ablation/param and all shared model/data assets retained",
+  "final_verified_at": "2026-11-18T20:34:06.013219+08:00",
+  "all_target_paths_absent": true,
+  "filesystem_free_bytes_after": 62610984960
+}

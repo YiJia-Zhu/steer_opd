@@ -12,7 +12,7 @@ from steer_opd.direction_bank import file_sha256
 from steer_opd.execution_policy import execution_policy, require_default_scheduler_options
 from steer_opd.overlap_tuning import calibrate_threshold
 from steer_opd.math_data import prompt_ids
-from steer_opd.resumable_core import atomic_json, digest, read_json
+from steer_opd.resumable_core import ROOT, atomic_json, digest, read_json
 from steer_opd.rollout_topk import load_rollout_topk
 from steer_opd.method_config import DIRECTION_VERSION, DIRECTION_VERSIONS, TEACHER_DIRECTION_VERSION
 from steer_opd.strength_schedule import LINEAR, freeze_schedule, validate_schedule
@@ -28,6 +28,18 @@ def frozen_json(path, value):
 
 def validate_config(cfg):
     require_default_scheduler_options(cfg)
+    if cfg.get('data_policy','select_confirm') not in ('select_confirm','all_train'):
+        raise ValueError('Unknown training question data policy')
+    from steer_opd.retention import minimal
+    minimal(cfg)
+    from steer_opd.generation_policy import presence_penalty
+    presence_penalty(cfg)
+    from steer_opd.tensor_checkpoint import SUPPORTED_FORMATS
+    if 'candidate_tensor_format' in cfg and 'candidate_tensor_compression' in cfg:
+        raise ValueError('Choose one candidate tensor format setting')
+    storage=cfg.get('candidate_tensor_format',cfg.get('candidate_tensor_compression'))
+    if storage is not None and storage not in (*SUPPORTED_FORMATS,'none','gzip'):
+        raise ValueError('Unknown candidate tensor format')
     if cfg.get('experiment') not in ('ablation','param','compar') or cfg.get('phase')!='overlap':
         raise ValueError('Only the overlap phase of ablation is implemented; param/baseline remain planned')
     if cfg.get('stop_after','panel') not in ('source_overlap','panel'):
@@ -73,7 +85,11 @@ def validate_config(cfg):
         raise ValueError("Both current overlap metrics require raw Top16, without renormalization")
     if cfg.get("gate_metric", "overlap") not in ("overlap", "P_overlap") or cfg.get("rank_metric", "overlap") not in ("overlap", "P_overlap"):
         raise ValueError("Select one explicit static gate/ranking metric; both metrics are always recorded")
-    if (not 0 < cfg["select_fraction"] < 1 or cfg["minimum_split_questions"] < 1
+    if cfg.get('data_policy')=='all_train':
+        if cfg.get('stop_after','panel')!='panel':raise ValueError('Unified training overlap requires the complete panel')
+        if cfg['teacher_gpus'] not in (1,2) or any(c['gate']!='all' for c in scheme_conditions(cfg)):
+            raise ValueError('The unified training pool requires all-position injection and one or two teacher GPUs')
+    elif (not 0 < cfg["select_fraction"] < 1 or cfg["minimum_split_questions"] < 1
             or not 1 <= cfg["confirm_top_n"] <= len(scheme_conditions(cfg)) or not 0 < cfg["gate_target_rate"] < 1
             or cfg["teacher_gpus"] not in (1, 2)):
         raise ValueError("Invalid split/calibration/confirmation/GPU budget")
@@ -133,10 +149,19 @@ def prepare_questions(cfg, codecs):
             continue
         questions.append({"id": row["id"], "question": row["question"], "answer": row["answer"],
                           "student_prompt_ids": prompts["student"]})
-    if len(questions) < 2*cfg["minimum_split_questions"]:
+    if cfg.get('data_policy')!='all_train' and len(questions) < 2*cfg["minimum_split_questions"]:
         raise ValueError("Too few shared prompt-valid training questions")
     if cfg.get('question_count') is not None and len(questions)!=cfg['question_count']:
         raise ValueError('Prompt filtering would reduce the declared experiment size; prepare valid inputs first')
+    data = project_path(cfg["data_dir"])
+    if cfg.get('data_policy')=='all_train':
+        if not questions:raise ValueError('The training pool cannot be empty')
+        frozen_json(data/'questions.json',questions)
+        frozen_json(data/'train_ids.json',{'schema':'all_training_questions_v1',
+            'train_ids':[q['id'] for q in questions],'seed':cfg['seed'],
+            'source_sha256':file_sha256(project_path(cfg['question_source'])),
+            'uses_test':False,'scope':'same_questions_for_sv_overlap_and_opd'})
+        return questions
     shuffled = [q["id"] for q in questions]
     random.Random(cfg["seed"]).shuffle(shuffled)
     cut = int(len(shuffled)*cfg["select_fraction"])
@@ -151,6 +176,7 @@ def prepare_questions(cfg, codecs):
 
 
 def generation_job(cfg, codec, role, questions, *, source=False):
+    from steer_opd.generation_policy import presence_penalty
     if role not in ('teacher','student'):
         raise ValueError('Only teacher reference text and student source generation are supported')
     output = str(artifact_dir(cfg,'student' if source else 'teacher'))
@@ -161,6 +187,7 @@ def generation_job(cfg, codec, role, questions, *, source=False):
     job = {**execution_policy(cfg), "model": cfg[role], "output": output, "requests": requests, "vector": None,
         "max_tokens": cfg["source_max_tokens"] if source else cfg["reference_max_tokens"],
         "temperature": 1. if source else cfg["reference_temperature"], "top_p": 1. if source else cfg["reference_top_p"],
+        "presence_penalty": presence_penalty(cfg),
         "seed": cfg["seed"], "support_size": codec.support_size, "gpu_memory_utilization": cfg["gpu_memory_utilization"],
         "logprobs": 16 if source else None, "head_dtype": "float32", "normalization": "native",
         "backend_version": 8, "metric_version": METRIC_VERSION, "matching_rule_version": RULE_VERSION,
@@ -286,6 +313,7 @@ def validate_source_rollout_reuse(job):
 
 
 def make_base_job(cfg, codecs, rows):
+    from steer_opd.generation_policy import presence_penalty
     run = cfg["run_dir"]
     conditions = scheme_conditions(cfg)
     banks = {f'{direction}_{granularity}':str(artifact_dir(cfg,'bank_teacher' if direction=='S-T' else 'bank_student')/f'{direction}_{granularity}.pt')
@@ -314,8 +342,10 @@ def make_base_job(cfg, codecs, rows):
         gpu_memory_utilization=cfg["gpu_memory_utilization"], chunk=cfg["logit_chunk_size"])
     if cfg.get('candidate_tensor_compression'):
         job['candidate_tensor_compression']=cfg['candidate_tensor_compression']
+    if cfg.get('candidate_tensor_format'):
+        job['candidate_tensor_format']=cfg['candidate_tensor_format']
     job.update(require_dual_metrics=cfg.get("require_dual_metrics", True),
-        seed=cfg["seed"], reproducibility_protocol=1, resume_granularity="engine_call",
+        seed=cfg["seed"], presence_penalty=presence_penalty(cfg), reproducibility_protocol=1, resume_granularity="engine_call",
         bind_checkpoint_content=cfg.get("bind_checkpoint_content", False),
         gate_metric=cfg.get("gate_metric", "overlap"), rank_metric=cfg.get("rank_metric", "overlap"),
         probability_backend=cfg.get("probability_backend", "easysteer"), teacher_gpus=cfg["teacher_gpus"])
@@ -446,3 +476,22 @@ def prepare_screen_jobs(cfg, base_job, codecs):
         confirm_job['alignment_source_dir']=str(artifact_dir(cfg,'alignment'))
     frozen_json(project_path(metadata_dir(cfg))/'jobs/select.json', select_job)
     return select_job, confirm_job
+
+
+def prepare_all_training_job(cfg,base_job,codecs):
+    """Score every training question once; all injection needs no calibrated gate."""
+    rows,_,_,_=prepare_plans(base_job,codecs)
+    expected=read_json(project_path(cfg['data_dir'])/'train_ids.json')['train_ids']
+    if {r['id'] for r in rows}!=set(expected):
+        raise ValueError('Overlap requests must cover the complete training question pool')
+    if any(c['gate']!='all' for c in base_job['conditions']):
+        raise ValueError('Unified training overlap currently requires all-position injection')
+    run=project_path(cfg['run_dir'])
+    frozen_json(run/'train_rows.json',rows)
+    job={**base_job,'rows':str((run/'train_rows.json').relative_to(ROOT)),
+         'alignment_dir':str((run/'train_alignment').relative_to(ROOT)),
+         'alignment_source_dir':str(artifact_dir(cfg,'alignment')),
+         'output':str((run/'train').relative_to(ROOT)),
+         'threshold':0.,'data_policy':'all_train'}
+    frozen_json(project_path(metadata_dir(cfg))/'jobs/train.json',job)
+    return job

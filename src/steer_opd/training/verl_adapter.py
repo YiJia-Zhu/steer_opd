@@ -3,15 +3,17 @@ import torch
 
 from steer_opd.training.config import TrainingLossConfig
 from steer_opd.training.losses import distillation_loss
+from steer_opd.training.rollout_logprobs import bind_old_log_probs,difference_sums
 
 
 def attach_advantages(batch, scored, settings=None):
     """Bind frozen scorer outputs to exact generated IDs, then mask native positions.
 
-    old_log_probs are recomputed by VERL for this batch before any update.
+    old_log_probs reuse the exact vLLM observed-token probabilities.
     Scoring replies contain the exact source IDs; order/shape mismatches fail.
     """
     settings = settings or TrainingLossConfig()
+    bind_old_log_probs(batch)
     tensors = batch.batch
     response = tensors['responses']
     original_mask = tensors['response_mask'].bool()
@@ -62,4 +64,26 @@ def verl_loss(model_output, data, dp_group=None):
     fields = data.select('advantages', 'response_mask').to_padded_tensor()
     loss = sampled_policy_loss(log_prob, fields['advantages'], fields['response_mask'],
         global_valid_tokens=data['batch_num_tokens'], dp_size=data['dp_size'])
-    return loss, {'actor/pg_loss': Metric(value=loss.detach(), aggregation=AggregationType.SUM)}
+    metrics = {'actor/pg_loss': Metric(value=loss.detach(), aggregation=AggregationType.SUM)}
+    # Formal OPD always has rollout_log_probs. Standalone capacity probes may
+    # supply synthetic advantages without an actual sampling distribution.
+    if 'rollout_log_probs' in data:
+        rollout = data.select('rollout_log_probs').to_padded_tensor()['rollout_log_probs']
+        differences = difference_sums(log_prob,rollout,fields['response_mask'],
+            global_valid_tokens=data['batch_num_tokens'],dp_size=data['dp_size'])
+        for key,value in differences.items():
+            metrics['actor/train_rollout_logprob_'+key] = Metric(value=value,
+                aggregation=AggregationType.MAX if key=='abs_diff_max' else AggregationType.SUM)
+    return loss, metrics
+
+
+def token_reward_direct(token_level_rewards,response_mask,config=None,**kwargs):
+    """Rethinking-OPD ac26e38 core_algos.py:854-880 semantics, without whitening."""
+    mask=response_mask.unsqueeze(-1) if token_level_rewards.ndim==3 else response_mask
+    advantage=(token_level_rewards.detach()*mask).detach()
+    return advantage,advantage.clone()
+
+
+def register_token_reward_direct():
+    from verl.trainer.ppo.core_algos import register_adv_est
+    register_adv_est('token_reward_direct')(token_reward_direct)

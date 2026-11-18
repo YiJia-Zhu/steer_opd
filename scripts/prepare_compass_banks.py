@@ -52,6 +52,9 @@ def build(config, reader_role="student"):
             raise ValueError('Reader pools must contain the same frozen question IDs')
     identity={'checkpoint':config[reader_role],'step':0,'checkpoint_content_id':meta['checkpoint_content_id'],
               'activation_pool_hash':file_sha256(capture_path),'direction_version':DIRECTION_VERSIONS[direction]}
+    if config.get('data_policy')=='all_train':
+        identity.update(data_policy='all_train',question_source_sha256=file_sha256(project_path(config['question_source'])),
+                        training_ids_sha256=digest([q['id'] for q in questions]))
     if paired_pool is not None:identity['paired_activation_pool_hash']=file_sha256(other)
     stage=StageCheckpoint(output,digest({'config':config,'runtime':runtime,'identity':identity}))
     with Progress(output/'bank_progress','direction_banks',len(questions),unit='question',show_bar=False) as progress:
@@ -63,7 +66,8 @@ def build(config, reader_role="student"):
                     {'usable':False,'reason':'unusable_in_paired_reader'} for qid,record in pooled.items()}
         banks,scales=make_common_banks(pooled,layers,identity,alpha=config['alpha'],direction=direction)
         valid_ids=next(iter(banks.values()))['valid_ids']
-        if len(valid_ids)<2*config['minimum_split_questions']:raise ValueError('Too few valid teacher/self activation pairs')
+        minimum=1 if config.get('data_policy')=='all_train' else 2*config['minimum_split_questions']
+        if len(valid_ids)<minimum:raise ValueError('Too few valid teacher/self activation pairs')
         files=[];hashes={}
         for name,bank in banks.items():
             path=output/f'{name}.pt';atomic_torch(path,bank);files.append(path);hashes[name]=file_sha256(path)

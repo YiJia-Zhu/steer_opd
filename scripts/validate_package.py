@@ -37,7 +37,7 @@ def main():
     for entry in read(metadata/'source_manifest.json')['files']:
         assert sha(metadata/entry['path'])==entry['sha256'],entry['path']
     docs = list((ROOT/'docs').glob('*.md'))
-    assert {p.name for p in docs}=={'README.md','ablation.md','implementation.md','sources.md','overlap.md','Steering_OPD_完整研究方案.md'}
+    assert {'README.md','ablation.md','代码框架逻辑.md','sources.md','overlap.md','Steering_OPD_完整研究方案.md'} <= {p.name for p in docs}
     md_files = [ROOT/'README.md',ROOT/'AGENTS.md',ROOT/'TODO.md',ROOT/'输出结构.md',*docs,
                 ROOT/'ref/README.md',ROOT/'ref/archive/README.md']
     links=0
@@ -64,7 +64,7 @@ def main():
     assert config['execution_hold']=='awaiting_user_approval'
     assert config['require_dual_metrics'] and config['bind_checkpoint_content']
     assert config['request_seed_policy']=='constant_42' and config['reproducibility_protocol']==1
-    assert config['retain_intermediates']
+    assert config['retention_policy']=='minimal_v1' and config['retain_intermediates'] is False
     assert config['resume_granularity']=='engine_call'
     assert config['metric_version']==METRIC_VERSION and config['matching_rule_version']==RULE_VERSION
     assert {config[k] for k in ('screen_backend','extraction_backend','probability_backend')}=={'easysteer'}
@@ -128,12 +128,13 @@ def main():
         assert not set(split['select_ids'])&set(split['confirm_ids'])
         assert set(split['select_ids'])|set(split['confirm_ids'])==set(by_id)
         assert split['source_sha256']==sha(source)
-    files=[*(ROOT/'src/steer_opd').glob('*.py'),*(ROOT/'scripts').glob('*.py')]
+    files=[*(ROOT/'src/steer_opd').rglob('*.py'),*(ROOT/'scripts').glob('*.py')]
     for path in files:
         tree=ast.parse(path.read_text(),filename=str(path))
         for node in ast.walk(tree):
             if isinstance(node,ast.ImportFrom) and node.module and node.module.startswith('steer_opd.'):
-                assert (ROOT/'src'/Path(*node.module.split('.'))).with_suffix('.py').is_file(),(path,node.module)
+                module=ROOT/'src'/Path(*node.module.split('.'))
+                assert module.with_suffix('.py').is_file() or (module/'__init__.py').is_file(),(path,node.module)
             if isinstance(node,ast.Constant) and isinstance(node.value,str) and re.fullmatch(r'scripts/[a-z_]+\.(?:py|sh)',node.value):
                 assert (ROOT/node.value).is_file(),(path,node.value)
     assert (ROOT/'src/steer_opd/easysteer_worker.py').is_file()  # Dynamic vLLM worker import.

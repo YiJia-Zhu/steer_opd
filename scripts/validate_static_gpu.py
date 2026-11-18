@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Small EasySteer contract checks, with an optional separate HF comparison."""
 import argparse
+from steer_opd.generation_policy import presence_penalty
 
 import torch
 
 from steer_opd.static_masks import validate_native_score
 from steer_opd.rollout_topk import extract_topk
 from steer_opd.compass_job import load_codecs,model_path,project_path,MODEL_ROLES
-from steer_opd.experiment_runtime import initialize_stage,StageCheckpoint,Progress
+from steer_opd.experiment_runtime import initialize_stage,Progress
+from steer_opd.tensor_checkpoint import StageCheckpoint
 from steer_opd.math_data import prompt_ids
 from steer_opd.resumable_core import atomic_json,digest,read_json
 
@@ -135,6 +137,7 @@ def run(job,role,backend):
                 from vllm.capture import SelectSpec
                 result=hs.capture(engine,[{'prompt_token_ids':r['prompt_token_ids']+r['token_ids']} for r in rows],
                     layers=capture_layers,dtype='bfloat16',steering=False,seed=42,
+                    presence_penalty=presence_penalty(job),
                     per_prompt_selects=[SelectSpec(prompt_positions=list(range(len(r['prompt_token_ids'])-1,
                         len(r['prompt_token_ids'])+len(r['token_ids'])))) for r in rows])
                 if list(result.layer_ids)!=capture_layers or len(result.outputs)!=len(rows):
@@ -195,8 +198,9 @@ def run(job,role,backend):
             if role=='student':
                 # Native source sampling and frozen-prefix replay use the same actual tokens.
                 from vllm import SamplingParams
+                penalty=presence_penalty(job)
                 outputs=engine.generate([{'prompt_token_ids':r['prompt_token_ids']} for r in rows],
-                    SamplingParams(max_tokens=8,temperature=1,seed=42,logprobs=16,stop_token_ids=sorted(codec.eos)),
+                    SamplingParams(max_tokens=8,temperature=1,seed=42,logprobs=16,presence_penalty=penalty,stop_token_ids=sorted(codec.eos)),
                     steering=False,use_tqdm=True)
                 source=[];replay_rows=[]
                 for row,out in zip(rows,outputs):
@@ -204,6 +208,7 @@ def run(job,role,backend):
                     source.append(extract_topk(record['token_ids'],sample.logprobs,16,codec.support_size))
                 replay=fixed_prefix_scores(engine,replay_rows,[False]*len(rows),include_sampled=True)
                 report['source_replay']=compare_scores(source,replay)
+                report['presence_penalty']=penalty
             atomic_json(output/'report.json',report)
             store.commit([output/'report.json'])
         progress.finished_call(1);progress.mark_committed(1)

@@ -7,7 +7,7 @@ from steer_opd.checkpoint_identity import checkpoint_content_id
 from steer_opd.compass_alignment import ByteLevelCodec
 from steer_opd.direction_bank import file_sha256
 from steer_opd.math_data import prompt_ids
-from steer_opd.resumable_core import ROOT, digest, read_json
+from steer_opd.resumable_core import ROOT, read_json
 from steer_opd.training.config import TrainingLossConfig
 from steer_opd.training.losses import training_alignment
 
@@ -29,6 +29,12 @@ def validate_assets(plan):
             or bank['identity']['step'] != 0 or bank['method']['direction'] != 'S-T'
             or bank['method']['granularity'] != 'global' or list(bank['method']['layers']) != [s['teacher_layer']]):
         raise ValueError('Teacher global bank layer, checkpoint or direction does not match training')
+    if plan.get('data_policy')=='all_train':
+        identity=bank['identity']
+        if (identity.get('data_policy')!='all_train'
+                or identity.get('question_source_sha256')!=plan['question_source_sha256']
+                or identity.get('training_ids_sha256')!=plan['training_ids_sha256']):
+            raise ValueError('Teacher SV bank must come from the same complete training question pool')
     if plan['training_loss']['loss_type'] == 'compass_opd':
         reference = ROOT/plan['training_loss']['reference_model']
         model_ids['reference'] = checkpoint_content_id(reference)
@@ -73,6 +79,6 @@ def prepare_request(plan, rows, codecs):
             native['student_anchor']={'id':row['id'],'key':row['id'],
                 'prompt_token_ids':row['prompt_token_ids'],'token_ids':row['token_ids']}
         prepared.append({'source':row,'alignment':alignment,'native':native})
-    packet={'plan_binding':plan['binding'],'rows':prepared,'seed':42}
-    packet['request_id']=digest(packet)
-    return packet
+    # The array manifest binds all native inputs and full alignment contents.
+    # Avoid serializing the large per-span dictionary a second time for a hash.
+    return {'plan_binding':plan['binding'],'rows':prepared,'seed':42}

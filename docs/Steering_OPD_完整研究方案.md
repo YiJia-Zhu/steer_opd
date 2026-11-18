@@ -1,20 +1,10 @@
 # 面向低相容师生的门控 Steering OPD 完整研究方案
 
-## 0 当前实验与实现状态（2026-11-16）
+## 0 文档职责与执行入口
 
-实验执行计划统一为[ablation.md](ablation.md)，按overlap、param、baseline推进；原100/1000题T−S四方案均已完成，新增教师S−T消融待GPU验收，后两阶段仍在规划中。本稿保留方法定义与研究背景。原100/1000题四方案已完成；当前仅实现教师S−T镜像消融与CPU验证，未授权启动新实验。
+本稿保留学生空间T−S原方案、教师空间S−T镜像，以及门控、粒度、刷新和训练目标的研究假设。它同时包含已做诊断与后续研究设计，不能把方案描述当作已完成实验。
 
-本轮固定T=Qwen3.5-35B-A3B、S=Qwen3-4B；Slerp固定alpha=0.1，学生75%单层（36层的0-based26）。方向固定T−S，比较all/static_overlap × global/per_question共4方案及共同无SV基线，保持S0冻结、同源前缀、0次参数更新。退火归入后续真实训练批次消融。既有GPU0、1四组实验已完成并停止；当前新增教师S−T仅做代码和CPU验证，OPD另行安排。
-
-学生自身回答直接复用普通无SV源rollout。同一S0读取教师回答与自身源回答的2048-token上下文内保留的回答，分别逐题池化后作差，构造全局/逐题两份bank。当前运行只包含S和T。
-
-当前1000题保留原100题并从本地OpenThoughts3数学子集补充900道不重复题，seed42冻结700/300训练侧select/confirm；四方案在两部分均评估。原100题输入、70/30划分及结果保留，历史1000题运行标识为overlap4_1000_v1；新结构RUN_NAME=ablation、PARAM_NAME=n1000_slerp0.1_layer26_seed42_v1。T/S文本、激活与对齐共同过滤后报告有效交集；global池包含全部1000题，该confirm不称独立dev。
-
-双指标按[overlap说明](overlap.md)：overlap为原生Top16最大一一前缀兼容匹配数/16，P_overlap为Top16原始概率的最大前缀兼容质量；两项分别留档、汇总和绘图。metric_version=4，gate_metric与rank_metric默认均overlap。直接保存vLLM返回的Top16 ID与原始FP32 logprob，不重新归一化；已删除完整词表与字节投影采集，GPU须重新验收，旧指标凭据不混用。
-
-公开generate/capture整批连续运行，返回后统一保存与原子提交；每请求seed=42。模板execution_hold=awaiting_user_approval保留；当前仅授权新增教师S−T代码、文档和CPU验证，不启动实验；OPD不在本次范围。入口见[实验协议](ablation.md)、[实现说明](implementation.md)与[TODO](../TODO.md)。
-
-输入输出现按[输出结构](../输出结构.md)分step保存。教师／学生回答、各读取者capture与bank、原生评分、对齐、指标及候选分别按科学依赖和文件SHA建立身份；改变alpha可复用回答、SV及原生概率，改变层位只重算对应SV及受影响下游。旧100／1000题产物已按用户要求真实移动到各step；原字节和划分不变，1000题上游复用引用已重定位，旧无用实验删除，不重复复制大文件。step4训练与step5独立测试只预留；本轮仅代码改造、CPU核验和留档，不启动模型实验。
+当前代码参数、逐阶段师生／后端职责和运行细则统一见[代码框架逻辑](代码框架逻辑.md)；实验范围、授权与结果记录见[ablation计划](ablation.md)；两种指标的完整算例见[overlap](overlap.md)；实测与时间估计见[运行时间](目前代码估计运行时间.md)。模板hold及已有冻结运行身份保持，本文不重复维护实时进度。
 
 ## 1 主方案与研究问题
 
@@ -85,6 +75,23 @@ overlap是局部相容性代理，不能直接标记正确性或能力。T−S�
 Rethinking On-Policy Distillation of Large Language Models 研究了推理模式相容、新知识和 OPD 成功之间的关系。其部分实验中，师生共享的 top-k token 集合承载约 97%–99% 的概率质量，限制到 overlap token 的优化也能获得有效收益。[1]
 
 这里应区分“共享集合承载大量概率质量”“限制监督到共享集合仍然有效”和“所有场景下共享集合必然贡献固定比例的梯度”。本方案使用前两项作为经验动机，不把第三项当成普遍定理。该论文关于跨家族的讨论，也不能代替我们自己的跨家族验证。
+
+#### 4.1.1 Sampled-token、Top-K训练与Top16监控
+
+核对范围：论文v2的§2.2、§2.3、§6.3，以及此前对固定官方commit `ac26e38d6f1572eb027597b48a9f4e01f6915ef8` 的启动脚本、训练器和actor源码核对；配置来源及SHA见[固定比较清单](../ref/implementation_sources/rethinking_comparison.json)。这些阅读证据不表示本项目执行过官方训练代码。
+
+| 目标 | 每个前缀的监督候选 | 与当前实现的关系 |
+|---|---|---|
+| Sampled-token OPD | 学生实际随机采样的一个token | 当前实现按共同文本span适配后使用观察token分数 |
+| Top-K OPD | 学生最高概率K个候选，并取得教师对同一候选的概率 | 需要候选级监督与相应梯度路径，不能仅把返回logprobs设成16 |
+| Full-vocabulary OPD | 全词表候选 | 当前不缓存全词表概率 |
+| 本项目Top16 overlap | 两边各自Top16的兼容匹配 | 属于监控／选参指标，不直接作为OPD loss |
+
+论文Top-K公式在选定集合内分别重新归一化师生概率，计算子集reverse KL；本项目P_overlap保留原始概率质量。§6.3中sampled-token表现与Top-K接近，K超过4后的额外收益很小，Top16／64曲线更平稳，固定argmax的Top1表现较差。随机采样一个token与固定选Top1属于不同方法；该结果不保证当前异构模型配对中Top16就足够。
+
+固定官方脚本默认`LOG_PROB_TOP_K=16`、`TOP_K_STRATEGY=only_stu`、`REWARD_WEIGHT_MODE=student_p`，训练器仍调用`actor_rollout_wg.compute_log_prob`，actor在`torch.no_grad()`中取学生Top-K。官方Top16本身没有免去旧概率前向；当前项目复用vLLM观察logprob是另外的工程改动。其`only_stu`路径使用学生子集归一化权重乘原始师生log-ratio，产生B×T×K信号，不能用本项目B×T标量优势loss冒充。
+
+当前Qwen3／Qwen3.5 tokenizer不同，学生Top16 ID不能直接作为教师类别ID。Top-K训练要求教师给**学生选定的同一组候选**打分，教师自己的Top16不能补全不在其中的学生候选。字节前缀兼容匹配也没有定义共同16类动作空间；要改为Top-K训练，仍需定义共同文本候选、教师多token路径和概率聚合。当前先保留sampled-token目标，保存Top16供诊断与后续研究。概率来源、采样惩罚、梯度与实现细节统一见[代码框架§3](代码框架逻辑.md#3-opd训练内部逐阶段拆开)。
 
 ### 4.2 CompassOPD与跨tokenizer文本评分
 
@@ -283,7 +290,7 @@ $$
 
 整个优势停止梯度，只有当前学生的原生token logp保留梯度；T、R与S_ref均冻结。默认只做当前学生的on-policy rollout；复用多轮轨迹、PPO比率／clip或学习前向单独注入学生时，需要另外明确行为策略与学习策略关系，不能直接把此loss称为已完成的完整训练器。
 
-实现见[训练loss组件](../src/steer_opd/training/losses.py)与[角色／默认设置](../src/steer_opd/training/config.py)，依据论文独立实现，尚未核验官方训练源码。已补充基于固定verl版本的同步FSDP训练入口、EasySteer评分桥接、权重同步与checkpoint恢复，细节见[训练实现](implementation.md#基于verl的step4训练入口代码已接入gpu待验收)；CPU接口／梯度验证已通过，多卡GPU验收与实际训练尚未执行。当前overlap入口不调用本组件，不加载Ref或学生锚点，不解除模板hold，也不启动训练。
+实现见[训练loss组件](../src/steer_opd/training/losses.py)与[角色／默认设置](../src/steer_opd/training/config.py)，依据论文独立实现，尚未核验官方训练源码。已接入固定verl、两卡共享的FSDP训练、EasySteer休眠／唤醒评分、权重同步与checkpoint恢复，细节统一见[训练流程与运行入口](代码框架逻辑.md#3-opd训练内部逐阶段拆开)。旧formal_v5已实际训练并停止；后续pp2／16384长度及原始概率复用路径仍需按新配置验收。当前overlap入口不调用本组件，不加载Ref或学生锚点，不解除模板hold，也不启动训练。
 
 学生更新或实际rollout前缀变化后，重算相应教师／Ref／S_ref的观察token评分；当前学生学习logp必须来自新的带梯度前向。当前冻结S0的overlap文件不能直接作为后续学生更新的训练概率或梯度。
 
@@ -318,7 +325,7 @@ T沿同一源文本批量评分，计算两种师生overlap
 
 静态mask记录源文本/token/hash、源checkpoint、学生/教师Top16原始概率来源、兼容规则及指标版本、阈值、O_src、请求/实际mask和引擎位置映射。候选概率单独保存，不覆盖源O_src。
 
-两种指标分别输出前3条的PNG/SVG/CSV/PDF及hash：蓝线为同源无SV重放，橙线为候选前向，散点为实际注入，另存差值。新自由轨迹前缀不同时，不按相同idx相减后声称同状态配对效果。字段和身份见[实现说明](implementation.md)。
+两种指标分别输出前3条的PNG/SVG/CSV/PDF及hash：蓝线为同源无SV重放，橙线为候选前向，散点为实际注入，另存差值。新自由轨迹前缀不同时，不按相同idx相减后声称同状态配对效果。字段和身份见[实现说明](代码框架逻辑.md)。
 
 ### 9.8 教师空间S−T镜像消融（新增，待GPU验收）
 

@@ -520,7 +520,8 @@ def export_artifacts(cfg,run):
             if inode not in seen:unique_bytes+=stat.st_size
             seen[inode]=sha
             files[str(path.relative_to(run))]={'sha256':sha,'bytes':stat.st_size}
-    for path in [run/'config.json',run/'strength_schedule.json',Path(ROOT/cfg['data_dir'])/'questions.json',Path(ROOT/cfg['data_dir'])/'split.json']:
+    membership='train_ids.json' if cfg.get('data_policy')=='all_train' else 'split.json'
+    for path in [run/'config.json',run/'strength_schedule.json',Path(ROOT/cfg['data_dir'])/'questions.json',Path(ROOT/cfg['data_dir'])/membership]:
         if path.exists(): files[str(path.resolve())]={'sha256':file_sha256(path),'bytes':path.stat().st_size}
     atomic_json(run/'artifact_index.json',{'schema':1,'files':files,'unique_bytes':unique_bytes,
         'experiment':cfg.get('experiment'),'phase':cfg.get('phase'),

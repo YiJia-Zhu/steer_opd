@@ -1,0 +1,60 @@
+{
+  "scope": "48 existing real records, one parameter, 16 questions x baseline/replay/SV; temporary Parquet/Zstd variants only",
+  "original_outputs_modified": false,
+  "production_retention_policy_changed": false,
+  "results": {
+    "full": {
+      "bytes": 25503503,
+      "MiB": 24.322035789489746,
+      "omitted_fields": [],
+      "reduction_percent": 0.0
+    },
+    "without_span_details": {
+      "bytes": 17343868,
+      "MiB": 16.540401458740234,
+      "omitted_fields": [
+        "unit_metrics",
+        "unit_mean_logps",
+        "broadcast_mean_logps"
+      ],
+      "reduction_percent": 31.994173506282642
+    },
+    "without_span_details_and_deltas": {
+      "bytes": 16741629,
+      "MiB": 15.96606159210205,
+      "omitted_fields": [
+        "unit_metrics",
+        "unit_mean_logps",
+        "broadcast_mean_logps",
+        "delta_overlap",
+        "delta_P_overlap"
+      ],
+      "reduction_percent": 34.35557068376058
+    },
+    "two_metrics_plus_native_scores": {
+      "bytes": 13280267,
+      "MiB": 12.66504955291748,
+      "omitted_fields": [
+        "unit_metrics",
+        "unit_mean_logps",
+        "broadcast_mean_logps",
+        "delta_overlap",
+        "delta_P_overlap",
+        "student_shared_mass",
+        "teacher_shared_mass",
+        "student_top16_mass",
+        "teacher_top16_mass"
+      ],
+      "reduction_percent": 47.92767487666302
+    }
+  },
+  "notes": {
+    "span_details": "Derivable from native Top16/observed logps and shared alignment; not directly read by normal plots/summaries",
+    "delta_fields": "Candidate minus preserved common baseline",
+    "shared_mass_fields": "Currently required by summary code; omission requires reader reconstruction or summary changes",
+    "global_savings": "Not extrapolated from this one-parameter sample",
+    "exploration_dependency": "Probability/residual/chunked exploration methods read unit_metrics directly. Keep shared source diagnostics once, or provide exact reconstruction before omitting candidate diagnostics; do not blanket-delete this field.",
+    "minimal_profile_dependency": "Shared-mass vectors are read by current summaries; the minimal profile is a storage estimate, not an enabled production option.",
+    "native_prerequisites": "CPU reconstruction requires both preserved student and teacher native Top16/observed logps, shared alignment, tokenizer identities and the pinned metric/matching code."
+  }
+}

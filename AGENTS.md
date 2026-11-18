@@ -2,6 +2,12 @@
 
 ## Current authorization and experiment
 
+2026-11-18训练输出位置授权：用户明确只把后续train步骤保存到~/steer_opd_outputs，其他阶段路径保持。configs/ablation.json的train_output_root仅供训练plan使用，输出为~/steer_opd_outputs/step_4_train/ablation/<模型组合>/<数据集>/shared/<运行名>/。允许训练评分服务、准入日志及checkpoint恢复访问这个明确目录；不放宽静态阶段的项目内路径边界，不迁移或恢复旧outputs。训练启动和checkpoint保存均须读取实际目标文件系统的用户配额，不能按整盘剩余空间绕过限制；此次不启动GPU。
+
+2026-11-18最新存储授权：新配置采用retention_policy=minimal_v1。SV bank完整提交并校验后，只清理本运行新建且明确标记为minimal的pooled.pt，保留bank／尺度／有效题集／身份及pool退休凭据；跨参数恢复先核验bank，不要求已退休pool重新出现。OPD仅保留当前批请求／回复／Top16／对齐工作区，有限梯度更新及标量提交成功后清理；不长期保存训练及训练内评测原文、逐轨迹监控或Top16历史。保留每步标量、配置和最新完整模型／优化器／scheduler／RNG／dataloader checkpoint，频率仍每20步及最后一步；新checkpoint同步写盘、SHA校验与latest_complete提交后才淘汰旧版本。覆盖下文历史“池化和训练逐步概率长期保留”约定。此次只改代码、文档并做CPU验证，现有outputs及正在备份的文件保持原字节，不启动GPU，不解除hold。
+
+2026-11-18最新清理授权：用户要求删除全部exploration相关实验，并确认包括OPD诊断和教师基准。已删除exploration源码、outputs各step的exploration分类、对应compar诊断／补充评测及.runtime/diagnostics临时导出；不自动恢复或重启。保留ablation／param、OPD训练本体、共享模型／数据和核心研究稿；固定外部文献已迁至ref/opd_repetition_literature_20261118。清理凭据audit/exploration_cleanup_20261118.json。
+
 2026-11-17最新授权：用户明确启动扩展参数搜索，仅使用物理GPU2／3，已有结果核验复用。固定S−T／教师空间／all／global／方案5，提取与注入同层，教师0-based19／29／39 × Slerp／additive × alpha=.05／.1／.3／.5，共24组，层29的Slerp .05／.1两组引用原完成结果，预计新增22组；旧.2仅保留历史结果。原1000题及700／300划分、上下文2048、seed42、预测位置和FP32池化不变。additive严格为h+alpha×原始global均值差分，系数一次，无额外范数缩放；Slerp仍沿单位方向。层39取final norm前block输出。先CPU检查与逐点GPU验收，再算双指标／图／汇总，0次更新，不做OPD／退火／baseline／独立评测。入口scripts/run_param_search.py，唯一模板parameter_search定义网格，模板hold保持，独立验收配置执行；新搜索身份st_all_global_L19_L29_L39_ops_n1000_seed42_v2，参数名以st_all_global_v2结尾。复用源生成／概率／对齐／同层capture与bank；启用16进程CPU指标与无损gzip。运行中不改冻结Python源码或配置，旧搜索身份与结果不覆盖。此授权取代下文历史GPU／param限制。CPU回归219项及包检查通过，两组旧结果完整性及上游复用已CPU核验。
 
 实验统一命名ablation，唯一执行计划docs/ablation.md，唯一配置configs/ablation.json，手动入口scripts/run_ablation.sh，主编排scripts/run_ablation.py。当前phase=overlap；原100/1000题T−S四组已完成，新增教师S−T待GPU验收；param参数实验与baseline方法对比均为后续计划，不自动执行。新输出遵循输出结构.md：outputs/step_<编号>_<阶段>/<RUN_NAME>/<模型组合>/<训练数据集>/<shared或测试集>/<PARAM_NAME>/，RUN_NAME表示ablation／param／compar；100／1000题输入现均在step0各自PARAM_NAME下，划分与内容不变；原runs／data／logs已移除。完整研究稿保留方法背景，实验进度以ablation计划为准。
@@ -10,7 +16,7 @@
 
 固定T=Qwen3.5-35B-A3B、S=Qwen3-4B。Slerp alpha=.1，75%单层26（36 blocks，0-based）；固定T−S方向，all/static_overlap × global/per_question完整4方案，固定强度及共同无SV基线，S0冻结、同源前缀、0更新。仅允许用户本轮明确新增的教师S−T镜像轴，不自动扩展其他方向或层/强度网格。
 
-当前唯一配置模板configs/ablation.json；权威说明docs/ablation.md、docs/implementation.md及用户完整研究稿。2026-11-14按用户要求移除旧实验入口/训练与动态门控/下载代码及旧配置，仅保留当前调用链和显式HF数值参考。不为历史兼容重新引入旧代码；后续OPD按独立任务实现。
+当前唯一配置模板configs/ablation.json；权威说明docs/ablation.md、docs/代码框架逻辑.md及用户完整研究稿。2026-11-14按用户要求移除旧实验入口/训练与动态门控/下载代码及旧配置，仅保留当前调用链和显式HF数值参考。不为历史兼容重新引入旧代码；后续OPD按独立任务实现。
 
 2026-11-14新增用户手动启动入口scripts/run_ablation.sh：开头定义物理GPU池、方案ID和超参数，默认--check仅CPU预览；只有用户显式--run才在新PARAM_NAME下启动小样本GPU验收，师生两模型通过后生成带验收凭据的独立配置并执行所选方案。原模板hold保持不变，用户本轮明确要求代理启动4组overlap面板范围。默认4方案/Slerp0.1/层26；用户显式修改参数或选择子集才改变运行配置，不自动网格搜索。已有run配置不可改；物理GPU池可在恢复时更换，仍只用指定池内的空闲卡，最多两张。
 
@@ -45,7 +51,7 @@ CPU测试用source scripts/runtime_env.sh后CUDA_VISIBLE_DEVICES='' "$STEER_OPD_
 
 ## Reproducibility, resume and logs
 
-用户2026-11-14要求统一seed42（每个请求也42，不用42+i），在保留逻辑/吞吐前提提高可复现性。子进程启动前固定PYTHONHASHSEED；配置、支持、数值设置、代码/包/权重/引擎身份留档。GPU诊断确认学生批形状数值波动影响零干预/重放检查，因此Qwen3-4B的生成/capture/评分统一启用vLLM batch-invariant，T保留默认，自动调度/图保留；吞吐影响未做正式规模结论，不承诺跨硬件逐bit一致。
+用户2026-11-17最新明确：OPD每道题的4条rollout固定分别使用seed42／43／44／45，其他题和后续批次复用这四个值，取消整批递增。在分发worker之前按每题rollout序号分配并核验，重试／resume不依赖worker调度或进程计数器；基础seed、评测每请求及既有overlap／SV每请求仍42。旧formal_v3同题四条回答相同，已标记invalid_sampling；整批递增的formal_v4已按用户纠正停止、0次更新。新formal_v5_seed42to45从初始学生重跑，禁止继承旧训练状态，只用两张空闲卡。子进程启动前固定PYTHONHASHSEED；配置、支持、数值设置、代码/包/权重/引擎身份留档。GPU诊断确认学生批形状数值波动影响零干预/重放检查，因此Qwen3-4B的生成/capture/评分统一启用vLLM batch-invariant，T保留默认，自动调度/图保留；吞吐影响未做正式规模结论，不承诺跨硬件逐bit一致。
 恢复粒度固定为engine_call：整批教师参考生成、整批学生源生成、整批S0教师/自身capture、2份bank、每角色整批概率评分、每个完整候选（含baseline）。每次公开generate/capture调用连续运行，返回后统一处理与保存，StageCheckpoint用SHA清单和原子complete.json提交；没有标记的当前整批重算，已提交阶段/候选完整复用。不在引擎内逐请求落盘，不自定义enqueue/step调度，不保存KV/RNG。源/教师概率、池化均值/范数、bank/尺度/mask/指标和代码/权重内容清单保留供后续训练，逐token隐状态不保存，新的前缀/checkpoint仍须重算对应概率与激活。
 用原命令加--execute --resume，绝不绕过hold。完整缓存先CPU校验，无需GPU；仍存活的旧监督器接管等待，不重复启动。每阶段单写入锁，Ctrl+C/SIGTERM处理仅影响本项目自有子进程组。
 外层步骤/阶段不显示tqdm，只打印带时间的当前阶段、开始/结束、耗时及缓存/失败；EasySteer/vLLM原生加载、生成、评分/capture的tqdm实时保留，仅更新内存计数。15秒心跳与完整JSON事件只写events.jsonl/progress.json，不在终端刷屏；console.log/startup.log保留阶段文本及原生输出。结构化日志记录北京时间起止、排队/活跃/墙钟时间、恢复数、前向完成数、已提交数与ETA；completed不等于committed。首条未完成或异质阶段总ETA未知时不伪造。scripts/show_ablation_progress.py --watch只读查看，不启动实验。

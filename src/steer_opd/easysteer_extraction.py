@@ -8,6 +8,7 @@ from steer_opd.easysteer_static import create_engine
 from steer_opd.extraction import encode_answer
 from steer_opd.resumable_core import atomic_json
 from steer_opd.experiment_runtime import Progress
+from steer_opd.generation_policy import presence_penalty
 
 
 def capture_budgets(selected_rows, hidden_size, layer_count, scheduled_tokens):
@@ -87,6 +88,7 @@ def extract_all(config, tokenizer, inputs, pooled):
         with progress.phase_scope('continuous_capture'):
             capture=hs.capture(WithProgress(),[{'prompt_token_ids':w[1]} for w in work],
                 max_tokens=1,layers=layers,dtype='bfloat16',steering=False,seed=42,
+                presence_penalty=presence_penalty(config),
                 per_prompt_selects=[SelectSpec(prompt_positions=w[2]) for w in work],
                 **budgets)
         if list(capture.layer_ids)!=sorted(layers) or len(capture.outputs)!=len(work):

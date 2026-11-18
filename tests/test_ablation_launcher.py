@@ -30,11 +30,19 @@ def test_selected_schemes_and_hyperparameters_reach_actual_candidate_jobs(launch
     assert cfg['startup_hf_parity'] is False
     assert cfg['experiment']=='ablation' and cfg['phase']=='overlap'
     assert cfg['run_dir']==cfg['step_dirs']['3']
-    assert cfg['param_name']=='n1000_slerp0.3_layer17_seed42_v1'
+    assert cfg['param_name']=='n1000_slerp0.3_layer17_seed42_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1'
+    assert cfg['presence_penalty']==job['presence_penalty']==2.
     assert cfg['stop_after']=='panel' and cfg['strength_policies']==['fixed']
     assert cfg['gpu_acceptance_receipt']==cfg['run_dir']+'/metadata/acceptance/passed.json'
     single=launcher.build_config(launcher.parser().parse_args(['--schemes','scheme_04']))
     assert single['confirm_top_n']==1
+
+
+def test_explicit_presence_control_has_its_own_output_identity(launcher):
+    default=launcher.build_config(launcher.parser().parse_args([]))
+    control=launcher.build_config(launcher.parser().parse_args(['--presence-penalty','0']))
+    assert default['presence_penalty']==2. and control['presence_penalty']==0.
+    assert default['run_dir']!=control['run_dir'] and '_pp0_' in control['param_name']
 
 
 @pytest.mark.parametrize('hf',[False,True])
@@ -60,7 +68,7 @@ def test_hf_validation_runs_only_when_explicitly_enabled(launcher,tmp_path,monke
 @pytest.mark.parametrize('options',[
     ['--schemes','1,1'],['--schemes','5'],['--schemes','typo'],['--alpha','1.1'],['--layer','36'],
     ['--gpu-ids','0','--teacher-tp','2'],['--gpu-ids','0,0'],['--gpu-memory','1'],['--wait-seconds','-1'],
-    ['--run-name','../escape'],['--confirm-top-n','0']])
+    ['--run-name','../escape'],['--confirm-top-n','0'],['--presence-penalty','2.1'],['--presence-penalty','nan']])
 def test_invalid_launch_settings_fail_before_any_gpu_action(launcher,options):
     with pytest.raises((ValueError,SystemExit)):launcher.build_config(launcher.parser().parse_args(options))
 

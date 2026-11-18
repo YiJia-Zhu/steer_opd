@@ -1,0 +1,39 @@
+{
+  "authorization": "user explicitly requested deletion of test outputs before formal training",
+  "paths": [
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_st_shared2_e2e_acceptance_20261117_v1",
+    ".runtime/verl_training/verl_st_shared2_e2e_acceptance_20261117_v1.launch.log",
+    ".runtime/verl_training/verl_st_shared2_e2e_acceptance_20261117_v1.launch.json",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_st_shared2_e2e_acceptance_20261117_v2",
+    ".runtime/verl_training/verl_st_shared2_e2e_acceptance_20261117_v2.launch.log",
+    ".runtime/verl_training/verl_st_shared2_e2e_acceptance_20261117_v2.launch.json",
+    ".runtime/placement_probe_20261117",
+    "r/session_2026-11-17_18-57-24_518455_3360533"
+  ],
+  "small_prior_evidence": {
+    "verl_st_shared2_e2e_acceptance_20261117_v1/shared_gpu_admission/exit.json": {
+      "exit_code": 1,
+      "pid": 3357230,
+      "start_ticks": 214110023
+    },
+    "verl_st_shared2_e2e_acceptance_20261117_v2/metadata/acceptance_receipt.json": {
+      "status": "passed",
+      "plan_binding": "8d87ef36e0bbaafc560ff75211af6a3027456c386dc94f7d060aee10b3d3a6c4",
+      "roles": [
+        "student_fsdp_rollout",
+        "teacher_scoring"
+      ],
+      "loss_type": "traditional_opd",
+      "resource_mode": "shared_two_gpu",
+      "phase_handover_test": "passed",
+      "actual_optimizer_updates": 2,
+      "checkpoint_step": 2,
+      "run_purpose": "two_step_gpu_acceptance"
+    },
+    "verl_st_shared2_e2e_acceptance_20261117_v2/shared_gpu_admission/exit.json": {
+      "exit_code": 0,
+      "pid": 3360533,
+      "start_ticks": 214116684
+    }
+  }
+}

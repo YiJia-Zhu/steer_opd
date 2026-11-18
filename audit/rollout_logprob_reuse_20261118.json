@@ -1,0 +1,82 @@
+{
+  "at": "2026-11-18T17:03:47.642787+08:00",
+  "status": "cpu_verified_gpu_not_run",
+  "source": "vllm_rollout_raw_logprobs_v1",
+  "changed_file_sha256": {
+    "src/steer_opd/training/verl_adapter.py": "25bdb4acb1887ba81fe76f387d21d5f326aa49e8dbc82477eafd52c4f7a66109",
+    "src/steer_opd/training/verl_plan.py": "567741e85f4424b8584b41e7c9044e8fde85cfe8090b181b9c1a7a2362f38635",
+    "src/steer_opd/training/verl_trainer.py": "37cf8346fc2d12abdc6c6f1b621c54320a924b6dc2e14c7be3d5c7cfad03f55b",
+    "src/steer_opd/training/verl_entry.py": "ebc1bf94a00652cf5e257f69447220702ffd97bd306f9cbf3053212c7294a4c8",
+    "src/steer_opd/training/resume_handover.py": "755103f9817da8e8a3226f010ddafce3e127aa4cec13eea05f42dac5129ab016",
+    "src/steer_opd/training/rethinking_defaults.py": "aa06350e2f62ff98a7b6d0b474b718ed0309ed1f9bd0d2bce7b54e14b1f2334b",
+    "tests/test_verl_training.py": "4476f2fde31e678408b6a36733cee96728897f0eca53664cdc6019d0b4bc9789",
+    "tests/test_training_acceptance.py": "862da27922630893ee34cf2044fa7af2b4bf9a94d27a0de906fe2e70c0f96095",
+    "tests/test_training_overlap.py": "2ab5496f55e4b7c3f94f47f3f93a8d7f54a58a65179d5cbe3b1cfe80026c2891",
+    "scripts/validate_package.py": "9c6a0388919fd10f63b5b5a69d767dc3e4a143f668b5320eea2e4d6bb81028a4",
+    "docs/代码框架逻辑.md": "cfbc7b1520d97b004a8e192c8b4278443664d7fc027a1fa0637b7976b0eeab17",
+    "docs/implementation.md": "0930cf7b500223a5d91e80bceb1950eb04d38ee600c18e02d76731d7ab75d081",
+    "docs/OPD概率来源统一与Top16方案分析.md": "35053e225d33a96cf241c24476e96df54dc8b465f5e0d01c17996e8406d6318c",
+    "docs/目前代码估计运行时间.md": "e3edaf905b093af2341670450487ec1945fd3459df11dee14f371d5ca6ad0ef7",
+    "src/steer_opd/training/overlap_monitor.py": "c28e5885dafa63abd53210c9098d989d9805ce8c6afac3ece2462caf5333f2aa",
+    "src/steer_opd/training/rollout_logprobs.py": "0c80ee1b1ef0af2fe09c2bf60e0ced57f2bc5968bf2ce361492ad8bf67f98925",
+    "tests/test_training_rollout_logprobs.py": "ea38b8346d4abfeaa13b24ddefac654d8cf61d31ee2339988a46f4e82805f8ea"
+  },
+  "full_cpu_tests": "292 passed",
+  "test_log": "audit/rollout_logprob_reuse_20261118_tests.log",
+  "package_validation": "passed",
+  "package_log": "audit/rollout_logprob_reuse_20261118_package.log",
+  "real_cached_trajectories": 8,
+  "real_cached_valid_student_tokens": 7587,
+  "max_advantage_sum_error_vs_vllm_proxy": 9.842279382610286e-07,
+  "actual_pinned_verl_bypass_and_packed_custom_loss": "passed",
+  "gradient_boundary_check": "Matches -A/N at the exact shifted native prediction positions; cached student and teacher tensors have no gradient",
+  "synthetic_current_vs_rollout_delta": -0.01,
+  "observed_metrics": {
+    "actor/pg_loss": -0.19825132191181183,
+    "actor/train_rollout_logprob_abs_diff_mean": 0.009999999776482582,
+    "actor/train_rollout_logprob_signed_diff_mean": -0.009999999776482582,
+    "actor/train_rollout_logprob_abs_diff_max": 0.010000228881835938
+  },
+  "new_optimizer_updates": 0,
+  "gpu_run": false,
+  "old_formal_v5_config_sha256_unchanged": "d51d4a4e65b5a3df81b7592c4e10ca3557ce71ec7aba6bd23d9e2b77d2175693",
+  "old_formal_v5_plan_binding_unchanged": "3eb46fa90aa8f718e28f78ac877b68b95d38a831fec17b226803a909754e6d97",
+  "old_checkpoint60_model_shard_size_mtime_unchanged": true,
+  "latest_old_formal_update": 68,
+  "new_plan_preview": "audit/rollout_logprob_reuse_20261118_plan_preview.json",
+  "ablation_hold_unchanged": "awaiting_user_approval",
+  "limitations": [
+    "No GPU numerical parity test",
+    "No new training throughput measurement",
+    "No accuracy claim"
+  ],
+  "cache_inputs": {
+    "request": {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/scorer/requests/657c62e8c83d3988b9f584e2557a1672a6e611bdff9efb0c6a75319cc98c6482.json",
+      "sha256": "4b4421fc2ce8194fa948dd99a8b757e280d147522fe30cf33e80aa50faa33633"
+    },
+    "student": {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/overlap/step_000001/student_top16.pt.gz",
+      "sha256": "f4f4da0aff270acd6b005a8e7e8f5577a59207c5ee834987b825fee8b22b4573"
+    },
+    "teacher": {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/scorer/cache/teacher/657c62e8c83d3988b9f584e2557a1672a6e611bdff9efb0c6a75319cc98c6482/top16.pt.gz",
+      "sha256": "8d10c203fe906b1d6c06d098f2364a2b98c04225ee28b22e9e0350be6480076c"
+    }
+  },
+  "cached_trajectory_ids": [
+    "4fabb814-ee6d-49ec-9f85-9d472699bdf4",
+    "9ff6f225-56e7-45d8-9038-988f8ed23b02",
+    "b31fa16f-e386-4eb3-976f-c7c342c42005",
+    "f0a06124-17d4-4d26-8568-03c19b8f9caf",
+    "2e51659a-1303-465c-a0fb-4ce2b1289e18",
+    "191ffd52-dd18-4eec-a9be-58e511680c63",
+    "a02f24e2-f57b-47fe-8af5-a3d093b1f598",
+    "6dd7cb9f-5509-4d79-b668-c0d83c5ad481"
+  ],
+  "package_source_files_parsed": 85,
+  "package_checked_local_links": 209,
+  "test_log_sha256": "0236cfc46c486ad194288473eb94e69857b6fdeef2a441d6140d08c5f0019cb1",
+  "package_log_sha256": "c9cbdbf39af0a056965da7a75443ebda7bce2eeed9cb0c97a4d659e4709eb57e",
+  "model_forwards_in_cache_replay": 0
+}

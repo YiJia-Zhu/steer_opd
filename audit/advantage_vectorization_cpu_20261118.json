@@ -1,0 +1,41 @@
+{
+  "scope": "CPU distillation_loss microbenchmark, not a complete training step or GPU acceptance",
+  "inputs": "saved real alignment and teacher observed logprobs; deterministic synthetic FP32 student logprobs, seed42",
+  "request_file": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/scorer/requests/1ec4c06b88c11fea81c7d83396a22a266148f32e2fd2386b7add34eb41ba25e3.json",
+  "request_bytes": 729849404,
+  "source_id": "1e1f79a0-9575-42b4-8ae8-cd1473fe3959",
+  "row_index": 7,
+  "alignment_id": "9d94b7eab185c96efe8a8902d97822432698c453a5c8c40b81900c5045c86409",
+  "student_tokens": 3281,
+  "teacher_tokens": 3380,
+  "valid_spans": 3274,
+  "torch_version": "2.13.0+cu130",
+  "torch_threads": 8,
+  "cuda_visible_devices": "",
+  "iterations_per_round": 8,
+  "rounds": 3,
+  "scalar": {
+    "seconds_per_trajectory": [
+      0.07172035740222782,
+      0.07470429799286649,
+      0.07254899624967948
+    ],
+    "median_seconds_per_trajectory": 0.07254899624967948
+  },
+  "vectorized": {
+    "seconds_per_trajectory": [
+      0.008084811619482934,
+      0.007829839538317174,
+      0.007768589362967759
+    ],
+    "median_seconds_per_trajectory": 0.007829839538317174
+  },
+  "speedup": 9.265706646304025,
+  "max_abs_advantage_difference": 0.0,
+  "loss_abs_difference": 0.0,
+  "new_source_sha256": "1f8dbe531177bdaf7da2f99205542b7b6c1d5a9c674d18143bb851d9f5b48a99",
+  "cpu_regression": "303 passed",
+  "package_validation": "passed",
+  "gpu_training_started": false,
+  "json_request_protocol_changed": false
+}

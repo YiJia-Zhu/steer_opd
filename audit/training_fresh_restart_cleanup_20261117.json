@@ -1,0 +1,279 @@
+{
+  "authorization": "user requested stop, delete unused prior training outputs and restart from scratch",
+  "controller_cancelled": {
+    "pid": 4111498,
+    "start_ticks": 215210532,
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/overlap_update/handoff.py"
+    ],
+    "scope": "one checkpoint-bound continuation for user-requested Top16 monitoring"
+  },
+  "stopped_roots": [
+    {
+      "pid": 3541773,
+      "start_ticks": 214420978
+    },
+    {
+      "pid": 3542335,
+      "start_ticks": 214421904
+    },
+    {
+      "pid": 3546209,
+      "start_ticks": 214423984
+    },
+    {
+      "pid": 3541774,
+      "start_ticks": 214420979
+    },
+    {
+      "pid": 3616655,
+      "start_ticks": 214529913
+    },
+    {
+      "pid": 3617175,
+      "start_ticks": 214530835
+    },
+    {
+      "pid": 3620848,
+      "start_ticks": 214532821
+    },
+    {
+      "pid": 4043253,
+      "start_ticks": 215107468
+    }
+  ],
+  "owned_processes_checked": 122,
+  "remaining_owned_pids": [],
+  "old_runs": [
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v2"
+  ],
+  "deletion_plan": [
+    {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+      "files": 28,
+      "logical_bytes": 2489479,
+      "committed_updates": [],
+      "checkpoint_tracker": null,
+      "deleted": true
+    },
+    {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v2",
+      "files": 123,
+      "logical_bytes": 6631904445,
+      "committed_updates": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "checkpoint_tracker": null,
+      "deleted": true
+    }
+  ],
+  "deleted_runs": [
+    {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+      "files": 28,
+      "logical_bytes": 2489479,
+      "committed_updates": [],
+      "checkpoint_tracker": null,
+      "deleted": true
+    },
+    {
+      "path": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v2",
+      "files": 123,
+      "logical_bytes": 6631904445,
+      "committed_updates": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "checkpoint_tracker": null,
+      "deleted": true
+    }
+  ],
+  "patch_applied": {
+    "src/steer_opd/training/verl_plan.py": {
+      "original_sha256": "6ff1483ac46be39c6099a08e90b35261284b3d0e4f24c0b55b592b69898b64d3",
+      "staged_sha256": "6f2283a986ca14f966f59697c26983b2d0c01766637fd061ea5a81bdc744b69a",
+      "staged_path": ".runtime/overlap_update/sources/verl_plan.py"
+    },
+    "src/steer_opd/training/verl_entry.py": {
+      "original_sha256": "95b17aad194fc22f4f16f58033c836ff833d4eb7aae5bb8ac4520b31aaed190d",
+      "staged_sha256": "6106e25639e715c27b02cc7b7645f2d1fcf21468bf6d2e7b77a90ba13fa5fa17",
+      "staged_path": ".runtime/overlap_update/sources/verl_entry.py"
+    },
+    "src/steer_opd/training/scorer_service.py": {
+      "original_sha256": "6d98a17c6ab8e43a7ef4b5c30319ae07518a67b3b5a4e2d6c139c994d2df8451",
+      "staged_sha256": "2f3a618d7455fb7b03efbc96c5ec6c16797379e7a985987edc625266d2289078",
+      "staged_path": ".runtime/overlap_update/sources/scorer_service.py"
+    },
+    "src/steer_opd/training/scorer_client.py": {
+      "original_sha256": "98920e80ee914ba2fe0e0a1ff85b8018be00b72d6aff0805dce424e152db76a5",
+      "staged_sha256": "0ca0d0cd6bf2fd64706c4f9ea47286564a4db59e7aa5c8ffcedc3252b8f28c3c",
+      "staged_path": ".runtime/overlap_update/sources/scorer_client.py"
+    },
+    "src/steer_opd/training/verl_trainer.py": {
+      "original_sha256": "7cd4b27a5232dd6df527edb7d3e867e8523b62c4a28e25849e51ab0c1e32108f",
+      "staged_sha256": "866bbb4ce0b4fa3d727116a4e09971fee90e9eee3804037a4a9a53eee4b42d93",
+      "staged_path": ".runtime/overlap_update/sources/verl_trainer.py"
+    }
+  },
+  "restart_mode": "fresh_initial_student_no_resume",
+  "metric_enabled_from_step": 1,
+  "cleanup_time": 1794925002.1803572,
+  "actual_source_cpu_tests": {
+    "passed": 51,
+    "seconds": 14.4,
+    "exit_code": 0
+  },
+  "fresh_launcher": {
+    "pid": 4180729,
+    "start_ticks": 215322539,
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "-m",
+      "steer_opd.training.verl_entry",
+      "--run",
+      "--gpu-ids",
+      "0,1",
+      "--run-name",
+      "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v3_overlap",
+      "--overlap-metrics"
+    ],
+    "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+    "time": 1794925095.5055664,
+    "restart_mode": "fresh_initial_student_no_resume",
+    "metric_enabled_from_step": 1,
+    "run_output": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v3_overlap"
+  },
+  "restart_status": "waiting_for_two_idle_gpus",
+  "last_gpu_snapshot": [
+    {
+      "index": 0,
+      "uuid": "GPU-79eb19c8-2acb-2445-b3c6-9f5728c1bb6c",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 0,
+      "has_compute_process": false,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 1,
+      "uuid": "GPU-f6057057-a493-11bb-aee3-7b3df35011ef",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 0,
+      "utilization": 100,
+      "has_compute_process": false,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 2,
+      "uuid": "GPU-351e102b-8c81-a10b-a483-483f0d69828c",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 57411,
+      "utilization": 91,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 3,
+      "uuid": "GPU-59d1b13b-b8b1-eec5-ded5-dea28e3a826e",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 57411,
+      "utilization": 100,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 4,
+      "uuid": "GPU-3f3add2a-399a-b17d-84ff-d9a43f747bb0",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 54465,
+      "utilization": 0,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 5,
+      "uuid": "GPU-17f76845-5d79-933c-affa-2ef7cec12651",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 54047,
+      "utilization": 0,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 6,
+      "uuid": "GPU-d115c176-2398-0734-e910-c56a1ea063ea",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 68715,
+      "utilization": 99,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    },
+    {
+      "index": 7,
+      "uuid": "GPU-a5748c8b-b1d9-b1af-f58f-37407318c093",
+      "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "memory_mib": 57753,
+      "utilization": 99,
+      "has_compute_process": true,
+      "project_owned": false,
+      "driver_version": "580.126.20"
+    }
+  ],
+  "tensorboard_server": {
+    "pid": 4182431,
+    "start_ticks": 215325696,
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "-m",
+      "tensorboard.main",
+      "--logdir",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v3_overlap/logs/tensorboard",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "6006",
+      "--reload_interval",
+      "5",
+      "--load_fast",
+      "false"
+    ],
+    "url": "http://127.0.0.1:6006",
+    "time": 1794925127.072092
+  }
+}

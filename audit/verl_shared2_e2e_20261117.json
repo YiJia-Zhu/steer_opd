@@ -1,0 +1,528 @@
+{
+  "status": "handover_and_two_updates_passed",
+  "run_root": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_st_shared2_e2e_acceptance_20261117_v2",
+  "gpu_ids": [
+    0,
+    1
+  ],
+  "gpu_memory_released": true,
+  "optimizer_updates": 2,
+  "batch_questions": 2,
+  "rollouts_per_question": 4,
+  "formal_100_step_run_started": false,
+  "checkpoint_bytes": 49837440876,
+  "checkpoint_files": [
+    {
+      "path": "checkpoints/global_step_2/actor/extra_state_world_size_2_rank_0.pt",
+      "bytes": 15141
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/extra_state_world_size_2_rank_1.pt",
+      "bytes": 15205
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/fsdp_config.json",
+      "bytes": 46
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/huggingface/chat_template.jinja",
+      "bytes": 4168
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/huggingface/config.json",
+      "bytes": 1592
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/huggingface/generation_config.json",
+      "bytes": 214
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/huggingface/tokenizer.json",
+      "bytes": 11422650
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/huggingface/tokenizer_config.json",
+      "bytes": 692
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/model_world_size_2_rank_0.pt",
+      "bytes": 8823083483
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/model_world_size_2_rank_1.pt",
+      "bytes": 8823083483
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/optim_world_size_2_rank_0.pt",
+      "bytes": 16089906127
+    },
+    {
+      "path": "checkpoints/global_step_2/actor/optim_world_size_2_rank_1.pt",
+      "bytes": 16089906127
+    },
+    {
+      "path": "checkpoints/global_step_2/data.pt",
+      "bytes": 1947
+    },
+    {
+      "path": "checkpoints/latest_checkpointed_iteration.txt",
+      "bytes": 1
+    }
+  ],
+  "checkpoint_restore_tested": false,
+  "cpu_checks": {
+    "passed": 39,
+    "stock_package_validator": "existing seventh-document allowlist failure",
+    "package_validator_with_only_allowlist_extended_in_memory": "passed; frozen script unchanged"
+  },
+  "phases": [
+    {
+      "phase": "queue_for_two_idle_gpus",
+      "step": null,
+      "pid": 3360389,
+      "start_time": "2026-11-17T18:57:14.510684+08:00",
+      "end_time": "2026-11-17T18:57:17.019196+08:00",
+      "seconds": 2.5436349529772997,
+      "status": "completed",
+      "cpu_tree_seconds_before": 1.1199999999999999,
+      "cpu_tree_seconds_after": 1.3,
+      "rss_bytes_after": 733749248
+    },
+    {
+      "phase": "teacher_model_initialization",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T18:57:42.847842+08:00",
+      "end_time": "2026-11-17T18:58:28.314964+08:00",
+      "seconds": 45.506763903889805,
+      "status": "completed",
+      "cpu_tree_seconds_before": 5.779999999999999,
+      "cpu_tree_seconds_after": 112.45,
+      "rss_bytes_after": 12847099904
+    },
+    {
+      "phase": "teacher_initial_sleep",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T18:58:28.384194+08:00",
+      "end_time": "2026-11-17T18:58:35.414950+08:00",
+      "seconds": 7.064835719298571,
+      "status": "completed",
+      "cpu_tree_seconds_before": 111.35,
+      "cpu_tree_seconds_after": 124.73,
+      "rss_bytes_after": 84965515264
+    },
+    {
+      "phase": "frozen_scorer_service_initialization",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T18:57:37.264688+08:00",
+      "end_time": "2026-11-17T18:58:35.643598+08:00",
+      "seconds": 58.4171399041079,
+      "status": "completed",
+      "cpu_tree_seconds_before": 7.609999999999999,
+      "cpu_tree_seconds_after": 133.49,
+      "rss_bytes_after": 86804238336
+    },
+    {
+      "phase": "student_model_and_rollout_initialization",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T18:58:41.487774+08:00",
+      "end_time": "2026-11-17T19:00:08.797395+08:00",
+      "seconds": 87.34833855507895,
+      "status": "completed",
+      "cpu_tree_seconds_before": 138.38,
+      "cpu_tree_seconds_after": 143.23,
+      "rss_bytes_after": 87139020800
+    },
+    {
+      "phase": "student_initial_offload",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:00:08.826740+08:00",
+      "end_time": "2026-11-17T19:00:08.864117+08:00",
+      "seconds": 0.06649758573621511,
+      "status": "completed",
+      "cpu_tree_seconds_before": 143.26,
+      "cpu_tree_seconds_after": 143.29999999999998,
+      "rss_bytes_after": 87139020800
+    },
+    {
+      "phase": "checkpoint_load",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:00:08.900727+08:00",
+      "end_time": "2026-11-17T19:00:08.932270+08:00",
+      "seconds": 0.059779325034469366,
+      "status": "completed",
+      "cpu_tree_seconds_before": 143.32999999999998,
+      "cpu_tree_seconds_after": 143.35999999999999,
+      "rss_bytes_after": 87139020800
+    },
+    {
+      "phase": "student_rollout_weight_sync",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:00:08.959468+08:00",
+      "end_time": "2026-11-17T19:00:12.764860+08:00",
+      "seconds": 3.8323479229584336,
+      "status": "completed",
+      "cpu_tree_seconds_before": 143.39,
+      "cpu_tree_seconds_after": 143.49,
+      "rss_bytes_after": 87139020800
+    },
+    {
+      "phase": "student_rollout_sleep",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:07.299799+08:00",
+      "end_time": "2026-11-17T19:01:07.418458+08:00",
+      "seconds": 0.16159438667818904,
+      "status": "completed",
+      "cpu_tree_seconds_before": 144.41,
+      "cpu_tree_seconds_after": 144.47,
+      "rss_bytes_after": 96887230464
+    },
+    {
+      "phase": "student_logprob",
+      "step": 1,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:07.466609+08:00",
+      "end_time": "2026-11-17T19:01:11.261445+08:00",
+      "seconds": 3.8357262876816094,
+      "status": "completed",
+      "cpu_tree_seconds_before": 144.59,
+      "cpu_tree_seconds_after": 144.86,
+      "rss_bytes_after": 96897728512
+    },
+    {
+      "phase": "student_model_optimizer_offload",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:11.334673+08:00",
+      "end_time": "2026-11-17T19:01:11.369787+08:00",
+      "seconds": 0.06864325422793627,
+      "status": "completed",
+      "cpu_tree_seconds_before": 144.98,
+      "cpu_tree_seconds_after": 145.01,
+      "rss_bytes_after": 96899825664
+    },
+    {
+      "phase": "cpu_tokenizer_span_alignment",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:11.400964+08:00",
+      "end_time": "2026-11-17T19:01:11.635813+08:00",
+      "seconds": 0.2656525461934507,
+      "status": "completed",
+      "cpu_tree_seconds_before": 145.04,
+      "cpu_tree_seconds_after": 145.27,
+      "rss_bytes_after": 96931282944
+    },
+    {
+      "phase": "teacher_model_wake",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:01:11.949355+08:00",
+      "end_time": "2026-11-17T19:01:13.362676+08:00",
+      "seconds": 1.4564203498885036,
+      "status": "completed",
+      "cpu_tree_seconds_before": 126.13000000000001,
+      "cpu_tree_seconds_after": 128.78,
+      "rss_bytes_after": 84965515264
+    },
+    {
+      "phase": "teacher_wake_ack",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:11.904597+08:00",
+      "end_time": "2026-11-17T19:01:13.443358+08:00",
+      "seconds": 1.5761475092731416,
+      "status": "completed",
+      "cpu_tree_seconds_before": 145.55,
+      "cpu_tree_seconds_after": 148.35,
+      "rss_bytes_after": 96964345856
+    },
+    {
+      "phase": "teacher_model_scoring",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:01:13.495121+08:00",
+      "end_time": "2026-11-17T19:01:16.548568+08:00",
+      "seconds": 3.093514942098409,
+      "status": "completed",
+      "cpu_tree_seconds_before": 128.91,
+      "cpu_tree_seconds_after": 138.93,
+      "rss_bytes_after": 85414182912
+    },
+    {
+      "phase": "teacher_model_sleep",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:01:16.687368+08:00",
+      "end_time": "2026-11-17T19:01:18.054085+08:00",
+      "seconds": 1.4028692757710814,
+      "status": "completed",
+      "cpu_tree_seconds_before": 139.25,
+      "cpu_tree_seconds_after": 142.91,
+      "rss_bytes_after": 85414182912
+    },
+    {
+      "phase": "teacher_sleep_ack",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:16.684965+08:00",
+      "end_time": "2026-11-17T19:01:18.122039+08:00",
+      "seconds": 1.475954984780401,
+      "status": "completed",
+      "cpu_tree_seconds_before": 158.79999999999998,
+      "cpu_tree_seconds_after": 162.5,
+      "rss_bytes_after": 97379950592
+    },
+    {
+      "phase": "teacher_scoring_phase",
+      "step": 1,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:11.300930+08:00",
+      "end_time": "2026-11-17T19:01:18.156594+08:00",
+      "seconds": 6.890938386786729,
+      "status": "completed",
+      "cpu_tree_seconds_before": 144.95,
+      "cpu_tree_seconds_after": 162.54000000000002,
+      "rss_bytes_after": 97379950592
+    },
+    {
+      "phase": "student_update",
+      "step": 1,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:18.966705+08:00",
+      "end_time": "2026-11-17T19:01:28.878399+08:00",
+      "seconds": 9.953135747928172,
+      "status": "completed",
+      "cpu_tree_seconds_before": 163.84,
+      "cpu_tree_seconds_after": 164.06,
+      "rss_bytes_after": 97384144896
+    },
+    {
+      "phase": "student_rollout_weight_sync",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:01:28.916082+08:00",
+      "end_time": "2026-11-17T19:01:30.638788+08:00",
+      "seconds": 1.7564194523729384,
+      "status": "completed",
+      "cpu_tree_seconds_before": 164.1,
+      "cpu_tree_seconds_after": 164.15,
+      "rss_bytes_after": 97370611712
+    },
+    {
+      "phase": "student_rollout_sleep",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:12.739101+08:00",
+      "end_time": "2026-11-17T19:02:12.852169+08:00",
+      "seconds": 0.15406897896900773,
+      "status": "completed",
+      "cpu_tree_seconds_before": 164.72,
+      "cpu_tree_seconds_after": 164.76999999999998,
+      "rss_bytes_after": 97370611712
+    },
+    {
+      "phase": "student_logprob",
+      "step": 2,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:12.886533+08:00",
+      "end_time": "2026-11-17T19:02:14.823331+08:00",
+      "seconds": 1.9691908578388393,
+      "status": "completed",
+      "cpu_tree_seconds_before": 164.84,
+      "cpu_tree_seconds_after": 165.03,
+      "rss_bytes_after": 97372708864
+    },
+    {
+      "phase": "student_model_optimizer_offload",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:14.892966+08:00",
+      "end_time": "2026-11-17T19:02:14.925764+08:00",
+      "seconds": 0.0651866071857512,
+      "status": "completed",
+      "cpu_tree_seconds_before": 165.14,
+      "cpu_tree_seconds_after": 165.17,
+      "rss_bytes_after": 97372708864
+    },
+    {
+      "phase": "cpu_tokenizer_span_alignment",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:14.956774+08:00",
+      "end_time": "2026-11-17T19:02:15.542097+08:00",
+      "seconds": 0.6160881579853594,
+      "status": "completed",
+      "cpu_tree_seconds_before": 165.2,
+      "cpu_tree_seconds_after": 165.79,
+      "rss_bytes_after": 97383194624
+    },
+    {
+      "phase": "teacher_model_wake",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:02:15.821414+08:00",
+      "end_time": "2026-11-17T19:02:17.252398+08:00",
+      "seconds": 1.4715371099300683,
+      "status": "completed",
+      "cpu_tree_seconds_before": 143.41,
+      "cpu_tree_seconds_after": 146.07,
+      "rss_bytes_after": 85414182912
+    },
+    {
+      "phase": "teacher_wake_ack",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:15.799216+08:00",
+      "end_time": "2026-11-17T19:02:17.347693+08:00",
+      "seconds": 1.5889408998191357,
+      "status": "completed",
+      "cpu_tree_seconds_before": 166.07,
+      "cpu_tree_seconds_after": 168.9,
+      "rss_bytes_after": 97410379776
+    },
+    {
+      "phase": "teacher_model_scoring",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:02:17.427498+08:00",
+      "end_time": "2026-11-17T19:02:19.900586+08:00",
+      "seconds": 2.5132496459409595,
+      "status": "completed",
+      "cpu_tree_seconds_before": 146.24,
+      "cpu_tree_seconds_after": 154.57,
+      "rss_bytes_after": 85460873216
+    },
+    {
+      "phase": "teacher_model_sleep",
+      "step": null,
+      "pid": 3364128,
+      "start_time": "2026-11-17T19:02:19.989030+08:00",
+      "end_time": "2026-11-17T19:02:21.362998+08:00",
+      "seconds": 1.4104157770052552,
+      "status": "completed",
+      "cpu_tree_seconds_before": 154.77,
+      "cpu_tree_seconds_after": 158.48,
+      "rss_bytes_after": 85460873216
+    },
+    {
+      "phase": "teacher_sleep_ack",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:19.990900+08:00",
+      "end_time": "2026-11-17T19:02:21.430643+08:00",
+      "seconds": 1.4804841089062393,
+      "status": "completed",
+      "cpu_tree_seconds_before": 177.54,
+      "cpu_tree_seconds_after": 181.29,
+      "rss_bytes_after": 97429884928
+    },
+    {
+      "phase": "teacher_scoring_phase",
+      "step": 2,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:14.860418+08:00",
+      "end_time": "2026-11-17T19:02:21.465802+08:00",
+      "seconds": 6.640511851757765,
+      "status": "completed",
+      "cpu_tree_seconds_before": 165.10999999999999,
+      "cpu_tree_seconds_after": 181.33,
+      "rss_bytes_after": 97429884928
+    },
+    {
+      "phase": "student_update",
+      "step": 2,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:22.222252+08:00",
+      "end_time": "2026-11-17T19:02:28.418690+08:00",
+      "seconds": 6.23699935991317,
+      "status": "completed",
+      "cpu_tree_seconds_before": 182.57,
+      "cpu_tree_seconds_after": 182.75,
+      "rss_bytes_after": 97429884928
+    },
+    {
+      "phase": "checkpoint_save",
+      "step": 2,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:28.459146+08:00",
+      "end_time": "2026-11-17T19:02:41.249918+08:00",
+      "seconds": 12.826846467796713,
+      "status": "completed",
+      "cpu_tree_seconds_before": 182.79,
+      "cpu_tree_seconds_after": 182.99,
+      "rss_bytes_after": 97423675392
+    },
+    {
+      "phase": "student_rollout_weight_sync",
+      "step": null,
+      "pid": 3363781,
+      "start_time": "2026-11-17T19:02:41.283569+08:00",
+      "end_time": "2026-11-17T19:02:42.817198+08:00",
+      "seconds": 1.5668022041209042,
+      "status": "completed",
+      "cpu_tree_seconds_before": 183.03,
+      "cpu_tree_seconds_after": 183.1,
+      "rss_bytes_after": 97423675392
+    },
+    {
+      "phase": "verl_training_job",
+      "step": null,
+      "pid": 3360533,
+      "start_time": "2026-11-17T18:57:24.099796+08:00",
+      "end_time": "2026-11-17T19:02:43.511963+08:00",
+      "seconds": 319.5262698479928,
+      "status": "completed",
+      "cpu_tree_seconds_before": 7.3500000000000005,
+      "cpu_tree_seconds_after": 863.86,
+      "rss_bytes_after": 123195318272
+    },
+    {
+      "phase": "ray_model_process_shutdown",
+      "step": null,
+      "pid": 3360533,
+      "start_time": "2026-11-17T19:02:43.584667+08:00",
+      "end_time": "2026-11-17T19:02:45.420961+08:00",
+      "seconds": 1.9005913040600717,
+      "status": "completed",
+      "cpu_tree_seconds_before": 632.8000000000001,
+      "cpu_tree_seconds_after": 10.84,
+      "rss_bytes_after": 1071681536
+    }
+  ],
+  "step_metrics": [
+    {
+      "step": 1,
+      "timing_s/gen": 54.474706961307675,
+      "timing_s/step": 77.69528792984784,
+      "training/rollout_logprobs_diff_mean": 0.18059298396110535,
+      "training/rollout_logprobs_diff_max": 10.628686904907227,
+      "response_length/mean": 4248.0
+    },
+    {
+      "step": 2,
+      "timing_s/gen": 42.20870328042656,
+      "timing_s/step": 72.17398146912456,
+      "training/rollout_logprobs_diff_mean": 0.19238704442977905,
+      "training/rollout_logprobs_diff_max": 10.759849548339844,
+      "response_length/mean": 4019.0
+    }
+  ],
+  "sampled_cpu_peak_percent_one_core_100": 636.4928488903124,
+  "numerical_parity": "pending; logged rollout vs recomputed logprob differences are material, not treated as equality",
+  "artifact_sha256": {
+    "metadata/plan.json": "af1db28e04f2e550f2b4702434d96876c11f3734cdf3b59b00a3beb38f02b6c9",
+    "metadata/acceptance_receipt.json": "4d16481082f9ad0316463525ab41310bbb8b672b7cecdc4d518ec5ecd662d652",
+    "logs/training_events.jsonl": "1b70a01089eb0d9262e074b817109a7138ee471cf74bbeb2948e883abe7db311",
+    "logs/phase_timings.csv": "9817bac4c95aa1b039216f4c8e66fcec73e7d15bf719c616dce258ede7c1b428",
+    "logs/resource_usage.csv": "a5ab986007f5a0ad51c29fe5f8cd850a10e2f2b48cf47436f6df25c5c300754e",
+    "shared_gpu_admission/exit.json": "17fa31c17b8828232cdf49e13974d915a1d0b108a8059fa2a4d13cbd4108b2f1"
+  }
+}

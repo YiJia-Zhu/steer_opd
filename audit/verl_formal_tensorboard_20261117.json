@@ -1,0 +1,105 @@
+{
+  "run_name": "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+  "run_root": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+  "status": "running_initial_benchmark_evaluation",
+  "plan_binding": "03eac792a70c3fb64399df7deb11ff15c48bac005fcf8425a02f33314e630bbd",
+  "gpu_ids": [
+    0,
+    1
+  ],
+  "total_steps": 100,
+  "batch_questions": 64,
+  "rollouts_per_question": 4,
+  "training_filter_by_correctness": false,
+  "loss_type": "traditional_opd",
+  "steering": "teacher_S-T_global_all_T29_slerp0.1",
+  "evaluation": {
+    "counts": {
+      "MATH-500": 500,
+      "AIME2025": 30
+    },
+    "sources": {
+      "assets/data/MATH-500/test.jsonl": "35dc41080a3680858b27fa7e0533d2d547825316fc5dafe5d316f4ccc5a06132",
+      "assets/data/AIME2025/aime2025-I.jsonl": "b91b3c96f05d9635d2a0692b124ebe023c1ff59cb19c074275e6c4b349d0659e",
+      "assets/data/AIME2025/aime2025-II.jsonl": "16a2dcfbbf9db1b11f8a69a3ba5e4cac73e3641b19a37e2307e9c12240bbed5e"
+    },
+    "samples_per_question": 1,
+    "metric": "single_sample_accuracy",
+    "grader": "pinned_verl.math_verify",
+    "exact_question_overlap_with_all_1000_sv_questions": 0,
+    "excluded_from_training": true,
+    "student_steering": false
+  },
+  "evaluation_freq": 20,
+  "evaluation_before_train": true,
+  "tensorboard": {
+    "pid": 3541774,
+    "start_ticks": 214420979,
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "-m",
+      "tensorboard.main",
+      "--logdir",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1/logs/tensorboard",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "6006",
+      "--reload_interval",
+      "15",
+      "--load_fast",
+      "false"
+    ],
+    "url": "http://127.0.0.1:6006",
+    "gpu_used": false
+  },
+  "tensorboard_http_status": 200,
+  "observed_tensorboard_runs": [
+    "system",
+    "train"
+  ],
+  "cpu_tests_passed": 44,
+  "formal_hydra_check": "passed",
+  "model_and_initial_weight_sync": "completed",
+  "checkpoint_frequency": 20,
+  "resume_mode": "auto",
+  "acceptance_checkpoint_reused": false,
+  "prior_test_cleanup_manifest": "audit/training_test_cleanup_20261117.json",
+  "available_gib_at_launch": 179.60945510864258,
+  "last_phase": {
+    "time": "2026-11-17T19:50:48.879950+08:00",
+    "event": "phase_start",
+    "pid": 3545772,
+    "phase": "bare_student_benchmark_evaluation",
+    "step": 0
+  },
+  "code_provenance": {
+    "scripts/run_on_idle_gpus.py": "06c25af22a26f588995f632486dc6946e762e0c5e005b973e956f416dcdba1aa",
+    "src/steer_opd/compass_alignment.py": "4ea54a54a785b6eaf98085f24853200c411605697a54c9b88ef2bb5026db9314",
+    "src/steer_opd/easysteer_static.py": "4cd640733b38fb319d8d251075c69720b2a694658e61359db5297ae18bbcec3b",
+    "src/steer_opd/easysteer_worker.py": "bf82158c4813195327d1d01da385bee4644ee58320c69dd32d310742fbec0f77",
+    "src/steer_opd/training/__init__.py": "125e07d33e38f0cdff1d9231da8bbd2618067fac3ade7da91466008cd95be88f",
+    "src/steer_opd/training/__main__.py": "42fa3d0382b1cba4f34023666b01227d18e0263d851f7bd60025f43d2a53914d",
+    "src/steer_opd/training/benchmarks.py": "1693ed1f1345184eb515e8adfe34789c24db327c55be83d4d7664bc9187c6dbd",
+    "src/steer_opd/training/config.py": "77174ce0b8f872aa0ae49882d51a2482c69de9a33ee139c22c799eb0c724ca68",
+    "src/steer_opd/training/idle_launch.py": "88ca1c817a1123165bb43abd5b70f5d84958afd19b1b49af8415261a923a3b65",
+    "src/steer_opd/training/losses.py": "b4cb1acea73772522ad6eef81329bffec0d3f07eade587eb1326da6ac4db90e4",
+    "src/steer_opd/training/placement_probe.py": "a8a9d167b1d5a82badbd6631be34195ff69c675cd811175d5a448a97e7d1f2d2",
+    "src/steer_opd/training/process_cleanup.py": "d1a4f569038d9dcae0842011f0e63b1a407c52d1b02e558e1d3c9dc79dca4cc4",
+    "src/steer_opd/training/rethinking_defaults.py": "9cb7fb9e397c273b5a5231398ffd0a4c8480c2165bb723856beda036e13f5c4f",
+    "src/steer_opd/training/scorer_client.py": "98920e80ee914ba2fe0e0a1ff85b8018be00b72d6aff0805dce424e152db76a5",
+    "src/steer_opd/training/scorer_service.py": "6d98a17c6ab8e43a7ef4b5c30319ae07518a67b3b5a4e2d6c139c994d2df8451",
+    "src/steer_opd/training/scoring.py": "f8f174b69f8acbe014f6be7ed3f56b827fd64abad895ebb3a13f403a1f4c98c2",
+    "src/steer_opd/training/shared_pool.py": "2ae65e9d7aa25c0dcd003876ba1b43baaa7fca87c7308d8328aa0e81be6dd778",
+    "src/steer_opd/training/sleep_engine.py": "b63430f127cfa14bf2e301bce2fbd4df557ab164131678d174c306ebc9696ed1",
+    "src/steer_opd/training/telemetry.py": "4eaa688c8ee815e9ca5a63f4cf148ccc5397216ee3a1a0c1bc93d78dab81c7bb",
+    "src/steer_opd/training/verl_adapter.py": "d80f14f50058e768330e8f279607e57b0a118cf64bc86600f068a4021d9414aa",
+    "src/steer_opd/training/verl_agent.py": "debebccafd3091c551ec636fbfde1e021546685672ad9898006981f98f694004",
+    "src/steer_opd/training/verl_agent.yaml": "52dda37b46870dbb2ffcae88292f7a0eec0871142fd0405f84269b4ca0670a06",
+    "src/steer_opd/training/verl_entry.py": "95b17aad194fc22f4f16f58033c836ff833d4eb7aae5bb8ac4520b31aaed190d",
+    "src/steer_opd/training/verl_plan.py": "6ff1483ac46be39c6099a08e90b35261284b3d0e4f24c0b55b592b69898b64d3",
+    "src/steer_opd/training/verl_reward.py": "4f23c236bffe40a83b979cbc92027e1d13cf57c4e59369ec8efb17d6bd7d6013",
+    "src/steer_opd/training/verl_trainer.py": "591312e4749de7df53f4c22b329ae42f804d2ce1a9625cc06c3b4cad90b87b27"
+  },
+  "note": "This is a launch snapshot, not proof of all100 training steps or completed benchmark accuracy."
+}

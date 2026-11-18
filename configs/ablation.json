@@ -32,10 +32,10 @@
   "confirm_top_n": 4,
   "gate_target_rate": 0.2,
   "max_prompt_tokens": 1024,
-  "reference_max_tokens": 12288,
-  "reference_temperature": 0.7,
-  "reference_top_p": 0.95,
-  "source_max_tokens": 7168,
+  "reference_max_tokens": 16384,
+  "reference_temperature": 1.0,
+  "reference_top_p": 1.0,
+  "source_max_tokens": 16384,
   "sv_max_context_len": 2048,
   "teacher_gpus": 2,
   "student_score_batch_size": 4,
@@ -60,7 +60,8 @@
   "engine_python": ".venv-easysteer/bin/python",
   "request_seed_policy": "constant_42",
   "reproducibility_protocol": 1,
-  "retain_intermediates": true,
+  "retain_intermediates": false,
+  "retention_policy": "minimal_v1",
   "resume_granularity": "engine_call",
   "direction_version": "sv_training_teacher_self_answer_mean_v2",
   "direction": "T-S",
@@ -77,6 +78,8 @@
   ],
   "teacher_direction_version": "sv_training_student_teacher_answer_mean_teacher_space_v1",
   "output_root": "outputs",
+  "train_output_root": "~/steer_opd_outputs",
+  "training_input_data_dir": "outputs/step_0_data/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1024_all_train_seed42_v1",
   "run_name": "ablation",
   "param_name": "n1000_slerp0.1_layer26_seed42_v1",
   "training_dataset": "OpenThoughts3-1.2M",
@@ -132,5 +135,6 @@
         "run": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1"
       }
     ]
-  }
+  },
+  "presence_penalty": 2.0
 }

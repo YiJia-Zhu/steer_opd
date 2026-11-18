@@ -1,0 +1,439 @@
+{
+  "timestamp": "2026-11-17T10:32:33.435272+00:00",
+  "physical_gpu_ids": [
+    6,
+    7
+  ],
+  "scope": "Bounded component capacity and timing diagnostics, synthetic repeated cached math text; ephemeral optimizer updates only.",
+  "formal_training_updates": 0,
+  "checkpoints_saved": false,
+  "full_training_acceptance": false,
+  "gpus_released": true,
+  "recommendation": "Prefer total-two-GPU sharing: teacher TP2; student two-rank FSDP; two student rollout TP1 replicas; switch once per logical batch, not per sample or microbatch.",
+  "measurements": {
+    "student_single_seconds_one_8k_sequence": 4.527358932886273,
+    "student_fsdp2_seconds_two_8k_sequences": 4.470685079693794,
+    "teacher_single_seconds_four_16k_sequences": 6.5225751348771155,
+    "teacher_tp2_seconds_four_16k_sequences": 5.719876289367676,
+    "teacher_tp2_warm_sleep_wake_seconds": 2.6320812050253153,
+    "teacher_tp2_first_sleep_wake_seconds": 9.46308693382889,
+    "student_fsdp2_small_batch_throughput_ratio": 2.025353542994963
+  },
+  "cases": {
+    "student_tp1": {
+      "path": ".runtime/placement_probe_20261117/student_tp1/result.json",
+      "sha256": "f12235680e666710b7075246ed7d2f41aa3261d273366850a0bbebb3647d2cb8",
+      "result": {
+        "status": "failed",
+        "role": "student",
+        "error": "FrozenInstanceError(\"Field 'strategy' is frozen and cannot be modified\")",
+        "traceback": "Traceback (most recent call last):\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 151, in main\n    try:result=teacher(args,folder) if args.role=='teacher' else student(args,folder)\n                                                                 ^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 105, in student\n    e.strategy='fsdp';e.use_dynamic_bsz=False;e.micro_batch_size_per_gpu=1\n    ^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/verl_training/verl-61adb0c7eb90730306e7794c2bf248331211e657/verl/base_config.py\", line 37, in __setattr__\n    raise FrozenInstanceError(f\"Field '{name}' is frozen and cannot be modified\")\ndataclasses.FrozenInstanceError: Field 'strategy' is frozen and cannot be modified\n",
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "7": 345
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "student_tp1_no_foreach": {
+      "path": ".runtime/placement_probe_20261117/student_tp1_no_foreach/result.json",
+      "sha256": "8b8426fa2f431f3d5011980e4173700fbbe7138465fb7e5a494279a2c5ba0b0a",
+      "result": {
+        "status": "passed",
+        "world_size": 1,
+        "engine": "verl_fsdp",
+        "model_dtype": "fp32",
+        "optimizer": "AdamW",
+        "cpu_offload": true,
+        "gradient_checkpointing": true,
+        "optimizer_foreach": false,
+        "initialization_seconds": 7.174161455128342,
+        "cases": [
+          {
+            "context_tokens": 2048,
+            "response_tokens": 1895,
+            "seconds": 11.660353493876755,
+            "tokens_per_second": 162.51651384283747,
+            "grad_norm": "0.23153693974018097"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.6008162116631866,
+            "tokens_per_second": 1747.2986596641113,
+            "grad_norm": "0.6368011236190796"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.527358932886273,
+            "tokens_per_second": 1775.648920081314,
+            "grad_norm": "0.6273845434188843"
+          }
+        ],
+        "diagnostic_optimizer_steps": 3,
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "7": 72773
+        },
+        "torch_peak_allocated_gib": 62.968217849731445,
+        "torch_peak_reserved_gib": 70.021484375
+      }
+    },
+    "student_tp1_v2": {
+      "path": ".runtime/placement_probe_20261117/student_tp1_v2/result.json",
+      "sha256": "3af5d937b6c10de6ecc30e3f6c2984a68673fb1329575bea483c064f5ac19a94",
+      "result": {
+        "status": "failed",
+        "role": "student",
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 386.00 MiB. GPU 0 has a total capacity of 71.12 GiB of which 254.50 MiB is free. Including non-PyTorch memory, this process has 70.83 GiB memory in use. Of the allocated memory 69.81 GiB is allocated by PyTorch, and 102.56 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)')",
+        "traceback": "Traceback (most recent call last):\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 152, in main\n    try:result=teacher(args,folder) if args.role=='teacher' else student(args,folder)\n                                                                 ^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 130, in student\n    with engine.train_mode():output=engine.train_batch(data,loss_function=verl_loss)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/verl_training/verl-61adb0c7eb90730306e7794c2bf248331211e657/verl/workers/engine/base.py\", line 128, in train_batch\n    grad_norm = self.optimizer_step()\n                ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/verl_training/verl-61adb0c7eb90730306e7794c2bf248331211e657/verl/workers/engine/fsdp/transformer_impl.py\", line 785, in optimizer_step\n    self.optimizer.step()\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/lr_scheduler.py\", line 166, in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/optimizer.py\", line 530, in wrapper\n    out = func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/optimizer.py\", line 80, in _use_grad\n    ret = func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/adam.py\", line 248, in step\n    adam(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/optimizer.py\", line 148, in maybe_fallback\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/adam.py\", line 970, in adam\n    func(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/torch/optim/adam.py\", line 790, in _multi_tensor_adam\n    exp_avg_sq_sqrt = torch._foreach_sqrt(device_exp_avg_sqs)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntorch.OutOfMemoryError: CUDA out of memory. Tried to allocate 386.00 MiB. GPU 0 has a total capacity of 71.12 GiB of which 254.50 MiB is free. Including non-PyTorch memory, this process has 70.83 GiB memory in use. Of the allocated memory 69.81 GiB is allocated by PyTorch, and 102.56 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n",
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "7": 65627
+        },
+        "torch_peak_allocated_gib": 69.81195020675659,
+        "torch_peak_reserved_gib": 69.912109375
+      }
+    },
+    "teacher_tp1": {
+      "path": ".runtime/placement_probe_20261117/teacher_tp1/result.json",
+      "sha256": "6d0b2c7484c3ddad7b7b887aa79b7caf678072494369cfb70d60d1f2def2e5c7",
+      "result": {
+        "status": "failed",
+        "role": "teacher",
+        "error": "RuntimeError('Engine core initialization failed. See root cause above. Failed core proc(s): {}')",
+        "traceback": "Traceback (most recent call last):\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 151, in main\n    try:result=teacher(args,folder) if args.role=='teacher' else student(args,folder)\n               ^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 54, in teacher\n    engine=create_sleep_engine(ROOT/'assets/models/Qwen3.5-35B-A3B',codecs['teacher'].support_size,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/sleep_engine.py\", line 25, in create_sleep_engine\n    engine=LLM(model=str(model_path),dtype='bfloat16',tensor_parallel_size=tensor_parallel_size,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/entrypoints/llm.py\", line 358, in __init__\n    self.llm_engine = LLMEngine.from_engine_args(\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py\", line 185, in from_engine_args\n    return cls(\n           ^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py\", line 106, in __init__\n    self.engine_core = EngineCoreClient.make_client(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 110, in make_client\n    return SyncMPClient(vllm_config, executor_class, log_stats)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 813, in __init__\n    super().__init__(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 609, in __init__\n    with launch_core_engines(\n  File \"/home/zhenning/data/miniconda3/envs/verl/lib/python3.12/contextlib.py\", line 144, in __exit__\n    next(self.gen)\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/utils.py\", line 1240, in launch_core_engines\n    wait_for_engine_startup(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/utils.py\", line 1320, in wait_for_engine_startup\n    raise RuntimeError(\nRuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n",
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "6": 70224
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "teacher_tp1_eager": {
+      "path": ".runtime/placement_probe_20261117/teacher_tp1_eager/result.json",
+      "sha256": "3a0d8825cc4068dd01b4170c1c905a5707b6551bf013ff4028c0e9ca6188b3b5",
+      "result": {
+        "status": "failed",
+        "role": "teacher",
+        "error": "RuntimeError('Engine core initialization failed. See root cause above. Failed core proc(s): {}')",
+        "traceback": "Traceback (most recent call last):\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 168, in main\n    try:result=teacher(args,folder) if args.role=='teacher' else student(args,folder)\n               ^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 54, in teacher\n    engine=create_sleep_engine(ROOT/'assets/models/Qwen3.5-35B-A3B',codecs['teacher'].support_size,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/sleep_engine.py\", line 25, in create_sleep_engine\n    engine=LLM(model=str(model_path),dtype='bfloat16',tensor_parallel_size=tensor_parallel_size,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/entrypoints/llm.py\", line 358, in __init__\n    self.llm_engine = LLMEngine.from_engine_args(\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py\", line 185, in from_engine_args\n    return cls(\n           ^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py\", line 106, in __init__\n    self.engine_core = EngineCoreClient.make_client(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 110, in make_client\n    return SyncMPClient(vllm_config, executor_class, log_stats)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 813, in __init__\n    super().__init__(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 609, in __init__\n    with launch_core_engines(\n  File \"/home/zhenning/data/miniconda3/envs/verl/lib/python3.12/contextlib.py\", line 144, in __exit__\n    next(self.gen)\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/utils.py\", line 1240, in launch_core_engines\n    wait_for_engine_startup(\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/utils.py\", line 1320, in wait_for_engine_startup\n    raise RuntimeError(\nRuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n",
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "6": 72030
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "teacher_tp1_eager_no_autotune": {
+      "path": ".runtime/placement_probe_20261117/teacher_tp1_eager_no_autotune/result.json",
+      "sha256": "3f230b809cdeace2bb8afb713298f7211fdefd2725850b2929e67ff9a165442f",
+      "result": {
+        "status": "failed",
+        "role": "teacher",
+        "error": "EngineDeadError('EngineCore encountered an issue. See stack trace (above) for the root cause.')",
+        "traceback": "Traceback (most recent call last):\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 171, in main\n    try:result=teacher(args,folder) if args.role=='teacher' else student(args,folder)\n               ^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/placement_probe.py\", line 71, in teacher\n    record=fixed_prefix_scores(engine,[test],[spec],include_sampled=True)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/easysteer_static.py\", line 187, in fixed_prefix_scores\n    outputs=llm.generate(inputs, params, steering=specs,\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/entrypoints/llm.py\", line 499, in generate\n    return self._run_completion(\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/entrypoints/offline_utils.py\", line 391, in _run_completion\n    return self._run_engine(use_tqdm=use_tqdm, output_type=output_type)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/entrypoints/offline_utils.py\", line 651, in _run_engine\n    step_outputs = self.llm_engine.step()\n                   ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py\", line 318, in step\n    outputs = self.engine_core.get_output()\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.venv-easysteer/lib/python3.12/site-packages/vllm/v1/engine/core_client.py\", line 883, in get_output\n    raise self._format_exception(outputs) from None\nvllm.v1.engine.exceptions.EngineDeadError: EngineCore encountered an issue. See stack trace (above) for the root cause.\n",
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "6": 72176
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "teacher_tp1_eager_no_autotune_096": {
+      "path": ".runtime/placement_probe_20261117/teacher_tp1_eager_no_autotune_096/result.json",
+      "sha256": "9012b01918803f21538bd636ae38b7c844c1fa619452c8c6dfdbb4dec2643ebd",
+      "result": {
+        "status": "passed",
+        "tp": 1,
+        "dtype": "bfloat16",
+        "head_dtype": "float32",
+        "initialization_seconds": 24.608169889077544,
+        "memory_fraction": 0.96,
+        "max_model_len": 16384,
+        "enforce_eager": true,
+        "disable_autotune": true,
+        "scoring": [
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 1024,
+            "batch_size": 1,
+            "response_tokens": 869,
+            "seconds": [
+              0.15771130193024874,
+              0.11579916020855308
+            ],
+            "warm_tokens_per_second": 7504.372211637287
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 8192,
+            "batch_size": 1,
+            "response_tokens": 8037,
+            "seconds": [
+              1.0649736179038882,
+              1.0926025696098804
+            ],
+            "warm_tokens_per_second": 7355.831135258682
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 16384,
+            "batch_size": 1,
+            "response_tokens": 16229,
+            "seconds": [
+              1.965167994145304,
+              2.367424378171563
+            ],
+            "warm_tokens_per_second": 6855.129206929165
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 8192,
+            "batch_size": 4,
+            "response_tokens": 32148,
+            "seconds": [
+              2.9434851021505892,
+              2.6912642302922904
+            ],
+            "warm_tokens_per_second": 11945.315379348129
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 16384,
+            "batch_size": 4,
+            "response_tokens": 64916,
+            "seconds": [
+              6.5612063920125365,
+              6.5225751348771155
+            ],
+            "warm_tokens_per_second": 9952.510880692678
+          }
+        ],
+        "switching": [
+          {
+            "sleep_seconds": 16.22225104412064,
+            "wake_seconds": 1.418331213761121
+          },
+          {
+            "sleep_seconds": 1.3240194106474519,
+            "wake_seconds": 1.4209238598123193
+          }
+        ],
+        "formal_training_updates": 0,
+        "teacher_generation_calls": 0,
+        "peak_device_memory_mib": {
+          "6": 72400
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "teacher_tp2_graph": {
+      "path": ".runtime/placement_probe_20261117/teacher_tp2_graph/result.json",
+      "sha256": "6f88b415a45bfe734277e6edcdaffdba8f8de72d8f74bf4a9ac0c62fdb6c8140",
+      "result": {
+        "status": "passed",
+        "tp": 2,
+        "dtype": "bfloat16",
+        "head_dtype": "float32",
+        "initialization_seconds": 50.68960089376196,
+        "memory_fraction": 0.75,
+        "max_model_len": 16384,
+        "enforce_eager": false,
+        "disable_autotune": true,
+        "scoring": [
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 1024,
+            "batch_size": 1,
+            "response_tokens": 869,
+            "seconds": [
+              0.15849217120558023,
+              0.1011131526902318
+            ],
+            "warm_tokens_per_second": 8594.331962551407
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 8192,
+            "batch_size": 1,
+            "response_tokens": 8037,
+            "seconds": [
+              1.0716307773254812,
+              1.0489261099137366
+            ],
+            "warm_tokens_per_second": 7662.122168606291
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 16384,
+            "batch_size": 1,
+            "response_tokens": 16229,
+            "seconds": [
+              1.8720062160864472,
+              2.2195755122229457
+            ],
+            "warm_tokens_per_second": 7311.758446887152
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 8192,
+            "batch_size": 4,
+            "response_tokens": 32148,
+            "seconds": [
+              2.8674233430065215,
+              3.009718077722937
+            ],
+            "warm_tokens_per_second": 10681.399111082928
+          },
+          {
+            "kind": "synthetic_capacity_repeated_cached_text",
+            "context_tokens_including_completion": 16384,
+            "batch_size": 4,
+            "response_tokens": 64916,
+            "seconds": [
+              5.663483900949359,
+              5.719876289367676
+            ],
+            "warm_tokens_per_second": 11349.196506341988
+          }
+        ],
+        "switching": [
+          {
+            "sleep_seconds": 8.111803762614727,
+            "wake_seconds": 1.3512831712141633
+          },
+          {
+            "sleep_seconds": 1.2994601866230369,
+            "wake_seconds": 1.3326210184022784
+          }
+        ],
+        "formal_training_updates": 0,
+        "teacher_generation_calls": 0,
+        "peak_device_memory_mib": {
+          "6": 60616,
+          "7": 60275
+        },
+        "torch_peak_allocated_gib": 4.76837158203125e-07,
+        "torch_peak_reserved_gib": 0.001953125
+      }
+    },
+    "student_fsdp2_rank_0": {
+      "path": ".runtime/placement_probe_20261117/student_fsdp2/rank_0/result.json",
+      "sha256": "84aa45eaddcd5d252dc5a2d63d52428cb6751f4647456c2e8ddde8f6505a41e1",
+      "result": {
+        "status": "passed",
+        "world_size": 2,
+        "rank": 0,
+        "engine": "verl_fsdp",
+        "model_dtype": "fp32",
+        "optimizer": "AdamW",
+        "cpu_offload": true,
+        "gradient_checkpointing": true,
+        "optimizer_foreach": false,
+        "initialization_seconds": 6.829061791300774,
+        "cases": [
+          {
+            "context_tokens": 2048,
+            "response_tokens": 1895,
+            "seconds": 7.315115087199956,
+            "tokens_per_second": 259.05265705469014,
+            "grad_norm": "0.2316080778837204"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.491643988993019,
+            "tokens_per_second": 1789.7678488544375,
+            "grad_norm": "0.6336734890937805"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.470685079693794,
+            "tokens_per_second": 1798.1584157009347,
+            "grad_norm": "0.6303065419197083"
+          }
+        ],
+        "diagnostic_optimizer_steps": 3,
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "6": 46469,
+          "7": 46469
+        },
+        "torch_peak_allocated_gib": 32.49782133102417,
+        "torch_peak_reserved_gib": 44.63671875
+      }
+    },
+    "student_fsdp2_rank_1": {
+      "path": ".runtime/placement_probe_20261117/student_fsdp2/rank_1/result.json",
+      "sha256": "51492dfdc370a8c87886e656505aec019c17d21a0dd8be9b9f206a55545072a4",
+      "result": {
+        "status": "passed",
+        "world_size": 2,
+        "rank": 1,
+        "engine": "verl_fsdp",
+        "model_dtype": "fp32",
+        "optimizer": "AdamW",
+        "cpu_offload": true,
+        "gradient_checkpointing": true,
+        "optimizer_foreach": false,
+        "initialization_seconds": 6.924030612688512,
+        "cases": [
+          {
+            "context_tokens": 2048,
+            "response_tokens": 1895,
+            "seconds": 7.214939201716334,
+            "tokens_per_second": 262.64947590261136,
+            "grad_norm": "0.2316080778837204"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.51163392001763,
+            "tokens_per_second": 1781.8378313745336,
+            "grad_norm": "0.6336734890937805"
+          },
+          {
+            "context_tokens": 8192,
+            "response_tokens": 8039,
+            "seconds": 4.373326600994915,
+            "tokens_per_second": 1838.188805329828,
+            "grad_norm": "0.6303065419197083"
+          }
+        ],
+        "diagnostic_optimizer_steps": 3,
+        "formal_training_updates": 0,
+        "checkpoint_saved": false,
+        "peak_device_memory_mib": {
+          "6": 46469,
+          "7": 46469
+        },
+        "torch_peak_allocated_gib": 32.49782133102417,
+        "torch_peak_reserved_gib": 44.63671875
+      }
+    }
+  },
+  "limitations": [
+    "Only small synthetic batches; not production 64 prompts x 4 rollouts or end-to-end throughput.",
+    "Teacher measured sleep/wake excludes student actor offload and rollout weight synchronization.",
+    "Single-GPU student success required AdamW foreach=False; BF16 computation with FP32 master parameters and AdamW states retained.",
+    "Teacher TP1 success required eager mode, FlashInfer autotune disabled and gpu_memory_utilization=.96; only about 1 GiB observed headroom.",
+    "Student timing includes one optimizer step per probe; production accumulates many microbatches before an update. Do not extrapolate exact full-update duration.",
+    "Current training default remains shared_two_gpu; full rollout/scoring/update/checkpoint cycle has not been accepted."
+  ],
+  "cpu_verification": "35 passed: tests/test_shared_training_pool.py tests/test_verl_training.py tests/test_training_losses.py"
+}

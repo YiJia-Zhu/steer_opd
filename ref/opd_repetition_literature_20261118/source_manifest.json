@@ -1,0 +1,226 @@
+{
+  "at": "2026-11-18T18:39:22.670890+08:00",
+  "github_pin": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "sources": [
+    {
+      "id": "wsp_exp8",
+      "url": "https://github.com/RikiyaT/lm_understand-logs/blob/4d09ba6d6a7e891dd8063974dfe81b3d78e3494f/exp8_math/README.md",
+      "version": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+      "reading_depth": "Full experiment8 README, final p50c report, final answer and Gemma follow-up; selected tool code rows4/6/8/9/10/13/17/25/29/36/62/83/91/93/98. Other downloaded code/history files used as references, not claimed as line-by-line reviews.",
+      "claim": "Original protocol, paired loop directions, neuron selection, exact sparse intervention, reported evaluations and controls."
+    },
+    {
+      "id": "wsp_independent_audit",
+      "url": "https://github.com/RikiyaT/lm_understand-logs/issues/4",
+      "report_url": "https://carlostoledo.co/reports/weight-space-programming.html",
+      "reading_depth": "Full issue4 body; selected baseline/formula sections of external report; comments checked for attribution. Independent third-party findings, not rerun locally.",
+      "claim": "Alternative unedited sampling baseline and denominator caveat; not a single-factor penalty ablation."
+    },
+    {
+      "id": "ditto",
+      "url": "https://arxiv.org/abs/2206.02369v2",
+      "pdf_url": "https://arxiv.org/pdf/2206.02369v2",
+      "version": "v2",
+      "reading_depth": "Abstract; targeted full-PDF body sections2.2 and3 including self-reinforcement findings and pseudo-repetition training. Results not independently reproduced.",
+      "claim": "Increasing conditional preference to repeat; synthetic repetition penalty mixed with normal learning."
+    },
+    {
+      "id": "unlikelihood",
+      "url": "https://arxiv.org/abs/1908.04319v2",
+      "pdf_url": "https://arxiv.org/pdf/1908.04319v2",
+      "version": "v2",
+      "reading_depth": "Abstract and full-PDF body sections5.1 and5.2, including equations3-8. No empirical reproduction.",
+      "claim": "Negative token candidates and on-policy decoded repetition unlikelihood, mixed with original training."
+    },
+    {
+      "id": "training_inference_mismatch_blog",
+      "url": "https://richardli.xyz/post/rl-collapse-training-inference/",
+      "reading_depth": "Summary, section3.2, selected3.3/3.4 and4, and section5 engine/hardware settings. Long agentic-RL results do not establish the cause of this OPD loop.",
+      "claim": "Sampler-trainer probability mismatch, sequence correction and limitations of engine-only fixes."
+    },
+    {
+      "id": "rethinking_opd",
+      "url": "https://arxiv.org/abs/2604.13016v2",
+      "local_text": "papers/sources/2604.13016v2.txt",
+      "version": "v2",
+      "reading_depth": "Targeted full text section6.1 with immediate context.",
+      "claim": "Teacher signal reliability decreases under deep student prefixes; response-length values do not transfer directly."
+    },
+    {
+      "id": "qwen3_4b_model_card",
+      "url": "https://huggingface.co/Qwen/Qwen3-4B#best-practices",
+      "local_file": "assets/models/Qwen3-4B/README.md",
+      "reading_depth": "Local actual model README tip and Best Practices lines325-337; architecture metadata.",
+      "claim": "Endless repetition warning and recommended non-thinking/penalty settings."
+    }
+  ],
+  "archive_files": [
+    {
+      "file": "sources/ditto_full.pdf",
+      "bytes": 3138735,
+      "sha256": "547cd0886bb97e4c7c86aa6a105f5a6e68fbc860eb4bbb68b9a3a92c040f91d3"
+    },
+    {
+      "file": "sources/ditto_full.txt",
+      "bytes": 94748,
+      "sha256": "b8a0dc75544867e03f21fef522908cd1fec03e050b095c2cb58311187181a122"
+    },
+    {
+      "file": "sources/github_README.md",
+      "bytes": 6198,
+      "sha256": "b1c51eeb9b9e2935ff227fdc7796c2a67bd3a55014cf99291224f9cc7b93d342"
+    },
+    {
+      "file": "sources/github_issues.json",
+      "bytes": 46291,
+      "sha256": "38b3e88d9f1a00236e83e12d5770df8c2329bba245f81a27d2b11aeb80327556"
+    },
+    {
+      "file": "sources/github_readme.json",
+      "bytes": 9364,
+      "sha256": "27fa3d4181e9ebbb32000e88cf191f2b3a6febd1f7046c0b80748f9061ab2c61"
+    },
+    {
+      "file": "sources/github_tree.json",
+      "bytes": 2626918,
+      "sha256": "8e8836375eef7c82cc670bb131ec6502bcfcb08789b5812976d89ab11cc71abb"
+    },
+    {
+      "file": "sources/loop_paper_abs.html",
+      "bytes": 44308,
+      "sha256": "5222f85d83835eaba1bb5c082bbb7923f3eb93289502ef1f4b23a06fb1873e4f"
+    },
+    {
+      "file": "sources/loop_paper_abs.txt",
+      "bytes": 9066,
+      "sha256": "cc99e58281747be915b66c4df0fb5f0bd38374288ffa878af8a7778f4b832066"
+    },
+    {
+      "file": "sources/loop_paper_search.json",
+      "bytes": 54891,
+      "sha256": "329a54d80792632b87c5d80e36da87480fcf3b39756dd29cee3559ce96a086e4"
+    },
+    {
+      "file": "sources/paper_downloads.json",
+      "bytes": 502,
+      "sha256": "03adfeb1302b5fead8f49a18c1e7c6025dcb621be3e83f706439fbd084e01fba"
+    },
+    {
+      "file": "sources/rl_collapse.html",
+      "bytes": 379,
+      "sha256": "db3a209b353ef4a8307a4ceb61f44b52513461c822da673590e2ca5aa4773017"
+    },
+    {
+      "file": "sources/rl_collapse_full.html",
+      "bytes": 160668,
+      "sha256": "83dfbbda8da018e5582a0855154fb9675edfae7d963497e3a133f2a1a2ffd073"
+    },
+    {
+      "file": "sources/rl_collapse_full.txt",
+      "bytes": 64176,
+      "sha256": "c85de2f8fd464cf9b7b5fba28339cce945282b570f1782d0eaa99adb75bec02f"
+    },
+    {
+      "file": "sources/unlikelihood_abs.html",
+      "bytes": 43774,
+      "sha256": "4c978299b989a81a0ad17c4f030d87afc693ce7ae6309160becf0b381a583527"
+    },
+    {
+      "file": "sources/unlikelihood_abs.txt",
+      "bytes": 8795,
+      "sha256": "e3e5c9a96a26fa11887f22402e792250855e5d0e94317ac697b87dd722a05fd6"
+    },
+    {
+      "file": "sources/unlikelihood_full.pdf",
+      "bytes": 567247,
+      "sha256": "6e09404d8848dcd5222db7b066e744bb571cae7e0bd496f812bb3a418f8dde64"
+    },
+    {
+      "file": "sources/unlikelihood_full.txt",
+      "bytes": 70560,
+      "sha256": "68eb399948955e84dd07bdf0929d7de13ba986a237c123d80bdd1795a6ee973c"
+    },
+    {
+      "file": "sources/wsp/exp8_math/README.md",
+      "bytes": 13447,
+      "sha256": "473e386ade21ff52240103003b6b125e4362d9fa11010916c1b770ddb0edcbbd"
+    },
+    {
+      "file": "sources/wsp/exp8_math/code/apply_edit.py",
+      "bytes": 3005,
+      "sha256": "d2b627a6cf344f309cca4bcab4ff6ccc6ad1c8f29cabda78d11f99c19d1b1c5d"
+    },
+    {
+      "file": "sources/wsp/exp8_math/code/build_ckpt.py",
+      "bytes": 2437,
+      "sha256": "da0759bd0a150392b7aaa330f9d242429f47b49c0f900d0d890c91832c9217db"
+    },
+    {
+      "file": "sources/wsp/exp8_math/code/evaluate.py",
+      "bytes": 13371,
+      "sha256": "c93f477c02b3ae0d6b37abe3afad8bb7353e273322ff963eec7ff2270012035d"
+    },
+    {
+      "file": "sources/wsp/exp8_math/code/profiles.py",
+      "bytes": 9144,
+      "sha256": "ba4be365e44c3e165b9c3982af9dbcd8ec94f7fd0430e5fd9de1d57f249a4ae4"
+    },
+    {
+      "file": "sources/wsp/exp8_math/gemma_followup/README.md",
+      "bytes": 5861,
+      "sha256": "a1920da492020d92a24439bbe5ffa711faf1c48e17b071d09a9bc3a26575e674"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/final_answer.md",
+      "bytes": 1409,
+      "sha256": "497ea024210e9bbc10826756997ef41b454dd524390fff1b2d4cdec6782c30d1"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/readable/README.md",
+      "bytes": 1772,
+      "sha256": "7f93d15419167b5d7c13b3fd03274010b109bebbcbd7f8cd4424eb249af6ba93"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/tool_calls.jsonl",
+      "bytes": 601037,
+      "sha256": "4d772ae69caeb1099ee8d134375baa5738c8bdce20bc44236acd466d8c76c597"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/work_notes/experiment_history.md",
+      "bytes": 51186,
+      "sha256": "dfaec381b3832f3694bc2e203ad9cd08030dcd59f3b50a47e863780a0d029a0b"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/work_notes/final_report.md",
+      "bytes": 3981,
+      "sha256": "d74088bc1ebe81aa00ebbef148dc40c446a99ec89c731b61b68a49061d452178"
+    },
+    {
+      "file": "sources/wsp/exp8_math/runs/p50c/work_notes/frozen_weights_manifest.json",
+      "bytes": 2259,
+      "sha256": "f0a76e3cbebce1dd373a2f5e351368f3fdb51be70c494109edf8adc5452f3564"
+    },
+    {
+      "file": "sources/wsp_audit_report.html",
+      "bytes": 172715,
+      "sha256": "77c9089cfbf9f0b364b57fe02b0b196611c28d1cc9f44eed9fccd97e0c825464"
+    },
+    {
+      "file": "sources/wsp_audit_report.txt",
+      "bytes": 36118,
+      "sha256": "cd40624624865f8d895cb052519304cc9e097a9fd338c082acafa1235a4e8a39"
+    },
+    {
+      "file": "sources/wsp_issue4_comments.json",
+      "bytes": 67309,
+      "sha256": "7a44c36d2c7ac71d9b65a739f269aa886d19811f1bdbde1e289d6badbd14cf29"
+    }
+  ],
+  "local_reference_sha256": {
+    "papers/sources/2604.13016v2.txt": "4392671ebafc9418190a0cb7efdfe78f645ce94ca8e53adab702d7da27f986f3",
+    "assets/models/Qwen3-4B/README.md": "71add1cd091c309b1cb1a6b943f2476eb2b004124b3bd1d32dcd0b24cc1abc47"
+  },
+  "new_gpu_forwards": 0,
+  "new_optimizer_updates": 0,
+  "external_code_executed": false
+}

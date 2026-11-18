@@ -138,7 +138,9 @@ def fixed_prefix_scores(llm, rows, specs, *, k=16, include_sampled=False, progre
     if config.cache_config.enable_prefix_caching:
         raise ValueError("Disable prefix caching until per-request steering cache identity is accepted")
     from vllm import SamplingParams
+    from steer_opd.generation_policy import DEFAULT_PRESENCE_PENALTY
     params = SamplingParams(max_tokens=1, temperature=0, prompt_logprobs=k, logprobs=k,
+                            presence_penalty=DEFAULT_PRESENCE_PENALTY,
                             ignore_eos=True, detokenize=False, seed=42)
     results = {}
     def accept(request_index, output):

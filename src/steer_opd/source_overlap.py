@@ -6,7 +6,8 @@ import torch
 from steer_opd.compass_job import prepare_plans, project_path, native_score_binding, model_path, SCORING_ROLES, cached_source_metrics
 from steer_opd.compass_scoring import AlignedMetricAdapter
 from steer_opd.direction_bank import file_sha256
-from steer_opd.experiment_runtime import initialize_stage, StageCheckpoint, Progress
+from steer_opd.experiment_runtime import initialize_stage, Progress
+from steer_opd.tensor_checkpoint import StageCheckpoint
 from steer_opd.resumable_core import atomic_json, digest, read_json
 from steer_opd.rollout_topk import load_rollout_topk
 from steer_opd.static_masks import validate_native_score

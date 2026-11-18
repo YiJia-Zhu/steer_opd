@@ -19,15 +19,17 @@ def safe_name(value):
 
 
 def default_param_name(cfg):
+    from steer_opd.generation_policy import presence_penalty
     layer=(f"S{cfg['layers'][0]}_T{cfg['teacher_layers'][0]}" if cfg.get('include_teacher_ablation')
            else f"layer{cfg['layers'][0]}")
     label=f"n{cfg['question_count']}_{cfg.get('operator','slerp')}{cfg['alpha']:g}_{layer}_seed{cfg['seed']}"
+    if cfg.get('data_policy')=='all_train':label+='_trainall'
     for key,default,tag in [('gate_metric','overlap','gate'),('rank_metric','overlap','rank'),('gate_target_rate',.2,'rate'),
         ('reference_max_tokens',12288,'Tgen'),('source_max_tokens',7168,'Sgen'),
         ('sv_max_context_len',2048,'ctx'),('reference_temperature',.7,'Ttemp'),('reference_top_p',.95,'Tp')]:
         value=cfg.get(key,default)
         if value!=default:label+=f'_{tag}{value:g}' if isinstance(value,(int,float)) else f'_{tag}{value}'
-    return label+'_v1'
+    return label+f'_pp{presence_penalty(cfg):g}_v1'
 
 
 def layout_paths(cfg):

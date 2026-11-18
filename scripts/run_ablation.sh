@@ -28,13 +28,14 @@ GATE_TARGET_RATE="${GATE_TARGET_RATE:-0.2}"
 TEACHER_TP="${TEACHER_TP:-2}"         # 1 or 2; pool must contain at least this many GPUs
 GPU_MEMORY="${GPU_MEMORY:-0.75}"
 WAIT_SECONDS="${WAIT_SECONDS:-3600}"  # Maximum wait per GPU stage; 0 = fail if unavailable
-REFERENCE_MAX_TOKENS="${REFERENCE_MAX_TOKENS:-12288}"
-SOURCE_MAX_TOKENS="${SOURCE_MAX_TOKENS:-7168}"
+REFERENCE_MAX_TOKENS="${REFERENCE_MAX_TOKENS:-16384}"
+SOURCE_MAX_TOKENS="${SOURCE_MAX_TOKENS:-16384}"
 SV_MAX_CONTEXT_LEN="${SV_MAX_CONTEXT_LEN:-2048}" # SV-training: read prompt+answer up to this limit, pool all retained answer tokens.
-REFERENCE_TEMPERATURE="${REFERENCE_TEMPERATURE:-0.7}"
-REFERENCE_TOP_P="${REFERENCE_TOP_P:-0.95}"
+REFERENCE_TEMPERATURE="${REFERENCE_TEMPERATURE:-1.0}"
+REFERENCE_TOP_P="${REFERENCE_TOP_P:-1.0}"
+PRESENCE_PENALTY="${PRESENCE_PENALTY:-2.0}" # Applies to teacher/student generation, including SV source answers.
 # CONFIRM_TOP_N defaults to every selected family; both splits compare all eight when enabled.
-CANDIDATE_TENSOR_COMPRESSION="${CANDIDATE_TENSOR_COMPRESSION:-none}" # Lossless gzip for parameter search output.
+CANDIDATE_TENSOR_FORMAT="${CANDIDATE_TENSOR_FORMAT:-${CANDIDATE_TENSOR_COMPRESSION:-parquet_zstd}}" # parquet_zstd, npz_compressed, npz, pt, pt_gzip; old none/gzip accepted.
 HF_PARITY="${HF_PARITY:-0}"           # 0 = EasySteer-only startup; 1 = optional HF numerical comparison
 # Both metrics use raw Top16; P_overlap never renormalizes the retained mass.
 # Seed stays 42. No sequence-count or CUDA-graph-size limits are imposed.
@@ -58,4 +59,5 @@ exec "$STEER_OPD_PYTHON" scripts/launch_ablation.py "${1:---check}" \
     --wait-seconds "$WAIT_SECONDS" --reference-max-tokens "$REFERENCE_MAX_TOKENS" \
     --source-max-tokens "$SOURCE_MAX_TOKENS" --reference-temperature "$REFERENCE_TEMPERATURE" \
     --sv-max-context-len "$SV_MAX_CONTEXT_LEN" \
-    --reference-top-p "$REFERENCE_TOP_P" --candidate-tensor-compression "$CANDIDATE_TENSOR_COMPRESSION" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"
+    --reference-top-p "$REFERENCE_TOP_P" --presence-penalty "$PRESENCE_PENALTY" \
+    --candidate-tensor-format "$CANDIDATE_TENSOR_FORMAT" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"

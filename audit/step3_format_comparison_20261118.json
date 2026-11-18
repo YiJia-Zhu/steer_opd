@@ -1,0 +1,177 @@
+{
+  "scope": "CPU sample benchmark; originals untouched; hot page cache, 1 warmup + 3 timed reads; all fields and original float precision preserved",
+  "sample": {
+    "parameter": "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2",
+    "records": 48,
+    "questions": 16,
+    "selection": "16 baseline compressed-size quantiles, each baseline/replay/SV; select+confirm pool",
+    "teacher_tokens": 156654,
+    "source_files": [
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-234053_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-234053_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-234053_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-798975_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-798975_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-798975_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-049405_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-049405_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-049405_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-625550_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-625550_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-625550_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/baseline/ot3m-245884_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/teacher_unsteered_replay/ot3m-245884_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/scheme_05/ot3m-245884_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/baseline/ot3m-184430_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/teacher_unsteered_replay/ot3m-184430_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/scheme_05/ot3m-184430_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/baseline/ot3m-435020_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/teacher_unsteered_replay/ot3m-435020_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/scheme_05/ot3m-435020_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-489710_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-489710_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-489710_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-709570_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-709570_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-709570_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-422179_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-422179_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-422179_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-524902_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-524902_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-524902_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/baseline/ot3m-280746_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/teacher_unsteered_replay/ot3m-280746_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/scheme_05/ot3m-280746_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-531756_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-531756_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-531756_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-317212_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-317212_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-317212_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/baseline/ot3m-770319_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/teacher_unsteered_replay/ot3m-770319_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/confirm/teacher/scheme_05/ot3m-770319_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-785408_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-785408_0.pt.gz",
+      "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-785408_0.pt.gz"
+    ]
+  },
+  "versions": {
+    "numpy": "2.4.6",
+    "pyarrow": "24.0.0",
+    "torch": "2.13.0+cu130"
+  },
+  "common_array_encoding_seconds": 0.5749806049279869,
+  "results": {
+    "pt_gzip": {
+      "bytes": 35154398,
+      "full_object_read": {
+        "median_seconds": 6.367112547159195,
+        "seconds": [
+          6.367112547159195,
+          5.924388641025871,
+          6.757785073015839
+        ]
+      },
+      "metrics_read": {
+        "median_seconds": 6.416941565927118,
+        "seconds": [
+          6.444985705893487,
+          6.416941565927118,
+          6.404684737324715
+        ]
+      }
+    },
+    "npz_uncompressed": {
+      "bytes": 53674491,
+      "write_seconds_excluding_encode": 0.03520843992009759,
+      "array_read": {
+        "median_seconds": 0.021513150073587894,
+        "seconds": [
+          0.02424325980246067,
+          0.021147469989955425,
+          0.021513150073587894
+        ]
+      },
+      "full_object_read": {
+        "median_seconds": 1.990232814103365,
+        "seconds": [
+          2.0697033028118312,
+          1.6474803769961,
+          1.990232814103365
+        ]
+      },
+      "metrics_read": {
+        "median_seconds": 0.0014788098633289337,
+        "seconds": [
+          0.0015983902849256992,
+          0.0014788098633289337,
+          0.0013539199717342854
+        ]
+      },
+      "lossless_roundtrip": true
+    },
+    "npz_deflate": {
+      "bytes": 26500335,
+      "write_seconds_excluding_encode": 2.093166322913021,
+      "array_read": {
+        "median_seconds": 0.13479293882846832,
+        "seconds": [
+          0.13194123888388276,
+          0.1354350089095533,
+          0.13479293882846832
+        ]
+      },
+      "full_object_read": {
+        "median_seconds": 2.207969351205975,
+        "seconds": [
+          2.207969351205975,
+          2.2996056508272886,
+          1.8279433120042086
+        ]
+      },
+      "metrics_read": {
+        "median_seconds": 0.005603044293820858,
+        "seconds": [
+          0.005441273096948862,
+          0.005624833051115274,
+          0.005603044293820858
+        ]
+      },
+      "lossless_roundtrip": true
+    },
+    "parquet_zstd3": {
+      "bytes": 25498937,
+      "write_seconds_excluding_encode": 0.31028858106583357,
+      "array_read": {
+        "median_seconds": 0.05086054001003504,
+        "seconds": [
+          0.05086054001003504,
+          0.0511555508710444,
+          0.04564696690067649
+        ]
+      },
+      "full_object_read": {
+        "median_seconds": 2.262960230000317,
+        "seconds": [
+          2.2795619489625096,
+          1.797401103656739,
+          2.262960230000317
+        ]
+      },
+      "metrics_read": {
+        "median_seconds": 0.0037275892682373524,
+        "seconds": [
+          0.00429886020720005,
+          0.003422217909246683,
+          0.0037275892682373524
+        ]
+      },
+      "lossless_roundtrip": true
+    }
+  },
+  "temporary_format_files_retained": false,
+  "production_reader_changed": false,
+  "gpu_started": false
+}

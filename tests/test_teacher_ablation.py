@@ -29,7 +29,7 @@ def launcher(monkeypatch):
 def test_opt_in_adds_four_teacher_space_conditions_and_separate_layer(launcher):
     cfg=launcher.build_config(launcher.parser().parse_args(['--teacher-ablation','1']))
     job=make_base_job(cfg,{'student':NS(support_size=151669)},'rows.json')
-    assert cfg['run_dir'].endswith('/n1000_slerp0.1_S26_T29_seed42_v1')
+    assert cfg['run_dir'].endswith('/n1000_slerp0.1_S26_T29_seed42_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1')
     assert cfg['confirm_top_n']==8 and len(job['conditions'])==8 and len(job['banks'])==4
     assert [c['id'] for c in job['conditions']]==[f'scheme_{i:02d}' for i in range(1,9)]
     assert all(c['direction']=='T-S' and c['layers']==[26] for c in job['conditions'][:4])

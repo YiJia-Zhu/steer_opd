@@ -1,0 +1,66 @@
+{
+  "status": "cpu_verified_gpu_not_run",
+  "cpu_tests": "330 passed",
+  "source_records": 9,
+  "source_file_sha256": {
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-234053_0.pt.gz": "6d3b2d6a1176ae2ce0666bcf5d43ae440ce36b7ae7dc05af7d0f2afdc5c58be5",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-234053_0.pt.gz": "1020b0bdb861173ec736a01ea98e9f77ae068d40216d0610ef72256e1346c1b8",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-234053_0.pt.gz": "c9491664384f7f3f092e531b8f7f889eb353896b41813a8d2ee015ec8a60328b",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-489710_0.pt.gz": "5af13b1f5e7d5a4c910f51ccd6ea9f54d4b2ba625cf21756861a04a8b2c8a072",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-489710_0.pt.gz": "13d6346941b0ba1c8d0989a03a3c3832629cd4613a4b9d3fe4f85719cf82ae29",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-489710_0.pt.gz": "07f1ea3cfcc8ed473f7236d5e4602449522824783ce791ffa2cf68a9497d3b0d",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/baseline/ot3m-785408_0.pt.gz": "58648945601486b6ba06168aff69c4b47379eb25cbdb4939174b0101612b7d80",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/teacher_unsteered_replay/ot3m-785408_0.pt.gz": "50e8ad30bad0ce06b6cfcfc80f3d5d7ff59896da96d4fa970f8362e7a910f694",
+    "outputs/step_3_overlap/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_additive0.5_S26_T39_seed42_st_all_global_v2/select/teacher/scheme_05/ot3m-785408_0.pt.gz": "54910a593e548fc8a05a4aa294c1a846d26607837253a775bc02ad6c5c5a5bfe"
+  },
+  "formats": {
+    "parquet_zstd": {
+      "full_record_bits_and_metadata_equal": true,
+      "easy_steer_reader": {
+        "fingerprint": "a68ebc265f7af3457013386ab931082633ab9aba89caf0031588087d1aa20c24",
+        "pyarrow": "24.0.0",
+        "cuda_initialized": false
+      },
+      "shards": 3
+    },
+    "npz_compressed": {
+      "full_record_bits_and_metadata_equal": true,
+      "easy_steer_reader": {
+        "fingerprint": "a68ebc265f7af3457013386ab931082633ab9aba89caf0031588087d1aa20c24",
+        "pyarrow": "24.0.0",
+        "cuda_initialized": false
+      },
+      "shards": 3
+    },
+    "npz": {
+      "full_record_bits_and_metadata_equal": true,
+      "easy_steer_reader": {
+        "fingerprint": "a68ebc265f7af3457013386ab931082633ab9aba89caf0031588087d1aa20c24",
+        "pyarrow": "24.0.0",
+        "cuda_initialized": false
+      },
+      "shards": 3
+    }
+  },
+  "default_new_candidate_format": "parquet_zstd",
+  "legacy_pt_and_pt_gzip_read_without_rewrite": true,
+  "legacy_output_migration_performed": false,
+  "original_output_sources_unchanged": true,
+  "frozen_shared_runtime_unchanged": true,
+  "temporary_format_files_retained": false,
+  "easysteer_added_dependency": "pyarrow==24.0.0; --no-deps; download cache disabled",
+  "code_sha256": {
+    "src/steer_opd/tensor_archive.py": "9c01b3ad35651257c7dd7a3f74a7c373c3ca793b5f5b6302c6f818b1a18aff93",
+    "src/steer_opd/tensor_checkpoint.py": "fe262987b116de89f1c4c66f312f0cc244a0f34a4965f7e85d34436ff781552e",
+    "src/steer_opd/teacher_screen.py": "123e1f8750221a7c95b931136d818135a93e02ab7b589fb86009fb130887a314",
+    "src/steer_opd/compass_campaign.py": "df860ab9d8e80f0a76813af88eaa96c5b2621a7e20dd081b7f7123832f426b83",
+    "src/steer_opd/source_overlap.py": "40bddda0ef130a206be4f44dee6eab1be076b83d7fca16368af322aa1b3a6945",
+    "scripts/run_overlap_ablation.py": "978176677268826f45d1a648a691eae924108bac78dbc630bf265c6d8c0897b3",
+    "scripts/launch_ablation.py": "a653d8d5550298c03371d6f358e67fc61c316963f2403150bfc7b39dd41dd864",
+    "scripts/run_ablation.sh": "d7aab1c869d101d7abe64a391563705b949331d2efadd8e68b1844e4db664adf",
+    "scripts/run_param_search.py": "473b9145ab1b354c4698c898691a06662ec8d4dd2eefced948bc3230fdf42ec5",
+    "scripts/bootstrap_easysteer.py": "163ff3ed6f270370fe63858d27108a5852ddc83b04f0fa5975a52c22af59f15d",
+    "scripts/score_compass_sources.py": "c716bf2ee2d7bd4a8c4cfcddd68f3c722e17ae990d5c8dbeaa895756dea84126",
+    "scripts/validate_static_gpu.py": "756ea692cbf3628999cff225ea9e2670397fee035b7f31d83b48c3f77c4e6de4"
+  }
+}

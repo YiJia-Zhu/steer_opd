@@ -1,0 +1,260 @@
+{
+  "at": "2026-11-18T20:54:17.240634+08:00",
+  "status": "passed_cpu_checks_no_gpu_run",
+  "authorization": "User requested presence_penalty=2 wherever practical for vLLM inference, including OPD training; code/configuration only, no training restart.",
+  "default_presence_penalty": 2.0,
+  "explicit_control_allowed": 0.0,
+  "covered_generation": [
+    "teacher reference answers",
+    "student SV source answers",
+    "OPD training rollouts",
+    "training validation and benchmarks",
+    "standalone evaluation",
+    "native GPU acceptance sampling",
+    "activation-capture auxiliary token",
+    "fixed-prefix scoring auxiliary token"
+  ],
+  "sampling_and_probability_semantics": {
+    "generation": "penalized sampling distribution q",
+    "raw_logprob_mode": "raw_logprobs",
+    "loss_and_top16": "unpenalized native model probability p; no second penalty subtraction",
+    "importance_correction": "none",
+    "exact_unpenalized_on_policy_KL_equivalence": false,
+    "extra_fsdp_old_logprob_forward": false
+  },
+  "training_plan_schema": "steer_verl_training_shared_two_gpu_v5",
+  "training_request_validation": "Driver assigns one presence penalty per trajectory; agent injects it into vLLM sampling params and echoes it; driver rejects missing or different echoes for both train and eval.",
+  "cache_and_resume": "Penalty enters generation contract, evaluation identity, GPU acceptance identity, training plan and resume contract; automatic new parameter names include actual pp value.",
+  "historical_reuse": "Read-only original commits can be SHA-verified without a new engine call. Missing legacy penalty is never silently recast as pp2. New generation requires an explicit effective penalty. Old commits cannot be used as pp2 sources.",
+  "historical_sv_bank": "Existing explicitly pinned bank is preserved with its original provenance, not recomputed or represented as pp2.",
+  "capture_api_evidence": ".venv-easysteer/lib/python3.12/site-packages/easysteer/capture/api.py accepts **generate_kwargs forwarded into SamplingParams; native/vendor files not modified.",
+  "fixed_prefix_effect": "Only a discarded auxiliary output is generated; raw prompt/last-position probabilities and retained prefix activations are unchanged by output-history penalties.",
+  "cpu_validation": {
+    "full_suite": {
+      "exit_code": 0,
+      "passed": 355,
+      "warnings": 18,
+      "seconds": 38.09,
+      "log": ".runtime/diagnostics/presence_policy_20261118/cpu_tests_final.log"
+    },
+    "initial_targeted_suite": {
+      "exit_code": 0,
+      "passed": 97
+    },
+    "post_fix_recheck": {
+      "exit_code": 0,
+      "passed": 50,
+      "log": ".runtime/diagnostics/presence_policy_20261118/cpu_recheck.log"
+    },
+    "initial_full_suite": {
+      "exit_code": 1,
+      "passed": 349,
+      "failed": 5,
+      "log": ".runtime/diagnostics/presence_policy_20261118/cpu_tests.log",
+      "resolved": "Moved explicit-parameter requirement after read-only legacy reuse branches; updated synthetic generation fixture with explicit pp2 and completed codec mock."
+    },
+    "non_failing_dependency_messages": [
+      "SWIG/Ray/Torch deprecations; FLA CPU fallback",
+      "multiprocess ResourceTracker destructor AttributeError after pytest completion; process exit code 0"
+    ],
+    "package_validation": {
+      "exit_code": 0,
+      "status": "passed",
+      "python_sources_parsed": 89,
+      "local_links_checked": 216,
+      "report": "audit/package_validation.json",
+      "report_sha256": "bcfc604f66576d252891588590c69672bb83f6b4cdfa056868b2f97f57a08ee5",
+      "log": ".runtime/diagnostics/presence_policy_20261118/package_validation.log"
+    },
+    "launcher_preview": {
+      "exit_code": 0,
+      "mode": "--check",
+      "new_param_name": "n1000_slerp0.1_layer26_seed42_pp2_v1",
+      "log": ".runtime/diagnostics/presence_policy_20261118/launcher_preview.txt",
+      "gpu_started": false
+    },
+    "shell_syntax": "passed",
+    "git_diff_check": "passed"
+  },
+  "source_inventory": [
+    {
+      "file": "src/steer_opd/easysteer_static.py",
+      "line": 142,
+      "call": "SamplingParams",
+      "presence_penalty": "DEFAULT_PRESENCE_PENALTY"
+    },
+    {
+      "file": "src/steer_opd/easysteer_extraction.py",
+      "line": 89,
+      "call": "hs.capture",
+      "presence_penalty": "presence_penalty(config)"
+    },
+    {
+      "file": "src/steer_opd/opd_evaluation.py",
+      "line": 155,
+      "call": "SamplingParams",
+      "presence_penalty": "generation['presence_penalty']"
+    },
+    {
+      "file": "scripts/generate_static_sources.py",
+      "line": 56,
+      "call": "SamplingParams",
+      "presence_penalty": "penalty"
+    },
+    {
+      "file": "scripts/validate_static_gpu.py",
+      "line": 138,
+      "call": "hs.capture",
+      "presence_penalty": "presence_penalty(job)"
+    },
+    {
+      "file": "scripts/validate_static_gpu.py",
+      "line": 203,
+      "call": "SamplingParams",
+      "presence_penalty": "penalty"
+    }
+  ],
+  "files": {
+    "configs/ablation.json": {
+      "before_sha256": "eb1b0832450244d3ec55da30b2af1445f5976b40ceb2431669df760f584dc083",
+      "after_sha256": "5df29dd1dd650c3b50aa00ecaa9405e69ba10cdb4c5957f28d31312280097fbb"
+    },
+    "src/steer_opd/generation_policy.py": {
+      "before_sha256": null,
+      "after_sha256": "d25abe1c3009c05efb33e8f1a8cef4d7f3ae7339e650b14bd1e780a82d65929e"
+    },
+    "src/steer_opd/compass_campaign.py": {
+      "before_sha256": "df860ab9d8e80f0a76813af88eaa96c5b2621a7e20dd081b7f7123832f426b83",
+      "after_sha256": "07e7166823dc30b5bb07c6826653948d8d501db99e476c0e8553add30cc620c5"
+    },
+    "src/steer_opd/stage_contracts.py": {
+      "before_sha256": "2c2658f699122c6baa10ab3c33abe9afbed301d10309e4c39cd0b26e16d633f8",
+      "after_sha256": "6a82c251d136fda1b2f348aab181cafe4aa8b42cdbedfa0018664df8a16f6a76"
+    },
+    "src/steer_opd/stage_io.py": {
+      "before_sha256": "3ba977b896e471b7d1f8aa42ee6cd8e46617b612914d7b3ff5456376d0abeab7",
+      "after_sha256": "f0e729554824f880167446929a09a23f81346d7185563c2eb2590550511e3285"
+    },
+    "src/steer_opd/easysteer_static.py": {
+      "before_sha256": "4cd640733b38fb319d8d251075c69720b2a694658e61359db5297ae18bbcec3b",
+      "after_sha256": "d4f7de537a45780dd230bb99eb508291f4dcd493aa00073ad718505130258dc4"
+    },
+    "src/steer_opd/easysteer_extraction.py": {
+      "before_sha256": "f385bc45b58975fe7e1479ce218232856332325aa2ed6be533d89df6fa6046fb",
+      "after_sha256": "f3513bc38bf6ccd714e8d4a5a1fe0f41adc40bfa90d4d5555b0eabc52aae0578"
+    },
+    "src/steer_opd/opd_evaluation.py": {
+      "before_sha256": "5f918cde5c15422168543594a0cb1d286dc30d1ac8bba16e451d78d8d7a2b5f7",
+      "after_sha256": "fa8ca2b704f2e111e4edad3e966df939455b26fff1a3acec7d1dc8348018335d"
+    },
+    "src/steer_opd/training/verl_plan.py": {
+      "before_sha256": "b7a7c3857bcf47fcfece2d1777db888aefed337e9e4233e7e88d22763982d746",
+      "after_sha256": "dfb9be6a2285f1f07bcaecf37ac859a952a8b7244f76ba03c172a91a6ccdfd80"
+    },
+    "src/steer_opd/training/rollout_seeds.py": {
+      "before_sha256": "c87627e6f06143ccf517ab489eec46fe3edb36cd56a557b006fb19a3c274f6be",
+      "after_sha256": "9b2bb83f7acbdd65c0e72507b46ccf750c584547b3ac34d7551037a69b9ea7ce"
+    },
+    "src/steer_opd/training/verl_agent.py": {
+      "before_sha256": "cd376cdc9084cb978cb2946783080c332b6aa0038ece6ce641de7db97c437d25",
+      "after_sha256": "d39484b5eb9a0b33a71eda52c5bdd46ef2cc15e1017cb89b7a3844721095d882"
+    },
+    "src/steer_opd/training/rollout_logprobs.py": {
+      "before_sha256": "0c80ee1b1ef0af2fe09c2bf60e0ced57f2bc5968bf2ce361492ad8bf67f98925",
+      "after_sha256": "23a15f21d6df03e915080a1d258e3f67740265ae8e94a804da84ff4eb0834d61"
+    },
+    "src/steer_opd/training/verl_trainer.py": {
+      "before_sha256": "37cf8346fc2d12abdc6c6f1b621c54320a924b6dc2e14c7be3d5c7cfad03f55b",
+      "after_sha256": "dfe8bdc73a1b671fe7d722e6711715d373fb876d7dc2d5a8f65bdf05adaeeaf9"
+    },
+    "src/steer_opd/training/resume_handover.py": {
+      "before_sha256": "755103f9817da8e8a3226f010ddafce3e127aa4cec13eea05f42dac5129ab016",
+      "after_sha256": "0c45e3031e369a222d2f25f0cbf0d9b266e62995af46e1cd2d8bec97b22e478c"
+    },
+    "src/steer_opd/training/rethinking_defaults.py": {
+      "before_sha256": "aa06350e2f62ff98a7b6d0b474b718ed0309ed1f9bd0d2bce7b54e14b1f2334b",
+      "after_sha256": "6372c6b2b194417d41cffbc5473da0381d485edce52b09f6ed1fa2988559fc31"
+    },
+    "src/steer_opd/training/verl_entry.py": {
+      "before_sha256": "ebc1bf94a00652cf5e257f69447220702ffd97bd306f9cbf3053212c7294a4c8",
+      "after_sha256": "f0a7402d6c283674c5c688107c555c5e2d0b7c0f27c4bde240c153dd24a9a57e"
+    },
+    "scripts/generate_static_sources.py": {
+      "before_sha256": "2455190f31f9a7b5cd40e03b40895029afc9c9a68402b6eb50dd7865259bc1bc",
+      "after_sha256": "6cb8935b0dde6d018126c5b692c99bae578e21a3880f5602757a1a6d5bea30f0"
+    },
+    "scripts/validate_static_gpu.py": {
+      "before_sha256": "756ea692cbf3628999cff225ea9e2670397fee035b7f31d83b48c3f77c4e6de4",
+      "after_sha256": "1509122becca41e1933af62eaaa889009d56d43039cbeedbae659967db48ac83"
+    },
+    "scripts/launch_ablation.py": {
+      "before_sha256": "a653d8d5550298c03371d6f358e67fc61c316963f2403150bfc7b39dd41dd864",
+      "after_sha256": "4473d62ef509e2b2319222542291a0460c33462b276364fe3d23736ea54281f0"
+    },
+    "scripts/run_ablation.sh": {
+      "before_sha256": "d7aab1c869d101d7abe64a391563705b949331d2efadd8e68b1844e4db664adf",
+      "after_sha256": "c8752dd6ce128e7b6b6c60d3dccda866d39ac2aeceb71db0160a642eca67ced0"
+    },
+    "tests/test_generation_policy.py": {
+      "before_sha256": null,
+      "after_sha256": "5602496e6a48c7db963a0dd2c362bc617a8fb65233f1d113491a372c050eb2b7"
+    },
+    "tests/test_training_seeds.py": {
+      "before_sha256": "7b5b18e3bf2ae6ec5078148a79aa70e0cd4ba4ad19a53701597763b2169d5311",
+      "after_sha256": "b143208a6eb08b7003217e92461bff15a81e4e51e563d6ffda5bd42092005387"
+    },
+    "tests/test_verl_training.py": {
+      "before_sha256": "4476f2fde31e678408b6a36733cee96728897f0eca53664cdc6019d0b4bc9789",
+      "after_sha256": "e04fe3895ff22d09abd687d25a48c87fab0ada8ce7ee5e43b11cdf9e273b050d"
+    },
+    "tests/test_training_overlap.py": {
+      "before_sha256": "2ab5496f55e4b7c3f94f47f3f93a8d7f54a58a65179d5cbe3b1cfe80026c2891",
+      "after_sha256": "52b464313d7b463626c11f9745a9f94ca23dd43fb4590633ec8ee37e985a3817"
+    },
+    "tests/test_training_rollout_logprobs.py": {
+      "before_sha256": "ea38b8346d4abfeaa13b24ddefac654d8cf61d31ee2339988a46f4e82805f8ea",
+      "after_sha256": "21878297d1a7f65e18795180bb9505a607f01c09ee82ce2a1f3fe1134058d444"
+    },
+    "tests/test_stage_reuse.py": {
+      "before_sha256": "0e8f9b806470aa1ebcefede0eda125a4ae1ae976abf344dedc39575f514790f1",
+      "after_sha256": "95a138d499827a9e81e6366ef32a31eaefc32229e142758286b4bdcf047039c5"
+    },
+    "tests/test_ablation_launcher.py": {
+      "before_sha256": "6356346175ab60cb8be0af42441e04f88969ee4669a83f6b4b11ea599e03a013",
+      "after_sha256": "585fe954459249b848e9ac33881cace89ebc1afc90a9dd743538557654269c49"
+    },
+    "tests/test_teacher_ablation.py": {
+      "before_sha256": "2a86bcbdbe3ef6acd167af02c1ee9eb2fa87f4e7cc79ef3a888b4780d2f6d748",
+      "after_sha256": "ff82ab0127e9be7de9cf3681df44dbb243cbceb85c4d9b0b29e16b79b57c1efe"
+    },
+    "tests/test_dual_overlap.py": {
+      "before_sha256": "d4115a542da979c8c83950ea82fdbd8b6ed71038fa837764e4a1919d97efb05c",
+      "after_sha256": "498ddafa8939d236f3b95c0b502288c8909ca636616611fffa3999b21af3e36d"
+    },
+    "tests/test_repro_resume_progress.py": {
+      "before_sha256": "c8914dda6b87f009c40b5caa9432bc4ad20b505071ae3e972d7235cb4621ed91",
+      "after_sha256": "93100226a66f10be72779df55b1fac64fe625ddf2da09ca52f3a8e4d68bd6e82"
+    },
+    "docs/OPD概率来源统一与Top16方案分析.md": {
+      "before_sha256": "1c4acbb7d1c1af7d7b43e13cce8af303a560e4fec8b32acdf118a5b3c19a4e36",
+      "after_sha256": "482bfe6ff247edf9efad45dab7d2f98868340bc2b435e12e584522461a81cc4c"
+    },
+    "docs/implementation.md": {
+      "before_sha256": "8020abd1c344f851a12c426898d3ed33eba45c59ba3621c642a9902341dd0147",
+      "after_sha256": "07c92506784e54c2e7a712dde605676207db336fbce81db0267b062332b03627"
+    },
+    "docs/代码框架逻辑.md": {
+      "before_sha256": "cfbc7b1520d97b004a8e192c8b4278443664d7fc027a1fa0637b7976b0eeab17",
+      "after_sha256": "81809524a65b94406a09923f87dee263a55fb1560b6bd9c348c8c875e6c3a593"
+    }
+  },
+  "patch": "audit/presence_penalty_policy_20261118.patch",
+  "template_execution_hold": "awaiting_user_approval",
+  "gpu_started": false,
+  "training_resumed": false,
+  "new_optimizer_updates": 0,
+  "gpu_training_acceptance": "not_run",
+  "new_accuracy_results": "not_measured",
+  "completed_at": "2026-11-18T20:55:40.799940+08:00",
+  "patch_sha256": "662ac3fcce59c11b08d987b8196251ca02d7271ee8a6aec667b64063b584fd7d"
+}

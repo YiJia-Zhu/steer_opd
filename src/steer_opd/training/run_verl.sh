@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CPU preview by default. --prepare writes a frozen CPU recipe; --run also needs a GPU receipt.
+# CPU preview by default. --run explicitly starts the formal recipe and validates its first full batch.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.."
 source scripts/runtime_env.sh

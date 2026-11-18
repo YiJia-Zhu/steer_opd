@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-11-18T22:11:22.528365+08:00",
+  "policy": "minimal_v1",
+  "scope": "New plans and new explicitly marked captures only; historical outputs not migrated or deleted",
+  "training_schema": "steer_verl_training_shared_two_gpu_v6",
+  "tests": {
+    "command": "CUDA_VISIBLE_DEVICES='' \"$STEER_OPD_PYTHON\" -m pytest -q tests",
+    "passed": 372,
+    "failed": 0,
+    "seconds": 44.18,
+    "gpu_tests_started": false
+  },
+  "package_validation": "passed",
+  "verified_cases": [
+    "SV banks resume after pooled retirement, including paired readers",
+    "changed banks or retirement metadata rejected",
+    "legacy pools preserved; unexplained missing pool rejected",
+    "interrupted pool deletion safely retried",
+    "standard and Compass scorer requests retain exact alignment in temporary workspaces",
+    "batch cleanup constrained by owner and rejects symlinks",
+    "batch data remains available until successful update and handover",
+    "Top16 monitors keep scalar metrics without historical arrays",
+    "checkpoint component completeness, SHA integrity and interrupted tracker recovery",
+    "new checkpoint commits before rotation; foreign/uncommitted folders preserved"
+  ],
+  "save_frequency_changed": false,
+  "latest_complete_checkpoint_only": true,
+  "protected_plan_and_bank_sha256": {
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v3_overlap/metadata/plan.json": "b72b9e46e6d6ad00912c94b790fbfd24be57698f3ff8e3f6b4a163cfe279b344",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v4_seedseq/metadata/plan.json": "14849e26dc430537acfa5fc5da1e63445653a573725d1328c6138510fac6e3dc",
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45/metadata/plan.json": "638eb613ec8a5effc8c42d16e1dda625aa10d82a8f67a6d9119366cef854b2d0",
+    "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1/reader_teacher/banks/S-T_global.pt": "d1c16e936b02ac7f30c5e807df980b4e972f619e54df9911a5483ce79f8fe207"
+  },
+  "source_sha256": {
+    "configs/ablation.json": "34617ddfc887b75b50363d0b0917311241017556d414be44d4656408cdfb7bc9",
+    "src/steer_opd/retention.py": "cd6a37d8e1fe6215ab1150e9a49581f994c37d52b3df9fbb9199e3c6870f87ca",
+    "src/steer_opd/sv_retention.py": "19d57c40214b716f92d5c58167d3002252cbc18b606eebcd58973a26acced0a1",
+    "src/steer_opd/artifact_reuse.py": "e045191b1d7ad8d54482fcb508c6b03b3ce675d476b3293bfba48c6308f7f37a",
+    "src/steer_opd/stage_campaign.py": "b7c35456ffb7b3b905ecdc84c3407ae180105fda2809dd62012c6bd75ae84402",
+    "scripts/capture_student_activations.py": "ffcf46ed24219632303b66c115089b897beeca54200c8a7b36326e4ba7ed0c28",
+    "src/steer_opd/training/retention.py": "08fc4f575415a5933b55de3459bb6c84cbe961fec298b6509b83f093d716dbcc",
+    "src/steer_opd/training/scorer_client.py": "caec79e52d02165eb88b654d2ac9c192ea3a90d003657a7368fd2da739601117",
+    "src/steer_opd/training/scorer_service.py": "ee29b403c13e7d40d41d70a43b326251998f48d4f82a2affa076ac841df83956",
+    "src/steer_opd/training/overlap_monitor.py": "e5ff7a908020282a4d31260fb7aefc548e61cb562ef7b213cc5f59bf21978026",
+    "src/steer_opd/training/verl_plan.py": "ee6963a89af3b20fe80928c1784d8616c825ff54def89ed91f3462befa151b0d",
+    "src/steer_opd/training/verl_trainer.py": "79d5b2a0e229a99285b3c68a7c4c83ba75228b1803216b9250204b7fd87a8d09",
+    "src/steer_opd/training/verl_entry.py": "7d8c468b3e1cb71bb7149384e4b499dee7420fc10b8140d3eef79c6a6b2af270",
+    "src/steer_opd/training/rethinking_defaults.py": "110c527beea5e0d1ce357c93f42a4da6e19046447a92aca59c2e0e7aff244cb1"
+  },
+  "documentation": [
+    "docs/代码框架逻辑.md#85-最小保留策略",
+    "输出结构.md",
+    "docs/目前代码估计运行时间.md#11-最小保留策略的存储与计时口径",
+    "docs/ablation.md",
+    "docs/README.md",
+    "AGENTS.md"
+  ],
+  "execution_hold": "awaiting_user_approval",
+  "gpu_training_started": false
+}

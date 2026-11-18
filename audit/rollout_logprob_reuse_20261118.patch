@@ -1,0 +1,690 @@
+--- before/src/steer_opd/training/verl_adapter.py
++++ src/steer_opd/training/verl_adapter.py
+@@ -3,15 +3,17 @@
+ 
+ from steer_opd.training.config import TrainingLossConfig
+ from steer_opd.training.losses import distillation_loss
++from steer_opd.training.rollout_logprobs import bind_old_log_probs,difference_sums
+ 
+ 
+ def attach_advantages(batch, scored, settings=None):
+     """Bind frozen scorer outputs to exact generated IDs, then mask native positions.
+ 
+-    old_log_probs are recomputed by VERL for this batch before any update.
++    old_log_probs reuse the exact vLLM observed-token probabilities.
+     Scoring replies contain the exact source IDs; order/shape mismatches fail.
+     """
+     settings = settings or TrainingLossConfig()
++    bind_old_log_probs(batch)
+     tensors = batch.batch
+     response = tensors['responses']
+     original_mask = tensors['response_mask'].bool()
+@@ -62,7 +64,17 @@
+     fields = data.select('advantages', 'response_mask').to_padded_tensor()
+     loss = sampled_policy_loss(log_prob, fields['advantages'], fields['response_mask'],
+         global_valid_tokens=data['batch_num_tokens'], dp_size=data['dp_size'])
+-    return loss, {'actor/pg_loss': Metric(value=loss.detach(), aggregation=AggregationType.SUM)}
++    metrics = {'actor/pg_loss': Metric(value=loss.detach(), aggregation=AggregationType.SUM)}
++    # Formal OPD always has rollout_log_probs. Standalone capacity probes may
++    # supply synthetic advantages without an actual sampling distribution.
++    if 'rollout_log_probs' in data:
++        rollout = data.select('rollout_log_probs').to_padded_tensor()['rollout_log_probs']
++        differences = difference_sums(log_prob,rollout,fields['response_mask'],
++            global_valid_tokens=data['batch_num_tokens'],dp_size=data['dp_size'])
++        for key,value in differences.items():
++            metrics['actor/train_rollout_logprob_'+key] = Metric(value=value,
++                aggregation=AggregationType.MAX if key=='abs_diff_max' else AggregationType.SUM)
++    return loss, metrics
+ 
+ 
+ def token_reward_direct(token_level_rewards,response_mask,config=None,**kwargs):
+--- before/src/steer_opd/training/verl_plan.py
++++ src/steer_opd/training/verl_plan.py
+@@ -8,6 +8,7 @@
+ from steer_opd.resumable_core import ROOT, digest, read_json
+ from steer_opd.training.config import TrainingLossConfig
+ from steer_opd.training.rollout_seeds import SEED_POLICY
++from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
+ 
+ VERL_REVISION = '61adb0c7eb90730306e7794c2bf248331211e657'
+ VERL_ARCHIVE_SHA256 = '8fdbb0f301a769b432db0c8fa847ebaa41f0471a91a748b4b2fcd1685ff755fb'
+@@ -81,7 +82,7 @@
+         raise ValueError('Preserve the frozen 1000-question 700/300 pool')
+     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+               for p in (questions, split)}
+-    plan = {'schema': 'steer_verl_training_shared_two_gpu_v2', 'verl_revision': VERL_REVISION,
++    plan = {'schema': 'steer_verl_training_shared_two_gpu_v3', 'verl_revision': VERL_REVISION,
+             'verl_source': VERL_SOURCE, 'output': str(base), 'settings': asdict(settings),
+             'training_loss': asdict(loss), 'student': experiment['student'], 'teacher': experiment['teacher'],
+             'tokenizer_paths': experiment['tokenizer_paths'], 'seed': 42, 'input_sha256': hashes,
+@@ -91,9 +92,10 @@
+             'granularity': 'global', 'gate': 'all', 'strength_policy': 'fixed',
+             'student_rollout_steering': False, 'student_training_steering': False,
+             'request_seed_policy': SEED_POLICY,
++            'student_logprob_source': STUDENT_LOGPROB_SOURCE,
+             'resource_mode':'shared_two_gpu',
+             'gpu_admission':'single_admission_for_whole_pool',
+-            'phase_order':['student_rollout','student_logprob','frozen_scoring','student_update'],
++            'phase_order':['student_rollout','student_rollout_logprob_reuse','frozen_scoring','student_update'],
+             'on_policy': {'ppo_epochs': 1, 'optimizer_steps_per_rollout_batch': 1,
+                           'rollout_n': settings.rollout_n, 'temperature': 1., 'top_p': 1., 'top_k': -1},
+             'execution_hold': experiment.get('execution_hold'), 'training_started': False,
+@@ -118,6 +120,8 @@
+ def verl_overrides(plan):
+     """Use the pinned public config; teacher Top-K distillation stays disabled."""
+     s, root = plan['settings'], ROOT/plan['output']
++    if plan.get('student_logprob_source') != STUDENT_LOGPROB_SOURCE:
++        raise ValueError('Prepare a new training plan with the vLLM rollout logprob source')
+     from steer_opd.training.rethinking_defaults import inherited_overrides
+     overrides={
+         **inherited_overrides(),
+@@ -150,13 +154,20 @@
+         'actor_rollout_ref.rollout.gpu_memory_utilization': s['rollout_memory'],
+         'actor_rollout_ref.rollout.temperature': 1., 'actor_rollout_ref.rollout.top_p': 1.,
+         'actor_rollout_ref.rollout.top_k': -1, 'actor_rollout_ref.rollout.seed': 42,
++        'actor_rollout_ref.rollout.calculate_log_probs': True,
++        'actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode':'raw_logprobs',
++        'actor_rollout_ref.rollout.engine_kwargs.vllm.max_logprobs':16,
+         'actor_rollout_ref.rollout.agent.default_agent_loop': 'steer_opd_single_turn',
+         'actor_rollout_ref.rollout.agent.agent_loop_config_path': str(Path(__file__).resolve().parent/'verl_agent.yaml'),
+         'actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu': s['micro_batch_size'],
+         'actor_rollout_ref.rollout.log_prob_use_dynamic_bsz': True,
+         'actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu':32768,
+         'algorithm.adv_estimator': 'token_reward_direct',
+-        'algorithm.use_kl_in_reward': False, 'algorithm.rollout_correction': None,
++        'algorithm.use_kl_in_reward': False,
++        # Only use the upstream old-policy bypass. The project's registered
++        # sampled OPD loss remains in charge; no PPO/IS/RS/centering is enabled.
++        'algorithm.rollout_correction': {'bypass_mode':True,'rollout_is':None,
++            'rollout_rs':None,'loss_type':'reinforce','score_centering':False},
+         'critic.enable': False, 'reward.reward_model.enable': False, 'distillation.enabled': False,
+         'reward.custom_reward_function.path': str(Path(__file__).resolve().parent/'verl_reward.py'),
+         'reward.custom_reward_function.name': 'compute_score',
+--- before/src/steer_opd/training/verl_trainer.py
++++ src/steer_opd/training/verl_trainer.py
+@@ -6,6 +6,7 @@
+ from steer_opd.training.scorer_client import ScorerClient
+ from steer_opd.training.shared_pool import SharedCheckpointManager,SharedPoolHandover
+ from steer_opd.training.telemetry import phase,event
++from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE,bind_old_log_probs
+ 
+ 
+ def serializable_metrics(value):
+@@ -44,11 +45,12 @@
+                 self.actor_rollout_wg.to('cpu',model=True,optimizer=True,grad=True)
+ 
+         def _compute_old_log_prob(self,batch):
+-            self.handover.require_student()
+-            with phase(self.log_folder,'student_logprob',step=self.global_steps):
+-                return super()._compute_old_log_prob(batch)
++            raise RuntimeError('Extra FSDP old-policy forward is disabled; reuse vLLM rollout_log_probs')
+ 
+         def _update_actor(self,batch):
++            with phase(self.log_folder,'student_rollout_logprob_reuse',step=self.global_steps,
++                       source=STUDENT_LOGPROB_SOURCE):
++                bind_old_log_probs(batch)
+             rows=batch_rows(batch)
+             with phase(self.log_folder,'teacher_scoring_phase',step=self.global_steps,trajectories=len(rows)):
+                 with self.handover.frozen_scoring():scored=self.scorer.score(rows)
+@@ -74,6 +76,7 @@
+                 atomic_json(ROOT/self.steer_plan['output']/'metadata/formal_runtime_acceptance.json',{
+                     'status':'passed','plan_binding':self.steer_plan['binding'],'actual_step':self.global_steps,
+                     'trajectories':len(rows),'loss_type':'traditional_opd','resource_mode':'shared_two_gpu',
++                    'student_logprob_source':STUDENT_LOGPROB_SOURCE,
+                     'validation_scope':'full-batch generation, scoring, handover and finite optimizer update',
+                     'numeric_equivalence':'not_claimed; rollout/actor discrepancy logged per step'})
+             return result
+@@ -112,6 +115,13 @@
+             from verl.utils.dataset.rl_dataset import collate_fn
+             register_token_reward_direct()
+             plan=OmegaConf.to_container(config.steer_opd,resolve=True)
++            correction=config.algorithm.get('rollout_correction')
++            if (plan.get('student_logprob_source')!=STUDENT_LOGPROB_SOURCE or not correction
++                    or not correction.get('bypass_mode') or correction.get('rollout_is') is not None
++                    or correction.get('rollout_rs') is not None or correction.get('score_centering',False)
++                    or not config.actor_rollout_ref.rollout.calculate_log_probs
++                    or config.actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode!='raw_logprobs'):
++                raise ValueError('OPD requires raw vLLM rollout logprobs and old-policy bypass without extra corrections')
+             scorer=ScorerClient(plan)
+             try:
+                 # Warm frozen engines first and sleep them before student model
+--- before/src/steer_opd/training/verl_entry.py
++++ src/steer_opd/training/verl_entry.py
+@@ -12,6 +12,7 @@
+ 
+ from steer_opd.resumable_core import ROOT, atomic_json, digest, read_json
+ from steer_opd.training.config import TrainingLossConfig
++from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
+ from steer_opd.training.verl_plan import (VERL_ARCHIVE_SHA256,VERL_REVISION,VERL_SOURCE,
+                                          VerlSettings,build_verl_plan,gpu_ids,verl_overrides)
+ 
+@@ -135,6 +136,7 @@
+     if (receipt.get('status')!='passed' or receipt.get('plan_binding')!=plan['binding']
+             or receipt.get('roles')!=roles
+             or receipt.get('loss_type')!=plan['training_loss']['loss_type']
++            or receipt.get('student_logprob_source')!=plan.get('student_logprob_source')
+             or receipt.get('resource_mode')!='shared_two_gpu'
+             or receipt.get('phase_handover_test')!='passed'):
+         raise ValueError('Training GPU receipt must match this exact plan, roles and loss')
+@@ -178,7 +180,9 @@
+     phases=[e for e in events if e['event']=='phase_end' and e['status']=='completed']
+     def count(name):return sum(e['phase']==name for e in phases)
+     tracker=root/'checkpoints/latest_checkpointed_iteration.txt'
+-    if (updates!=[1,2] or count('teacher_scoring_phase')!=2 or count('student_logprob')!=2
++    if (updates!=[1,2] or count('teacher_scoring_phase')!=2
++            or count('student_rollout_logprob_reuse')!=2 or count('student_logprob')!=0
++            or plan.get('student_logprob_source')!=STUDENT_LOGPROB_SOURCE
+             or count('student_rollout_weight_sync')<2 or count('teacher_sleep_ack')!=2
+             or not tracker.is_file() or tracker.read_text().strip()!='2'
+             or len(list((root/'checkpoints/global_step_2/actor').glob('optim_world_size_2_rank_*.pt')))!=2):
+@@ -186,6 +190,7 @@
+     receipt={'status':'passed','plan_binding':plan['binding'],'roles':['student_fsdp_rollout','teacher_scoring'],
+              'loss_type':'traditional_opd','resource_mode':'shared_two_gpu','phase_handover_test':'passed',
+              'actual_optimizer_updates':2,'checkpoint_step':2,'run_purpose':plan['run_purpose']}
++    receipt['student_logprob_source']=STUDENT_LOGPROB_SOURCE
+     atomic_json(root/'metadata/acceptance_receipt.json',receipt)
+     return receipt
+ 
+--- before/src/steer_opd/training/resume_handover.py
++++ src/steer_opd/training/resume_handover.py
+@@ -15,6 +15,8 @@
+     if (source_root/'metadata/invalid_sampling.json').exists():raise ValueError('Cannot resume an invalid-sampling experiment')
+     for name in ('student','teacher','training_loss','input_sha256','seed','request_seed_policy','direction','granularity','gate','strength_policy','on_policy'):
+         if source[name]!=plan[name]:raise ValueError(f'Resume scientific contract differs: {name}')
++    if source.get('student_logprob_source')!=plan.get('student_logprob_source'):
++        raise ValueError('Resume scientific contract differs: student_logprob_source')
+     ignore={'run_name','monitor_overlap'}
+     old={k:v for k,v in source['settings'].items() if k not in ignore}
+     new={k:v for k,v in plan['settings'].items() if k not in ignore}
+--- before/src/steer_opd/training/rethinking_defaults.py
++++ src/steer_opd/training/rethinking_defaults.py
+@@ -50,7 +50,8 @@
+         'script_sha256':'8377cb1b7bec6ebf380f8274623ce0188591ce90c95216ccd85b6d7aa36974a1',
+         'adaptations':{
+             'models_data_and_loss':'Keep selected Qwen pair, original 700/300 split, S-T teacher SV and two discussed losses; no native-ID TopK KL or PPO clipping.',
+-            'gpu_count':'Shared two-card pool, student FSDP2 ranks and rollout TP1; teacher EasySteer TP2.',
++            'gpu_count':'Shared two-card pool, student FSDP ranks (strategy=fsdp) and rollout TP1; teacher EasySteer TP2.',
++            'old_logprobs':'Reuse vLLM raw observed-token rollout_log_probs through the upstream old-policy bypass; retain the custom sampled OPD loss and measure train-versus-rollout differences in its differentiable forward. No extra old-policy forward or automatic PPO/IS/RS/centering.',
+             'offload':'Explicit CPU offload and sleep acknowledgements are required for two-card sharing; actor param/optimizer offload=True instead of official False.',
+             'teacher_dtype':'Preserve BF16 EasySteer teacher, not official FP32 FSDP teacher.',
+             'training_budget':'Preserve the previously discussed 100 logical update batches; epoch cap is derived from that budget.',
+--- before/tests/test_verl_training.py
++++ tests/test_verl_training.py
+@@ -40,6 +40,11 @@
+     assert cfg['critic.enable'] is False
+     assert cfg['actor_rollout_ref.actor.use_kl_loss'] is False
+     assert cfg['actor_rollout_ref.rollout.temperature']==1.
++    assert cfg['actor_rollout_ref.rollout.calculate_log_probs'] is True
++    assert cfg['actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode']=='raw_logprobs'
++    assert cfg['algorithm.rollout_correction']['bypass_mode'] is True
++    assert cfg['algorithm.rollout_correction']['rollout_is'] is None
++    assert 'student_logprob' not in plan['phase_order']
+     assert plan['train_questions']==700 and plan['confirm_used_for_training'] is False
+     assert plan['settings']['gpu_pool']==[0,1]
+     assert plan['execution_hold']=='awaiting_user_approval'
+@@ -51,7 +56,8 @@
+              'prompts':torch.tensor([[0,7,8]]),
+              'attention_mask':torch.tensor([[0,1,1,1,1,1,1,0]]),
+              'response_mask':torch.tensor([[1,1,1,1,0]]),
+-             'old_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]])}
++             'old_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]]),
++             'rollout_log_probs':torch.tensor([[-1.,-3.,-2.,-4.,0.]])}
+     reply={'alignment':plan,'teacher_logps':teacher}
+     if kind=='compass_opd':reply.update(reference_logps=torch.tensor([-1.5,-2.]),student_anchor_logps=torch.tensor([-2.,-2.,-2.,-4.]))
+     return settings,reply,SimpleNamespace(batch=tensors,meta_info={})
+@@ -97,7 +103,8 @@
+         'attention_mask':torch.tensor([[0,1,1,1,1],[1,1,1,0,0]]),
+         'position_ids':torch.tensor([[0,0,1,2,3],[0,1,2,0,0]]),
+         'response_mask':torch.tensor([[1,0,1],[1,0,0]]),
+-        'advantages':torch.tensor([[2.,0.,-1.],[3.,0.,0.]])},batch_size=[2])
++        'advantages':torch.tensor([[2.,0.,-1.],[3.,0.,0.]]),
++        'rollout_log_probs':torch.tensor([[-1.5,-2.5,-3.5],[-6.5,0.,0.]])},batch_size=[2])
+     packed=left_right_2_no_padding(data)
+     tu.assign_non_tensor(packed,batch_num_tokens=3,dp_size=2)
+     logp=torch.tensor([-1.,-2.,-3.,-4.,-5.,-6.,-7.],requires_grad=True)
+@@ -106,6 +113,9 @@
+     expected=torch.zeros(7);expected[0]=-4/3;expected[2]=2/3;expected[5]=-2.
+     torch.testing.assert_close(logp.grad,expected)
+     assert 'actor/pg_loss' in metrics
++    assert metrics['actor/train_rollout_logprob_abs_diff_mean'].aggregate()==pytest.approx(1.)
++    assert metrics['actor/train_rollout_logprob_signed_diff_mean'].aggregate()==pytest.approx(1.)
++    assert metrics['actor/train_rollout_logprob_abs_diff_max'].aggregate()==pytest.approx(.5)
+ 
+ 
+ def test_real_dataproto_preserves_custom_masks_when_sent_to_worker(upstream):
+@@ -130,6 +140,8 @@
+     assert cfg.trainer.n_gpus_per_node==2
+     assert cfg.actor_rollout_ref.actor.ppo_mini_batch_size==64
+     assert cfg.reward.custom_reward_function.name=='compute_score'
++    assert cfg.algorithm.rollout_correction.bypass_mode
++    assert cfg.algorithm.rollout_correction.rollout_is is None
+ 
+ 
+ def test_cpu_parquet_export_preserves_select_confirm_separation(tmp_path):
+@@ -176,6 +188,7 @@
+     plan=build_verl_plan(read_json(ROOT/'configs/ablation.json'),loss=TrainingLossConfig(loss_type='compass_opd'))
+     receipt={'status':'passed','plan_binding':plan['binding'],'loss_type':'compass_opd',
+              'roles':['student_fsdp_rollout','teacher_scoring'],
++             'student_logprob_source':plan['student_logprob_source'],
+              'resource_mode':'shared_two_gpu','phase_handover_test':'passed'}
+     path=tmp_path/'receipt.json';atomic_json(path,receipt)
+     with pytest.raises(ValueError,match='exact plan'):validate_receipt(plan,path)
+--- before/tests/test_training_acceptance.py
++++ tests/test_training_acceptance.py
+@@ -45,3 +45,25 @@
+     rows=[json.loads(s) for s in (tmp_path/'training_events.jsonl').read_text().splitlines()]
+     assert rows[-1]['status']=='failed' and rows[-1]['seconds']>=0
+     assert rows[0]['event']=='phase_start' and rows[-1]['event']=='phase_end'
++
++
++def test_acceptance_requires_probability_reuse_and_rejects_extra_old_policy_forward(tmp_path):
++    from steer_opd.training.rollout_logprobs import SOURCE
++    logs=tmp_path/'logs';logs.mkdir()
++    folder=tmp_path/'checkpoints/global_step_2/actor';folder.mkdir(parents=True)
++    for rank in (0,1):(folder/f'optim_world_size_2_rank_{rank}.pt').write_bytes(b'fixture')
++    (tmp_path/'checkpoints/latest_checkpointed_iteration.txt').write_text('2')
++    events=[]
++    for step in (1,2):
++        events.append({'event':'optimizer_update_committed','step':step})
++        events.extend({'event':'phase_end','status':'completed','phase':name} for name in
++            ['teacher_scoring_phase','student_rollout_logprob_reuse','student_rollout_weight_sync','teacher_sleep_ack'])
++    path=logs/'training_events.jsonl'
++    path.write_text(''.join(json.dumps(e)+'\n' for e in events))
++    plan={'output':str(tmp_path),'binding':'cpu-fixture','run_purpose':'two_step_gpu_acceptance',
++          'student_logprob_source':SOURCE}
++    receipt=commit_acceptance(plan)
++    assert receipt['student_logprob_source']==SOURCE
++    events.append({'event':'phase_end','status':'completed','phase':'student_logprob'})
++    path.write_text(''.join(json.dumps(e)+'\n' for e in events))
++    with pytest.raises(RuntimeError,match='evidence is incomplete'):commit_acceptance(plan)
+--- before/tests/test_training_overlap.py
++++ tests/test_training_overlap.py
+@@ -26,14 +26,16 @@
+     assert summary['overlap/token_value']==1.
+     assert summary['P_overlap/token_value']==pytest.approx(.5)
+     assert summary['overlap/coverage']==pytest.approx(2/3)
++    assert summary['rollout/H16_cond_native']==pytest.approx(math.log(16))
+ 
+ 
+ def test_question_and_token_weights_have_different_denominators():
+-    parts=[{'question_id':'a','total_tokens':1,'valid_tokens':1,'overlap_sum':1.,'P_overlap_sum':.8},
+-           {'question_id':'b','total_tokens':3,'valid_tokens':3,'overlap_sum':0.,'P_overlap_sum':0.}]
++    parts=[{'question_id':'a','total_tokens':1,'valid_tokens':1,'overlap_sum':1.,'P_overlap_sum':.8,'student_H16_cond_sum':.2},
++           {'question_id':'b','total_tokens':3,'valid_tokens':3,'overlap_sum':0.,'P_overlap_sum':0.,'student_H16_cond_sum':1.8}]
+     summary=summarize_statistics(parts)
+     assert summary['overlap/question_value']==.5 and summary['overlap/token_value']==.25
+     assert summary['P_overlap/question_value']==.4 and summary['P_overlap/token_value']==.2
++    assert summary['rollout/H16_cond_native']==pytest.approx(.5)
+ 
+ 
+ def test_compressed_top16_roundtrip_preserves_tensor_bytes(tmp_path):
+@@ -106,6 +108,8 @@
+         with pytest.raises(ValueError,match='hyperparameters'):bind_resume_source(changed,checkpoint)
+         changed=copy.deepcopy(new);changed['request_seed_policy']='constant_42'
+         with pytest.raises(ValueError,match='request_seed_policy'):bind_resume_source(changed,checkpoint)
++        changed=copy.deepcopy(new);changed['student_logprob_source']='fsdp_recomputed_old_policy'
++        with pytest.raises(ValueError,match='student_logprob_source'):bind_resume_source(changed,checkpoint)
+         atomic_json(oldroot/'metadata/invalid_sampling.json',{'status':'invalid'})
+         with pytest.raises(ValueError,match='invalid-sampling'):bind_resume_source(new,checkpoint)
+         (oldroot/'metadata/invalid_sampling.json').unlink()
+--- before/scripts/validate_package.py
++++ scripts/validate_package.py
+@@ -37,7 +37,7 @@
+     for entry in read(metadata/'source_manifest.json')['files']:
+         assert sha(metadata/entry['path'])==entry['sha256'],entry['path']
+     docs = list((ROOT/'docs').glob('*.md'))
+-    assert {p.name for p in docs}=={'README.md','ablation.md','implementation.md','sources.md','overlap.md','Steering_OPD_完整研究方案.md'}
++    assert {'README.md','ablation.md','implementation.md','sources.md','overlap.md','Steering_OPD_完整研究方案.md'} <= {p.name for p in docs}
+     md_files = [ROOT/'README.md',ROOT/'AGENTS.md',ROOT/'TODO.md',ROOT/'输出结构.md',*docs,
+                 ROOT/'ref/README.md',ROOT/'ref/archive/README.md']
+     links=0
+@@ -128,12 +128,13 @@
+         assert not set(split['select_ids'])&set(split['confirm_ids'])
+         assert set(split['select_ids'])|set(split['confirm_ids'])==set(by_id)
+         assert split['source_sha256']==sha(source)
+-    files=[*(ROOT/'src/steer_opd').glob('*.py'),*(ROOT/'scripts').glob('*.py')]
++    files=[*(ROOT/'src/steer_opd').rglob('*.py'),*(ROOT/'scripts').glob('*.py')]
+     for path in files:
+         tree=ast.parse(path.read_text(),filename=str(path))
+         for node in ast.walk(tree):
+             if isinstance(node,ast.ImportFrom) and node.module and node.module.startswith('steer_opd.'):
+-                assert (ROOT/'src'/Path(*node.module.split('.'))).with_suffix('.py').is_file(),(path,node.module)
++                module=ROOT/'src'/Path(*node.module.split('.'))
++                assert module.with_suffix('.py').is_file() or (module/'__init__.py').is_file(),(path,node.module)
+             if isinstance(node,ast.Constant) and isinstance(node.value,str) and re.fullmatch(r'scripts/[a-z_]+\.(?:py|sh)',node.value):
+                 assert (ROOT/node.value).is_file(),(path,node.value)
+     assert (ROOT/'src/steer_opd/easysteer_worker.py').is_file()  # Dynamic vLLM worker import.
+--- before/docs/代码框架逻辑.md
++++ docs/代码框架逻辑.md
+@@ -100,11 +100,11 @@
+ 
+ verl将当前学生权重交给普通vLLM，在当批题目上自由生成回答，保留实际学生token ID。学生rollout和之后的学生学习前向均关闭SV。
+ 
+-当前学生随更新变化，下一批使用新权重重新生成on-policy轨迹。正式训练配置为temperature=1、top_p=1、top_k=-1，每个请求seed42。
+-
+-### 3.2 重算学生logp，教师沿同一回答评分
+-
+-在本批参数更新前，verl先通过FSDP重算当前学生无梯度`old_log_probs`。随后将实际学生回答交给常驻的独立EasySteer教师评分服务。
++当前学生随更新变化，下一批使用新权重重新生成on-policy轨迹。正式训练配置为temperature=1、top_p=1、top_k=-1，每题四条训练请求固定使用seed42／43／44／45，跨题和批次复用；评测每请求42。
++
++### 3.2 复用学生生成概率，教师沿同一回答评分
++
++在本批参数更新前，直接复用学生vLLM生成时返回的原始观察token `rollout_log_probs`作为固定`old_log_probs`，跳过额外的FSDP无梯度前向。缺失、形状不匹配或实际生成位置含非有限/正logprob时拒绝更新，不自动重算。随后将实际学生回答交给常驻的独立EasySteer教师评分服务。
+ 
+ 教师使用自己的tokenizer重分词相同精确回答文本，在全部回答预测位置注入已冻结的S−T全局方向，取得观察token原生logp。教师沿学生回答做因果前缀评分，无需每批额外生成一份教师答案；评分接口为完成前向而生成的末尾辅助token丢弃。
+ 
+@@ -117,11 +117,11 @@
+ 默认传统OPD的逻辑为：
+ 
+ ```text
+-A_t = stop_gradient(mean_span(logp_T_SV) - mean_span(logp_S_current))
++A_t = stop_gradient(mean_span(logp_T_SV) - mean_span(logp_S_vllm_rollout))
+ loss = -sum(valid_mask * A_t * logp_S_with_grad) / sum(valid_mask)
+ ```
+ 
+-优势整体停止梯度，学生学习logp来自新的带梯度前向。EOS目标、padding、控制token及无法形成合法共同span的位置排除；整批没有有效训练token时拒绝更新。FSDP按全局有效token数归一化，随后完成一次参数更新。
++优势整体停止梯度，学生学习logp来自新的带梯度前向。该前向顺带记录当前训练logp相对rollout的平均绝对差、有符号均值及最大绝对差。Top16监控保留原始概率，并记录有效学生原生位置上的条件熵`rollout/H16_cond_native`。EOS目标、padding、控制token及无法形成合法共同span的位置排除；整批没有有效训练token时拒绝更新。FSDP按全局有效token数归一化，随后完成一次参数更新。
+ 
+ verl再将新权重同步给学生vLLM，下一批重复上述流程。方向bank继续复用，无需每步重新生成初始参考回答或做capture。
+ 
+@@ -145,9 +145,10 @@
+ # 正式训练：教师评分服务常驻，学生每批生成后更新一次
+ student = load_initial_student(S0)
+ teacher_scorer = start_easysteer_service(T0, chosen)
+-for batch in training_batches(select_questions, batch_size=16, steps=100):
+-    rollout = verl_vllm_generate(student, batch, steering=False, seed=42)
+-    student_logp_old = fsdp_recompute_logp(student, rollout, grad=False)
++for batch in training_batches(select_questions, batch_size=64, steps=100):
++    rollout = verl_vllm_generate(student, batch, steering=False,
++                               per_question_rollout_seeds=[42, 43, 44, 45])
++    student_logp_old = rollout.sampled_raw_logprobs.detach()
+     teacher_scores = teacher_scorer.score_same_text(rollout)
+     alignment = align_native_token_spans(rollout, teacher_scores)
+     advantages, valid_mask = detached_opd_advantages(
+--- before/docs/implementation.md
++++ docs/implementation.md
+@@ -217,17 +217,22 @@
+ | 动态分批 | 按Rethinking：use_dynamic_bsz=True、microbatch_per_gpu=1、每卡训练／logprob token预算32768；动态模式按token预算组microbatch |
+ | 优化器 | 按Rethinking：AdamW、lr=1e-6、betas=[0.9,0.999]、weight_decay=.01、constant调度、无warmup、grad_clip=1 |
+ | 学生内存／精度 | 按Rethinking启用activation offload／gradient checkpointing、FSDP model_dtype=fp32；为两卡共享开启参数／优化器CPU卸载，并在教师唤醒前强制全部rank卸载 |
++| 学生旧概率 | 复用vLLM返回的原始观察token logprob，启用上游old-policy bypass，跳过额外FSDP无梯度前向；Top16用于监控，loss仍是sampled-token OPD |
+ | 推理内存 | 学生rollout fraction=.8沿用官方；教师保持BF16、TP2、fraction=.75；Compass可选Ref／S₀逐个唤醒，不同时驻留GPU；具体峰值仍待GPU验收 |
+ | 更新预算／随机性 | 保留100个真实更新批次；基础seed42，每道题4条训练rollout分别42／43／44／45，跨题和批次复用；评测每请求42、学生batch-invariant；不执行退火 |
+ | 保存／评测 | 正式运行每20步保存，保留最近一份完整模型／优化器checkpoint；先做step0评测，再每20步评测MATH-500与AIME2025，各题采样1次并记录真实gold准确率 |
+ 
+-两卡执行顺序为：冻结教师首次初始化后立即休眠→初始化学生→学生rollout→确认学生rollout休眠→verl重算学生logp→将学生参数／梯度／优化器全部卸载到CPU→教师唤醒并批量评分→教师确认休眠→学生带梯度更新→verl同步rollout权重。Compass路线在同一评分阶段依次唤醒T、Ref和冻结S₀，每个角色评分后先确认休眠，再允许下一角色唤醒。
++两卡执行顺序为：冻结教师首次初始化后立即休眠→初始化学生→学生rollout→确认学生rollout休眠→核验并复用rollout观察token logprob→将学生参数／梯度／优化器全部卸载到CPU→教师唤醒并批量评分→教师确认休眠→学生带梯度更新→verl同步rollout权重。Compass路线在同一评分阶段依次唤醒T、Ref和冻结S₀，每个角色评分后先确认休眠，再允许下一角色唤醒。
+ 
+ [sleep_engine.py](../src/steer_opd/training/sleep_engine.py)只为训练构造enable_sleep_mode=True的EasySteer引擎；`sleep(level=1, mode=wait)`保留CPU权重并释放GPU权重／KV，后续用wake_up恢复，避免每批从磁盘重载模型。[shared_pool.py](../src/steer_opd/training/shared_pool.py)跟踪verl的rollout sleep与权重同步边界；学生worker的阻塞ONE_TO_ALL CPU卸载返回后，才开放冻结模型评分。冻结模型没有确认休眠时，学生更新、checkpoint和rollout同步均会拒绝执行。事件写入logs/shared_gpu_handover.jsonl。
+ 
+ [scorer_service.py](../src/steer_opd/training/scorer_service.py)在项目内控制队列接收wake／sleep，实际调用返回后才写对应command_id的ACK；整批评分返回后按SHA提交观察token logp。[scorer_client.py](../src/steer_opd/training/scorer_client.py)核验ACK、请求顺序与评分身份；缓存命中时不唤醒模型。子进程按PID出生时间和独立session清理，仅影响本训练作业，不停止其它项目。
+ 
+ 训练目标保留已讨论的traditional_opd／compass_opd及共同文本span对齐，教师S−T／global／all注入保持，不切回Rethinking的原生Top16 KL／clipped PPO损失。token_reward_direct按官方语义直接传递逐token优势，不做标准化；真正的OPD优势在学生更新前由同轨迹原生logp重建。loss按全局有效学生token归一化，FP32学生锚点位移逐token计算；Ref不参与SV。
++
++新plan记录`student_logprob_source=vllm_rollout_raw_logprobs_v1`，schema为`steer_verl_training_shared_two_gpu_v3`。`old_log_probs`直接取停止梯度的`rollout_log_probs`；正式路径缺失或异常时拒绝执行，不恢复额外学生前向。上游旁路只负责复用旧概率，实际注册的`verl_loss`仍是项目的sampled OPD目标，不自动启用PPO／importance sampling／rejection sampling或score centering。
++
++学生可微训练前向顺带记录`actor/train_rollout_logprob_abs_diff_mean`、`actor/train_rollout_logprob_signed_diff_mean`（训练减rollout）及`actor/train_rollout_logprob_abs_diff_max`，按同一有效loss mask归约；均值按全局token加权，最大值跨microbatch／DP取最大。Top16监控另记`rollout/H16_cond_native`，明确为条件熵。新GPU验收必须显示两次`student_rollout_logprob_reuse`、零次`student_logprob`，凭据绑定概率来源；不同来源的checkpoint不能静默接续。旧formal_v5的冻结配置、结果与checkpoint不改，新路径需要新的GPU验收。[方案分析](OPD概率来源统一与Top16方案分析.md)。
+ 
+ 与官方的适配项在plan.rethinking_defaults.adaptations逐项说明：模型／数据／loss沿用本项目已讨论设置；GPU从官方8卡共享改为两卡共享；学生参数／优化器卸载由False改为True以支持切换；教师从官方FSDP评分改为BF16 EasySteer；训练保留100批；基础seed42、console／TensorBoard和单份checkpoint，不运行官方的全局ray stop或自动日志上传。准确率在step0及每20步评测，n=1，独立于官方n=16评测与后续正式pass@16结果。训练请求按最新用户要求逐轨迹使用不同seed；不同seed保留采样多样性，不能保证每道题必定生成四种不同文本。小批闭环通过不能证明学习收益或官方吞吐。
+ 
+--- before/docs/OPD概率来源统一与Top16方案分析.md
++++ docs/OPD概率来源统一与Top16方案分析.md
+@@ -1,12 +1,12 @@
+ # OPD概率来源统一与Top16方案分析
+ 
+-2026-11-18。范围：核对论文、官方代码、当前正式v5配置，并做CPU张量回放；没有修改训练源码/正式配置，没有启动GPU训练，参数更新0次。
++2026-11-18。已按用户后续要求修改训练源码，新plan复用vLLM旧概率并跳过额外FSDP前向；原正式v5配置和产物保持原字节，没有恢复GPU训练。下面保留论文核对、设计依据和CPU回放证据。
+ 
+-**建议跳过额外的FSDP `old_log_probs` 无梯度前向，直接复用学生vLLM生成时保存的观察token logprob；继续保存Top16候选供监控，保留FSDP可微训练前向。** 先保持当前sampled-token OPD，Top16多候选训练作为另一项方法改动单独评估。
++**代码已实现：跳过额外的FSDP `old_log_probs` 无梯度前向，直接复用学生vLLM生成时保存的观察token logprob；继续保存Top16候选供监控，保留FSDP可微训练前向。** 保持当前sampled-token OPD，Top16多候选训练作为另一项方法改动单独评估。
+ 
+ ## 1. “统一”具体统一什么
+ 
+-当前流程：
++修改前流程（旧formal_v5）：
+ 
+ ```text
+ 学生vLLM生成：保存采样token ID、采样token logprob、Top16 ID/raw logprob
+@@ -20,7 +20,7 @@
+ 学生FSDP可微前向 → backward → optimizer.step
+ ```
+ 
+-建议流程：
++修改后流程：
+ 
+ ```text
+ 学生vLLM生成：保存采样token ID/logprob、Top16 ID/raw logprob
+@@ -96,7 +96,7 @@
+ 
+ 建议在可微训练前向返回logprob后，顺带与已保存的rollout logprob比较，按同一有效mask记录平均绝对差、最大差和有符号均值。这样不增加模型前向，也不会通过将两个字段设为相同数值而隐藏真实偏差。
+ 
+-精确的全词表actor熵此前来自额外旧概率前向。跳过后，应明确保留的是`rollout/H16_cond`条件熵；如需完整actor熵，可在选定训练前向附带计算并单独计时，不能用条件熵冒充完整熵。
++精确的全词表actor熵此前来自额外旧概率前向。跳过后，记录的是`rollout/H16_cond_native`条件熵：在有效学生原生位置计算，再按token平均；它与原诊断报告在共同span起点广播的熵口径有区别。如需完整actor熵，可在选定训练前向附带计算并单独计时，不能用条件熵冒充完整熵。
+ 
+ ## 6. 当前VERL是否能接入
+ 
+@@ -106,13 +106,15 @@
+ old_log_probs = rollout_log_probs
+ ```
+ 
+-它同时会修改内置`policy_loss.loss_mode`。本项目注册的是自定义`verl_loss`，不自动使用内置PPO/importance-sampling loss。因此接入时应明确旧概率来源字段、保留当前自定义目标，并检查旁路分支及日志；不能认为开启上游bypass会自动完成数值偏差校正。
++它同时会修改内置`policy_loss.loss_mode`。本项目注册的是自定义`verl_loss`，不自动使用内置PPO/importance-sampling loss。已在配置中显式开启bypass并关闭IS/RS/centering，在更新前核验rollout概率，在可微loss中记录训练与rollout的真实概率差。新plan、恢复合同及GPU验收凭据均绑定概率来源；开启旁路不等于完成数值偏差校正。
+ 
+ 本轮做了真实历史缓存的CPU回放：取第一批8条轨迹，共7,587个有效学生token，调用当前固定VERL的真实`apply_bypass_mode`，再调用项目`attach_advantages`和`sampled_policy_loss`。
+ 
+ - 新优势总和复现此前用vLLM概率得到的代理结果，最大绝对误差约`9.84e-7`。
+ - 在可微logprob张量边界验证了非零且符合公式的梯度；教师分数、缓存rollout概率无梯度，EOS和padding梯度为0。
+ - 没有执行模型训练前向、优化器更新或完整Ray训练。它证明了张量/损失桥接的可行性，不能替代GPU数值验收和精度评测。
++
++代码实现后，292项CPU回归及包检查通过；另将同8条真实缓存经当前`DataProto → bypass → 优势构造 → packed verl_loss`完整回放，最大优势总和误差约`9.84e-7`，预测位置梯度与`−A/N`一致。验证还检查了实际训练/rollout差异统计及旧formal_v5配置、plan绑定和checkpoint分片size/mtime。完整记录见[实现验收](../audit/rollout_logprob_reuse_20261118.json)。本次没有GPU训练验收或吞吐/准确率实测。
+ 
+ ## 7. 时间收益
+ 
+--- before/docs/目前代码估计运行时间.md
++++ docs/目前代码估计运行时间.md
+@@ -1,6 +1,6 @@
+ # 目前代码估计运行时间
+ 
+-更新时间：**2026-11-18 15:34，北京时间**。OPD耗时采样为13:25，训练已于13:32停止；教师补充评测于14:14完成，实测耗时见第8节；学习效果排查的两次推理于14:49、15:04完成，耗时见第9节。下文为当前机器、当前代码和配置下的阶段墙钟时间，包含阶段内的数据转换、等待与通信；不等同于纯GPU kernel时间。
++更新时间：**2026-11-18 17:03，北京时间**。OPD耗时采样为13:25，训练已于13:32停止；教师补充评测于14:14完成，实测耗时见第8节；学习效果排查的两次推理于14:49、15:04完成，耗时见第9节。下文为当前机器、当前代码和配置下的阶段墙钟时间，包含阶段内的数据转换、等待与通信；不等同于纯GPU kernel时间。
+ 
+ **OPD已按用户要求于13:32停止，GPU6、7已释放，显存均为0。共完成68/100步更新，第69步未完成；最近持久化checkpoint为第60步。** 参数搜索24/24组已于02:54完成。
+ 
+@@ -251,8 +251,8 @@
+ 
+ [学习效果排查入口](OPD学习效果排查_20261118.md)、[精确阶段耗时CSV](../outputs/step_6_summary/compar/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_learning_diagnosis_formal_v5_seed42_v1/tables/diagnostic_stage_timing.csv)。原始计时来自两次推理的events.jsonl及准入process.json。
+ 
+-## 10. 复用vLLM旧概率的时间收益分析（尚未实跑）
+-
+-若跳过额外的FSDP无梯度`old_log_probs`前向，复用学生生成时已保存的观察token logprob，按近期61～68步估计可省57.5秒/step。其他阶段不变时，963.8→906.3秒，即16.06→15.10分钟/step，墙钟减少约5.97%；100步按近期回答长度约省95.8分钟。
+-
+-此项仅为从实测分项中扣除该阶段的估算，未运行新训练配置。FSDP可微训练前向与反向仍保留；Top16缓存用于监控，切换成Top16多候选训练另需定义跨tokenizer目标。[完整方案与CPU桥接验证](OPD概率来源统一与Top16方案分析.md)。
++## 10. 复用vLLM旧概率的时间收益分析（代码已接入，耗时尚未实测）
++
++代码已按用户要求跳过额外的FSDP无梯度`old_log_probs`前向，复用学生生成时已保存的观察token logprob。按此前61～68步估计可省57.5秒/step。其他阶段不变时，963.8→906.3秒，即16.06→15.10分钟/step，墙钟减少约5.97%；100步按近期回答长度约省95.8分钟。
++
++此项仅为从实测分项中扣除该阶段的估算，未运行新训练配置。292项CPU测试、包检查及真实缓存packed loss回放通过。FSDP可微训练前向与反向仍保留；Top16缓存用于监控，切换成Top16多候选训练另需定义跨tokenizer目标。[完整方案与CPU桥接验证](OPD概率来源统一与Top16方案分析.md)。
+--- before/src/steer_opd/training/overlap_monitor.py
++++ src/steer_opd/training/overlap_monitor.py
+@@ -47,8 +47,13 @@
+     validate_native_score(student,len(row['token_ids']),codecs['student'].support_size)
+     result=aligned_metrics(alignment,student,teacher,codecs['student'],codecs['teacher'])
+     valid=torch.isfinite(result['overlap']) & torch.isfinite(result['P_overlap'])
++    # Conditional Top16 entropy at valid native student positions, distinct
++    # from full-vocabulary actor entropy and span-start broadcast statistics.
++    conditional=student['logps'].double().softmax(dim=-1)
++    h16=torch.special.entr(conditional).sum(-1)
+     return {'question_id':row['question_id'],'trajectory_id':row['id'],
+         'total_tokens':len(row['token_ids']),'valid_tokens':int(valid.sum()),
++        'student_H16_cond_sum':float(h16[valid].sum()),
+         'overlap_sum':float(result['overlap'][valid].sum()),
+         'P_overlap_sum':float(result['P_overlap'][valid].sum())}
+ 
+@@ -64,6 +69,7 @@
+     for name in ('overlap','P_overlap'):
+         metrics[name+'/token_value']=sum(p[name+'_sum'] for p in parts)/valid
+         metrics[name+'/question_value']=sum(g[name+'_sum']/g['valid_tokens'] for g in groups.values())/len(groups)
++    metrics['rollout/H16_cond_native']=sum(p['student_H16_cond_sum'] for p in parts)/valid
+     return metrics
+ 
+ 
+@@ -109,6 +115,7 @@
+             'measurement':'same_rollout_pre_update','teacher':'actual_S-T_global_steered_teacher',
+             'metric_version':METRIC_VERSION,'matching_rule_version':RULE_VERSION,
+             'P_overlap_definition':P_DEFINITION,'normalization':'original_probabilities_no_top16_renormalization',
++            'entropy_definition':'Top16 conditional entropy in nats, valid native student positions; not full-vocabulary entropy',
+             'extra_generation_calls':0,'extra_model_forward_calls':0,'plan_binding':self.plan['binding'],
+             'metrics':metrics,'trajectories':parts})
+         return metrics
+--- /dev/null
++++ src/steer_opd/training/rollout_logprobs.py
+@@ -0,0 +1,54 @@
++"""Reuse exact vLLM sampled-token probabilities without another model forward."""
++
++SOURCE = 'vllm_rollout_raw_logprobs_v1'
++
++
++def bind_old_log_probs(batch):
++    """Validate generated positions and bind a detached old-policy tensor.
++
++    The response IDs and logprobs travel together in VERL's rollout batch.
++    Padding may contain arbitrary values; every actual generated position,
++    including EOS, must have a finite, nonpositive observed-token logprob.
++    Teacher alignment later narrows the loss mask without changing these IDs.
++    """
++    import torch
++
++    tensors = batch.batch
++    if 'rollout_log_probs' not in tensors:
++        raise ValueError('Missing vLLM rollout_log_probs; old-policy recomputation is disabled')
++    values = tensors['rollout_log_probs']
++    responses, mask = tensors['responses'], tensors['response_mask']
++    if (not isinstance(values, torch.Tensor) or not values.is_floating_point()
++            or values.ndim != 2 or values.shape != responses.shape or mask.shape != responses.shape):
++        raise ValueError('Rollout logprobs must match the exact native student response shape')
++    valid = values[mask.bool()]
++    if not torch.isfinite(valid).all() or (valid > 1e-5).any():
++        raise ValueError('Nonfinite or positive vLLM logprob at a generated response position')
++    tensors['old_log_probs'] = values.detach()
++    batch.meta_info['steer_opd_student_logprob_source'] = SOURCE
++    return batch
++
++
++def difference_sums(current, rollout, mask, *, global_valid_tokens, dp_size=1):
++    """Detached contributions to token-weighted train-versus-rollout metrics.
++
++    SUM over microbatches, then MEAN over DP ranks, yields the global token
++    mean. Maxima instead use MAX at both aggregation levels. No probability
++    cache contributes a gradient and no additional forward is performed.
++    """
++    import torch
++
++    if current.shape != rollout.shape or current.shape != mask.shape:
++        raise ValueError('Train/rollout logprobs and loss mask must have identical shapes')
++    if global_valid_tokens <= 0 or dp_size < 1:
++        raise ValueError('Invalid global logprob metric normalization')
++    with torch.no_grad():
++        delta = current[mask.bool()].float() - rollout[mask.bool()].float()
++        if not torch.isfinite(delta).all():
++            raise ValueError('Nonfinite train-versus-rollout logprob on a valid loss position')
++        scale = dp_size / global_valid_tokens
++        return {
++            'abs_diff_mean': delta.abs().sum() * scale,
++            'signed_diff_mean': delta.sum() * scale,
++            'abs_diff_max': delta.abs().max() if delta.numel() else current.new_zeros(()),
++        }
+--- /dev/null
++++ tests/test_training_rollout_logprobs.py
+@@ -0,0 +1,92 @@
++"""Rollout-probability reuse, detached gradients, and global metric reductions."""
++from copy import deepcopy
++
++import pytest
++import torch
++
++from steer_opd.training.rollout_logprobs import SOURCE,bind_old_log_probs,difference_sums
++from steer_opd.training.verl_adapter import attach_advantages,sampled_policy_loss
++from test_verl_training import reply_and_batch
++
++
++def test_exact_rollout_replaces_a_different_old_policy_and_preserves_gradient_isolation():
++    settings,reply,batch=reply_and_batch()
++    rollout=torch.tensor([[-2.,-4.,-3.,-1.,float('nan')]],requires_grad=True)
++    batch.batch['rollout_log_probs']=rollout
++    # This old tensor would produce different advantages if it were still used.
++    batch.batch['old_log_probs']=torch.full_like(rollout,-17.)
++    attach_advantages(batch,[reply],settings)
++    assert batch.meta_info['steer_opd_student_logprob_source']==SOURCE
++    assert not batch.batch['old_log_probs'].requires_grad
++    assert batch.batch['old_log_probs'].data_ptr()==rollout.data_ptr()
++    torch.testing.assert_close(batch.batch['advantages'],torch.tensor([[2.5,2.5,2.,0.,0.]]))
++    current=torch.tensor([[-1.1,-2.1,-3.1,float('nan'),float('nan')]],requires_grad=True)
++    loss=sampled_policy_loss(current,batch.batch['advantages'],batch.batch['response_mask'],global_valid_tokens=3)
++    loss.backward()
++    torch.testing.assert_close(current.grad,torch.tensor([[-2.5/3,-2.5/3,-2./3,0.,0.]]))
++    assert rollout.grad is None and reply['teacher_logps'].grad is None
++
++
++@pytest.mark.parametrize('bad', ['missing','shape','integer','nan','infinity','positive','eos_nan'])
++def test_missing_or_invalid_generated_logprobs_never_fall_back_to_fsdp(bad):
++    _,_,batch=reply_and_batch()
++    if bad=='missing':del batch.batch['rollout_log_probs']
++    elif bad=='shape':batch.batch['rollout_log_probs']=torch.zeros(1,4)
++    elif bad=='integer':batch.batch['rollout_log_probs']=torch.zeros(1,5,dtype=torch.long)
++    else:
++        index=3 if bad=='eos_nan' else 1
++        batch.batch['rollout_log_probs'][0,index]={'nan':float('nan'),'eos_nan':float('nan'),
++            'infinity':-float('inf'),'positive':.25}[bad]
++    with pytest.raises(ValueError,match='rollout_log_probs|logprobs|vLLM logprob'):
++        bind_old_log_probs(batch)
++
++
++def test_actual_upstream_bypass_and_custom_advantages_use_sampler_probabilities():
++    from steer_opd.training.verl_entry import activate_verl
++    activate_verl()
++    from omegaconf import OmegaConf
++    from verl.trainer.ppo.rollout_corr_helper import apply_bypass_mode
++    settings,reply,batch=reply_and_batch()
++    batch.batch['old_log_probs']=torch.full_like(batch.batch['rollout_log_probs'],-17)
++    policy=OmegaConf.create({'loss_mode':'vanilla'})
++    correction=OmegaConf.create({'bypass_mode':True,'rollout_is':None,'rollout_rs':None})
++    apply_bypass_mode(batch,correction,policy)
++    attach_advantages(batch,[reply],settings)
++    torch.testing.assert_close(batch.batch['advantages'],torch.tensor([[1.5,1.5,1.,0.,0.]]))
++    assert policy.loss_mode=='bypass_mode'
++
++
++def test_train_rollout_metrics_are_token_weighted_across_uneven_microbatches_and_dp():
++    from steer_opd.training.verl_entry import activate_verl
++    activate_verl()
++    from verl.utils.metric import Metric,AggregationType
++    rollout=torch.full((4,3),-8.)
++    delta=torch.tensor([[1.,99.,99.],[-1.,2.,3.],[4.,-2.,99.],[1.,-4.,99.]])
++    mask=torch.tensor([[1,0,0],[1,1,1],[1,1,0],[1,1,0]],dtype=torch.bool)
++    current=(rollout+delta).requires_grad_(True)
++    current.data[~mask]=float('nan')
++    count=int(mask.sum())
++    metrics={key:[] for key in ['abs_diff_mean','signed_diff_mean','abs_diff_max']}
++    for rows in [(0,1),(2,3)]:
++        rank={key:Metric(aggregation=AggregationType.MAX if key=='abs_diff_max' else AggregationType.SUM)
++              for key in metrics}
++        for index in rows:
++            values=difference_sums(current[index:index+1],rollout[index:index+1],mask[index:index+1],
++                global_valid_tokens=count,dp_size=2)
++            for key,value in values.items():
++                assert not value.requires_grad
++                rank[key].append(value)
++        for key in metrics:metrics[key].append(rank[key])
++    assert Metric.aggregate_dp(metrics['abs_diff_mean'])==pytest.approx(float(delta[mask].abs().mean()))
++    assert Metric.aggregate_dp(metrics['signed_diff_mean'])==pytest.approx(float(delta[mask].mean()))
++    assert Metric.aggregate_dp(metrics['abs_diff_max'])==pytest.approx(float(delta[mask].abs().max()))
++    assert Metric.aggregate_dp(metrics['abs_diff_max'])>0
++
++
++def test_legacy_plan_cannot_silently_switch_probability_sources():
++    from steer_opd.resumable_core import ROOT,read_json
++    from steer_opd.training.verl_plan import build_verl_plan,verl_overrides
++    plan=build_verl_plan(read_json(ROOT/'configs/ablation.json'))
++    assert plan['student_logprob_source']==SOURCE
++    legacy=deepcopy(plan);legacy.pop('student_logprob_source')
++    with pytest.raises(ValueError,match='new training plan'):verl_overrides(legacy)

@@ -18,6 +18,8 @@ from run_ablation import missing_assets
 from run_on_idle_gpus import parse_gpu_ids,tee_process
 from steer_opd.stage_io import configure_layout,metadata_dir,logs_dir,component_target,frozen_data_dir
 from steer_opd.artifact_reuse import StageArtifacts,contract
+from steer_opd.tensor_checkpoint import DEFAULT_CANDIDATE_FORMAT,SUPPORTED_FORMATS
+from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,DEFAULT_PRESENCE_PENALTY,presence_penalty
 
 
 def run_command(command,env):
@@ -44,6 +46,9 @@ def parser():
     p.add_argument('--param-name',default=None)
     p.add_argument('--question-count',type=int,default=1000)
     p.add_argument('--input-data-dir',default=frozen_data_dir())
+    p.add_argument('--base-question-source',default='',help='Optional read-only frozen 100-question source')
+    p.add_argument('--data-policy',choices=['select_confirm','all_train'],default='select_confirm',
+        help='all_train evaluates the whole training pool once, without selection or confirmation')
     p.add_argument('--teacher-ablation',type=int,choices=[0,1],default=0,
         help='Add teacher-space S-T schemes 5..8; no GPU work unless --run')
     p.add_argument('--student-baseline-run',default='',help='Reuse a committed student-arm baseline for teacher-only supplementation')
@@ -59,10 +64,14 @@ def parser():
     p.add_argument('--gate-target-rate',type=float,default=.2)
     p.add_argument('--teacher-tp',type=int,choices=[1,2],default=2)
     p.add_argument('--gpu-memory',type=float,default=.75);p.add_argument('--wait-seconds',type=int,default=3600)
-    p.add_argument('--reference-max-tokens',type=int,default=12288);p.add_argument('--source-max-tokens',type=int,default=7168)
+    p.add_argument('--reference-max-tokens',type=int,default=DEFAULT_MAX_GENERATION_LENGTH);p.add_argument('--source-max-tokens',type=int,default=DEFAULT_MAX_GENERATION_LENGTH)
     p.add_argument('--sv-max-context-len',type=int,default=2048,help='Prompt+answer limit for SV-training activation extraction')
-    p.add_argument('--reference-temperature',type=float,default=.7);p.add_argument('--reference-top-p',type=float,default=.95)
-    p.add_argument('--candidate-tensor-compression',choices=['none','gzip'],default='none')
+    p.add_argument('--reference-temperature',type=float,default=1.);p.add_argument('--reference-top-p',type=float,default=1.)
+    p.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,
+        help='Teacher and student generation penalty; fixed-prefix scores remain raw')
+    p.add_argument('--candidate-tensor-format','--candidate-tensor-compression',dest='candidate_tensor_compression',
+        choices=[*SUPPORTED_FORMATS,'none','gzip'],default=DEFAULT_CANDIDATE_FORMAT,
+        help='New candidate storage; old none/gzip options remain supported')
     p.add_argument('--confirm-top-n',type=int,default=None)
     p.add_argument('--hf-parity',type=int,choices=[0,1],default=0,help='Optional HF numerical comparison; default uses EasySteer only')
     return p
@@ -92,11 +101,19 @@ def build_config(args):
         reference_max_tokens=args.reference_max_tokens,source_max_tokens=args.source_max_tokens,
         sv_max_context_len=args.sv_max_context_len,
         reference_temperature=args.reference_temperature,reference_top_p=args.reference_top_p,
+        presence_penalty=presence_penalty({'presence_penalty':args.presence_penalty}),
         confirm_top_n=min(args.confirm_top_n if args.confirm_top_n is not None else count,len(ids)),
         include_teacher_ablation=bool(args.teacher_ablation),teacher_layers=[args.teacher_layer],
         teacher_direction_version=TEACHER_DIRECTION_VERSION,
         startup_hf_parity=bool(args.hf_parity))
-    if args.candidate_tensor_compression!='none':cfg['candidate_tensor_compression']=args.candidate_tensor_compression
+    cfg['candidate_tensor_compression']=args.candidate_tensor_compression
+    if args.base_question_source:
+        cfg['base_question_source']=args.base_question_source
+    if args.data_policy=='all_train':
+        cfg['data_policy']='all_train'
+        cfg['training_input_data_dir']=args.input_data_dir
+        for key in ('select_fraction','minimum_split_questions','confirm_top_n'):
+            cfg.pop(key,None)
     if args.student_baseline_run:
         if not args.teacher_ablation or any(int(s.removeprefix('scheme_'))<5 for s in ids):
             raise ValueError('An external student baseline is only for teacher-only schemes 5..8')
@@ -125,6 +142,7 @@ def run_validation(cfg,gpu_ids,config_path):
         binding=digest({'source_revision':source_revision()[0],'checkpoints':identities,
                         'student':cfg['student'],'layers':cfg['layers'],'alpha':cfg['alpha'],
                         'operator':cfg.get('operator','slerp'),
+                        'presence_penalty':presence_penalty(cfg),
                         'additive_scaling':'raw_mean_difference_v1' if cfg.get('operator')=='additive' else None,
                         'teacher_gpus':cfg['teacher_gpus'],'hf_parity':cfg.get('startup_hf_parity',False),
                         'direction_version':cfg['direction_version'],
@@ -188,7 +206,10 @@ def main():
         return
     print(f"RUN_NAME={cfg['run_name']}; PARAM_NAME={cfg['param_name']}\nRun: {run}\nGPU pool (physical IDs): {args.gpu_ids}; teacher TP={cfg['teacher_gpus']}",flush=True)
     print(f"Experiment: {cfg['experiment']} / {cfg['phase']}; frozen prefixes; optimizer updates=0",flush=True)
-    print(f"Questions: {cfg['question_count']}; select fraction={cfg['select_fraction']}; confirm schemes={cfg['confirm_top_n']}; data={cfg['data_dir']}",flush=True)
+    if cfg.get('data_policy')=='all_train':
+        print(f"Questions: {cfg['question_count']}; one training pool for SV, overlap and OPD; data={cfg['data_dir']}",flush=True)
+    else:
+        print(f"Questions: {cfg['question_count']}; select fraction={cfg['select_fraction']}; confirm schemes={cfg['confirm_top_n']}; data={cfg['data_dir']}",flush=True)
     print(f"Stop after: {cfg['stop_after']}; source_overlap skips teacher answer generation, SV capture/banks/injection and OPD",flush=True)
     print(f"Operator={cfg.get('operator','slerp')}, strength={cfg['alpha']}, layer={cfg['layers']}, seed=42; gate={cfg['gate_metric']}, rank={cfg['rank_metric']}",flush=True)
     print(f"SV extraction: all samples, mean over retained answer tokens; prompt+answer limit={cfg['sv_max_context_len']}; no finish/correctness/repetition filter",flush=True)

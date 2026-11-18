@@ -28,6 +28,10 @@ def generate(job):
         with Progress(output,'source',count,show_bar=False) as progress:
             progress.resume(count)
         return
+    # Historical receipts can be verified read-only under their original
+    # settings. Every new engine call must bind its effective penalty.
+    from steer_opd.generation_policy import presence_penalty
+    penalty=presence_penalty(job,require_explicit=True)
     if job.get('bind_checkpoint_content'):
         from steer_opd.checkpoint_identity import checkpoint_content_id
         job={**job,'model_content_id':checkpoint_content_id(model_path(job['model']),receipt_dir=output/'provenance/checkpoints')}
@@ -50,6 +54,7 @@ def generate(job):
         from vllm import SamplingParams
         from vllm.sampling_params import RequestOutputKind
         params=[SamplingParams(n=1,temperature=job['temperature'],top_p=job['top_p'],top_k=-1,
+            presence_penalty=penalty,
             max_tokens=job['max_tokens'],seed=42,stop_token_ids=sorted(codec.eos),logprobs=16 if source else None,
             output_kind=RequestOutputKind.FINAL_ONLY,
             allowed_token_ids=codec.valid_ids if codec.valid_ids!=list(range(codec.support_size)) else None) for _ in requests]

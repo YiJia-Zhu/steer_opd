@@ -157,6 +157,10 @@ def main():
         status['stages']=['teacher_texts','unsteered_source_top16','student_T_S_capture','teacher_S_T_capture',
                           'four_reader_space_banks','native_teacher_span_scores','select_threshold',
                           'student_and_teacher_fixed_prefix_screens','frozen_confirm','user_review']
+    if cfg.get('data_policy')=='all_train':
+        status['data_policy']='all_train'
+        status['stages']=['training_question_pool','teacher_texts','unsteered_source_top16',
+            'reader_captures','direction_banks','native_teacher_span_scores','all_training_question_overlap','user_review']
     atomic_json(project_path(metadata_dir(cfg))/"preflight.json",status)
     if not args.execute:
         print(status)

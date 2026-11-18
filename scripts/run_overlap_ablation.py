@@ -20,7 +20,8 @@ from steer_opd.static_masks import freeze_static_mask, native_overlap, validate_
 from steer_opd.static_screen import candidate_vectors, score_native_candidate
 from steer_opd.method_config import Method
 from steer_opd.execution_policy import require_default_scheduler_options, require_execution_allowed
-from steer_opd.experiment_runtime import initialize_stage, StageCheckpoint, Progress
+from steer_opd.experiment_runtime import initialize_stage, Progress
+from steer_opd.tensor_checkpoint import StageCheckpoint
 from steer_opd.strength_schedule import row_strength, validate_schedule
 
 
@@ -173,7 +174,8 @@ def _run(job, rows, masks, teachers, banks, runtime, progress):
         plot = plot_dual_comparisons if job.get("require_dual_metrics") else plot_comparisons
         plot(rows, base, records, output / condition["id"] / "comparison", requested_keys=plot_keys)
     def cached(name):
-        stores[name]=StageCheckpoint(output/name,digest({'candidate':name,'binding':phase_binding}))
+        stores[name]=StageCheckpoint(output/name,digest({'candidate':name,'binding':phase_binding}),
+            tensor_format=job.get('candidate_tensor_format',job.get('candidate_tensor_compression')))
         return stores[name].load_tensors([r.get("key",r["id"]) for r in rows])
     def commit(name,records):
         if ready[name] is None:

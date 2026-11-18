@@ -111,6 +111,11 @@ def run_evaluation(job):
     from steer_opd.stage_io import project
 
     require_execution_allowed(job)
+    from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,presence_penalty
+    # Canonicalize the effective generation setting into the stage identity.
+    job={**job,'generation':{**job['generation'],
+         'max_tokens':job['generation'].get('max_tokens',DEFAULT_MAX_GENERATION_LENGTH),
+         'presence_penalty':presence_penalty(job['generation'])}}
     output = project(job["output"])
     model = project(job["model"])
     if "step_5_eval" not in output.parts:
@@ -121,10 +126,11 @@ def run_evaluation(job):
         raise ValueError("AIME25 evaluation requires seed42 and 16 stochastic samples per question")
     questions, dataset_sources = aime_questions(project(job["dataset_dir"]))
     checkpoint = checkpoint_content_id(model)
-    from steer_opd import math_data
+    from steer_opd import math_data,generation_policy
     identity = {"job": job, "checkpoint_content_id": checkpoint, "dataset_sha256": dataset_sources,
                 "vllm_version": importlib.metadata.version("vllm"), "steering": False,
                 "source_sha256": {"opd_evaluation.py": file_sha256(Path(__file__)),
+                                  "generation_policy.py": file_sha256(Path(generation_policy.__file__)),
                                   "math_data.py": file_sha256(Path(math_data.__file__))}}
     binding = digest(identity)
     sampling = StageCheckpoint(output / "sampling", binding)
@@ -148,7 +154,8 @@ def run_evaluation(job):
                       max_model_len=max_model_len, gpu_memory_utilization=job.get("gpu_memory_utilization", .75),
                       generation_config="vllm", hf_overrides={"head_dtype": "float32"})
         params = SamplingParams(n=16, seed=42, temperature=generation["temperature"],
-                                top_p=generation["top_p"], top_k=-1, max_tokens=generation["max_tokens"])
+                                top_p=generation["top_p"], top_k=-1, max_tokens=generation["max_tokens"],
+                                presence_penalty=generation['presence_penalty'])
         # A single n=16 request per question supplies distinct random draws.
         # Repeating identical seed42 requests 16 times would repeat responses.
         outputs = llm.generate([{"prompt_token_ids": ids} for ids in prompts], params, use_tqdm=True)

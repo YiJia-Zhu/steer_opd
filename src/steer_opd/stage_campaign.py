@@ -9,7 +9,7 @@ from steer_opd import stage_contracts as keys
 from steer_opd.artifact_reuse import StageArtifacts,contract
 from steer_opd.checkpoint_identity import checkpoint_content_id
 from steer_opd.compass_campaign import (frozen_json,generation_job,make_base_job,make_source_overlap_job,
-    prepare_screen_jobs,role_screen_job)
+    prepare_screen_jobs,prepare_all_training_job,role_screen_job)
 from steer_opd.compass_job import (load_codecs,model_path,prepare_plans,safe_key,
     cached_source_metrics)
 from steer_opd.compass_scoring import AlignedMetricAdapter
@@ -18,6 +18,7 @@ from steer_opd.resumable_core import ROOT,atomic_json,digest,read_json
 from steer_opd.rollout_topk import load_rollout_topk
 from steer_opd.stage_io import artifact_dir,component_target,metadata_dir,project
 from steer_opd.strength_schedule import confirm_with_counterparts
+from steer_opd.retention import minimal
 
 
 def token_metric_value(metrics):
@@ -30,6 +31,11 @@ def token_metric_value(metrics):
 def data_contract(cfg,codecs):
     source=project(cfg['input_data_dir'])/'questions_source.json'
     if not source.exists():raise FileNotFoundError('Prepare a frozen INPUT_DATA_DIR before running this parameter set')
+    if cfg.get('data_policy')=='all_train':
+        return contract('data',{'input_sha256':file_sha256(source),'data_policy':'all_train',
+            'questions':cfg['question_count'],'codecs':{r:keys.codec_key(c) for r,c in codecs.items()},
+            'seed':42,'max_prompt_tokens':cfg['max_prompt_tokens'],'enable_thinking':cfg['enable_thinking']},
+            code=('src/steer_opd/math_data.py','scripts/prepare_ablation_data.py','src/steer_opd/compass_campaign.py'))
     return contract('data',{'input_sha256':file_sha256(source),'split_sha256':file_sha256(source.parent/'split.json'),
         'questions':cfg['question_count'],
         'codecs':{r:keys.codec_key(c) for r,c in codecs.items()},'seed':42,
@@ -46,8 +52,9 @@ def prepare_data(cfg,codecs=None):
     prepare=importlib.import_module('prepare_ablation_data').prepare
     prepare(cfg)
     folder=project(target)
+    membership='train_ids.json' if cfg.get('data_policy')=='all_train' else 'split.json'
     return store.publish('data',science,folder,files=[folder/name for name in
-        ('questions_source.json','questions.json','split.json','sampling_manifest.json')])
+        ('questions_source.json','questions.json',membership,'sampling_manifest.json')])
 
 
 class Campaign:
@@ -72,9 +79,9 @@ class Campaign:
             'owner':packet['owner']})
         return folder
 
-    def use(self,name,science,action,*,target=None,files=None):
+    def use(self,name,science,action,*,target=None,files=None,materialized=False):
         target=project(target or component_target(self.cfg,name))
-        found=self.store.find(name,science,target)
+        found=self.store.find(name,science,target,materialized=materialized)
         if found:
             self.progress.event('cache_reused',name=name,committed_units=1)
             result=self.store.bind(target,found,science)
@@ -105,6 +112,9 @@ class Campaign:
     def directions(self,questions):
         parents={r:self.pid(r) for r in ('teacher','student')}
         roles=('student','teacher') if self.cfg.get('include_teacher_ablation') else ('student',)
+        if minimal(self.cfg) and self.reuse_direction_banks(questions,roles,parents):
+            self.retire_direction_pools(roles)
+            return
         for role in roles:
             science=keys.capture(self.cfg,role,self.models[role],self.codecs[role],parents,self.runtime)
             def run(target,role=role):
@@ -113,7 +123,7 @@ class Campaign:
                     self.cfg['teacher_gpus'] if role=='teacher' else 1,
                     ['scripts/capture_student_activations.py','--config',str(file),'--reader',role],
                     stage_output=target,stage=2)
-            self.use('capture_'+role,science,run)
+            self.use('capture_'+role,science,run,materialized=True)
         common={q['id'] for q in questions}
         for role in roles:
             value=torch.load(project(artifact_dir(self.cfg,'capture_'+role))/'pooled.pt',weights_only=True,map_location='cpu')
@@ -127,6 +137,38 @@ class Campaign:
                 self.cpu('banks' if role=='student' else 'banks_teacher','scripts/prepare_compass_banks.py',file,
                          ('--reader',role),stage=2)
             self.use('bank_'+role,science,run)
+        if minimal(self.cfg):self.retire_direction_pools(roles)
+
+    def reuse_direction_banks(self,questions,roles,parents):
+        """Resolve complete banks before requesting intentionally retired pools."""
+        from steer_opd.sv_retention import usable_ids
+        captures={};banks={};common={q['id'] for q in questions}
+        for role in roles:
+            science=keys.capture(self.cfg,role,self.models[role],self.codecs[role],parents,self.runtime)
+            found=self.store.find('capture_'+role,science,component_target(self.cfg,'capture_'+role))
+            if found is None:return False
+            captures[role]=(science,found)
+            common.intersection_update(usable_ids(found[0]))
+        ordered=[q['id'] for q in questions if q['id'] in common]
+        for role in roles:
+            science=keys.bank(self.cfg,role,captures[role][1][1]['artifact_id'],ordered)
+            found=self.store.find('bank_'+role,science,component_target(self.cfg,'bank_'+role))
+            if found is None:return False
+            banks[role]=(science,found)
+        self.cfg['allowed_question_ids']=ordered
+        for kind,values in [('capture',captures),('bank',banks)]:
+            for role,(science,found) in values.items():
+                self.remember(kind+'_'+role,self.store.bind(component_target(self.cfg,kind+'_'+role),found,science))
+        return True
+
+    def retire_direction_pools(self,roles):
+        from steer_opd.sv_retention import retire_pool
+        banks=[(project(self.records['bank_'+role]['owner']),self.records['bank_'+role]) for role in roles]
+        for role in roles:
+            packet=self.records['capture_'+role];folder=project(packet['owner'])
+            # Never delete a shared upstream or a historical imported owner.
+            if folder==project(component_target(self.cfg,'capture_'+role)):
+                retire_pool(self.store,(folder,packet),banks)
 
     def source_inputs(self,source_rows):
         run=project(self.cfg['run_dir']);frozen_json(run/'source_rows.json',source_rows)
@@ -171,7 +213,9 @@ class Campaign:
             part=role_screen_job(job,role)
             if part is None:continue
             if role=='teacher' and students is not None:part['paired_student_baseline']=str((students/'baseline').relative_to(ROOT))
-            parent={k:self.pid(k) for k in ('student','native_teacher','alignment','source_metrics','calibration')}
+            names=('student','native_teacher','alignment','source_metrics')
+            if self.cfg.get('data_policy')!='all_train':names+=('calibration',)
+            parent={k:self.pid(k) for k in names}
             parent['bank']=self.pid('bank_'+role)
             if role=='teacher' and students is not None:parent['student_baseline']=self.pid('screen_'+split+'_student')
             elif role=='teacher' and self.cfg.get('student_baseline_run'):
@@ -234,7 +278,9 @@ def write_summary(cfg,source_summaries,records):
            '|---|---|---|---:|---:|']
     for split,values in source_summaries.items():
         for name,s in values.items():lines.append(f"| {split} | {name} | {s.get('intervention_role','student')} | {s['metrics']['overlap']['question_weighted_delta_pp']:+.4f} | {s['metrics']['P_overlap']['question_weighted_delta_pp']:+.4f} |")
-    lines+=['','Confirm是训练侧复核，不能视为独立测试。教师干预的增益表示教师适配，不代表学生学习。',
+    scope=('全部题目属于同一训练池，同时用于SV、overlap和OPD；独立评测使用MATH-500及AIME2025。'
+           if cfg.get('data_policy')=='all_train' else 'Confirm是训练侧复核，不能视为独立测试。')
+    lines+=['',scope+'教师干预的增益表示教师适配，不代表学生学习。',
             '来源与SHA身份见metadata/source_index.json；完整分布与SV保留在来源阶段，不重复复制。','']
     (root/'analysis.md').write_text('\n'.join(lines))
 
@@ -248,6 +294,18 @@ def execute(cfg,progress,gpu,cpu):
     rows=[read_json(source/f"{q['id']}_0.json") for q in questions]
     if cfg.get('stop_after')!='source_overlap':campaign.directions(questions)
     base=campaign.source_inputs(rows);campaign.source_metrics(base)
+    if cfg.get('data_policy')=='all_train':
+        job=prepare_all_training_job(campaign.cfg,base,campaign.codecs)
+        summary=campaign.screen(job,'train')
+        write_summary(cfg,{'train':summary},campaign.records)
+        progress.update(key='summary');progress.total=progress.done
+        from steer_opd.experiment_runtime import export_artifacts
+        export_artifacts(campaign.cfg,project(cfg['run_dir']))
+        atomic_json(project(cfg['run_dir'])/'campaign.json',{'status':'awaiting_user_review',
+            'parameter_updates':0,'data_policy':'all_train','training_questions':len(questions),
+            'evaluated_ids':[c['id'] for c in job['conditions']],'automatic_opd':False,
+            'step_dirs':cfg['step_dirs'],'summary_dir':cfg['step_dirs']['6']})
+        return
     if cfg.get('stop_after')=='source_overlap':
         from steer_opd.source_overlap import save_source_overlap
         science=contract('source_report',{'split_sha256':file_sha256(project(campaign.cfg['data_dir'])/'split.json')},

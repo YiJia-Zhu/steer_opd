@@ -53,17 +53,39 @@ def _valid_logps(values, name):
 
 
 def _span_means(plan, logps, role, output):
-    """Broadcast each valid native-span mean to its corresponding student tokens."""
-    for unit in plan['units']:
-        if not unit['valid']:
-            continue
-        a, b = unit['ranges']['student']
-        start, end = unit['ranges'][role]
-        if not 0 <= a < b <= len(output) or not 0 <= start < end <= len(logps):
-            raise ValueError('Alignment span is outside native logprob positions')
-        scores = logps[start:end].detach().to(device=output.device, dtype=output.dtype)
-        _valid_logps(scores, role)
-        output[a:b] = scores.mean()
+    """Reduce native spans together, then broadcast to native student positions.
+
+    Keep reductions local to each span: subtracting long FP32 prefix sums
+    would lose small logprobs near the end of a trajectory. Invalid/control
+    spans and terminal positions remain untouched, including their NaNs.
+    """
+    ranges = [(*unit['ranges']['student'], *unit['ranges'][role])
+              for unit in plan['units'] if unit['valid']]
+    if not ranges:
+        return output
+    if any(not 0 <= a < b <= len(output) or not 0 <= start < end <= len(logps)
+           for a, b, start, end in ranges):
+        raise ValueError('Alignment span is outside native logprob positions')
+
+    bounds = torch.tensor(ranges, dtype=torch.int64, device=output.device)
+    native_lengths = bounds[:, 3] - bounds[:, 2]
+    native_count = sum(end-start for _, _, start, end in ranges)
+    native_offsets = native_lengths.cumsum(0) - native_lengths
+    native_positions = torch.repeat_interleave(bounds[:, 2] - native_offsets,
+        native_lengths, output_size=native_count)
+    native_positions += torch.arange(native_count, device=output.device)
+    scores = logps.detach().to(device=output.device, dtype=output.dtype)[native_positions]
+    _valid_logps(scores, role)
+    means = torch.segment_reduce(scores, 'mean', lengths=native_lengths)
+
+    student_lengths = bounds[:, 1] - bounds[:, 0]
+    student_count = sum(b-a for a, b, _, _ in ranges)
+    student_offsets = student_lengths.cumsum(0) - student_lengths
+    student_positions = torch.repeat_interleave(bounds[:, 0] - student_offsets,
+        student_lengths, output_size=student_count)
+    student_positions += torch.arange(student_count, device=output.device)
+    output[student_positions] = torch.repeat_interleave(means, student_lengths,
+        output_size=student_count)
     return output
 
 

@@ -59,6 +59,7 @@ def all_keys(cfg,codecs):
     ({'reference_max_tokens':8000},{'teacher','capture','bank'}),
     ({'reference_temperature':.4},{'teacher','capture','bank'}),
     ({'source_max_tokens':4096},{'student','capture','bank','alignment','native','metrics','calibration'}),
+    ({'presence_penalty':0.},{'teacher','student','capture','bank','alignment','native','metrics','calibration'}),
     ({'run_name':'param','param_name':'another'},set()),
 ])
 def test_dependency_invalidation_is_local(cfg,codecs,changes,changed):

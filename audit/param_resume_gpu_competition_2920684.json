@@ -1,0 +1,16 @@
+{
+  "status": "resume_launched",
+  "pid": 2920684,
+  "start_ticks": 213337353,
+  "started_at": "2026-11-17T16:47:23.646745+08:00",
+  "gpu_ids": [
+    2,
+    3
+  ],
+  "reason": "Previous teacher Confirm startup failed: other project GPU allocations left15GiB, required53GiB",
+  "source_unchanged": true,
+  "config_unchanged": true,
+  "console_log": ".runtime/expanded_search_20261117.console.log",
+  "reuse_committed_stages": true,
+  "no_processes_stopped": true
+}

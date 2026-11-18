@@ -1,0 +1,78 @@
+{
+  "checked_at": "2026-11-17T18:03:50.668611+08:00",
+  "scope": "shared-two-GPU implementation and CPU verification only",
+  "resource_mode": "shared_two_gpu",
+  "physical_gpu_pool": [
+    0,
+    1
+  ],
+  "gpu_admission": "single_admission_for_whole_pool",
+  "teacher_tp": 2,
+  "student_rollout_tp": 1,
+  "training_gpu_started": false,
+  "parameter_updates": 0,
+  "gpu_phase_handover_validation": "pending",
+  "cpu_tests": {
+    "passed": 54,
+    "log": ".runtime/verl_training/shared2_final_tests.log"
+  },
+  "rethinking_defaults": {
+    "revision": "ac26e38d6f1572eb027597b48a9f4e01f6915ef8",
+    "repository": "https://github.com/thunlp/OPD",
+    "reference_file": "ref/implementation_sources/rethinking_comparison.json",
+    "reference_sha256": "7906f627617775417b8da9c24d00abeb208b8714a1c6797c5198ba9d0d40c618",
+    "script_sha256": "8377cb1b7bec6ebf380f8274623ce0188591ce90c95216ccd85b6d7aa36974a1",
+    "adaptations": {
+      "models_data_and_loss": "Keep selected Qwen pair, original 700/300 split, S-T teacher SV and two discussed losses; no native-ID TopK KL or PPO clipping.",
+      "gpu_count": "Shared two-card pool, student FSDP2 ranks and rollout TP1; teacher EasySteer TP2.",
+      "offload": "Explicit CPU offload and sleep acknowledgements are required for two-card sharing; actor param/optimizer offload=True instead of official False.",
+      "teacher_dtype": "Preserve BF16 EasySteer teacher, not official FP32 FSDP teacher.",
+      "training_budget": "Preserve the previously discussed 100 logical update batches; epoch cap is derived from that budget.",
+      "seed_and_logging": "Keep request seed42, local console, no global Ray stop or automatic remote logging.",
+      "compatibility": "Use current pinned VERL public loss hook; actor gradient is the discussed sampled OPD surrogate, not the Rethinking TopK/PPO objective.",
+      "checkpoint_retention": "Keep one training checkpoint to limit project storage; save every20 steps as official."
+    }
+  },
+  "inherited_fields_checked": 48,
+  "inherited_fields_match": true,
+  "batch_questions": 64,
+  "rollouts_per_question": 4,
+  "rollouts_per_update": 256,
+  "active_overlap_source_unchanged": true,
+  "active_overlap_template_unchanged": true,
+  "package_check": {
+    "stock": "fails existing exact-six-document allowlist; seventh document 代码框架逻辑.md was added independently",
+    "allowlist_extended_in_memory": "passed",
+    "frozen_validator_edited": false,
+    "log": ".runtime/verl_training/shared2_package_candidate.log"
+  },
+  "limitations": [
+    "GPU sleep/wake memory release, forward/backward, throughput and checkpoint recovery are not yet validated.",
+    "Per-request seed42 is retained; four responses to the same prompt may repeat.",
+    "Third-party multiprocess ResourceTracker emits an ignored interpreter-exit AttributeError; tests exit0."
+  ],
+  "implementation_sha256": {
+    "scripts/run_on_idle_gpus.py": "06c25af22a26f588995f632486dc6946e762e0c5e005b973e956f416dcdba1aa",
+    "src/steer_opd/compass_alignment.py": "4ea54a54a785b6eaf98085f24853200c411605697a54c9b88ef2bb5026db9314",
+    "src/steer_opd/easysteer_static.py": "4cd640733b38fb319d8d251075c69720b2a694658e61359db5297ae18bbcec3b",
+    "src/steer_opd/easysteer_worker.py": "bf82158c4813195327d1d01da385bee4644ee58320c69dd32d310742fbec0f77",
+    "src/steer_opd/training/__init__.py": "125e07d33e38f0cdff1d9231da8bbd2618067fac3ade7da91466008cd95be88f",
+    "src/steer_opd/training/__main__.py": "42fa3d0382b1cba4f34023666b01227d18e0263d851f7bd60025f43d2a53914d",
+    "src/steer_opd/training/config.py": "77174ce0b8f872aa0ae49882d51a2482c69de9a33ee139c22c799eb0c724ca68",
+    "src/steer_opd/training/losses.py": "b4cb1acea73772522ad6eef81329bffec0d3f07eade587eb1326da6ac4db90e4",
+    "src/steer_opd/training/process_cleanup.py": "d1a4f569038d9dcae0842011f0e63b1a407c52d1b02e558e1d3c9dc79dca4cc4",
+    "src/steer_opd/training/rethinking_defaults.py": "9cb7fb9e397c273b5a5231398ffd0a4c8480c2165bb723856beda036e13f5c4f",
+    "src/steer_opd/training/scorer_client.py": "dd4116ddcb0151bcbec0ce5b8a64c08ab67d3ccf2ec436e4b251d84fbd0e421f",
+    "src/steer_opd/training/scorer_service.py": "ed6d46dc2c482ec05f163b29a11f52df8890525737c614ac8d5bdaaf109f6f64",
+    "src/steer_opd/training/scoring.py": "f8f174b69f8acbe014f6be7ed3f56b827fd64abad895ebb3a13f403a1f4c98c2",
+    "src/steer_opd/training/shared_pool.py": "fb2106738ff90f0a66b942a661f154f4043862f11132f0fdccef87ab70b9d86c",
+    "src/steer_opd/training/sleep_engine.py": "629838b666046cd1547bc5f79ff7ac647ce2c726abaf1107475fb4258b96d618",
+    "src/steer_opd/training/verl_adapter.py": "d80f14f50058e768330e8f279607e57b0a118cf64bc86600f068a4021d9414aa",
+    "src/steer_opd/training/verl_agent.py": "debebccafd3091c551ec636fbfde1e021546685672ad9898006981f98f694004",
+    "src/steer_opd/training/verl_agent.yaml": "52dda37b46870dbb2ffcae88292f7a0eec0871142fd0405f84269b4ca0670a06",
+    "src/steer_opd/training/verl_entry.py": "817f801fba74b488389fb11e767a43418cb464ef23bf8253866319559c9c1e09",
+    "src/steer_opd/training/verl_plan.py": "2cec9e127ac357c2c86af4688fc69cc446ae62f7e2a6eb7a935c14eb34091e12",
+    "src/steer_opd/training/verl_reward.py": "a27cfa2acf0cbd27519fb33fed28cd17ba3463ecc7dd2bb0fe86c815a22e5b60",
+    "src/steer_opd/training/verl_trainer.py": "db6fea0e89be656347a9367cd088154cb30204458b03692b6c088446b7ce4464"
+  }
+}

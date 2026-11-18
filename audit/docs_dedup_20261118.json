@@ -1,0 +1,234 @@
+{
+  "started_at": "2026-11-18T21:46:38.172687+08:00",
+  "status": "completed",
+  "authorization": "User requested deletion of duplicate documentation under docs.",
+  "before": {
+    "docs/OPD概率来源统一与Top16方案分析.md": {
+      "sha256": "482bfe6ff247edf9efad45dab7d2f98868340bc2b435e12e584522461a81cc4c",
+      "chars": 6682,
+      "lines": 156
+    },
+    "docs/README.md": {
+      "sha256": "86d1ae675921bfa9a16702188ca28960f371001f65e56f12309d929086af723d",
+      "chars": 563,
+      "lines": 11
+    },
+    "docs/Steering_OPD_完整研究方案.md": {
+      "sha256": "cdfbf98a214e3c874b0e04ff25223519d1a6b805944cae59cf521261087b7cf6",
+      "chars": 27453,
+      "lines": 674
+    },
+    "docs/ablation.md": {
+      "sha256": "99d01b870ec9e74152dd27d152b58cbdd793114d95762885f8f83e2095e65f8a",
+      "chars": 16168,
+      "lines": 231
+    },
+    "docs/implementation.md": {
+      "sha256": "37543007eaa862d06479355ef7b9ec430a3b2cbd2d63f0800562bd8a197bc7b3",
+      "chars": 26807,
+      "lines": 293
+    },
+    "docs/overlap.md": {
+      "sha256": "456da9e6894c4b151e089a435b35fa3c340a900e8486ca924632c1c78be22eb2",
+      "chars": 12741,
+      "lines": 299
+    },
+    "docs/sources.md": {
+      "sha256": "ecac92d7c9396b881dbc417318d54acab15da6259da384f0a2fca73150839751",
+      "chars": 1663,
+      "lines": 19
+    },
+    "docs/代码框架逻辑.md": {
+      "sha256": "d85922a07a3a766fcb1d68142396562a13a158a9d548e378bfbc786c60bcb09a",
+      "chars": 14628,
+      "lines": 205
+    },
+    "docs/目前代码估计运行时间.md": {
+      "sha256": "2dc795d85eda9d3878ad8b489306b17ba3c3b9768a497be865e6fb4fd4857c79",
+      "chars": 13993,
+      "lines": 250
+    },
+    "README.md": {
+      "sha256": "65919fd15af798636d733f7baecbd14b1c931a3d343e3cb121a25cce8c9b0434",
+      "chars": 2523,
+      "lines": 23
+    },
+    "AGENTS.md": {
+      "sha256": "f8335deb90399b94f6283838c5c64ec654ada473ba1161b1058dd4f8ba08bc27",
+      "chars": 9299,
+      "lines": 73
+    },
+    "TODO.md": {
+      "sha256": "38cc6825767b5eea25e83d0a2d3132abdbf860fb433d2ecf71cdfb68bef3475b",
+      "chars": 6802,
+      "lines": 100
+    },
+    "输出结构.md": {
+      "sha256": "998e32b007167992d6d15bdf3089b131098008b12c5a29ccb6a622f964a0b99c",
+      "chars": 7648,
+      "lines": 176
+    },
+    "scripts/validate_package.py": {
+      "sha256": "9c6a0388919fd10f63b5b5a69d767dc3e4a143f668b5320eea2e4d6bb81028a4",
+      "chars": 10356,
+      "lines": 160
+    }
+  },
+  "duplicates_are_exact_byte_copies": false,
+  "remove_after_merge": {
+    "docs/implementation.md": {
+      "merge_into": "docs/代码框架逻辑.md",
+      "unique_content": [
+        "runtime version and installation",
+        "CPU/manual entry commands",
+        "GPU acceptance and startup limits",
+        "capture host/device budgets",
+        "SHA contracts, columnar storage APIs and plotting fields",
+        "TensorBoard and progress/log locations"
+      ]
+    },
+    "docs/OPD概率来源统一与Top16方案分析.md": {
+      "merge_into": [
+        "docs/代码框架逻辑.md",
+        "docs/Steering_OPD_完整研究方案.md",
+        "docs/目前代码估计运行时间.md",
+        "docs/sources.md"
+      ],
+      "unique_content": [
+        "Rethinking TopK versus sampled-token OPD and cross-tokenizer limitations",
+        "raw-model probability and sampling semantics",
+        "CPU replay evidence and original audit pointers"
+      ]
+    }
+  },
+  "preserved": [
+    "core research manuscript",
+    "experiment plan",
+    "overlap definition and worked example",
+    "runtime measurements",
+    "source reading boundaries",
+    "remote backup guide"
+  ],
+  "scope": "Documentation, navigation/reference updates and package required-doc filename only; no model, training, GPU, dataset or output mutation.",
+  "completed_at": "2026-11-18T21:56:41.523304+08:00",
+  "after": {
+    "docs/OPD概率来源统一与Top16方案分析.md": {
+      "exists": false
+    },
+    "docs/README.md": {
+      "exists": true,
+      "sha256": "327599d2b4421dce6160c87a79a3ec62436fa8474a4b243ccaaba449306f5c28",
+      "chars": 595,
+      "lines": 15
+    },
+    "docs/Steering_OPD_完整研究方案.md": {
+      "exists": true,
+      "sha256": "e8b500f760b17710666edc8b3ae3a6ddecc277b4794ea5ad02e136ea9b782b75",
+      "chars": 27494,
+      "lines": 681
+    },
+    "docs/ablation.md": {
+      "exists": true,
+      "sha256": "9029112cbaa32ae4a38b14e6ed7401db2a769c8e2515d75ff033c53fcd3adb7d",
+      "chars": 15070,
+      "lines": 223
+    },
+    "docs/implementation.md": {
+      "exists": false
+    },
+    "docs/overlap.md": {
+      "exists": true,
+      "sha256": "456da9e6894c4b151e089a435b35fa3c340a900e8486ca924632c1c78be22eb2",
+      "chars": 12741,
+      "lines": 299
+    },
+    "docs/sources.md": {
+      "exists": true,
+      "sha256": "27e44af50b3609f4b845826a4770a311bdda39dbb2f1a893af769f9772394b16",
+      "chars": 1756,
+      "lines": 19
+    },
+    "docs/代码框架逻辑.md": {
+      "exists": true,
+      "sha256": "3fb21af5a7b62eacee468ee66cf56529a253e3276c070a6c4dec55b2e441f40e",
+      "chars": 20521,
+      "lines": 274
+    },
+    "docs/目前代码估计运行时间.md": {
+      "exists": true,
+      "sha256": "e63e76940d8273d86b5636ac5b970cd572d99ad22e7fc1815771638d3c09895c",
+      "chars": 14720,
+      "lines": 256
+    },
+    "README.md": {
+      "exists": true,
+      "sha256": "14f82eb8f33f8dc7095abd46ba6244d7940097397217024002f806dceff86415",
+      "chars": 516,
+      "lines": 11
+    },
+    "AGENTS.md": {
+      "exists": true,
+      "sha256": "bf58e933c0ceab37ce8b87de954af507b79723f2a9fc501d9bd7eda725070524",
+      "chars": 9291,
+      "lines": 73
+    },
+    "TODO.md": {
+      "exists": true,
+      "sha256": "dcec37c01c9153b27a573597acc27c044cb056e88c6d0782e24cc69ef6f85da5",
+      "chars": 6794,
+      "lines": 100
+    },
+    "输出结构.md": {
+      "exists": true,
+      "sha256": "7945716f55ebfe65d4eefc82a942cbc8ccdde70a697f5cc72cdaf5174932d2f5",
+      "chars": 7657,
+      "lines": 176
+    },
+    "scripts/validate_package.py": {
+      "exists": true,
+      "sha256": "8dad12917c3f578bd43983c21dea3131dba73e402f9e2fb65e6cd836a2c3de8d",
+      "chars": 10402,
+      "lines": 160
+    }
+  },
+  "remaining_docs": [
+    "docs/README.md",
+    "docs/Steering_OPD_完整研究方案.md",
+    "docs/ablation.md",
+    "docs/overlap.md",
+    "docs/sources.md",
+    "docs/代码框架逻辑.md",
+    "docs/目前代码估计运行时间.md"
+  ],
+  "totals": {
+    "before_doc_count": 10,
+    "after_doc_count": 8,
+    "before_chars": 121983,
+    "after_chars": 94182,
+    "chars_removed": 27801,
+    "text_reduction_percent": 22.79
+  },
+  "validation": {
+    "package_validation": "passed",
+    "package_local_links_checked": 166,
+    "package_report": "audit/package_validation.json",
+    "package_report_sha256": "a6efb88284b535b1ae5ed3122c631dbb1b43f4bcae071138988720a4d8f76328",
+    "live_navigation_links_checked": 144,
+    "canonical_anchors_checked": 9,
+    "markdown_tables_checked": 57,
+    "remaining_live_references_to_deleted_names": 0,
+    "git_diff_check": "passed",
+    "new_gpu_runs": 0,
+    "new_optimizer_updates": 0
+  },
+  "additional_migrations": {
+    "docs/Steering_OPD_完整研究方案.md": "Top-K paper/code comparison retained; duplicate live status replaced by canonical links; main research sections retained.",
+    "docs/ablation.md": "Repeated training recipe removed; execution authorization, original formal_v5 identity, invalid sampling history and user stop record retained.",
+    "docs/目前代码估计运行时间.md": "Added original 8-trajectory CPU bridge evidence and 48-record file-format benchmark with audit pointers.",
+    "README.md": "Replaced stale duplicated recipe/status with project overview, navigation and CPU preview entry.",
+    "AGENTS.md": "Canonical implementation documentation path updated; experiment rules unchanged.",
+    "TODO.md": "Implementation link updated only for this cleanup.",
+    "输出结构.md": "Storage API link now points to canonical framework section 8.3.",
+    "scripts/validate_package.py": "Required documentation filename changed from implementation.md to 代码框架逻辑.md; validation remains enabled."
+  }
+}

@@ -1,37 +1,37 @@
 {
   "reference_and_source_generation": {
     "source": "scripts/generate_static_sources.py",
-    "line": 57,
+    "line": 62,
     "entrypoint": "engine.generate",
     "backend": "easysteer_vllm"
   },
   "shared_S0_activation_capture": {
     "source": "src/steer_opd/easysteer_extraction.py",
-    "line": 88,
+    "line": 89,
     "entrypoint": "hs.capture",
     "backend": "easysteer_vllm"
   },
   "native_teacher_scoring": {
     "source": "scripts/score_compass_sources.py",
-    "line": 30,
+    "line": 31,
     "entrypoint": "fixed_prefix_scores",
     "backend": "easysteer_vllm"
   },
   "baseline_and_four_fixed_schemes": {
     "source": "scripts/run_overlap_ablation.py",
-    "line": 251,
+    "line": 253,
     "entrypoint": "fixed_prefix_scores",
     "backend": "easysteer_vllm"
   },
   "fixed_prefix_engine_call": {
     "source": "src/steer_opd/easysteer_static.py",
-    "line": 187,
+    "line": 189,
     "entrypoint": "llm.generate",
     "backend": "easysteer_vllm"
   },
   "teacher_space_S_T_scoring": {
     "source": "src/steer_opd/teacher_screen.py",
-    "line": 217,
+    "line": 218,
     "entrypoint": "fixed_prefix_scores",
     "backend": "easysteer_vllm"
   },

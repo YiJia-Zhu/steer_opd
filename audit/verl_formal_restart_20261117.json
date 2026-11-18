@@ -1,0 +1,17 @@
+{
+  "previous_run": "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v1",
+  "previous_status": "failed_after_initial_evaluation_before_training",
+  "actual_updates_before_restart": 0,
+  "cause": "NumPy int32 evaluation metric was not JSON serializable",
+  "fix": "Convert NumPy scalar metrics to native Python numeric types; preserve values and types",
+  "tests_passed": 45,
+  "current_run": "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v2",
+  "gpu_ids": [
+    0,
+    1
+  ],
+  "launcher_pid": 3616655,
+  "previous_evaluation_raw_outputs_preserved": 530,
+  "baseline_reuse": false,
+  "tensorboard_url": "http://127.0.0.1:6006"
+}

@@ -41,12 +41,17 @@ def capture(cfg, reader_role="student"):
         encoded=[encode_answer(tokenizer,item['reader_prompt_text'],r.get('text'),cfg['sv_max_context_len']) for r in pair]
         encodings[q['id']]=encoded
         records.append((item,pair,all(e['response_ids'] for e in encoded)))
-    split=read_json(project_path(cfg['data_dir'])/'split.json')
     valid_ids={q['id'] for q,_,valid in records if valid}
-    counts={name:len(valid_ids.intersection(split[name+'_ids'])) for name in ('select','confirm')}
+    if cfg.get('data_policy')=='all_train':
+        quality_scope={'data_policy':'all_train','training_usable_questions':len(valid_ids),
+                       'ready_for_capture':bool(valid_ids)}
+    else:
+        split=read_json(project_path(cfg['data_dir'])/'split.json')
+        counts={name:len(valid_ids.intersection(split[name+'_ids'])) for name in ('select','confirm')}
+        quality_scope={'split_usable_counts':counts,'minimum_split_questions':cfg['minimum_split_questions'],
+            'ready_for_capture':all(n>=cfg['minimum_split_questions'] for n in counts.values())}
     quality={'input_questions':len(records),'paired_usable_questions':len(valid_ids),
-        'split_usable_counts':counts,'minimum_split_questions':cfg['minimum_split_questions'],
-        'ready_for_capture':all(n>=cfg['minimum_split_questions'] for n in counts.values()),
+        **quality_scope,
         'roles':{role:{'length_truncated':sum(pair[i]['finish_reason']=='length' for _,pair,_ in records),
             'empty':sum(not pair[i].get('text','').strip() for _,pair,_ in records),
             'context_truncated':sum(encodings[q['id']][i]['context_truncated'] for q,_,_ in records),
@@ -64,9 +69,9 @@ def capture(cfg, reader_role="student"):
             raise ValueError('Committed capture text quality inputs changed')
     else:atomic_json(output/'text_quality.json',quality)
     if not quality['ready_for_capture']:
-        raise ValueError(f"Insufficient readable teacher/self answer pairs before GPU capture: "
-            f"select={counts['select']}, confirm={counts['confirm']}; "
-            f"need at least {cfg['minimum_split_questions']} per split. See {output/'text_quality.json'}")
+        detail=(f"training_usable={len(valid_ids)}; need at least one pair" if cfg.get('data_policy')=='all_train'
+                else f"select={counts['select']}, confirm={counts['confirm']}; need at least {cfg['minimum_split_questions']} per split")
+        raise ValueError(f"Insufficient readable teacher/self answer pairs before GPU capture: {detail}. See {output/'text_quality.json'}")
     runtime=initialize_stage(cfg,output)
     layers=reader_layers(cfg,reader_role)
     identity={'checkpoint':cfg[reader_role],'checkpoint_content_id':content[reader_role],'source_checkpoint_contents':content,
@@ -100,7 +105,8 @@ def capture(cfg, reader_role="student"):
         path=output/'pooled.pt';atomic_torch(path,{'identity':identity,'pooled':pooled});files=[path]
         files.append(output/'text_quality.json')
         if cfg['extraction_backend']=='easysteer':files.append(output/'capture_budget.json')
-        stage.commit(files,questions=len(records),hidden_state_storage='pooled_only')
+        stage.commit(files,questions=len(records),hidden_state_storage='pooled_only',
+                     retention_policy=cfg.get('retention_policy'))
         progress.finished_call(len(records));progress.mark_committed(len(records))
 
 

@@ -4,7 +4,8 @@ import torch
 from steer_opd.compass_job import model_path, project_path, safe_key
 from steer_opd.direction_bank import file_sha256
 from steer_opd.execution_policy import require_execution_allowed, require_default_scheduler_options
-from steer_opd.experiment_runtime import StageCheckpoint, Progress, initialize_stage, compute_required
+from steer_opd.experiment_runtime import Progress, initialize_stage, compute_required
+from steer_opd.tensor_checkpoint import StageCheckpoint
 from steer_opd.overlap_tuning import paired_summary
 from steer_opd.resumable_core import atomic_json, digest, read_json
 from steer_opd.static_masks import validate_native_score
@@ -156,7 +157,7 @@ def run_teacher_screen(job, rows, masks, teachers, banks):
     names=['baseline','teacher_unsteered_replay',*[c['id'] for c in job['conditions']]]
     if len(set(names))!=len(names):raise ValueError('Teacher candidate IDs overlap reserved baseline/replay names')
     stores={name:StageCheckpoint(output/name,digest({'phase':binding,'candidate':name}),
-            tensor_compression=job.get('candidate_tensor_compression','none')) for name in names}
+            tensor_format=job.get('candidate_tensor_format',job.get('candidate_tensor_compression'))) for name in names}
     ready={name:store.load_tensors([safe_key(r) for r in rows]) for name,store in stores.items()}
     with Progress(output,'teacher_fixed_prefix_screen',len(rows)*len(names),unit='score',show_bar=False) as progress, \
             MetricExecutor(adapter,progress=progress) as metric_executor:

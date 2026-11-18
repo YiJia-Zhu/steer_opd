@@ -41,7 +41,7 @@ def main():
     if not target.exists():
         run(sys.executable, '-m', 'venv', target)
     python = target / 'bin/python'
-    run(python, '-m', 'pip', 'install', 'vllm==0.29.0', 'transformers==5.16.1', 'matplotlib', 'accelerate')
+    run(python, '-m', 'pip', 'install', 'vllm==0.29.0', 'transformers==5.16.1', 'matplotlib', 'accelerate', 'pyarrow==24.0.0')
     receipts = {}
     sources = []
     for repo, revision in [('EasySteer', FRONTEND), ('EasySteer-vllm-v1', FORK)]:

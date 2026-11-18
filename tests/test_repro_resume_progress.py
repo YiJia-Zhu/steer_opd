@@ -401,6 +401,8 @@ def test_teacher_text_reuse_keeps_original_commit_and_rejects_changed_inputs(tmp
     assert (tmp_path/'complete.json').read_bytes()==before
     with pytest.raises(ValueError,match='settings or requests'):
         campaign.validate_teacher_text_reuse({**current,'max_tokens':9})
+    with pytest.raises(ValueError,match='settings or requests'):
+        generation.generate({**current,'presence_penalty':2.})
     monkeypatch.setattr(checkpoint_identity,'checkpoint_content_id',lambda *a,**kw:'other_weights')
     with pytest.raises(ValueError,match='checkpoint contents'):
         campaign.validate_teacher_text_reuse(current)
@@ -469,7 +471,7 @@ def test_source_rollout_reuse_preserves_commit_and_checks_probability_identity(t
     monkeypatch.setattr(generation,'initialize_stage',forbid)
     generation.generate(current)
     assert before=={name:(tmp_path/name).read_bytes() for name in before}
-    for changed in ({'max_tokens':9},{'metric_version':METRIC_VERSION-1},{'support_size':33}):
+    for changed in ({'max_tokens':9},{'metric_version':METRIC_VERSION-1},{'support_size':33},{'presence_penalty':2.}):
         with pytest.raises(ValueError):campaign.validate_source_rollout_reuse({**current,**changed})
     monkeypatch.setattr(rt,'source_revision',lambda:('another_code',{},{}))
     with pytest.raises(ValueError,match='current code'):campaign.validate_source_rollout_reuse(current)
@@ -529,6 +531,12 @@ def test_capture_keeps_length_and_repeated_answers_but_skips_missing_content(tmp
     assert not report['ready_for_capture']
     assert report['paired_usable_questions']==1
     assert not (tmp_path/'run/activations/pooled.pt').exists()
+    cfg={k:v for k,v in cfg.items() if k!='minimum_split_questions'}
+    cfg['data_policy']='all_train'
+    with pytest.raises(RuntimeError,match='reached_runtime'):module.capture(cfg)
+    report=read_json(tmp_path/'run/activations/text_quality.json')
+    assert report['training_usable_questions']==1 and report['ready_for_capture']
+    assert 'split_usable_counts' not in report
 
 
 def test_sv_answer_encoding_matches_upstream_joint_tokenization_and_context_limit():

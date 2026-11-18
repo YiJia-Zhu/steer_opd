@@ -73,13 +73,16 @@ class StageArtifacts:
             for name,sha in packet['proofs'].items():
                 if file_sha256(project(name))!=sha:raise ValueError('Original import provenance changed')
             files=verify_files(folder,packet['files'])
+        elif packet['component'].startswith('capture_') and (folder/'metadata/pool_retirement.json').exists():
+            from steer_opd.sv_retention import verify_retired_capture
+            files=verify_retired_capture(self,path,packet)
         else:files=verify_commit(folder)
         if files!=packet['files']:raise ValueError('Artifact contents differ from the frozen descriptor')
         expected=digest({'contract_key':packet['contract_key'],'files':files})
         if expected!=packet['artifact_id']:raise ValueError('Artifact content identity changed')
         return folder,packet
 
-    def find(self,component,contract,target):
+    def find(self,component,contract,target,*,materialized=False):
         target=project(target);ref=target/'metadata/reuse.json'
         if ref.exists():
             saved=read_json(ref)
@@ -89,14 +92,24 @@ class StageArtifacts:
             folder,packet=self.validate(saved['descriptor'],contract)
             if project(saved['owner'])!=folder:raise ValueError('Frozen upstream owner changed')
             if packet['artifact_id']!=saved['artifact_id']:raise ValueError('Frozen upstream artifact changed')
+            if materialized and (folder/'metadata/pool_retirement.json').exists():
+                raise ValueError('This frozen capture was retired; use a new PARAM_NAME to recapture')
             return folder,packet
         own=self.descriptor(target)
-        if own.exists():return self.validate(own,contract)
+        if own.exists():
+            found=self.validate(own,contract)
+            if materialized and (found[0]/'metadata/pool_retirement.json').exists():
+                raise ValueError('This frozen capture was retired; use a new PARAM_NAME to recapture')
+            return found
         # Only inspect small descriptor files at the documented parameter depth.
         candidates=sorted(self.root.glob('step_*/*/*/*/*/*/**/metadata/artifact.json'))
         for path in candidates:
             packet=read_json(path)
             if packet.get('component')==component and packet.get('contract_key')==digest(contract):
+                if materialized and (project(packet['owner'])/'metadata/pool_retirement.json').exists():continue
+                if (materialized and component.startswith('capture_')
+                        and read_json(project(packet['owner'])/'complete.json').get('retention_policy')=='minimal_v1'):
+                    continue  # Another run's temporary pool may be retired at any time.
                 return self.validate(path,contract)
         return None
 

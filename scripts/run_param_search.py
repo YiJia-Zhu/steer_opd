@@ -185,7 +185,7 @@ def main():
                         'QUESTION_COUNT':'1000','SV_MAX_CONTEXT_LEN':'2048','STOP_AFTER':'panel','HF_PARITY':'0',
                         'INPUT_DATA_DIR':cfg['input_data_dir'],
                         'STUDENT_BASELINE_RUN':settings['student_baseline_run'],
-                        'CANDIDATE_TENSOR_COMPRESSION':'gzip'}
+                        'CANDIDATE_TENSOR_FORMAT':os.environ.get('CANDIDATE_TENSOR_FORMAT','parquet_zstd')}
                     required=storage_required(settings);available=shutil.disk_usage(root).free
                     state['storage_check']={'required_bytes':required,'available_bytes':available}
                     atomic_json(root/'search_progress.json',state)

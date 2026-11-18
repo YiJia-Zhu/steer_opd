@@ -1,0 +1,144 @@
+{
+  "status": {
+    "status": "training_process_admitted",
+    "new_run": "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45",
+    "launcher": {
+      "pid": 322914,
+      "start_ticks": 215829536,
+      "command": [
+        "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+        "-m",
+        "steer_opd.training.verl_entry",
+        "--run",
+        "--gpu-ids",
+        "6,7",
+        "--run-name",
+        "verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45",
+        "--overlap-metrics"
+      ],
+      "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd",
+      "time": 1794930165.4732826,
+      "restart_mode": "fresh_initial_student_no_resume",
+      "run_output": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/verl_traditional_opd_st_T29_slerp0.1_seed42_shared2_formal_v5_seed42to45",
+      "physical_gpu_ids": [
+        6,
+        7
+      ],
+      "seed_policy": "train_per_question_rollout_slot_base42_eval42_v2"
+    },
+    "driver_pid": 323430,
+    "gpu_ids": [
+      6,
+      7
+    ],
+    "enabled_from_step": 1,
+    "completed_optimizer_updates": 0,
+    "seed_policy": "train_per_question_rollout_slot_base42_eval42_v2",
+    "per_question_seeds": [
+      42,
+      43,
+      44,
+      45
+    ],
+    "cpu_tests_passed": 61,
+    "time": 1794930219.8953357
+  },
+  "cpu_tests_passed": 61,
+  "loss_dashboard_fix": "Separate native train, samples and system writer directories; no copied historical events",
+  "visible_loss_steps": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "tensorboard_url": "http://127.0.0.1:6006",
+  "eval_steps": [
+    0,
+    20,
+    40,
+    60,
+    80,
+    100
+  ],
+  "metric_enabled_from_step": 1,
+  "metrics": [
+    "overlap/question_value",
+    "overlap/token_value",
+    "P_overlap/question_value",
+    "P_overlap/token_value",
+    "overlap/coverage"
+  ],
+  "distribution": "current student rollout vs actual S-T steered teacher, at identical response prefixes before the update",
+  "extra_generation_calls": 0,
+  "extra_model_forward_calls": 0,
+  "extra_work": "Top16 serialization and CPU matching",
+  "historical_metrics_before_step21": "superseded; old training outputs deleted, new run records from step1",
+  "staged_patch_manifest": {
+    "src/steer_opd/training/verl_plan.py": {
+      "original_sha256": "6ff1483ac46be39c6099a08e90b35261284b3d0e4f24c0b55b592b69898b64d3",
+      "staged_sha256": "6f2283a986ca14f966f59697c26983b2d0c01766637fd061ea5a81bdc744b69a",
+      "staged_path": ".runtime/overlap_update/sources/verl_plan.py"
+    },
+    "src/steer_opd/training/verl_entry.py": {
+      "original_sha256": "95b17aad194fc22f4f16f58033c836ff833d4eb7aae5bb8ac4520b31aaed190d",
+      "staged_sha256": "6106e25639e715c27b02cc7b7645f2d1fcf21468bf6d2e7b77a90ba13fa5fa17",
+      "staged_path": ".runtime/overlap_update/sources/verl_entry.py"
+    },
+    "src/steer_opd/training/scorer_service.py": {
+      "original_sha256": "6d98a17c6ab8e43a7ef4b5c30319ae07518a67b3b5a4e2d6c139c994d2df8451",
+      "staged_sha256": "2f3a618d7455fb7b03efbc96c5ec6c16797379e7a985987edc625266d2289078",
+      "staged_path": ".runtime/overlap_update/sources/scorer_service.py"
+    },
+    "src/steer_opd/training/scorer_client.py": {
+      "original_sha256": "98920e80ee914ba2fe0e0a1ff85b8018be00b72d6aff0805dce424e152db76a5",
+      "staged_sha256": "0ca0d0cd6bf2fd64706c4f9ea47286564a4db59e7aa5c8ffcedc3252b8f28c3c",
+      "staged_path": ".runtime/overlap_update/sources/scorer_client.py"
+    },
+    "src/steer_opd/training/verl_trainer.py": {
+      "original_sha256": "7cd4b27a5232dd6df527edb7d3e867e8523b62c4a28e25849e51ab0c1e32108f",
+      "staged_sha256": "866bbb4ce0b4fa3d727116a4e09971fee90e9eee3804037a4a9a53eee4b42d93",
+      "staged_path": ".runtime/overlap_update/sources/verl_trainer.py"
+    }
+  },
+  "validation": {
+    "status": "passed",
+    "cpu_tests_passed": 51,
+    "running_code_untouched": true,
+    "cpu_log_sha256": "ba5a3397cdfda681dcb340df500bd2f453c804b94a8b69d0795ad790eda12043",
+    "dependencies": {
+      "src/steer_opd/training/overlap_monitor.py": "4d4d06c458c349e0dddc6b7da8a4fc3d211e83f04c5c7efc8103d4f569d5f9fb",
+      "src/steer_opd/training/overlap_agent.py": "be7eb023d49be7e023f4a72bf0d90a32f1c15e7cadcbd7c72af8f8aca4b3c0ca",
+      "src/steer_opd/training/overlap_agent.yaml": "51038fa458fb47b154bc7ae0081bec7301dbe86e6d2bdf84d06545102df08a90",
+      "src/steer_opd/training/resume_handover.py": "103d7e53548e7635f761d7a306cf2b51e830495502b13bebd92b575bb05b60bf",
+      "src/steer_opd/compass_alignment.py": "4ea54a54a785b6eaf98085f24853200c411605697a54c9b88ef2bb5026db9314",
+      "src/steer_opd/prefix_matching.py": "ed707503b23876b6842892437bac840600dcb276c57191dff54e26589ff5665c",
+      "src/steer_opd/static_masks.py": "0116e7acc841faeb8e9690ed92a950c2a0a130bf4820971276f4132bcee915f0",
+      ".runtime/overlap_update/handoff.py": "2e21289ed2b94af1563895f0c7488c284a7df4a506f36cc47dba554e2609d58a",
+      ".runtime/overlap_update/build_stage.py": "553963d804bd1ab0616f4ff34d534281a8d8691bff727f74c13fd4d43ce128b8",
+      ".runtime/overlap_update/check_staged.py": "edfbe5edaa3e64ecc936955fedd683663a6cba6c3d9334e78743d57122ed2fc0"
+    }
+  },
+  "controller": {
+    "pid": 4111498,
+    "start_ticks": 215210532,
+    "command": [
+      "/home/zhenning/data/working_tmp/steer_opd/.venv-opd/bin/python",
+      "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/overlap_update/handoff.py"
+    ],
+    "scope": "one checkpoint-bound continuation for user-requested Top16 monitoring",
+    "status": "cancelled_by_fresh_restart"
+  },
+  "remaining_gpu_validation": "First new per-question seed-slot rollout batch and optimizer update pending",
+  "restart_mode": "fresh_initial_student_per_question_seeds42to45",
+  "tensorboard_http_status": 200
+}

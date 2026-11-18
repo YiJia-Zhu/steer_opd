@@ -1,0 +1,1012 @@
+--- before/configs/ablation.json
++++ configs/ablation.json
+@@ -132,5 +132,6 @@
+         "run": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_S26_T29_seed42_st_only_v1"
+       }
+     ]
+-  }
++  },
++  "presence_penalty": 2.0
+ }
+--- /dev/null
++++ src/steer_opd/generation_policy.py
+@@ -0,0 +1,36 @@
++"""Shared defaults for future generation, distinct from raw probability scores."""
++import math
++from numbers import Real
++
++DEFAULT_PRESENCE_PENALTY = 2.0
++PRESENCE_FIELD = 'steer_opd_presence_penalty'
++POLICY_VERSION = 'presence_controlled_generation_raw_model_scores_v1'
++RAW_PROBABILITY_BASIS = 'raw_model_logprobs_before_sampling_transforms'
++
++
++def presence_penalty(config=None, *, require_explicit=False):
++    config = {} if config is None else config
++    if require_explicit and 'presence_penalty' not in config:
++        raise ValueError('Prepare a new generation job with explicit presence_penalty')
++    value = config.get('presence_penalty', DEFAULT_PRESENCE_PENALTY)
++    if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or not -2 <= value <= 2:
++        raise ValueError('presence_penalty must be a finite number in [-2, 2]')
++    return float(value)
++
++
++def training_sampling_policy(config):
++    penalty = presence_penalty(config)
++    return {'version': POLICY_VERSION, 'presence_penalty': penalty,
++            'probability_basis': RAW_PROBABILITY_BASIS,
++            'raw_logprobs_are_behavior_logprobs': penalty == 0.,
++            'loss': 'sampled_raw_model_opd_on_controlled_rollouts',
++            'importance_correction': 'none',
++            'note': 'Penalty changes the sampling distribution. Raw model logprobs remain the OPD/Top16 inputs; no exact unpenalized on-policy KL equivalence is claimed.'}
++
++
++def validate_training_sampling_policy(plan):
++    settings = plan.get('settings', {})
++    if ('presence_penalty' not in settings or
++            plan.get('sampling_policy') != training_sampling_policy(settings)):
++        raise ValueError('Prepare a new training plan with explicit presence_penalty and raw-model probability semantics')
++    return plan['sampling_policy']
+--- before/src/steer_opd/compass_campaign.py
++++ src/steer_opd/compass_campaign.py
+@@ -28,6 +28,8 @@
+ 
+ def validate_config(cfg):
+     require_default_scheduler_options(cfg)
++    from steer_opd.generation_policy import presence_penalty
++    presence_penalty(cfg)
+     from steer_opd.tensor_checkpoint import SUPPORTED_FORMATS
+     if 'candidate_tensor_format' in cfg and 'candidate_tensor_compression' in cfg:
+         raise ValueError('Choose one candidate tensor format setting')
+@@ -157,6 +159,7 @@
+ 
+ 
+ def generation_job(cfg, codec, role, questions, *, source=False):
++    from steer_opd.generation_policy import presence_penalty
+     if role not in ('teacher','student'):
+         raise ValueError('Only teacher reference text and student source generation are supported')
+     output = str(artifact_dir(cfg,'student' if source else 'teacher'))
+@@ -167,6 +170,7 @@
+     job = {**execution_policy(cfg), "model": cfg[role], "output": output, "requests": requests, "vector": None,
+         "max_tokens": cfg["source_max_tokens"] if source else cfg["reference_max_tokens"],
+         "temperature": 1. if source else cfg["reference_temperature"], "top_p": 1. if source else cfg["reference_top_p"],
++        "presence_penalty": presence_penalty(cfg),
+         "seed": cfg["seed"], "support_size": codec.support_size, "gpu_memory_utilization": cfg["gpu_memory_utilization"],
+         "logprobs": 16 if source else None, "head_dtype": "float32", "normalization": "native",
+         "backend_version": 8, "metric_version": METRIC_VERSION, "matching_rule_version": RULE_VERSION,
+@@ -292,6 +296,7 @@
+ 
+ 
+ def make_base_job(cfg, codecs, rows):
++    from steer_opd.generation_policy import presence_penalty
+     run = cfg["run_dir"]
+     conditions = scheme_conditions(cfg)
+     banks = {f'{direction}_{granularity}':str(artifact_dir(cfg,'bank_teacher' if direction=='S-T' else 'bank_student')/f'{direction}_{granularity}.pt')
+@@ -323,7 +328,7 @@
+     if cfg.get('candidate_tensor_format'):
+         job['candidate_tensor_format']=cfg['candidate_tensor_format']
+     job.update(require_dual_metrics=cfg.get("require_dual_metrics", True),
+-        seed=cfg["seed"], reproducibility_protocol=1, resume_granularity="engine_call",
++        seed=cfg["seed"], presence_penalty=presence_penalty(cfg), reproducibility_protocol=1, resume_granularity="engine_call",
+         bind_checkpoint_content=cfg.get("bind_checkpoint_content", False),
+         gate_metric=cfg.get("gate_metric", "overlap"), rank_metric=cfg.get("rank_metric", "overlap"),
+         probability_backend=cfg.get("probability_backend", "easysteer"), teacher_gpus=cfg["teacher_gpus"])
+--- before/src/steer_opd/stage_contracts.py
++++ src/steer_opd/stage_contracts.py
+@@ -8,7 +8,8 @@
+ from steer_opd.method_config import DIRECTION_VERSIONS, reader_direction, reader_layers
+ 
+ GEN_CODE=('scripts/generate_static_sources.py','src/steer_opd/rollout_topk.py',
+-          'src/steer_opd/easysteer_static.py','src/steer_opd/easysteer_worker.py')
++          'src/steer_opd/easysteer_static.py','src/steer_opd/easysteer_worker.py',
++          'src/steer_opd/generation_policy.py')
+ CAP_CODE=('src/steer_opd/extraction.py','src/steer_opd/easysteer_extraction.py','src/steer_opd/easysteer_static.py',
+           'src/steer_opd/easysteer_worker.py')
+ BANK_CODE=('src/steer_opd/compass_banks.py','src/steer_opd/direction_bank.py')
+@@ -30,6 +31,7 @@
+ 
+ 
+ def generation(cfg,role,questions,codec,model_id,runtime):
++    from steer_opd.generation_policy import presence_penalty
+     source=role=='student'
+     requests=[{'id':q['id'],'prompt':prompt_ids(codec.tokenizer,q['question'],cfg['enable_thinking']),
+                'seed':42} for q in questions]
+@@ -37,7 +39,7 @@
+         'decode_cuda_graph':cfg.get('decode_cuda_graph',True),'head_dtype':'float32',
+         'max_tokens':cfg['source_max_tokens'] if source else cfg['reference_max_tokens'],
+         'temperature':1. if source else cfg['reference_temperature'],
+-        'top_p':1. if source else cfg['reference_top_p'],'top_k':-1,'presence_penalty':0.,
++        'top_p':1. if source else cfg['reference_top_p'],'top_k':-1,'presence_penalty':presence_penalty(cfg),
+         'seed':42,'dtype':'bfloat16','logprobs':16 if source else None,'normalization':'raw',
+         'tensor_parallel_size':1 if source else cfg['teacher_gpus'],
+         'gpu_memory_utilization':cfg['gpu_memory_utilization'],'batch_invariant':source,
+--- before/src/steer_opd/stage_io.py
++++ src/steer_opd/stage_io.py
+@@ -19,6 +19,7 @@
+ 
+ 
+ def default_param_name(cfg):
++    from steer_opd.generation_policy import presence_penalty
+     layer=(f"S{cfg['layers'][0]}_T{cfg['teacher_layers'][0]}" if cfg.get('include_teacher_ablation')
+            else f"layer{cfg['layers'][0]}")
+     label=f"n{cfg['question_count']}_{cfg.get('operator','slerp')}{cfg['alpha']:g}_{layer}_seed{cfg['seed']}"
+@@ -27,7 +28,7 @@
+         ('sv_max_context_len',2048,'ctx'),('reference_temperature',.7,'Ttemp'),('reference_top_p',.95,'Tp')]:
+         value=cfg.get(key,default)
+         if value!=default:label+=f'_{tag}{value:g}' if isinstance(value,(int,float)) else f'_{tag}{value}'
+-    return label+'_v1'
++    return label+f'_pp{presence_penalty(cfg):g}_v1'
+ 
+ 
+ def layout_paths(cfg):
+--- before/src/steer_opd/easysteer_static.py
++++ src/steer_opd/easysteer_static.py
+@@ -138,7 +138,9 @@
+     if config.cache_config.enable_prefix_caching:
+         raise ValueError("Disable prefix caching until per-request steering cache identity is accepted")
+     from vllm import SamplingParams
++    from steer_opd.generation_policy import DEFAULT_PRESENCE_PENALTY
+     params = SamplingParams(max_tokens=1, temperature=0, prompt_logprobs=k, logprobs=k,
++                            presence_penalty=DEFAULT_PRESENCE_PENALTY,
+                             ignore_eos=True, detokenize=False, seed=42)
+     results = {}
+     def accept(request_index, output):
+--- before/src/steer_opd/easysteer_extraction.py
++++ src/steer_opd/easysteer_extraction.py
+@@ -8,6 +8,7 @@
+ from steer_opd.extraction import encode_answer
+ from steer_opd.resumable_core import atomic_json
+ from steer_opd.experiment_runtime import Progress
++from steer_opd.generation_policy import presence_penalty
+ 
+ 
+ def capture_budgets(selected_rows, hidden_size, layer_count, scheduled_tokens):
+@@ -87,6 +88,7 @@
+         with progress.phase_scope('continuous_capture'):
+             capture=hs.capture(WithProgress(),[{'prompt_token_ids':w[1]} for w in work],
+                 max_tokens=1,layers=layers,dtype='bfloat16',steering=False,seed=42,
++                presence_penalty=presence_penalty(config),
+                 per_prompt_selects=[SelectSpec(prompt_positions=w[2]) for w in work],
+                 **budgets)
+         if list(capture.layer_ids)!=sorted(layers) or len(capture.outputs)!=len(work):
+--- before/src/steer_opd/opd_evaluation.py
++++ src/steer_opd/opd_evaluation.py
+@@ -111,6 +111,10 @@
+     from steer_opd.stage_io import project
+ 
+     require_execution_allowed(job)
++    from steer_opd.generation_policy import presence_penalty
++    # Canonicalize the effective generation setting into the stage identity.
++    job={**job,'generation':{**job['generation'],
++         'presence_penalty':presence_penalty(job['generation'])}}
+     output = project(job["output"])
+     model = project(job["model"])
+     if "step_5_eval" not in output.parts:
+@@ -121,10 +125,11 @@
+         raise ValueError("AIME25 evaluation requires seed42 and 16 stochastic samples per question")
+     questions, dataset_sources = aime_questions(project(job["dataset_dir"]))
+     checkpoint = checkpoint_content_id(model)
+-    from steer_opd import math_data
++    from steer_opd import math_data,generation_policy
+     identity = {"job": job, "checkpoint_content_id": checkpoint, "dataset_sha256": dataset_sources,
+                 "vllm_version": importlib.metadata.version("vllm"), "steering": False,
+                 "source_sha256": {"opd_evaluation.py": file_sha256(Path(__file__)),
++                                  "generation_policy.py": file_sha256(Path(generation_policy.__file__)),
+                                   "math_data.py": file_sha256(Path(math_data.__file__))}}
+     binding = digest(identity)
+     sampling = StageCheckpoint(output / "sampling", binding)
+@@ -148,7 +153,8 @@
+                       max_model_len=max_model_len, gpu_memory_utilization=job.get("gpu_memory_utilization", .75),
+                       generation_config="vllm", hf_overrides={"head_dtype": "float32"})
+         params = SamplingParams(n=16, seed=42, temperature=generation["temperature"],
+-                                top_p=generation["top_p"], top_k=-1, max_tokens=generation["max_tokens"])
++                                top_p=generation["top_p"], top_k=-1, max_tokens=generation["max_tokens"],
++                                presence_penalty=generation['presence_penalty'])
+         # A single n=16 request per question supplies distinct random draws.
+         # Repeating identical seed42 requests 16 times would repeat responses.
+         outputs = llm.generate([{"prompt_token_ids": ids} for ids in prompts], params, use_tqdm=True)
+--- before/src/steer_opd/training/verl_plan.py
++++ src/steer_opd/training/verl_plan.py
+@@ -10,6 +10,8 @@
+ from steer_opd.training.rollout_seeds import SEED_POLICY
+ from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
+ from steer_opd.training.scoring_request import SCHEMA as SCORING_REQUEST_SCHEMA
++from steer_opd.generation_policy import (DEFAULT_PRESENCE_PENALTY, presence_penalty,
++    training_sampling_policy, validate_training_sampling_policy)
+ 
+ VERL_REVISION = '61adb0c7eb90730306e7794c2bf248331211e657'
+ VERL_ARCHIVE_SHA256 = '8fdbb0f301a769b432db0c8fa847ebaa41f0471a91a748b4b2fcd1685ff755fb'
+@@ -45,8 +47,9 @@
+     save_freq: int = 20
+     gpu_wait_seconds: int = 3600
+     scorer_timeout: int = 1800
+-    run_name: str = 'verl_st_global_shared2_v2'
++    run_name: str = 'verl_st_global_shared2_pp2_v1'
+     rollout_n: int = 4
++    presence_penalty: float = DEFAULT_PRESENCE_PENALTY
+     monitor_overlap: bool = False
+     monitor_evaluation: bool = False
+     evaluation_freq: int = 20
+@@ -71,6 +74,7 @@
+         if self.rollout_n<1:raise ValueError('Positive responses per prompt required')
+         if self.evaluation_freq<1:raise ValueError('Positive evaluation frequency required')
+         safe_name(self.run_name)
++        presence_penalty({'presence_penalty': self.presence_penalty})
+ 
+ 
+ def build_verl_plan(experiment, settings=None, loss=None):
+@@ -83,7 +87,7 @@
+         raise ValueError('Preserve the frozen 1000-question 700/300 pool')
+     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+               for p in (questions, split)}
+-    plan = {'schema': 'steer_verl_training_shared_two_gpu_v4', 'verl_revision': VERL_REVISION,
++    plan = {'schema': 'steer_verl_training_shared_two_gpu_v5', 'verl_revision': VERL_REVISION,
+             'verl_source': VERL_SOURCE, 'output': str(base), 'settings': asdict(settings),
+             'training_loss': asdict(loss), 'student': experiment['student'], 'teacher': experiment['teacher'],
+             'tokenizer_paths': experiment['tokenizer_paths'], 'seed': 42, 'input_sha256': hashes,
+@@ -94,12 +98,15 @@
+             'student_rollout_steering': False, 'student_training_steering': False,
+             'request_seed_policy': SEED_POLICY,
+             'student_logprob_source': STUDENT_LOGPROB_SOURCE,
++            'sampling_policy': training_sampling_policy(asdict(settings)),
+             'scoring_request_schema': SCORING_REQUEST_SCHEMA,
+             'resource_mode':'shared_two_gpu',
+             'gpu_admission':'single_admission_for_whole_pool',
+             'phase_order':['student_rollout','student_rollout_logprob_reuse','frozen_scoring','student_update'],
+             'on_policy': {'ppo_epochs': 1, 'optimizer_steps_per_rollout_batch': 1,
+-                          'rollout_n': settings.rollout_n, 'temperature': 1., 'top_p': 1., 'top_k': -1},
++                          'rollout_n': settings.rollout_n, 'temperature': 1., 'top_p': 1., 'top_k': -1,
++                          'presence_penalty': settings.presence_penalty,
++                          'sampling_matches_raw_model': settings.presence_penalty == 0.},
+             'execution_hold': experiment.get('execution_hold'), 'training_started': False,
+             'gpu_training_acceptance': 'pending'}
+     if settings.monitor_evaluation:
+@@ -109,7 +116,7 @@
+     sources = [*Path(__file__).resolve().parent.glob('*.py'),
+                *Path(__file__).resolve().parent.glob('*.yaml'), ROOT/'src/steer_opd/compass_alignment.py',
+                ROOT/'src/steer_opd/easysteer_static.py', ROOT/'src/steer_opd/easysteer_worker.py',
+-               ROOT/'scripts/run_on_idle_gpus.py']
++               ROOT/'scripts/run_on_idle_gpus.py', ROOT/'src/steer_opd/generation_policy.py']
+     from steer_opd.training.rethinking_defaults import provenance
+     plan['rethinking_defaults']=provenance()
+     plan['implementation_sha256'] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+@@ -121,6 +128,7 @@
+ 
+ def verl_overrides(plan):
+     """Use the pinned public config; teacher Top-K distillation stays disabled."""
++    validate_training_sampling_policy(plan)
+     s, root = plan['settings'], ROOT/plan['output']
+     if plan.get('student_logprob_source') != STUDENT_LOGPROB_SOURCE:
+         raise ValueError('Prepare a new training plan with the vLLM rollout logprob source')
+--- before/src/steer_opd/training/rollout_seeds.py
++++ src/steer_opd/training/rollout_seeds.py
+@@ -5,6 +5,7 @@
+ 
+ from steer_opd.resumable_core import ROOT,atomic_json
+ from steer_opd.training.telemetry import event
++from steer_opd.generation_policy import PRESENCE_FIELD, presence_penalty
+ 
+ 
+ SEED_FIELD='steer_opd_rollout_seed'
+@@ -40,14 +41,19 @@
+             if len(allocations)!=s['train_batch_size'] or any(sorted(values)!=slots for values in allocations.values()):
+                 raise ValueError('Each question must receive exactly one request for each rollout seed slot')
+         batch.non_tensor_batch[SEED_FIELD]=seeds
++        penalty=presence_penalty(s)
++        batch.non_tensor_batch[PRESENCE_FIELD]=np.full(len(batch),penalty,dtype=np.float64)
+         record={'status':'allocated','step':step,'kind':kind,'policy':SEED_POLICY,
+             'plan_binding':self.plan['binding'],'base_seed':self.plan['seed'],
+-            'seeds':seeds.tolist(),'question_ids':ids}
++            'seeds':seeds.tolist(),'question_ids':ids,'presence_penalty':penalty}
+         atomic_json(path,record)
+         result=self.manager.generate_sequences(batch)
+         actual=result.non_tensor_batch.get(SEED_FIELD)
+         if actual is None or not np.array_equal(np.asarray(actual,dtype=np.int64),seeds):
+             raise ValueError('Actual per-request rollout seeds differ from the allocated trajectory order')
++        actual_penalties=result.non_tensor_batch.get(PRESENCE_FIELD)
++        if actual_penalties is None or not np.array_equal(np.asarray(actual_penalties,dtype=np.float64),batch.non_tensor_batch[PRESENCE_FIELD]):
++            raise ValueError('Actual per-request presence penalties differ from the driver-assigned sampling policy')
+         if not validate:
+             groups=defaultdict(set)
+             for qid,tokens in zip(ids,result.batch['responses'].tolist()):groups[qid].add(tuple(tokens))
+--- before/src/steer_opd/training/verl_agent.py
++++ src/steer_opd/training/verl_agent.py
+@@ -1,12 +1,16 @@
+ """Use the trajectory seed assigned before worker dispatch; evaluation keeps 42."""
+ from verl.experimental.agent_loop.single_turn_agent_loop import SingleTurnAgentLoop
+ from steer_opd.training.rollout_seeds import SEED_FIELD
++from steer_opd.generation_policy import PRESENCE_FIELD, presence_penalty
+ 
+ 
+ class TrajectorySeedAgentLoop(SingleTurnAgentLoop):
+     async def run(self,sampling_params,priority=0,**kwargs):
+         if SEED_FIELD not in kwargs:raise ValueError('Missing driver-assigned rollout trajectory seed')
+-        seed=int(kwargs[SEED_FIELD]);params={**sampling_params,'seed':seed}
++        if PRESENCE_FIELD not in kwargs:raise ValueError('Missing driver-assigned presence penalty')
++        penalty=presence_penalty({'presence_penalty':kwargs[PRESENCE_FIELD]})
++        seed=int(kwargs[SEED_FIELD]);params={**sampling_params,'seed':seed,'presence_penalty':penalty}
+         result=await super().run(params,priority=priority,**kwargs)
+         result.extra_fields[SEED_FIELD]=seed
++        result.extra_fields[PRESENCE_FIELD]=penalty
+         return result
+--- before/src/steer_opd/training/rollout_logprobs.py
++++ src/steer_opd/training/rollout_logprobs.py
+@@ -1,4 +1,4 @@
+-"""Reuse exact vLLM sampled-token probabilities without another model forward."""
++"""Reuse raw model scores at sampled tokens, not transformed sampling scores."""
+ 
+ SOURCE = 'vllm_rollout_raw_logprobs_v1'
+ 
+@@ -24,8 +24,20 @@
+     valid = values[mask.bool()]
+     if not torch.isfinite(valid).all() or (valid > 1e-5).any():
+         raise ValueError('Nonfinite or positive vLLM logprob at a generated response position')
++    from steer_opd.generation_policy import RAW_PROBABILITY_BASIS, PRESENCE_FIELD, presence_penalty
++    if batch.meta_info.get('steer_opd_probability_basis') not in (None, RAW_PROBABILITY_BASIS):
++        raise ValueError('Transformed sampling logprobs cannot replace raw model logprobs')
++    extras=getattr(batch,'non_tensor_batch',{})
++    if PRESENCE_FIELD in extras:
++        import numpy as np
++        penalties=np.asarray(extras[PRESENCE_FIELD])
++        if penalties.shape!=(len(responses),):
++            raise ValueError('Missing or invalid per-trajectory presence penalty metadata')
++        penalties=np.asarray([presence_penalty({'presence_penalty':v}) for v in penalties])
++        batch.meta_info['steer_opd_raw_logprobs_are_behavior_logprobs'] = bool((penalties==0.).all())
+     tensors['old_log_probs'] = values.detach()
+     batch.meta_info['steer_opd_student_logprob_source'] = SOURCE
++    batch.meta_info['steer_opd_probability_basis'] = RAW_PROBABILITY_BASIS
+     return batch
+ 
+ 
+--- before/src/steer_opd/training/verl_trainer.py
++++ src/steer_opd/training/verl_trainer.py
+@@ -7,6 +7,7 @@
+ from steer_opd.training.shared_pool import SharedCheckpointManager,SharedPoolHandover
+ from steer_opd.training.telemetry import phase,event
+ from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE,bind_old_log_probs
++from steer_opd.generation_policy import validate_training_sampling_policy
+ 
+ 
+ def serializable_metrics(value):
+@@ -115,13 +116,14 @@
+             from verl.utils.dataset.rl_dataset import collate_fn
+             register_token_reward_direct()
+             plan=OmegaConf.to_container(config.steer_opd,resolve=True)
++            validate_training_sampling_policy(plan)
+             correction=config.algorithm.get('rollout_correction')
+             if (plan.get('student_logprob_source')!=STUDENT_LOGPROB_SOURCE or not correction
+                     or not correction.get('bypass_mode') or correction.get('rollout_is') is not None
+                     or correction.get('rollout_rs') is not None or correction.get('score_centering',False)
+                     or not config.actor_rollout_ref.rollout.calculate_log_probs
+                     or config.actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode!='raw_logprobs'):
+-                raise ValueError('OPD requires raw vLLM rollout logprobs and old-policy bypass without extra corrections')
++                raise ValueError('OPD requires raw model logprobs and old-policy bypass; transformed sampling probabilities must not replace the raw loss/Top16 inputs')
+             scorer=ScorerClient(plan)
+             try:
+                 # Warm frozen engines first and sleep them before student model
+--- before/src/steer_opd/training/resume_handover.py
++++ src/steer_opd/training/resume_handover.py
+@@ -17,6 +17,8 @@
+         if source[name]!=plan[name]:raise ValueError(f'Resume scientific contract differs: {name}')
+     if source.get('student_logprob_source')!=plan.get('student_logprob_source'):
+         raise ValueError('Resume scientific contract differs: student_logprob_source')
++    if source.get('sampling_policy')!=plan.get('sampling_policy'):
++        raise ValueError('Resume scientific contract differs: presence penalty sampling policy')
+     ignore={'run_name','monitor_overlap'}
+     old={k:v for k,v in source['settings'].items() if k not in ignore}
+     new={k:v for k,v in plan['settings'].items() if k not in ignore}
+--- before/src/steer_opd/training/rethinking_defaults.py
++++ src/steer_opd/training/rethinking_defaults.py
+@@ -51,7 +51,7 @@
+         'adaptations':{
+             'models_data_and_loss':'Keep selected Qwen pair, original 700/300 split, S-T teacher SV and two discussed losses; no native-ID TopK KL or PPO clipping.',
+             'gpu_count':'Shared two-card pool, student FSDP ranks (strategy=fsdp) and rollout TP1; teacher EasySteer TP2.',
+-            'old_logprobs':'Reuse vLLM raw observed-token rollout_log_probs through the upstream old-policy bypass; retain the custom sampled OPD loss and measure train-versus-rollout differences in its differentiable forward. No extra old-policy forward or automatic PPO/IS/RS/centering.',
++            'old_logprobs':'Reuse raw model scores at vLLM sampled tokens through the old-policy bypass. Presence-penalized sampling is distinct from these raw scores; retain sampled raw-model OPD and log actor/raw-rollout differences. No exact unpenalized on-policy KL claim or automatic PPO/IS/RS/centering.',
+             'offload':'Explicit CPU offload and sleep acknowledgements are required for two-card sharing; actor param/optimizer offload=True instead of official False.',
+             'teacher_dtype':'Preserve BF16 EasySteer teacher, not official FP32 FSDP teacher.',
+             'training_budget':'Preserve the previously discussed 100 logical update batches; epoch cap is derived from that budget.',
+--- before/src/steer_opd/training/verl_entry.py
++++ src/steer_opd/training/verl_entry.py
+@@ -208,6 +208,8 @@
+     parser.add_argument('--run-name');parser.add_argument('--teacher-layer',type=int,default=29)
+     parser.add_argument('--operator',choices=['slerp','additive'],default='slerp')
+     parser.add_argument('--alpha',type=float,default=.1);parser.add_argument('--sv-bank')
++    from steer_opd.generation_policy import DEFAULT_PRESENCE_PENALTY
++    parser.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,help='Generation penalty for training rollouts and validation; raw OPD/Top16 probabilities remain unwarped')
+     parser.add_argument('--anchor-coef',type=float,default=.5)
+     parser.add_argument('--reference-model',default='assets/models/Qwen3.5-0.8B')
+     parser.add_argument('--batch-size',type=int);parser.add_argument('--total-steps',type=int)
+@@ -252,8 +254,9 @@
+         train_batch_size=args.batch_size if args.batch_size is not None else (2 if args.acceptance_run else 64),
+         total_steps=args.total_steps if args.total_steps is not None else (2 if args.acceptance_run else 100),teacher_layer=args.teacher_layer,
+         operator=args.operator,alpha=args.alpha,
++        presence_penalty=args.presence_penalty,
+         monitor_evaluation=not args.acceptance_run,monitor_overlap=args.overlap_metrics,
+-        run_name=args.run_name or f'verl_{args.loss}_st_T{args.teacher_layer}_{args.operator}{args.alpha:g}_seed42_shared2_{"acceptance" if args.acceptance_run else "formal_v1"}')
++        run_name=args.run_name or f'verl_{args.loss}_st_T{args.teacher_layer}_{args.operator}{args.alpha:g}_pp{args.presence_penalty:g}_seed42_shared2_{"acceptance" if args.acceptance_run else "formal_v1"}')
+     if args.sv_bank:settings=replace(settings,sv_bank=args.sv_bank)
+     loss=TrainingLossConfig(loss_type=args.loss,anchor_coef=args.anchor_coef,reference_model=args.reference_model)
+     plan=build_verl_plan(read_json(ROOT/args.config),settings,loss)
+--- before/scripts/generate_static_sources.py
++++ scripts/generate_static_sources.py
+@@ -28,6 +28,10 @@
+         with Progress(output,'source',count,show_bar=False) as progress:
+             progress.resume(count)
+         return
++    # Historical receipts can be verified read-only under their original
++    # settings. Every new engine call must bind its effective penalty.
++    from steer_opd.generation_policy import presence_penalty
++    penalty=presence_penalty(job,require_explicit=True)
+     if job.get('bind_checkpoint_content'):
+         from steer_opd.checkpoint_identity import checkpoint_content_id
+         job={**job,'model_content_id':checkpoint_content_id(model_path(job['model']),receipt_dir=output/'provenance/checkpoints')}
+@@ -50,6 +54,7 @@
+         from vllm import SamplingParams
+         from vllm.sampling_params import RequestOutputKind
+         params=[SamplingParams(n=1,temperature=job['temperature'],top_p=job['top_p'],top_k=-1,
++            presence_penalty=penalty,
+             max_tokens=job['max_tokens'],seed=42,stop_token_ids=sorted(codec.eos),logprobs=16 if source else None,
+             output_kind=RequestOutputKind.FINAL_ONLY,
+             allowed_token_ids=codec.valid_ids if codec.valid_ids!=list(range(codec.support_size)) else None) for _ in requests]
+--- before/scripts/validate_static_gpu.py
++++ scripts/validate_static_gpu.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ """Small EasySteer contract checks, with an optional separate HF comparison."""
+ import argparse
++from steer_opd.generation_policy import presence_penalty
+ 
+ import torch
+ 
+@@ -136,6 +137,7 @@
+                 from vllm.capture import SelectSpec
+                 result=hs.capture(engine,[{'prompt_token_ids':r['prompt_token_ids']+r['token_ids']} for r in rows],
+                     layers=capture_layers,dtype='bfloat16',steering=False,seed=42,
++                    presence_penalty=presence_penalty(job),
+                     per_prompt_selects=[SelectSpec(prompt_positions=list(range(len(r['prompt_token_ids'])-1,
+                         len(r['prompt_token_ids'])+len(r['token_ids'])))) for r in rows])
+                 if list(result.layer_ids)!=capture_layers or len(result.outputs)!=len(rows):
+@@ -196,8 +198,9 @@
+             if role=='student':
+                 # Native source sampling and frozen-prefix replay use the same actual tokens.
+                 from vllm import SamplingParams
++                penalty=presence_penalty(job)
+                 outputs=engine.generate([{'prompt_token_ids':r['prompt_token_ids']} for r in rows],
+-                    SamplingParams(max_tokens=8,temperature=1,seed=42,logprobs=16,stop_token_ids=sorted(codec.eos)),
++                    SamplingParams(max_tokens=8,temperature=1,seed=42,logprobs=16,presence_penalty=penalty,stop_token_ids=sorted(codec.eos)),
+                     steering=False,use_tqdm=True)
+                 source=[];replay_rows=[]
+                 for row,out in zip(rows,outputs):
+@@ -205,6 +208,7 @@
+                     source.append(extract_topk(record['token_ids'],sample.logprobs,16,codec.support_size))
+                 replay=fixed_prefix_scores(engine,replay_rows,[False]*len(rows),include_sampled=True)
+                 report['source_replay']=compare_scores(source,replay)
++                report['presence_penalty']=penalty
+             atomic_json(output/'report.json',report)
+             store.commit([output/'report.json'])
+         progress.finished_call(1);progress.mark_committed(1)
+--- before/scripts/launch_ablation.py
++++ scripts/launch_ablation.py
+@@ -19,6 +19,7 @@
+ from steer_opd.stage_io import configure_layout,metadata_dir,logs_dir,component_target,frozen_data_dir
+ from steer_opd.artifact_reuse import StageArtifacts,contract
+ from steer_opd.tensor_checkpoint import DEFAULT_CANDIDATE_FORMAT,SUPPORTED_FORMATS
++from steer_opd.generation_policy import DEFAULT_PRESENCE_PENALTY,presence_penalty
+ 
+ 
+ def run_command(command,env):
+@@ -63,6 +64,8 @@
+     p.add_argument('--reference-max-tokens',type=int,default=12288);p.add_argument('--source-max-tokens',type=int,default=7168)
+     p.add_argument('--sv-max-context-len',type=int,default=2048,help='Prompt+answer limit for SV-training activation extraction')
+     p.add_argument('--reference-temperature',type=float,default=.7);p.add_argument('--reference-top-p',type=float,default=.95)
++    p.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,
++        help='Teacher and student generation penalty; fixed-prefix scores remain raw')
+     p.add_argument('--candidate-tensor-format','--candidate-tensor-compression',dest='candidate_tensor_compression',
+         choices=[*SUPPORTED_FORMATS,'none','gzip'],default=DEFAULT_CANDIDATE_FORMAT,
+         help='New candidate storage; old none/gzip options remain supported')
+@@ -95,6 +98,7 @@
+         reference_max_tokens=args.reference_max_tokens,source_max_tokens=args.source_max_tokens,
+         sv_max_context_len=args.sv_max_context_len,
+         reference_temperature=args.reference_temperature,reference_top_p=args.reference_top_p,
++        presence_penalty=presence_penalty({'presence_penalty':args.presence_penalty}),
+         confirm_top_n=min(args.confirm_top_n if args.confirm_top_n is not None else count,len(ids)),
+         include_teacher_ablation=bool(args.teacher_ablation),teacher_layers=[args.teacher_layer],
+         teacher_direction_version=TEACHER_DIRECTION_VERSION,
+@@ -128,6 +132,7 @@
+         binding=digest({'source_revision':source_revision()[0],'checkpoints':identities,
+                         'student':cfg['student'],'layers':cfg['layers'],'alpha':cfg['alpha'],
+                         'operator':cfg.get('operator','slerp'),
++                        'presence_penalty':presence_penalty(cfg),
+                         'additive_scaling':'raw_mean_difference_v1' if cfg.get('operator')=='additive' else None,
+                         'teacher_gpus':cfg['teacher_gpus'],'hf_parity':cfg.get('startup_hf_parity',False),
+                         'direction_version':cfg['direction_version'],
+--- before/scripts/run_ablation.sh
++++ scripts/run_ablation.sh
+@@ -33,6 +33,7 @@
+ SV_MAX_CONTEXT_LEN="${SV_MAX_CONTEXT_LEN:-2048}" # SV-training: read prompt+answer up to this limit, pool all retained answer tokens.
+ REFERENCE_TEMPERATURE="${REFERENCE_TEMPERATURE:-0.7}"
+ REFERENCE_TOP_P="${REFERENCE_TOP_P:-0.95}"
++PRESENCE_PENALTY="${PRESENCE_PENALTY:-2.0}" # Applies to teacher/student generation, including SV source answers.
+ # CONFIRM_TOP_N defaults to every selected family; both splits compare all eight when enabled.
+ CANDIDATE_TENSOR_FORMAT="${CANDIDATE_TENSOR_FORMAT:-${CANDIDATE_TENSOR_COMPRESSION:-parquet_zstd}}" # parquet_zstd, npz_compressed, npz, pt, pt_gzip; old none/gzip accepted.
+ HF_PARITY="${HF_PARITY:-0}"           # 0 = EasySteer-only startup; 1 = optional HF numerical comparison
+@@ -58,4 +59,5 @@
+     --wait-seconds "$WAIT_SECONDS" --reference-max-tokens "$REFERENCE_MAX_TOKENS" \
+     --source-max-tokens "$SOURCE_MAX_TOKENS" --reference-temperature "$REFERENCE_TEMPERATURE" \
+     --sv-max-context-len "$SV_MAX_CONTEXT_LEN" \
+-    --reference-top-p "$REFERENCE_TOP_P" --candidate-tensor-format "$CANDIDATE_TENSOR_FORMAT" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"
++    --reference-top-p "$REFERENCE_TOP_P" --presence-penalty "$PRESENCE_PENALTY" \
++    --candidate-tensor-format "$CANDIDATE_TENSOR_FORMAT" --confirm-top-n "$CONFIRM_TOP_N" --hf-parity "$HF_PARITY"
+--- /dev/null
++++ tests/test_generation_policy.py
+@@ -0,0 +1,94 @@
++"""Generation penalties travel with requests and identities, apart from raw scores."""
++from copy import deepcopy
++from types import SimpleNamespace as NS
++
++import numpy as np
++import pytest
++
++from steer_opd.generation_policy import (DEFAULT_PRESENCE_PENALTY,RAW_PROBABILITY_BASIS,
++    presence_penalty,validate_training_sampling_policy)
++from steer_opd.resumable_core import ROOT,read_json
++from steer_opd.training.verl_plan import VerlSettings,build_verl_plan,verl_overrides
++
++
++def test_default_two_and_explicit_zero_control():
++    assert DEFAULT_PRESENCE_PENALTY==presence_penalty()==2.
++    assert presence_penalty({'presence_penalty':0.})==0.
++    assert presence_penalty({'presence_penalty':np.float64(2.)})==2.
++    with pytest.raises(ValueError,match='explicit presence_penalty'):
++        presence_penalty({},require_explicit=True)
++
++
++@pytest.mark.parametrize('value',[True,'2',None,-2.1,2.1,float('nan'),float('inf')])
++def test_invalid_penalties_fail_before_generation(value):
++    with pytest.raises(ValueError,match='finite number'):
++        presence_penalty({'presence_penalty':value})
++
++
++@pytest.mark.parametrize('role,source',[('teacher',False),('student',True)])
++def test_both_sv_source_generation_jobs_include_penalty(role,source):
++    from steer_opd.compass_campaign import generation_job
++    cfg=read_json(ROOT/'configs/ablation.json')
++    tokenizer=NS(apply_chat_template=lambda *a,**kw:[1,2])
++    codec=NS(tokenizer=tokenizer,support_size=10,valid_ids=list(range(10)))
++    questions=[{'id':'q','question':'Question','answer':'0'}]
++    job=generation_job(cfg,codec,role,questions,source=source)
++    assert job['presence_penalty']==2.
++    assert job['logprobs']==(16 if source else None)
++    assert generation_job({**cfg,'presence_penalty':0.},codec,role,questions,source=source)['presence_penalty']==0.
++
++
++def test_training_plan_records_raw_scores_and_penalized_sampling_separately():
++    cfg=read_json(ROOT/'configs/ablation.json')
++    plan=build_verl_plan(cfg)
++    assert plan['schema']=='steer_verl_training_shared_two_gpu_v5'
++    policy=validate_training_sampling_policy(plan)
++    assert plan['settings']['presence_penalty']==policy['presence_penalty']==2.
++    assert policy['probability_basis']==RAW_PROBABILITY_BASIS
++    assert policy['raw_logprobs_are_behavior_logprobs'] is False
++    assert policy['importance_correction']=='none'
++    overrides=verl_overrides(plan)
++    assert overrides['actor_rollout_ref.rollout.engine_kwargs.vllm.logprobs_mode']=='raw_logprobs'
++    assert overrides['algorithm.rollout_correction']['rollout_is'] is None
++    control=build_verl_plan(cfg,VerlSettings(presence_penalty=0.))
++    assert control['binding']!=plan['binding']
++    assert control['sampling_policy']['raw_logprobs_are_behavior_logprobs'] is True
++    assert control['training_loss']==plan['training_loss']
++
++
++@pytest.mark.parametrize('change',['legacy','mismatched_penalty'])
++def test_legacy_or_mismatched_sampling_policy_requires_a_new_plan(change):
++    plan=build_verl_plan(read_json(ROOT/'configs/ablation.json'))
++    if change=='legacy':plan.pop('sampling_policy')
++    else:plan['settings']['presence_penalty']=0.
++    with pytest.raises(ValueError,match='new training plan'):
++        verl_overrides(plan)
++
++
++def test_evaluation_binds_effective_penalty_before_loading_a_gpu(monkeypatch,tmp_path):
++    from steer_opd import opd_evaluation as module,checkpoint_identity,execution_policy,experiment_runtime,stage_io
++    monkeypatch.setattr(execution_policy,'require_execution_allowed',lambda _:None)
++    monkeypatch.setattr(checkpoint_identity,'checkpoint_content_id',lambda _:'fixture-weights')
++    monkeypatch.setattr(stage_io,'project',lambda value:tmp_path/value)
++    monkeypatch.setattr(module,'aime_questions',lambda _:([{'id':'q'}],{'data':'sha'}))
++    monkeypatch.setattr(module.importlib.metadata,'version',lambda _:'fixture')
++    identities=[];bindings=[]
++    original_digest=module.digest
++    def digest(identity):
++        identities.append(identity)
++        return original_digest(identity)
++    monkeypatch.setattr(module,'digest',digest)
++    class BeforeGPU(Exception):pass
++    class Stage:
++        def __init__(self,output,binding):
++            self.output=output;bindings.append(binding)
++        def load(self):raise BeforeGPU
++    monkeypatch.setattr(experiment_runtime,'StageCheckpoint',Stage)
++    job={'model':'model','output':'step_5_eval/test','dataset_dir':'data','seed':42,
++         'generation':{'n':16,'temperature':1.,'top_p':1.,'max_tokens':8}}
++    unchanged=deepcopy(job)
++    for generation in (job['generation'],{**job['generation'],'presence_penalty':0.}):
++        with pytest.raises(BeforeGPU):module.run_evaluation({**job,'generation':generation})
++    assert job==unchanged
++    assert [identity['job']['generation']['presence_penalty'] for identity in identities]==[2.,0.]
++    assert bindings[0]!=bindings[1]
+--- before/tests/test_training_seeds.py
++++ tests/test_training_seeds.py
+@@ -8,6 +8,7 @@
+ 
+ from steer_opd.resumable_core import read_json
+ from steer_opd.training.rollout_seeds import SEED_FIELD,SeededRolloutManager,trajectory_seeds
++from steer_opd.generation_policy import PRESENCE_FIELD
+ 
+ 
+ def test_each_question_uses_the_same_four_distinct_seeds_across_steps_and_resume():
+@@ -44,7 +45,7 @@
+ 
+ 
+ def plan_fixture(tmp_path):
+-    return {'settings':{'train_batch_size':2,'rollout_n':4},'seed':42,'output':str(tmp_path),'binding':'cpu-test'}
++    return {'settings':{'train_batch_size':2,'rollout_n':4,'presence_penalty':2.},'seed':42,'output':str(tmp_path),'binding':'cpu-test'}
+ 
+ 
+ def test_seeds_follow_trajectories_through_worker_chunks_and_are_audited(tmp_path):
+@@ -59,14 +60,17 @@
+             for i,chunk in reversed(list(enumerate(chunks))):
+                 seeds=chunk.non_tensor_batch[SEED_FIELD]
+                 outputs[i]=DataProto(batch=TensorDict({'responses':torch.tensor([[int(s),1] for s in seeds])},batch_size=[len(seeds)]),
+-                    non_tensor_batch={SEED_FIELD:seeds.astype(object)})
++                    non_tensor_batch={SEED_FIELD:seeds.astype(object),
++                        PRESENCE_FIELD:chunk.non_tensor_batch[PRESENCE_FIELD].astype(object)})
+             return DataProto.concat([outputs[i] for i in sorted(outputs)])
+     manager=SeededRolloutManager(Manager(),plan_fixture(tmp_path))
+     result=manager.generate_sequences(batch)
+     assert result.non_tensor_batch[SEED_FIELD].tolist()==[42,43,44,45]*2
++    assert result.non_tensor_batch[PRESENCE_FIELD].tolist()==[2.]*8
+     audit=read_json(tmp_path/'metadata/rollout_seeds/train_step_000001.json')
+     assert audit['status']=='completed' and audit['unique_responses_per_question']=={'4':2}
+     assert audit['question_ids']==['a']*4+['b']*4
++    assert audit['presence_penalty']==2.
+ 
+ 
+ @pytest.mark.parametrize('wrong_seed,identical',[(True,False),(False,True)])
+@@ -75,7 +79,7 @@
+     class Manager:
+         def generate_sequences(self,inputs):
+             seeds=inputs.non_tensor_batch[SEED_FIELD]
+-            return NS(non_tensor_batch={} if wrong_seed else {SEED_FIELD:seeds},
++            return NS(non_tensor_batch={} if wrong_seed else {SEED_FIELD:seeds,PRESENCE_FIELD:inputs.non_tensor_batch[PRESENCE_FIELD]},
+                 batch={'responses':torch.zeros((8,2),dtype=torch.long) if identical else torch.arange(16).reshape(8,2)})
+     manager=SeededRolloutManager(Manager(),plan_fixture(tmp_path))
+     with pytest.raises((ValueError,RuntimeError),match='Actual per-request|identical n-way'):
+@@ -91,11 +95,38 @@
+         seen.append(dict(params));return NS(extra_fields={})
+     monkeypatch.setattr(SingleTurnAgentLoop,'run',generate)
+     agent=object.__new__(TrajectorySeedAgentLoop);shared={'temperature':1.,'seed':42}
+-    async def run():return await asyncio.gather(*(agent.run(shared,**{SEED_FIELD:seed}) for seed in range(42,46)))
++    async def run():return await asyncio.gather(*(agent.run(shared,**{SEED_FIELD:seed,PRESENCE_FIELD:2.}) for seed in range(42,46)))
+     outputs=asyncio.run(run())
+     assert [row['seed'] for row in seen]==[42,43,44,45]
+     assert all(row['temperature']==1. for row in seen) and shared=={'temperature':1.,'seed':42}
+     assert [result.extra_fields[SEED_FIELD] for result in outputs]==[42,43,44,45]
++    assert all(row['presence_penalty']==2. for row in seen)
++    assert [result.extra_fields[PRESENCE_FIELD] for result in outputs]==[2.]*4
++
++
++@pytest.mark.parametrize('echo',[None,0.,float('nan')])
++def test_presence_penalty_must_be_echoed_by_workers(tmp_path,echo):
++    batch=batch_fixture()
++    class Manager:
++        def generate_sequences(self,inputs):
++            extras={SEED_FIELD:inputs.non_tensor_batch[SEED_FIELD]}
++            if echo is not None:extras[PRESENCE_FIELD]=np.full(8,echo)
++            return NS(non_tensor_batch=extras,batch={'responses':torch.arange(16).reshape(8,2)})
++    with pytest.raises(ValueError,match='Actual per-request presence penalties'):
++        SeededRolloutManager(Manager(),plan_fixture(tmp_path)).generate_sequences(batch)
++
++
++def test_validation_requests_also_use_penalty_two_and_keep_seed42(tmp_path):
++    batch=batch_fixture();batch.meta_info.update(validate=True,global_steps=0)
++    class Manager:
++        def generate_sequences(self,inputs):
++            assert inputs.non_tensor_batch[SEED_FIELD].tolist()==[42]*8
++            assert inputs.non_tensor_batch[PRESENCE_FIELD].tolist()==[2.]*8
++            return NS(non_tensor_batch={field:inputs.non_tensor_batch[field] for field in (SEED_FIELD,PRESENCE_FIELD)},
++                batch={'responses':torch.zeros((8,2),dtype=torch.long)})
++    SeededRolloutManager(Manager(),plan_fixture(tmp_path)).generate_sequences(batch)
++    audit=read_json(tmp_path/'metadata/rollout_seeds/eval_step_000000.json')
++    assert audit['status']=='completed' and audit['presence_penalty']==2.
+ 
+ 
+ def test_seed_slots_reject_wrong_question_grouping_before_dispatch(tmp_path):
+--- before/tests/test_verl_training.py
++++ tests/test_verl_training.py
+@@ -175,11 +175,15 @@
+     monkeypatch.setattr(SingleTurnAgentLoop,'run',run)
+     original={'temperature':1.,'seed':17}
+     obj=object.__new__(TrajectorySeedAgentLoop)
+-    result=asyncio.run(obj.run(original,priority=3,steer_opd_rollout_seed=44))
++    result=asyncio.run(obj.run(original,priority=3,steer_opd_rollout_seed=44,steer_opd_presence_penalty=2.))
+     assert result.params['seed']==44 and result.priority==3 and original['seed']==17
+     assert result.extra_fields['steer_opd_rollout_seed']==44
++    assert result.params['presence_penalty']==2. and 'presence_penalty' not in original
++    assert result.extra_fields['steer_opd_presence_penalty']==2.
+     with pytest.raises(ValueError,match='Missing driver-assigned'):
+         asyncio.run(obj.run(original))
++    with pytest.raises(ValueError,match='Missing driver-assigned presence penalty'):
++        asyncio.run(obj.run(original,steer_opd_rollout_seed=44))
+ 
+ 
+ def test_compass_gpu_receipt_must_cover_both_extra_frozen_scorers(tmp_path):
+--- before/tests/test_training_overlap.py
++++ tests/test_training_overlap.py
+@@ -56,8 +56,9 @@
+                    'response_topk_log_probs':np.zeros((2,16),dtype=np.float32)})
+     monkeypatch.setattr(SingleTurnAgentLoop,'run',run)
+     obj=object.__new__(Top16AgentLoop);original={'temperature':1.}
+-    asyncio.run(obj.run(original,data_source='steer_opd',steer_opd_rollout_seed=43))
++    asyncio.run(obj.run(original,data_source='steer_opd',steer_opd_rollout_seed=43,steer_opd_presence_penalty=2.))
+     assert len(seen)==1 and seen[0]['topk_log_probs']==16 and seen[0]['seed']==43
++    assert seen[0]['presence_penalty']==2.
+     assert original=={'temperature':1.}
+ 
+ 
+@@ -110,6 +111,8 @@
+         with pytest.raises(ValueError,match='request_seed_policy'):bind_resume_source(changed,checkpoint)
+         changed=copy.deepcopy(new);changed['student_logprob_source']='fsdp_recomputed_old_policy'
+         with pytest.raises(ValueError,match='student_logprob_source'):bind_resume_source(changed,checkpoint)
++        changed=copy.deepcopy(new);changed['sampling_policy']['presence_penalty']=0.
++        with pytest.raises(ValueError,match='presence penalty'):bind_resume_source(changed,checkpoint)
+         atomic_json(oldroot/'metadata/invalid_sampling.json',{'status':'invalid'})
+         with pytest.raises(ValueError,match='invalid-sampling'):bind_resume_source(new,checkpoint)
+         (oldroot/'metadata/invalid_sampling.json').unlink()
+--- before/tests/test_training_rollout_logprobs.py
++++ tests/test_training_rollout_logprobs.py
+@@ -3,10 +3,12 @@
+ 
+ import pytest
+ import torch
++import numpy as np
+ 
+ from steer_opd.training.rollout_logprobs import SOURCE,bind_old_log_probs,difference_sums
+ from steer_opd.training.verl_adapter import attach_advantages,sampled_policy_loss
+ from test_verl_training import reply_and_batch
++from steer_opd.generation_policy import PRESENCE_FIELD,RAW_PROBABILITY_BASIS
+ 
+ 
+ def test_exact_rollout_replaces_a_different_old_policy_and_preserves_gradient_isolation():
+@@ -25,6 +27,23 @@
+     loss.backward()
+     torch.testing.assert_close(current.grad,torch.tensor([[-2.5/3,-2.5/3,-2./3,0.,0.]]))
+     assert rollout.grad is None and reply['teacher_logps'].grad is None
++
++
++@pytest.mark.parametrize('penalty',[0.,2.])
++def test_penalty_metadata_does_not_subtract_from_raw_loss_probabilities(penalty):
++    settings,reply,batch=reply_and_batch()
++    batch.non_tensor_batch={PRESENCE_FIELD:np.array([penalty])}
++    attach_advantages(batch,[reply],settings)
++    torch.testing.assert_close(batch.batch['advantages'],torch.tensor([[1.5,1.5,1.,0.,0.]]))
++    assert batch.meta_info['steer_opd_probability_basis']==RAW_PROBABILITY_BASIS
++    assert batch.meta_info['steer_opd_raw_logprobs_are_behavior_logprobs']==(penalty==0.)
++
++
++def test_processed_sampling_logprobs_cannot_be_relabelled_as_raw():
++    _,_,batch=reply_and_batch()
++    batch.meta_info['steer_opd_probability_basis']='processed_sampling_logprobs'
++    with pytest.raises(ValueError,match='Transformed sampling logprobs'):
++        bind_old_log_probs(batch)
+ 
+ 
+ @pytest.mark.parametrize('bad', ['missing','shape','integer','nan','infinity','positive','eos_nan'])
+--- before/tests/test_stage_reuse.py
++++ tests/test_stage_reuse.py
+@@ -59,6 +59,7 @@
+     ({'reference_max_tokens':8000},{'teacher','capture','bank'}),
+     ({'reference_temperature':.4},{'teacher','capture','bank'}),
+     ({'source_max_tokens':4096},{'student','capture','bank','alignment','native','metrics','calibration'}),
++    ({'presence_penalty':0.},{'teacher','student','capture','bank','alignment','native','metrics','calibration'}),
+     ({'run_name':'param','param_name':'another'},set()),
+ ])
+ def test_dependency_invalidation_is_local(cfg,codecs,changes,changed):
+--- before/tests/test_ablation_launcher.py
++++ tests/test_ablation_launcher.py
+@@ -30,11 +30,19 @@
+     assert cfg['startup_hf_parity'] is False
+     assert cfg['experiment']=='ablation' and cfg['phase']=='overlap'
+     assert cfg['run_dir']==cfg['step_dirs']['3']
+-    assert cfg['param_name']=='n1000_slerp0.3_layer17_seed42_v1'
++    assert cfg['param_name']=='n1000_slerp0.3_layer17_seed42_pp2_v1'
++    assert cfg['presence_penalty']==job['presence_penalty']==2.
+     assert cfg['stop_after']=='panel' and cfg['strength_policies']==['fixed']
+     assert cfg['gpu_acceptance_receipt']==cfg['run_dir']+'/metadata/acceptance/passed.json'
+     single=launcher.build_config(launcher.parser().parse_args(['--schemes','scheme_04']))
+     assert single['confirm_top_n']==1
++
++
++def test_explicit_presence_control_has_its_own_output_identity(launcher):
++    default=launcher.build_config(launcher.parser().parse_args([]))
++    control=launcher.build_config(launcher.parser().parse_args(['--presence-penalty','0']))
++    assert default['presence_penalty']==2. and control['presence_penalty']==0.
++    assert default['run_dir']!=control['run_dir'] and '_pp0_' in control['param_name']
+ 
+ 
+ @pytest.mark.parametrize('hf',[False,True])
+@@ -60,7 +68,7 @@
+ @pytest.mark.parametrize('options',[
+     ['--schemes','1,1'],['--schemes','5'],['--schemes','typo'],['--alpha','1.1'],['--layer','36'],
+     ['--gpu-ids','0','--teacher-tp','2'],['--gpu-ids','0,0'],['--gpu-memory','1'],['--wait-seconds','-1'],
+-    ['--run-name','../escape'],['--confirm-top-n','0']])
++    ['--run-name','../escape'],['--confirm-top-n','0'],['--presence-penalty','2.1'],['--presence-penalty','nan']])
+ def test_invalid_launch_settings_fail_before_any_gpu_action(launcher,options):
+     with pytest.raises((ValueError,SystemExit)):launcher.build_config(launcher.parser().parse_args(options))
+ 
+--- before/tests/test_teacher_ablation.py
++++ tests/test_teacher_ablation.py
+@@ -29,7 +29,7 @@
+ def test_opt_in_adds_four_teacher_space_conditions_and_separate_layer(launcher):
+     cfg=launcher.build_config(launcher.parser().parse_args(['--teacher-ablation','1']))
+     job=make_base_job(cfg,{'student':NS(support_size=151669)},'rows.json')
+-    assert cfg['run_dir'].endswith('/n1000_slerp0.1_S26_T29_seed42_v1')
++    assert cfg['run_dir'].endswith('/n1000_slerp0.1_S26_T29_seed42_pp2_v1')
+     assert cfg['confirm_top_n']==8 and len(job['conditions'])==8 and len(job['banks'])==4
+     assert [c['id'] for c in job['conditions']]==[f'scheme_{i:02d}' for i in range(1,9)]
+     assert all(c['direction']=='T-S' and c['layers']==[26] for c in job['conditions'][:4])
+--- before/tests/test_dual_overlap.py
++++ tests/test_dual_overlap.py
+@@ -185,6 +185,7 @@
+     class Engine:
+         def generate(self,prompts,options,**kwargs):
+             assert len(prompts)==len(requests) and options[0].logprobs==16
++            assert options[0].presence_penalty==2.
+             assert kwargs['steering'] is False
+             return [output]
+         def collective_rpc(self,name,args):
+@@ -193,7 +194,8 @@
+     def create(*args,**kwargs): calls.append(kwargs); return Engine()
+     monkeypatch.setattr(module,'create_engine',create)
+     job = {'output':'source','role':'student','model':'S0','save_rollout_top_k':16,'support_size':47,
+-           'requests':requests,'max_tokens':4,'temperature':1.,'top_p':1.,'gpu_memory_utilization':.75}
++           'requests':requests,'max_tokens':4,'temperature':1.,'top_p':1.,'gpu_memory_utilization':.75,
++           'presence_penalty':2.}
+     module.generate(job)
+     row=json.loads((tmp_path/'source/q_0.json').read_text())
+     score=load_rollout_topk(tmp_path/'source',row,16,47)
+--- before/tests/test_repro_resume_progress.py
++++ tests/test_repro_resume_progress.py
+@@ -401,6 +401,8 @@
+     assert (tmp_path/'complete.json').read_bytes()==before
+     with pytest.raises(ValueError,match='settings or requests'):
+         campaign.validate_teacher_text_reuse({**current,'max_tokens':9})
++    with pytest.raises(ValueError,match='settings or requests'):
++        generation.generate({**current,'presence_penalty':2.})
+     monkeypatch.setattr(checkpoint_identity,'checkpoint_content_id',lambda *a,**kw:'other_weights')
+     with pytest.raises(ValueError,match='checkpoint contents'):
+         campaign.validate_teacher_text_reuse(current)
+@@ -469,7 +471,7 @@
+     monkeypatch.setattr(generation,'initialize_stage',forbid)
+     generation.generate(current)
+     assert before=={name:(tmp_path/name).read_bytes() for name in before}
+-    for changed in ({'max_tokens':9},{'metric_version':METRIC_VERSION-1},{'support_size':33}):
++    for changed in ({'max_tokens':9},{'metric_version':METRIC_VERSION-1},{'support_size':33},{'presence_penalty':2.}):
+         with pytest.raises(ValueError):campaign.validate_source_rollout_reuse({**current,**changed})
+     monkeypatch.setattr(rt,'source_revision',lambda:('another_code',{},{}))
+     with pytest.raises(ValueError,match='current code'):campaign.validate_source_rollout_reuse(current)
+--- before/docs/OPD概率来源统一与Top16方案分析.md
++++ docs/OPD概率来源统一与Top16方案分析.md
+@@ -1,6 +1,6 @@
+ # OPD概率来源统一与Top16方案分析
+ 
+-2026-11-18。已按用户后续要求修改训练源码，新plan复用vLLM旧概率并跳过额外FSDP前向；原正式v5配置和产物保持原字节，没有恢复GPU训练。下面保留论文核对与代码设计依据；相关独立诊断／回放实验和脚本已按本轮授权清理，核心训练源码及CPU回归测试保留。
++2026-11-18。当前新生成默认`presence_penalty=2.0`，包括OPD训练rollout和评测。新plan复用vLLM原始模型logprob并跳过额外FSDP前向；原正式v5配置和产物保持原字节，没有恢复GPU训练。下面保留论文核对与代码设计依据；相关独立诊断／回放实验和脚本已按本轮授权清理，核心训练源码及CPU回归测试保留。
+ 
+ **代码已实现：跳过额外的FSDP `old_log_probs` 无梯度前向，直接复用学生vLLM生成时保存的观察token logprob；继续保存Top16候选供监控，保留FSDP可微训练前向。** 保持当前sampled-token OPD，Top16多候选训练作为另一项方法改动单独评估。
+ 
+@@ -23,7 +23,7 @@
+ 修改后流程：
+ 
+ ```text
+-学生vLLM生成：保存采样token ID/logprob、Top16 ID/raw logprob
++学生vLLM生成（presence penalty=2）：保存采样token ID、原始模型logprob、Top16 ID/raw logprob
+     ↓
+ 直接以rollout_log_probs作为本批old_log_probs；不再额外跑学生无梯度前向
+     ↓
+@@ -92,7 +92,7 @@
+ L = −mean_valid(A_rollout × log S_train_current)
+ ```
+ 
+-优势基准来自实际采样引擎，但梯度仍由训练后端计算。`log S_train_current`与`log S_rollout`若不一致，跳过旧概率前向不会自动消除这种偏差。论文中sampled-token估计的无偏性依赖相同动作空间及采样分布与目标学生分布一致；本项目跨tokenizer span均值和后端偏差都需要另行验证。
++优势基准来自实际生成引擎返回的原始模型分数，梯度由训练后端计算。`log S_train_current`与`log S_rollout`若不一致，跳过旧概率前向不会自动消除这种偏差。论文中sampled-token估计的无偏性依赖相同动作空间及采样分布与目标学生分布一致；本项目跨tokenizer span均值和后端偏差都需要另行验证。启用presence penalty后，采样分布也与原始模型分布不同，具体口径见第9节。
+ 
+ 建议在可微训练前向返回logprob后，顺带与已保存的rollout logprob比较，按同一有效mask记录平均绝对差、最大差和有符号均值。这样不增加模型前向，也不会通过将两个字段设为相同数值而隐藏真实偏差。
+ 
+@@ -129,3 +129,28 @@
+ - CPU回放结果（对应实验已清理）、回放脚本（对应实验已清理）。
+ - [当前loss](../src/steer_opd/training/losses.py)、[loss桥接](../src/steer_opd/training/verl_adapter.py)、[Top16记录](../src/steer_opd/training/overlap_monitor.py)。
+ - 原学习效果排查（对应实验已清理）、[阶段耗时](目前代码估计运行时间.md)。
++
++## 9. presence penalty=2的统一生成策略
++
++中央默认值和数值校验见[generation_policy.py](../src/steer_opd/generation_policy.py)，合法范围为`[-2, 2]`。新生成默认2；显式0可用于对照。当前覆盖范围：
++
++| 路径 | 实际传递 |
++| --- | --- |
++| 教师参考回答、学生源回答（SV准备） | 配置→generation job→vLLM `SamplingParams.presence_penalty` |
++| OPD训练rollout、训练内验证／基准评测 | plan settings→driver逐请求字段→agent→同一次vLLM请求；worker回传后核验 |
++| 独立学生评测 | 缺省2，并把有效值写入评测identity后再查缓存 |
++| GPU小样本生成验收 | 使用对应job的值，默认2，验收identity绑定该值 |
++| 激活提取、固定前缀评分 | 单个辅助生成token也设2；该token丢弃，保留的前缀激活／原始概率不受此采样惩罚影响 |
++
++presence penalty只扣减已经生成过的输出token对应的logit，不按出现次数累加，也不把prompt内的重复当作输出历史。训练的temperature=1、top_p=1、top_k=-1时，可以写为：
++
++```text
++p_student = softmax(raw_logits)
++q_sample = softmax(raw_logits - 2 * already_generated_token)
++```
++
++回答从`q_sample`采样；`raw_logprobs`及Top16记录的是`p_student`。教师同前缀评分同样保留原始模型概率，训练优势和可微loss继续按原始师生logprob计算，不再次扣除2。**因此当前训练是在受惩罚控制的轨迹上做raw-model sampled OPD；它不等价于从未惩罚学生分布采样的严格on-policy KL。** 当前没有增加importance sampling／rejection sampling校正，没有把raw logprob冒充惩罚后行为概率。训练plan的`sampling_policy`显式记录这一点，批次metadata同时标明概率口径。
++
++新训练plan schema为`steer_verl_training_shared_two_gpu_v5`；缺失或不一致的采样策略要求重新准备plan。presence penalty进入生成科学合同、评测identity、验收和恢复合同，改变后不复用旧生成及其派生capture／bank／overlap。手动入口自动参数名增加`_pp2_`，训练CLI支持`--presence-penalty 2`；显式控制值也编码在新身份中。旧冻结配置、已有结果和已指定的历史SV bank按原来源保留，本次不重跑；使用旧bank不表示它来自pp2生成。
++
++本次完整CPU回归355项、包检查和手动入口CPU预览通过，没有启动GPU推理／训练、更新权重或生成新评测结果。CPU验证不能替代真实GPU训练验收。验证与文件SHA见[统一策略审计](../audit/presence_penalty_policy_20261118.json)。
+--- before/docs/implementation.md
++++ docs/implementation.md
+@@ -221,6 +221,7 @@
+ | 总GPU | 同一组两卡；学生FSDP跨两卡，学生rollout TP1，教师EasySteer TP2；各阶段分时使用 |
+ | 数据／SV | 原1000题与700／300划分不变；700题Select参与更新，Confirm不参与梯度；global SV仍来自原1000题，Confirm不称独立未见验证集 |
+ | batch／采样 | 按Rethinking：64道题／批，每题4条rollout，即每个更新批次256条回答；mini_batch_size=64、ppo_epochs=1，因此每批只更新一次 |
++| 生成重复控制 | 按用户2026-11-18要求，新vLLM生成默认presence_penalty=2；包括教师／学生SV源回答、训练rollout及评测；训练保留temperature=1、top_p=1、top_k=-1 |
+ | 长度 | 按Rethinking：prompt1024、回答7168、学生生成上下文8192；教师评分16384保留跨tokenizer扩张空间，超出时报错，不截断实际轨迹 |
+ | 动态分批 | 按Rethinking：use_dynamic_bsz=True、microbatch_per_gpu=1、每卡训练／logprob token预算32768；动态模式按token预算组microbatch |
+ | 优化器 | 按Rethinking：AdamW、lr=1e-6、betas=[0.9,0.999]、weight_decay=.01、constant调度、无warmup、grad_clip=1 |
+@@ -236,11 +237,13 @@
+ 
+ [scorer_service.py](../src/steer_opd/training/scorer_service.py)在项目内控制队列接收wake／sleep，实际调用返回后才写对应command_id的ACK；整批评分返回后按SHA提交观察token logp。[scorer_client.py](../src/steer_opd/training/scorer_client.py)核验ACK、请求顺序与评分身份；缓存命中时不唤醒模型。子进程按PID出生时间和独立session清理，仅影响本训练作业，不停止其它项目。
+ 
+-评分请求由[scoring_request.py](../src/steer_opd/training/scoring_request.py)保存为无压缩NPZ数组＋小型JSON清单，替代逐span大JSON；源token、原生评分token、共同span、mask和UTF-8文本均无损保留。清单绑定plan、样本顺序、alignment ID及整个数组文件SHA；教师只解码自身评分所需的原生输入，完整对齐可在CPU重建核验。数组文件先原子提交，清单最后提交；缺失／损坏／错批次数据拒绝评分。新v4训练计划显式绑定数组协议，评分结果凭据也记录协议身份，旧计划与凭据不能静默混用；观察token与Top16概率输出格式保持原样。请求打包／提交与读取新增独立CPU分项计时，实测见[运行时间第9节](目前代码估计运行时间.md#9-advantage向量化与紧凑评分请求cpu已验证)。
++评分请求由[scoring_request.py](../src/steer_opd/training/scoring_request.py)保存为无压缩NPZ数组＋小型JSON清单，替代逐span大JSON；源token、原生评分token、共同span、mask和UTF-8文本均无损保留。清单绑定plan、样本顺序、alignment ID及整个数组文件SHA；教师只解码自身评分所需的原生输入，完整对齐可在CPU重建核验。数组文件先原子提交，清单最后提交；缺失／损坏／错批次数据拒绝评分。当前v5训练计划显式绑定数组协议和采样策略，评分结果凭据也记录协议身份，旧计划与凭据不能静默混用；观察token与Top16概率输出格式保持原样。请求打包／提交与读取新增独立CPU分项计时，实测见[运行时间第9节](目前代码估计运行时间.md#9-advantage向量化与紧凑评分请求cpu已验证)。
+ 
+ 训练目标保留已讨论的traditional_opd／compass_opd及共同文本span对齐，教师S−T／global／all注入保持，不切回Rethinking的原生Top16 KL／clipped PPO损失。token_reward_direct按官方语义直接传递逐token优势，不做标准化；真正的OPD优势在学生更新前由同轨迹原生logp重建。loss按全局有效学生token归一化，FP32学生锚点位移逐token计算；Ref不参与SV。
+ 
+-新plan记录`student_logprob_source=vllm_rollout_raw_logprobs_v1`，schema为`steer_verl_training_shared_two_gpu_v3`。`old_log_probs`直接取停止梯度的`rollout_log_probs`；正式路径缺失或异常时拒绝执行，不恢复额外学生前向。上游旁路只负责复用旧概率，实际注册的`verl_loss`仍是项目的sampled OPD目标，不自动启用PPO／importance sampling／rejection sampling或score centering。
++新plan记录`student_logprob_source=vllm_rollout_raw_logprobs_v1`，schema为`steer_verl_training_shared_two_gpu_v5`。`old_log_probs`直接取停止梯度的`rollout_log_probs`；正式路径缺失或异常时拒绝执行，不恢复额外学生前向。上游旁路只负责复用旧概率，实际注册的`verl_loss`仍是项目的sampled OPD目标，不自动启用PPO／importance sampling／rejection sampling或score centering。
++
++[generation_policy.py](../src/steer_opd/generation_policy.py)统一未来生成默认presence penalty=2。[rollout_seeds.py](../src/steer_opd/training/rollout_seeds.py)在worker分发前同时分配seed与penalty，[verl_agent.py](../src/steer_opd/training/verl_agent.py)将penalty传入实际请求并回显核验；训练及验证共用这条路径。生成从受惩罚分布q采样，loss／Top16保留惩罚前原始模型分布p，p与q不同；当前没有行为概率或importance校正，不声称等价于未惩罚分布上的严格on-policy KL。`sampling_policy`、批次metadata、缓存／恢复合同分别记录这些语义。手动生成CLI与训练CLI支持`--presence-penalty`；自动新参数名编码实际值，旧冻结结果及既有SV bank不自动重算。激活capture和固定前缀评分的辅助token也设2，但其丢弃输出不改变已给定前缀的raw分数。详见[统一策略及概率口径](OPD概率来源统一与Top16方案分析.md#9-presence-penalty2的统一生成策略)。
+ 
+ 学生可微训练前向顺带记录`actor/train_rollout_logprob_abs_diff_mean`、`actor/train_rollout_logprob_signed_diff_mean`（训练减rollout）及`actor/train_rollout_logprob_abs_diff_max`，按同一有效loss mask归约；均值按全局token加权，最大值跨microbatch／DP取最大。Top16监控另记`rollout/H16_cond_native`，明确为条件熵。新GPU验收必须显示两次`student_rollout_logprob_reuse`、零次`student_logprob`，凭据绑定概率来源；不同来源的checkpoint不能静默接续。旧formal_v5的冻结配置、结果与checkpoint不改，新路径需要新的GPU验收。[方案分析](OPD概率来源统一与Top16方案分析.md)。
+ 
+--- before/docs/代码框架逻辑.md
++++ docs/代码框架逻辑.md
+@@ -100,7 +100,9 @@
+ 
+ verl将当前学生权重交给普通vLLM，在当批题目上自由生成回答，保留实际学生token ID。学生rollout和之后的学生学习前向均关闭SV。
+ 
+-当前学生随更新变化，下一批使用新权重重新生成on-policy轨迹。正式训练配置为temperature=1、top_p=1、top_k=-1，每题四条训练请求固定使用seed42／43／44／45，跨题和批次复用；评测每请求42。
++当前学生随更新变化，下一批使用新权重重新生成轨迹。新训练默认temperature=1、top_p=1、top_k=-1、presence_penalty=2，每题四条训练请求固定使用seed42／43／44／45，跨题和批次复用；评测每请求42，也使用penalty=2。教师参考／学生源回答和独立评测的未来生成同样默认2。
++
++presence penalty作用于采样时的logit，vLLM保存的`raw_logprobs`仍是惩罚前模型概率。新plan显式区分受控采样分布与原始模型分布，当前loss在受控生成的轨迹上使用raw模型监督，没有importance校正，不声称与未惩罚学生分布的严格on-policy KL等价。配置和缓存身份包含penalty，旧生成及派生SV不冒充pp2结果。
+ 
+ ### 3.2 复用学生生成概率，教师沿同一回答评分
+ 
+@@ -133,8 +135,8 @@
+ 
+ ```python
+ # 一次性准备，可按组件身份核验复用
+-teacher_texts = generate_or_reuse(T0, questions, steering=False)
+-student_texts = generate_or_reuse(S0, questions, steering=False)
++teacher_texts = generate_or_reuse(T0, questions, steering=False, presence_penalty=2)
++student_texts = generate_or_reuse(S0, questions, steering=False, presence_penalty=2)
+ bank_by_layer = capture_and_pool_in_teacher_space(
+     T0, student_texts, teacher_texts, layers=candidate_layers,
+     max_context_len=2048,
+@@ -147,6 +149,7 @@
+ teacher_scorer = start_easysteer_service(T0, chosen)
+ for batch in training_batches(select_questions, batch_size=64, steps=100):
+     rollout = verl_vllm_generate(student, batch, steering=False,
++                               presence_penalty=2,
+                                per_question_rollout_seeds=[42, 43, 44, 45])
+     student_logp_old = rollout.sampled_raw_logprobs.detach()
+     teacher_scores = teacher_scorer.score_same_text(rollout)

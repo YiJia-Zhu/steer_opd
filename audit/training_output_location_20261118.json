@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-11-18T22:34:00.648696+08:00",
+  "scope": "Future training outputs only; no migration or restoration of previous outputs",
+  "train_output_root": "/home/zhenning/steer_opd_outputs",
+  "layout": "step_4_train/ablation/<model_pair>/<dataset>/shared/<run_name>",
+  "other_stage_root_unchanged": "outputs",
+  "targeted_tests": {
+    "file": "tests/test_training_output_location.py",
+    "passed": 10,
+    "failed": 0,
+    "seconds": 3.92,
+    "fixtures": "Isolated synthetic 1000-question pool; no historical data recreated"
+  },
+  "broader_regression_attempt": {
+    "passed": 42,
+    "failed": 12,
+    "reason": "Default local step_0_data inputs no longer exist; all failures FileNotFoundError for questions_source.json"
+  },
+  "live_capacity": {
+    "user_quota_remaining_gib": 89.18,
+    "full_training_required_with_reserve_gib": 98.92,
+    "preflight": "correctly refused to use filesystem-wide free space as user capacity"
+  },
+  "gpu_started": false,
+  "source_sha256": {
+    "src/steer_opd/training/paths.py": "2cc99450a43d2c67a5f3b67243281f61cb322b269720a81131c38a606d995168",
+    "src/steer_opd/training/storage.py": "a8302f5548ae13d26c3fed14045b73162288e2bb887ed2e65fe29b0991d74c11",
+    "src/steer_opd/training/verl_plan.py": "161be40bb9ce2060c8811b3e94ab491653f0ac31e646fad818813a42c8c59a3d",
+    "src/steer_opd/training/verl_entry.py": "4b13d3ec197b8f15ecf5328ab502c50f7bc92f9d6ed0f9fbfd1db0252493c50a",
+    "src/steer_opd/training/verl_trainer.py": "7956ca932cac393b2f2a65f785db2dec05c687dd56a02c9cac37837b506e24e4",
+    "src/steer_opd/training/scorer_service.py": "14b61c1d7e1ad36d450c34eb7997a4d0088b2bfa5a25c8e52ea704f5e9e2703a",
+    "src/steer_opd/training/idle_launch.py": "c6b95bf6d27aff4037c370fa9f4f7bdfa46a1f92ed24e827ffb180eec16470dd",
+    "src/steer_opd/training/resume_handover.py": "17eb39367cecd8b04bda5e8f92cbfc6f3b8c67b3f6bbab5c1a402096105f7b52",
+    "tests/test_training_output_location.py": "09887daa9b78a34b27012b06470c6069ca1da14c7317e903d712544e0e1a6ed0"
+  },
+  "syntax_checks": "passed"
+}

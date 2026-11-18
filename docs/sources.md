@@ -4,11 +4,11 @@
 
 | 来源 | 本次使用的结论与核对范围 |
 |---|---|
-| [Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) | Top-k token集合交集/ k、相容性与长轨迹机制；本地原fork配方与当前跨tokenizer适配区分。前缀兼容最大匹配计数/概率质量是本项目扩展，不能归给原文 |
+| [Rethinking OPD](../papers/2604.13016v2_rethinking_on_policy_distillation.pdf) | Top-k集合相容性与长轨迹机制；另核对v2 §2.2／2.3／6.3及固定官方commit的采样、Top-K和旧概率实现，详见[研究稿§4.1.1](Steering_OPD_完整研究方案.md#411-sampled-tokentop-k训练与top16监控)。前缀兼容匹配／概率质量是本项目跨tokenizer扩展，不能归给原文 |
 | [CompassOPD](../ref/2609.10154v1_compass_opd.pdf) | 教师同家族likelihood shift；§5.1使用verl训练、vLLM采样/教师评分；A.4跨分词共同span平均原生logp与广播。本项目依据论文独立实现，未定位用户所指官方仓库 |
 | [Steering Vectors as a Training Signal](../papers/2610.40998v1_steering_vectors_as_training_signal.pdf) | 同一学生读取参考/自身文本、全局/逐题方向及C.2刷新。官方acts.py使用HF逐题提取，不据其vLLM生成推断提取也用vLLM |
 | [ACSD](../ref/2609.38342v1_acsd.pdf) | §3.2–3.4预算/固定激活向量；token先单位化不同于本项目原始正文逐题均值，不为效率直接替换 |
-| [Steering the Teacher](../ref/2610.34005v1_st_opsd.pdf) | §3.1/4.4选定行为位置与固定方向降低成本；教师干预不同于本项目学生干预，论文成本不外推 |
+| [Steering the Teacher](../ref/2610.34005v1_st_opsd.pdf) | §3.1/4.4选定行为位置与固定方向降低成本；教师干预与原学生干预分别比较，论文成本不外推到本项目教师镜像路线 |
 
 [EasySteer固定前端](https://github.com/ZJU-REAL/EasySteer/tree/baecd9698f32aadef68b41536f3db477b513a0d7)与其固定fork的capture/selector/logits源码已核对；指定层/行capture并非服务端mean归约，不自动截断后层，也不能用embedding接口替代block输出。
 
