@@ -1,5 +1,6 @@
 """Lossless scorer wire format, identity checks and client cache integration."""
 from copy import deepcopy
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -184,10 +185,12 @@ def test_client_scorer_roundtrip_and_cache_keep_original_alignment(tmp_path, mon
 
 def test_training_plan_binds_array_schema_and_rejects_old_protocol():
     from steer_opd.resumable_core import ROOT
+    from steer_opd.training import scoring_request
     from steer_opd.training.verl_plan import build_verl_plan, verl_overrides
     plan = build_verl_plan(read_json(ROOT/'configs/ablation.json'))
     assert plan['scoring_request_schema'] == SCHEMA
-    assert 'src/steer_opd/training/scoring_request.py' in plan['implementation_sha256']
+    source = Path(scoring_request.__file__).resolve()
+    assert plan['implementation_sha256'][str(source.relative_to(ROOT))] == file_sha256(source)
     del plan['scoring_request_schema']
     with pytest.raises(ValueError, match='new training plan'):
         verl_overrides(plan)

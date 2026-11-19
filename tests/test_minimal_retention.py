@@ -23,7 +23,7 @@ def test_policy_does_not_adopt_historical_runs():
     with pytest.raises(ValueError,match='retention'):minimal({'retention_policy':'typo'})
 
 
-def test_new_plan_keeps_save_cadence_and_scalar_monitoring_but_disables_archives():
+def test_minimal_plan_keeps_checkpoints_and_only_the_configured_evaluation_archive():
     from steer_opd.training.verl_plan import VerlSettings,build_verl_plan,verl_overrides
     cfg=read_json(ROOT/'configs/ablation.json')
     plan=build_verl_plan(cfg,VerlSettings(monitor_evaluation=True,monitor_overlap=True))
@@ -33,7 +33,10 @@ def test_new_plan_keeps_save_cadence_and_scalar_monitoring_but_disables_archives
     assert result['trainer.save_freq']==16 and result['trainer.test_freq']==16
     assert result['trainer.logger']==['console','tensorboard']
     assert result['trainer.max_actor_ckpt_to_keep'] is None  # project rotates after commit
-    assert result['trainer.rollout_data_dir'] is None and result['trainer.validation_data_dir'] is None
+    assert result['trainer.rollout_data_dir'] is None
+    expected_dir = (str(ROOT / plan['output'] / 'evaluation/responses')
+                    if plan.get('evaluation_response_format') else None)
+    assert result['trainer.validation_data_dir'] == expected_dir
     assert result['trainer.log_val_generations']==0
     assert result['actor_rollout_ref.rollout.engine_kwargs.vllm.max_logprobs']==16
     assert 'src/steer_opd/retention.py' in plan['implementation_sha256']

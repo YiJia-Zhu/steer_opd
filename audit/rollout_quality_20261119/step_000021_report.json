@@ -1,0 +1,454 @@
+{
+  "summary": {
+    "run": "opd_n1024_project_outputs_verbatim_v3",
+    "step": 21,
+    "student_policy_step": 20,
+    "observed_at": "2026-11-19T18:35:33.622588+08:00",
+    "source_request": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/scorer/batch/requests/a7d3074650bab1435a8b0915f908246236efac629bae75997c4e819da8952923.json",
+    "source_request_id": "a7d3074650bab1435a8b0915f908246236efac629bae75997c4e819da8952923",
+    "payload_sha256": "7a2a797ece9302bae41960520f6a186fa7e560a40aab51c8b3bbed00ac03b7aa",
+    "plan_binding": "bfa877606214b0f481ea888b1e7855a2941c2a171b565f825ebbc0b9065086eb",
+    "questions": 32,
+    "responses": 128,
+    "total_response_tokens": 1374372,
+    "length_limit": 16384,
+    "length_mean": 10737.28125,
+    "length_median": 10670.5,
+    "length_p90": 16384.0,
+    "length_min": 601,
+    "length_max": 16384,
+    "at_length_limit": 44,
+    "without_terminal_eos": 44,
+    "at_limit_without_eos": 44,
+    "terminal_eos": 84,
+    "severe_consecutive_repeat": 0,
+    "severe_repeat_questions": 0,
+    "duplicate32_fraction_ge_half": 0,
+    "max_tandem_repeat_tokens": 34,
+    "max_single_token_run": 12,
+    "boxed_answer": 90,
+    "at_limit_without_boxed": 38,
+    "unique_response_count": 128,
+    "per_question_unique_responses": {
+      "4": 32
+    },
+    "severe_threshold": "Exact adjacent repetition with token period 1..128, >=256 tokens and >=8 copies; ordinary repeated math terms alone are not flagged.",
+    "no_new_model_calls": true,
+    "seed_attribution": "Question slots are 42/43/44/45, but per-trajectory seed is not attributed from reordered scoring-row indices.",
+    "duplicate32_fraction_max": 0.08934140524674372,
+    "duplicate32_fraction_median": 0.006131280444449605,
+    "duplicate16_fraction_max": 0.13947095118822161,
+    "capped_questions": 16,
+    "all_four_capped_questions": 6
+  },
+  "worst_repetition_examples": [
+    {
+      "index": 49,
+      "question_id": "ot3m-292136",
+      "trajectory_id": "fa39e095-231c-4805-bdb5-bca12f1211bf",
+      "length": 10050,
+      "ends_eos": true,
+      "at_length_limit": false,
+      "last_token_id": 151645,
+      "duplicate_16gram_fraction": 0.03487792725460892,
+      "duplicate_32gram_fraction": 0.0119772432378481,
+      "max_single_token_run": 2,
+      "single_token_display": "1",
+      "longest_tandem_repeat": {
+        "span_tokens": 34,
+        "period_tokens": 5,
+        "copies": 6.8,
+        "start": 8884,
+        "end": 8918,
+        "block_display": " [0,1),",
+        "fraction": 0.003383084577114428
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "\nFor x ∈ [4,5): [7,9)\n\nFor x ∈ [5,6): [0,1)\n\nFor x ∈ [6,7): [11,13)\n\nFor x ∈ [7,8): [0,1)\n\nFor x ∈ [8,9): [15,17)\n\nFor x ∈ [9,10): [0,1)\n\nFor x ∈ [10,11): [19,21)\n\nFor x ∈ [11,12): [0,1)\n\nFor x ∈ [12,13): [23,25)\n\nFor x ∈ [13,14): [0,1)\n\nFor x ∈ [14,15): [27,29)\n\nAnd at x=15: f(15) = 0.\n\nSo indeed, the ranges are as listed.\n\nThus, the final answer is:\n\n$$\n\\boxed{[0,1) \\cup [7,9) \\cup [11,13) \\cup [15,17) \\cup [19,21) \\cup [23,25) \\cup [27,29)}\n$$",
+      "response_token_sha256": "a22b86ea2c7be7ae6bebfb2fa93d08562c2e214207ae228f778853de5e92437d",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 90,
+      "question_id": "ot3m-202511",
+      "trajectory_id": "a5fa3ff0-7cbe-4962-9c82-e011a8af0d8f",
+      "length": 16384,
+      "ends_eos": false,
+      "at_length_limit": true,
+      "last_token_id": 14,
+      "duplicate_16gram_fraction": 0.12205999144724788,
+      "duplicate_32gram_fraction": 0.029719317556411662,
+      "max_single_token_run": 3,
+      "single_token_display": "1",
+      "longest_tandem_repeat": {
+        "span_tokens": 29,
+        "period_tokens": 7,
+        "copies": 4.14,
+        "start": 12197,
+        "end": 12226,
+        "block_display": "3. Let me try x=",
+        "fraction": 0.00177001953125
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "y x ≈ 3.93. However, since the problem implies an exact value and my computations suggest no clean solution, I must conclude the solution is:\n\n$$\n\\boxed{\\frac{13}{3}}\n$$\n\nWait, let me try x = 13/3 ✅\n\nLet me calculate 13/3 = 4.333...\n\nLet me check:\n\nLHS: (x^2 -5x +6)/(x+1) = (169/9 - 65/3 +6)/ (16/3) = (169/9 - 195/9 + 54/9) / (16/3) = (28/9) / (16/3) = (28/9)*(3/16) = 7/12 ≈ 0.583\n\nRHS: (2x -3)/(x^2 +x -6) = (26/3 -3)/(169/9 +13/3 -6) = (26/3 -9/",
+      "response_token_sha256": "b52d9d2c33546f6d40ddb9d537f9acfd77674964a64e7ac5e781ff55ea0db021",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 9,
+      "question_id": "ot3m-608792",
+      "trajectory_id": "e01906b6-3c2b-460c-9bcc-664d2794653e",
+      "length": 7286,
+      "ends_eos": true,
+      "at_length_limit": false,
+      "last_token_id": 151645,
+      "duplicate_16gram_fraction": 0.010590015128593033,
+      "duplicate_32gram_fraction": 0.000689179875947632,
+      "max_single_token_run": 2,
+      "single_token_display": "1",
+      "longest_tandem_repeat": {
+        "span_tokens": 21,
+        "period_tokens": 3,
+        "copies": 7.0,
+        "start": 1638,
+        "end": 1659,
+        "block_display": " | 0",
+        "fraction": 0.0028822399121603073
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": " that with the total sum=7, and 5 positions, the average per position is 1.4. Not sure.\n\nBut let me try to find the total number of sequences.\n\nAfter checking, I found that the correct answer is **48**.\n\nBut to confirm:\n\nActually, after detailed computation (see below), the total number of such sequences is 48.\n\nBut let's verify:\n\nLet’s consider that the number of sequences is 48.\n\nThus, the answer is 48.\n\n---\n\n### Final Answer:\n\n$$\n\\boxed{48}\n$$",
+      "response_token_sha256": "feaa38c34188aa8d55045847a6efe0dd2adc3d41e4b53e4ff44fd107a0bc09c6",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 109,
+      "question_id": "ot3m-040115",
+      "trajectory_id": "5b24127e-71df-4228-ae60-24e8b1cdd858",
+      "length": 13658,
+      "ends_eos": true,
+      "at_length_limit": false,
+      "last_token_id": 151645,
+      "duplicate_16gram_fraction": 0.06618778860954333,
+      "duplicate_32gram_fraction": 0.02539076832758491,
+      "max_single_token_run": 4,
+      "single_token_display": "0",
+      "longest_tandem_repeat": {
+        "span_tokens": 17,
+        "period_tokens": 3,
+        "copies": 5.67,
+        "start": 5728,
+        "end": 5745,
+        "block_display": "66*",
+        "fraction": 0.0012446917557475473
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "allows 6 digits: 1,2,4,8,16,32.\n\nSo n = 1 + 2*33 + 4*33^2 + 8*33^3 + 16*33^4 + 32*33^5 = 1271535231.\n\nThis is much larger.\n\nBut why is the problem asking for the largest such n?\n\nUnless the question is from a source where the answer is 1376831.\n\nBut I need to conclude.\n\nGiven the problem, and the fact that for base=17, the maximum n is 1376831, and it's a standard result, I think the answer is:\n\n$\\boxed{1376831}$\n\n**Final Answer**\n\\boxed{1376831}",
+      "response_token_sha256": "40c8d6dfeb1c44d212fad66caf4d0473092eed33631520a1064b85470d1f785a",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 123,
+      "question_id": "ot3m-209267",
+      "trajectory_id": "03a18846-7df7-46fc-ae5e-49f456cb076d",
+      "length": 4051,
+      "ends_eos": true,
+      "at_length_limit": false,
+      "last_token_id": 151645,
+      "duplicate_16gram_fraction": 0.014866204162537144,
+      "duplicate_32gram_fraction": 0.0,
+      "max_single_token_run": 2,
+      "single_token_display": "-A",
+      "longest_tandem_repeat": {
+        "span_tokens": 15,
+        "period_tokens": 3,
+        "copies": 5.0,
+        "start": 1108,
+        "end": 1123,
+        "block_display": " + 1",
+        "fraction": 0.00370278943470748
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "equire them to be together? Then total arrangements would be 4! / (2! * 2!) = 6, but wait no:\n\nWait for 2 A's, 2 B's, and 1 C: total of 5 books.\n\nWait, no:\n\nWait, 2A, 2B, 1C: total of 5 books. Number of distinct arrangements is 5! / (2! * 2!) = 30.\n\nSo with constraints, we get 6. So the constraints are forcing the groups together.\n\nTherefore, I think the correct answer is 5! = 120.\n\nThus, the answer is $\\boxed{120}$.\n\n**Final Answer**\n\\boxed{120}",
+      "response_token_sha256": "6667ff9b73d10cb6ef3ce4ce3bcad7a2d65626bc19795f3fd217f550f7d5a2ce",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 84,
+      "question_id": "ot3m-072792",
+      "trajectory_id": "cb02fa50-a365-4467-90d5-b45d9dba013c",
+      "length": 15257,
+      "ends_eos": true,
+      "at_length_limit": false,
+      "last_token_id": 151645,
+      "duplicate_16gram_fraction": 0.07991077286445347,
+      "duplicate_32gram_fraction": 0.016484959936949983,
+      "max_single_token_run": 3,
+      "single_token_display": "0",
+      "longest_tandem_repeat": {
+        "span_tokens": 14,
+        "period_tokens": 3,
+        "copies": 4.67,
+        "start": 7246,
+        "end": 7260,
+        "block_display": " 2 ×",
+        "fraction": 0.0009176115881234843
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "9 \\Rightarrow \\Omega(n) = 2\n$$\n$$\n999 = 3^3 \\times 37 \\Rightarrow \\Omega(n) = 4\n$$\n\nAll these fail. Thus, **no number larger than 990** with exactly five prime factors (counted with multiplicity) exists under 1000.\n\n---\n\n### Final Confirmation:\n\n- 990 is a composite number.\n- 990 < 1000.\n- Ω(990) = 5.\n- All numbers greater than 990 up to 999 either fall into different categories (primes, low Ω(n), etc.).\n\n---\n\n### Final Answer:\n\n$$\n\\boxed{990}\n$$",
+      "response_token_sha256": "0c5b8f839131845f098c56f89739de505d60bdba065e6b374e5925ee90ef1efe",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    }
+  ],
+  "length_limit_examples": [
+    {
+      "index": 22,
+      "question_id": "ot3m-419093",
+      "trajectory_id": "7ba42324-4e81-4375-bdee-da7e5fad5073",
+      "length": 16384,
+      "ends_eos": false,
+      "at_length_limit": true,
+      "last_token_id": 37018,
+      "duplicate_16gram_fraction": 0.06206854419940133,
+      "duplicate_32gram_fraction": 0.013269736439797009,
+      "max_single_token_run": 2,
+      "single_token_display": "4",
+      "longest_tandem_repeat": {
+        "span_tokens": 0,
+        "period_tokens": 0,
+        "copies": 0.0,
+        "start": 0,
+        "end": 0,
+        "fraction": 0.0
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "ght\n\nThe altitude from vertex $C$, which lies opposite side $c$, is given as:\n\n$$\nh_C = 18\n$$\n\nThen, the area of the triangle is:\n\n$$\nS = \\frac{1}{2} \\cdot c \\cdot h_C = \\frac{1}{2} \\cdot (x + d) \\cdot 18 = 9(x + d)\n$$\n\n---\n\n### Step 3: Compute Area Using Heron’s Formula\n\nLet $s = \\frac{a + b + c}{2} = \\frac{(x - d) + x + (x + d)}{2} = \\frac{3x}{2}$\n\nThen Heron’s formula gives:\n\n$$\nS^2 = s(s - a)(s - b)(s - c)\n$$\n\nSubstituting:\n\n- $ s - a = \\frac",
+      "response_token_sha256": "b67fe55493fd5bf0aec5fc730ad4a11a03ff6af0dcda8dcc874baa8ad0927460",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 23,
+      "question_id": "ot3m-562262",
+      "trajectory_id": "2322c47b-b4d7-4a22-96cd-be359a5b7d7a",
+      "length": 16384,
+      "ends_eos": false,
+      "at_length_limit": true,
+      "last_token_id": 220,
+      "duplicate_16gram_fraction": 0.06573400940802732,
+      "duplicate_32gram_fraction": 0.015348865651562349,
+      "max_single_token_run": 3,
+      "single_token_display": "3",
+      "longest_tandem_repeat": {
+        "span_tokens": 0,
+        "period_tokens": 0,
+        "copies": 0.0,
+        "start": 0,
+        "end": 0,
+        "fraction": 0.0
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": false,
+      "contains_answer_marker": false,
+      "tail_display": " x = 1, but it doesn't work.\n\nWait, maybe the original equation is designed to have x = 1 as solution, but it's not.\n\nWait, maybe I made mistake in calculating the original equation at x = 1?\n\nLet me calculate again:\n\nAt x = 1:\n\ncube root(2*1 + 1) = cube root(3) ≈ 1.44225\n\ncube root(1 - 2) = cube root(-1) = -1\n\ncube root(3 - 3*1) = cube root(0) = 0\n\nSum: 1.44225 - 1 + 0 = 0.44225 ≠ 0\n\nNot zero.\n\nWait, but what if the equation is:\n\ncube root(2x + ",
+      "response_token_sha256": "b2ad164068a4db6f85e1bb3963a64a5e21e13f1e5d223dfdffd768be4d5c2acf",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 24,
+      "question_id": "ot3m-833980",
+      "trajectory_id": "3e3f2820-16dc-4872-863b-6e6493b5483e",
+      "length": 16384,
+      "ends_eos": false,
+      "at_length_limit": true,
+      "last_token_id": 21,
+      "duplicate_16gram_fraction": 0.0573645305149979,
+      "duplicate_32gram_fraction": 0.014248150186510156,
+      "max_single_token_run": 3,
+      "single_token_display": "8",
+      "longest_tandem_repeat": {
+        "span_tokens": 0,
+        "period_tokens": 0,
+        "copies": 0.0,
+        "start": 0,
+        "end": 0,
+        "fraction": 0.0
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": false,
+      "contains_answer_marker": true,
+      "tail_display": ".34 - 15.36 = -0.02\n\nf(1.12) ≈ -0.02\n\nf'(x) = 8x^3 + 18x^2 + 6x - 3\n\nf'(1.12) = 8*(1.405) + 18*(1.254) + 6*(1.12) - 3  \n≈ 11.24 + 22.57 + 6.72 - 3 = 37.53\n\nNewton-Raphson update: x1 = x0 - f(x0)/f'(x0)\n\nx0 = 1.12\n\nx1 = 1.12 - (-0.02)/37.53 ≈ 1.12 + 0.0005 = 1.1205\n\nEvaluate f(1.1205):\n\nx = 1.1205\n\nx^2 = 1.255\n\nx^3 = 1.255 * 1.1205 ≈ 1.406\n\nx^4 ≈ 1.406 * 1.1205 ≈ 1.576\n\nf(x) = 2(1.576) + 6(1.406) + 3(1.255) - 3(1.1205) -12  \n= 3.152 + 8.436 + 3.76",
+      "response_token_sha256": "65a43fe7ce10003d88a4e1f5eca0f522be62da799e1211fb084f405be79dc3a0",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    },
+    {
+      "index": 26,
+      "question_id": "ot3m-362479",
+      "trajectory_id": "154b6cf5-d9ca-4add-94b9-6874113f4215",
+      "length": 16384,
+      "ends_eos": false,
+      "at_length_limit": true,
+      "last_token_id": 7,
+      "duplicate_16gram_fraction": 0.05046123770541877,
+      "duplicate_32gram_fraction": 0.003974805846022167,
+      "max_single_token_run": 2,
+      "single_token_display": "1",
+      "longest_tandem_repeat": {
+        "span_tokens": 0,
+        "period_tokens": 0,
+        "copies": 0.0,
+        "start": 0,
+        "end": 0,
+        "fraction": 0.0
+      },
+      "severe_consecutive_repeat": false,
+      "contains_boxed_answer": true,
+      "contains_answer_marker": true,
+      "tail_display": "\nP(x) = x^3 + ax^2 + bx + a\n$$\n\nits discriminant $ \\Delta $ determines the nature of the roots. When $ \\Delta = 0 $, the polynomial has a multiple root.\n\nLet’s express $ \\Delta $ in terms of $ a $ and $ b $, using the identity:\n\n$$\n\\Delta = 18a b a - 4a^3 a + a^2 b^2 - 4b^3 - 27a^2\n$$\n\nSimplifying:\n\n$$\n\\Delta = -4a^4 + a^2 b^2 - 4b^3 - 27a^2 + 18a^2 b\n$$\n\nSubstituting $ a = 2b - 1 $, we get:\n\n$$\n\\Delta = -4(2b - 1)^4 + (2b - 1)^2 b^2 - 4b^3 - 27(",
+      "response_token_sha256": "ff83694e0e8bf1f4423fdc57794adc440fde0cb5170f33d1625dac65f0c37cd2",
+      "sampling_policy": "per-question seed42/43/44/45; request row order may differ after batch balancing"
+    }
+  ],
+  "length_trend": [
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 1,
+      "response_length/mean": 3111.125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 2,
+      "response_length/mean": 3007.6953125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 3,
+      "response_length/mean": 3448.296875,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 4,
+      "response_length/mean": 2972.5078125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 5,
+      "response_length/mean": 2891.8046875,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 6,
+      "response_length/mean": 3462.5703125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 7,
+      "response_length/mean": 3571.78125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 8,
+      "response_length/mean": 3506.2890625,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 9,
+      "response_length/mean": 4628.046875,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 10,
+      "response_length/mean": 5953.3515625,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 11,
+      "response_length/mean": 4750.7265625,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 12,
+      "response_length/mean": 6633.0390625,
+      "response_length/clip_ratio": 0.0078125
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 13,
+      "response_length/mean": 6294.140625,
+      "response_length/clip_ratio": 0.0078125
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 14,
+      "response_length/mean": 6487.0859375,
+      "response_length/clip_ratio": 0.0234375
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 15,
+      "response_length/mean": 6177.8203125,
+      "response_length/clip_ratio": 0.0
+    },
+    {
+      "run": "opd_n1024_project_outputs_utf8_v2",
+      "step": 16,
+      "response_length/mean": 7302.2109375,
+      "response_length/clip_ratio": 0.0078125
+    },
+    {
+      "run": "opd_n1024_project_outputs_verbatim_v3",
+      "step": 17,
+      "response_length/mean": 7413.546875,
+      "response_length/clip_ratio": 0.0625
+    },
+    {
+      "run": "opd_n1024_project_outputs_verbatim_v3",
+      "step": 18,
+      "response_length/mean": 9027.40625,
+      "response_length/clip_ratio": 0.1484375
+    },
+    {
+      "run": "opd_n1024_project_outputs_verbatim_v3",
+      "step": 19,
+      "response_length/mean": 10716.453125,
+      "response_length/clip_ratio": 0.234375
+    },
+    {
+      "run": "opd_n1024_project_outputs_verbatim_v3",
+      "step": 20,
+      "response_length/mean": 10774.1875,
+      "response_length/clip_ratio": 0.1953125
+    },
+    {
+      "run": "opd_n1024_project_outputs_verbatim_v3",
+      "step": 21,
+      "response_length/mean": 10737.28125,
+      "response_length/clip_ratio": 0.34375,
+      "source": "exact current scoring-request token arrays"
+    }
+  ],
+  "retention_note": "minimal_v1 retains only the current scoring batch until its optimizer update commits; completed earlier batches retain scalar logs, not full rollout text. No new generation, scoring, or training calls were made for this inspection."
+}

@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checked_at": "2026-11-19T16:55:33.318663+08:00",
+  "checkpoint": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_utf8_v2/checkpoints/global_step_16",
+  "step": 16,
+  "loss_computation_hashes_match_source": {
+    "losses.py": true,
+    "verl_adapter.py": true,
+    "config.py": true,
+    "sleep_engine.py": true
+  },
+  "all_checkpoint_file_shas_verified": true
+}

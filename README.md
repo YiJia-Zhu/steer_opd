@@ -12,6 +12,8 @@
 
 全流程使用[`scripts/run_full_pipeline.sh`](scripts/run_full_pipeline.sh)，超参数及可选项集中在脚本开头。`--prepare-data`在CPU冻结1024题；`--check`预览；`--run`依次执行全局SV准备、all注入的全训练集overlap和OPD，默认Slerp0.1。全部1024题共用于SV、overlap和训练，无Select／Confirm；每step32题×4条回答，最多64步，每16步及末步评测裸学生。
 
+无 steering 的训练对比共用 `scripts/baselines.sh`。脚本开头的 `BASELINES=(vanilla compassopd)` 决定串行顺序，每个方法从同一初始学生独立训练。默认 `bash scripts/baselines.sh --check` 在 CPU 预览两组。只运行纯 CompassOPD 可用 `METHODS=compassopd GPU_IDS=0,4 bash scripts/baselines.sh --run`。[启动脚本](scripts/baselines.sh) · [方法与配置](docs/ablation.md#无-steering-的训练基线)
+
 per-sample及其机制／参数消融见[提取协议](docs/ablation.md#提取与评分分开)：学生每题先rollout 4条，冻结教师逐条读取后取均值，减去教师参考回答的池化值，每题构建一个S−T方向；四条只用于提取，overlap仍沿用原每题一条固定回答。该协议已实现，437项CPU回归及师生GPU验收通过，16组矩阵已完成。
 
 模型也每16步及末步保存，各版本权重均保留；优化器等恢复状态只留最新完整一份，批次过程数据和当前overlap状态滚动更新，loss／overlap／准确率曲线继续保留。

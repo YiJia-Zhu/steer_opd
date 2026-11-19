@@ -1,0 +1,223 @@
+--- a/src/steer_opd/training/overlap_monitor.py
++++ b/src/steer_opd/training/overlap_monitor.py
+@@ -9,5 +9,5 @@
+ import torch
+ 
+-from steer_opd.compass_alignment import aligned_metrics
++from steer_opd.compass_alignment import aligned_metrics, align_response
+ from steer_opd.prefix_matching import METRIC_VERSION,RULE_VERSION,P_DEFINITION
+ from steer_opd.resumable_core import ROOT,atomic_json
+@@ -46,4 +46,11 @@
+ 
+ def row_statistics(row,alignment,student,teacher,codecs):
++    if 'reference' in alignment['native_response_ids']:
++        # Compare overlap at S/T boundaries even when the loss also aligns R.
++        pair = align_response(row['token_ids'], codecs['student'], {'teacher': codecs['teacher']},
++                              invalid_utf8='mask')
++        if pair['native_response_ids']['teacher'] != alignment['native_response_ids']['teacher']:
++            raise ValueError('Teacher prefix differs between overlap and CompassOPD scoring')
++        alignment = pair
+     validate_native_score(student,len(row['token_ids']),codecs['student'].support_size)
+     result=aligned_metrics(alignment,student,teacher,codecs['student'],codecs['teacher'])
+@@ -121,5 +128,5 @@
+                 else folder/'summary.json')
+         atomic_json(target,{'step':step,'student_policy_step':step-1,
+-            'measurement':'same_rollout_pre_update','teacher':'actual_S-T_global_steered_teacher',
++            'measurement':'same_rollout_pre_update','teacher':'unsteered_teacher',
+             'metric_version':METRIC_VERSION,'matching_rule_version':RULE_VERSION,
+             'P_overlap_definition':P_DEFINITION,'normalization':'original_probabilities_no_top16_renormalization',
+--- a/src/steer_opd/training/scorer_service.py
++++ b/src/steer_opd/training/scorer_service.py
+@@ -33,6 +33,5 @@
+     from transformers import AutoTokenizer
+     from steer_opd.compass_alignment import ByteLevelCodec
+-    from steer_opd.easysteer_static import fixed_prefix_scores,build_spec
+-    from steer_opd.static_screen import candidate_vectors
++    from steer_opd.easysteer_static import fixed_prefix_scores
+     from steer_opd.training.scoring import validate_assets
+     from steer_opd.training.sleep_engine import create_sleep_engine,FrozenEngineResidency
+@@ -50,11 +49,4 @@
+             tensor_parallel_size=2 if role=='teacher' else 1,memory=memory,batch_invariant=role=='student_anchor')
+     residency=FrozenEngineResidency(engine)
+-    vectors=None
+-    if role=='teacher':
+-        bank=torch.load(ROOT/s['sv_bank'],map_location='cpu',weights_only=True)
+-        condition={'direction':'S-T','granularity':'global','operator':s['operator'],
+-                   'alpha':s['alpha'],'layers':[s['teacher_layer']]}
+-        if s['operator']=='additive':condition['additive_scaling']='raw_mean_difference_v1'
+-        vectors,_=candidate_vectors(bank,{'id':'global'},condition)
+     with phase(logs,f'{role}_initial_sleep'):residency.sleep()
+     atomic_json(folder/('ready_'+role+'.json'),{'status':'ready','state':'asleep','pid':os.getpid(),'plan_binding':plan['binding']})
+@@ -85,8 +77,6 @@
+                     raise ValueError('Native scoring context exceeded; never truncate a student trajectory silently')
+                 usable=[i for i,r in enumerate(rows) if r['token_ids']];active=[rows[i] for i in usable]
+-                specs=[build_spec(r,[True]*len(r['token_ids']),vectors,operator=s['operator'],alpha=s['alpha'])
+-                       if role=='teacher' else False for r in active]
+                 with phase(logs,f'{role}_model_scoring',trajectories=len(active)):
+-                    scores=fixed_prefix_scores(engine,active,specs,include_sampled=True) if active else []
++                    scores=fixed_prefix_scores(engine,active,[False]*len(active),include_sampled=True) if active else []
+                 values=[torch.empty(0) for _ in rows]
+                 for i,score in zip(usable,scores):values[i]=score['sampled_logps'].float().cpu()
+--- a/src/steer_opd/training/scoring.py
++++ b/src/steer_opd/training/scoring.py
+@@ -6,5 +6,4 @@
+ from steer_opd.checkpoint_identity import checkpoint_content_id
+ from steer_opd.compass_alignment import ByteLevelCodec
+-from steer_opd.direction_bank import file_sha256
+ from steer_opd.math_data import prompt_ids
+ from steer_opd.resumable_core import ROOT, read_json
+@@ -23,20 +22,11 @@
+ def validate_assets(plan):
+     s = plan['settings']
+-    path = ROOT/s['sv_bank']
+-    bank = torch.load(path, map_location='cpu', weights_only=True)
++    if plan.get('teacher_steering') is not False or s['operator'] != 'slerp' or s['alpha'] != 0 or s['sv_bank'] is not None:
++        raise ValueError('Native baselines require an unsteered teacher and no SV bank')
+     model_ids = {role: checkpoint_content_id(ROOT/plan[role]) for role in ('student', 'teacher')}
+-    if (bank['identity']['checkpoint_content_id'] != model_ids['teacher']
+-            or bank['identity']['step'] != 0 or bank['method']['direction'] != 'S-T'
+-            or bank['method']['granularity'] != 'global' or list(bank['method']['layers']) != [s['teacher_layer']]):
+-        raise ValueError('Teacher global bank layer, checkpoint or direction does not match training')
+-    if plan.get('data_policy')=='all_train':
+-        identity=bank['identity']
+-        if (identity.get('data_policy')!='all_train'
+-                or identity.get('question_source_sha256')!=plan['question_source_sha256']
+-                or identity.get('training_ids_sha256')!=plan['training_ids_sha256']):
+-            raise ValueError('Teacher SV bank must come from the same complete training question pool')
+     if plan['training_loss']['loss_type'] == 'compass_opd':
+         reference = ROOT/plan['training_loss']['reference_model']
+         model_ids['reference'] = checkpoint_content_id(reference)
++        model_ids['student_anchor'] = model_ids['student']
+         def family(path):
+             cfg=read_json(path/'config.json');cfg=cfg.get('text_config',cfg)
+@@ -45,5 +35,5 @@
+             raise ValueError('Ref must belong to the teacher release family')
+     from steer_opd.stage_contracts import codec_key
+-    return {'model_content_ids': model_ids, 'sv_bank_sha256': file_sha256(path),
++    return {'model_content_ids': model_ids, 'sv_bank_sha256': None,
+             'codecs':{role:codec_key(codec) for role,codec in codecs_for_plan(plan).items()}}
+ 
+--- a/src/steer_opd/training/verl_entry.py
++++ b/src/steer_opd/training/verl_entry.py
+@@ -2,4 +2,5 @@
+ import argparse
+ from dataclasses import replace
++import fcntl
+ import hashlib
+ import json
+@@ -198,6 +199,35 @@
+             or s['train_batch_size']!=32 or s['rollout_n']!=4 or not s['monitor_evaluation']
+             or plan.get('data_policy')!='all_train' or plan.get('train_questions')!=1024
+-            or plan['training_loss']['loss_type']!='traditional_opd'):
++            or plan['training_loss']['loss_type'] not in ('traditional_opd', 'compass_opd')
++            or plan.get('teacher_steering') is not False or s['alpha'] != 0 or s['sv_bank'] is not None):
+         raise ValueError('Fresh formal start requires the authorized 1024-question pool, at most 64 steps and batch32 x4 OPD recipe')
++
++
++def completed_baseline(plan):
++    from steer_opd.training.retention import recover_checkpoint
++    root = ROOT / plan['output']
++    step = plan['settings']['total_steps']
++    checkpoints = root / 'checkpoints'
++    pointer = checkpoints / 'latest_complete.json'
++    frozen = root / 'metadata/plan.json'
++    if frozen.exists() and read_json(frozen) != plan:
++        raise ValueError('Use a new training run name; prepared plan is immutable')
++    if not pointer.is_file() or read_json(pointer)['step'] != step:
++        return False
++    if not frozen.is_file():
++        raise ValueError('Final baseline checkpoint has no frozen plan')
++    evaluation = root / f'evaluation/metrics/step_{step}.json'
++    if not evaluation.is_file():
++        return False
++    scores = read_json(evaluation)
++    for benchmark in plan['evaluation']['counts']:
++        accuracy = scores.get(f'eval/{benchmark}/acc')
++        if type(accuracy) not in (int, float) or not 0 <= accuracy <= 1:
++            return False
++    if plan.get('evaluation_response_format'):
++        from steer_opd.evaluation_text import responses_complete
++        if not responses_complete(root, step):
++            return False
++    return recover_checkpoint(checkpoints, plan) == checkpoints / f'global_step_{step}'
+ 
+ 
+@@ -238,5 +268,5 @@
+     parser.add_argument('--train-output-root',help='Training output root; default project outputs/, other stages stay in outputs/')
+     parser.add_argument('--operator',choices=['slerp','additive'],default='slerp')
+-    parser.add_argument('--alpha',type=float,default=.1);parser.add_argument('--sv-bank')
++    parser.add_argument('--alpha',type=float,default=0.);parser.add_argument('--sv-bank')
+     from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,DEFAULT_PRESENCE_PENALTY
+     parser.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,help='Generation penalty for training rollouts and validation; raw OPD/Top16 probabilities remain unwarped')
+@@ -309,10 +339,23 @@
+         bind_resume_source(plan,ROOT/args.resume_from)
+     plan['binding']=digest({k:v for k,v in plan.items() if k!='binding'})
++    if not args.acceptance_run and not args.acceptance_receipt:
++        validate_formal_plan(plan)
+     config=compose_verl(plan)
+     print(json.dumps({'plan':plan,'verl_overrides':verl_overrides(plan)},ensure_ascii=False,indent=2),flush=True)
+     if not (args.prepare or args.run or args.acceptance_run):return
+-    if args.run:
+-        if args.acceptance_receipt:validate_receipt(plan,args.acceptance_receipt)
+-        else:validate_formal_plan(plan)
++    metadata = ROOT / plan['output'] / 'metadata'
++    metadata.mkdir(parents=True, exist_ok=True)
++    with (metadata / 'baseline_launch.lock').open('a') as lock:
++        # Concurrent invocations of this run must see the previous writer's final state.
++        fcntl.flock(lock, fcntl.LOCK_EX)
++        launch_or_prepare(args, plan, settings)
++
++
++def launch_or_prepare(args, plan, settings):
++    if args.run and args.acceptance_receipt:
++        validate_receipt(plan,args.acceptance_receipt)
++    if args.run and completed_baseline(plan):
++        print(f"Baseline already complete: {plan['settings']['run_name']}", flush=True)
++        return
+     if args.acceptance_run:validate_acceptance_plan(plan)
+     if args.acceptance_run or args.run:
+--- a/src/steer_opd/training/verl_plan.py
++++ b/src/steer_opd/training/verl_plan.py
+@@ -43,7 +43,7 @@
+     score_max_model_len: int = 24576
+     teacher_layer: int = 29
+-    alpha: float = 0.1
++    alpha: float = 0.0
+     operator: str = 'slerp'
+-    sv_bank: str = DEFAULT_BANK
++    sv_bank: str | None = None
+     teacher_memory: float = 0.75
+     reference_memory: float = 0.06
+@@ -112,6 +112,8 @@
+             'input_data_dir': str(source), 'data_policy':'all_train','train_split':'all','train_questions':1024,
+             'training_ids_sha256':digest(ids),'question_source_sha256':hashes[str(questions.relative_to(ROOT))],
+-            'automatic_evaluation': settings.monitor_evaluation, 'steering_role': 'teacher', 'direction': 'S-T',
+-            'granularity': 'global', 'gate': 'all', 'strength_policy': 'fixed',
++            'automatic_evaluation': settings.monitor_evaluation,
++            'baseline_method': {'traditional_opd': 'vanilla', 'compass_opd': 'compassopd'}[loss.loss_type],
++            'teacher_steering': False, 'steering_role': None, 'direction': None,
++            'granularity': None, 'gate': None, 'strength_policy': 'disabled',
+             'student_rollout_steering': False, 'student_training_steering': False,
+             'request_seed_policy': SEED_POLICY,
+--- a/src/steer_opd/training/verl_trainer.py
++++ b/src/steer_opd/training/verl_trainer.py
+@@ -81,5 +81,6 @@
+                 atomic_json(ROOT/self.steer_plan['output']/'metadata/formal_runtime_acceptance.json',{
+                     'status':'passed','plan_binding':self.steer_plan['binding'],'actual_step':self.global_steps,
+-                    'trajectories':len(rows),'loss_type':'traditional_opd','resource_mode':'shared_two_gpu',
++                    'trajectories':len(rows),'loss_type':self.steer_plan['training_loss']['loss_type'],
++                    'scoring_roles':self.scorer.roles,'teacher_steering':False,'resource_mode':'shared_two_gpu',
+                     'student_logprob_source':STUDENT_LOGPROB_SOURCE,
+                     'validation_scope':'full-batch generation, scoring, handover and finite optimizer update',
+@@ -132,5 +133,10 @@
+                     self.config.trainer.resume_mode='resume_path'
+                     self.config.trainer.resume_from_path=str(ROOT/self.steer_plan['resume_source']['checkpoint'])
+-            with phase(self.log_folder,'checkpoint_load'):return super()._load_checkpoint()
++            with phase(self.log_folder,'checkpoint_load'):
++                result = super()._load_checkpoint()
++            if self.global_steps == self.total_training_steps:
++                # A crash after the final save only needs the final evaluation.
++                self.config.trainer.val_only = True
++            return result
+ 
+     class SteerTaskRunner(BaseTaskRunner):

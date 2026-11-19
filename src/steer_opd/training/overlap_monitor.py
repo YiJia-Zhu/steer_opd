@@ -54,6 +54,7 @@ def row_statistics(row,alignment,student,teacher,codecs):
     h16=torch.special.entr(conditional).sum(-1)
     return {'question_id':row['question_id'],'trajectory_id':row['id'],
         'invalid_utf8_bytes':alignment.get('invalid_utf8',{}).get('bytes',0),
+        'verbatim_response':bool(alignment.get('verbatim_response_encoding')),
         'total_tokens':len(row['token_ids']),'valid_tokens':int(valid.sum()),
         'student_H16_cond_sum':float(h16[valid].sum()),
         'overlap_sum':float(result['overlap'][valid].sum()),
@@ -70,6 +71,7 @@ def summarize_statistics(parts):
     metrics={'overlap/coverage':valid/max(1,total),'overlap/valid_tokens':valid,'overlap/questions':len(groups)}
     metrics['alignment/invalid_utf8_bytes']=sum(p.get('invalid_utf8_bytes',0) for p in parts)
     metrics['alignment/invalid_utf8_trajectories']=sum(p.get('invalid_utf8_bytes',0)>0 for p in parts)
+    metrics['alignment/verbatim_response_trajectories']=sum(bool(p.get('verbatim_response',False)) for p in parts)
     for name in ('overlap','P_overlap'):
         metrics[name+'/token_value']=sum(p[name+'_sum'] for p in parts)/valid
         metrics[name+'/question_value']=sum(g[name+'_sum']/g['valid_tokens'] for g in groups.values())/len(groups)

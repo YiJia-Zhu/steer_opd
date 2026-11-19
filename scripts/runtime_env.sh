@@ -37,3 +37,17 @@ export OMP_NUM_THREADS=8
 export OPENBLAS_NUM_THREADS=8
 export STEER_OPD_METRIC_WORKERS="${STEER_OPD_METRIC_WORKERS:-16}"
 mkdir -p "$TMPDIR" "$RAY_TMPDIR" "$HF_HOME" "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR" "$CUDA_CACHE_PATH"
+
+# Full-pipeline requests bind the launcher's own bytes. Select the training source
+# here for those launchers and interactive use. Other scripted stages keep their
+# own environment; a custom training wrapper can source this file with --training.
+case "${BASH_SOURCE[1]:-}" in
+    ''|run_full_pipeline.sh|*/run_full_pipeline.sh|run_verl.sh|*/run_verl.sh) steer_select_training=1 ;;
+    *) if [[ "${1:-}" == --training ]]; then steer_select_training=1; else steer_select_training=0; fi ;;
+esac
+if [[ "$steer_select_training" == 1 ]]; then
+    steer_training_src=$("$STEER_OPD_PYTHON" "$STEER_OPD_ROOT/scripts/prepare_training_runtime.py") || return 1
+    export PYTHONPATH="$steer_training_src:$PYTHONPATH"
+    unset steer_training_src
+fi
+unset steer_select_training

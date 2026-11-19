@@ -1,10 +1,13 @@
 """Paper-defined OPD advantages, tokenizer spans and actual gradient isolation."""
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 import torch
 
+from steer_opd.direction_bank import file_sha256
 from steer_opd.resumable_core import ROOT, read_json
+from steer_opd.training import losses
 from steer_opd.training import (TrainingLossConfig, distillation_loss,
                                 token_mean_loss, training_alignment, training_plan)
 from test_compass_alignment import ToyCodec
@@ -31,7 +34,8 @@ def test_default_uses_only_student_teacher_and_preserves_overlap_hold():
     assert plan['execution_hold'] == 'awaiting_user_approval'
     assert plan['training_started'] is False
     assert cfg == before
-    assert 'src/steer_opd/training/losses.py' in plan['implementation_sha256']
+    source = Path(losses.__file__).resolve()
+    assert plan['implementation_sha256'][str(source.relative_to(ROOT))] == file_sha256(source)
 
 
 def test_compass_plan_requires_distinct_teacher_family_ref_and_student_anchor():

@@ -4,6 +4,32 @@
 
 当前新配置使用`minimal_v1`清理过程数据，并使用`all_models_latest_state_v1`保留各保存点的模型：每16步及末步的模型都保存，优化器／scheduler／RNG／dataloader状态只保留最新完整点。当前批过程数据及overlap状态滚动更新，标量曲线长期保留。历史实验输出保持原字节，模板hold不解除；细则见[代码框架§8.5](代码框架逻辑.md#85-最小保留策略)。
 
+从 2026-11-20 的新训练运行开始，step 0、每次定期评测及末步评测的 530 条回答写到训练目录的 `evaluation/responses/step_<步>.jsonl`。每行仅含冻结题号 `question_id` 和完整回答 `text`，与该步的准确率来自同一次生成。已冻结的 `verbatim_v3` 继续使用原评测设置。
+
+## 无 steering 的训练基线
+
+`scripts/baselines.sh` 开头的 Bash 数组 `BASELINES=(vanilla compassopd)` 决定选择和顺序，也可以用环境变量 `METHODS` 临时覆盖。一次调用共用同一对 GPU，前一项成功退出才会进入下一项。两种方法各自从初始 Qwen3-4B 开始，分别保存和恢复 checkpoint。[启动脚本](../scripts/baselines.sh)
+
+| 方法 | 每批训练信号 | 默认运行名 |
+|---|---|---|
+| `vanilla` | 当前学生采样，原生 Qwen3.5-35B-A3B 教师评分，使用传统 OPD loss | `opd_n1024_vanilla_seed42_v1` |
+| `compassopd` | 同一原生教师和教师同家族参考 Qwen3.5-0.8B 对学生回答评分，使用教师与参考的 span 平均 logp 差，加上相对冻结初始学生的逐 token 锚定项，默认系数 0.5 | `opd_n1024_compassopd_seed42_v1` |
+
+两个基线的评分请求均传入 `steering=False`，无需 SV bank。CompassOPD 复用项目按论文实现的 loss 和文本对齐，在本项目共同的初始学生上比较。参考模型和锚定系数分别由 `REFERENCE_MODEL`、`ANCHOR_COEF` 设置。[目标函数](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)
+
+```bash
+bash scripts/baselines.sh --check                            # CPU 预览两组
+METHODS=vanilla bash scripts/baselines.sh --prepare          # CPU 冻结单组计划
+METHODS=compassopd GPU_IDS=0,4 bash scripts/baselines.sh --run
+METHODS="compassopd vanilla" GPU_IDS=0,4 bash scripts/baselines.sh --run
+```
+
+默认 GPU 池为 2、3，每个方法为指定两张卡最多等待 3600 秒。两组沿用冻结的 1024 题、AdamW lr=1e-6、每步 32 题 × 4 条、每题 seed 42／43／44／45、最多 64 步。temperature=1、top_p=1、top_k=-1、presence_penalty=2、回答上限 16384。step 0、每 16 步和末步评测裸学生，每 16 步和末步保存模型。两组的 overlap 和 P_overlap 都按学生与教师的共同 span 统计。训练沿用 TensorBoard 和 minimal_v1 保存策略。
+
+输出位于 `outputs/step_4_train/ablation/<模型组合>/<训练数据集>/shared/<运行名>/`。可用 `VANILLA_RUN_NAME`、`COMPASSOPD_RUN_NAME` 分别设置运行名。重跑同一配置时各方法只恢复自己的 checkpoint，已完成最终保存和评测的方法核验后跳过。变更实验配置使用新的运行名。
+
+当前 steer 作业按 SHA 绑定训练源码。基线入口把训练模块及差异发布到项目内 `.runtime/baselines/` 的独立目录，plan 记录实际使用的实现。准入、Ray 和评分子进程都使用这份代码，两组仍共用原有的 GPU 准入和配额检查。
+
 ## 当前消融：S−T完整16组矩阵（2026-11-19，已完成并归档）
 
 1024题OPD的GPU池固定为2／3，其代码、配置和输出身份保持不变。独立消融固定教师空间S−T、教师0-based29层和alpha=0.1，已完成overlap／P_overlap、图表和汇总，0次更新。原学生T−S仅保留作历史对比。此前建议的额外反向／随机方向及24点层位／强度网格不纳入本次执行。

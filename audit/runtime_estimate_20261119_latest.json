@@ -1,0 +1,833 @@
+{
+  "schema": "opd_recent_phase_timing_v1",
+  "captured_at": "2026-11-19T18:24:20.377866+08:00",
+  "run": "opd_n1024_project_outputs_verbatim_v3",
+  "source_run_resume": {
+    "checkpoint": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_utf8_v2/checkpoints/global_step_16",
+    "step": 16,
+    "plan_binding": "a1a4f6cdf863159b41986ab95ddcc4872b62b0c5731d46d5a96eb780a44ecf86",
+    "source_plan": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_utf8_v2/metadata/plan.json",
+    "source_plan_sha256": "cb4057fb4c5b1752d482813bf300f597355c9a20c0bf2b615bc2fc758b721cff",
+    "change": "Compatible run transfer; model, optimizer, scheduler, RNG and dataloader restored"
+  },
+  "settings": {
+    "gpu_pool": [
+      2,
+      3
+    ],
+    "train_batch_size": 32,
+    "total_steps": 64,
+    "learning_rate": 1e-06,
+    "micro_batch_size": 1,
+    "max_response_length": 16384,
+    "score_max_model_len": 24576,
+    "teacher_layer": 29,
+    "alpha": 0.1,
+    "operator": "slerp",
+    "sv_bank": "outputs/step_2_sv/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1024_slerp0.1_S26_T29_seed42_trainall_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1_st_global_all_full_v3/reader_teacher/banks/S-T_global.pt",
+    "teacher_memory": 0.75,
+    "reference_memory": 0.06,
+    "anchor_memory": 0.18,
+    "rollout_memory": 0.8,
+    "save_freq": 16,
+    "checkpoint_retention": "all_models_latest_state_v1",
+    "gpu_wait_seconds": 3600,
+    "scorer_timeout": 1800,
+    "run_name": "opd_n1024_project_outputs_verbatim_v3",
+    "rollout_n": 4,
+    "presence_penalty": 2.0,
+    "monitor_overlap": true,
+    "monitor_evaluation": true,
+    "evaluation_freq": 16
+  },
+  "plan_binding": "bfa877606214b0f481ea888b1e7855a2941c2a171b565f825ebbc0b9065086eb",
+  "source_log_prefixes": {
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/logs/training_events.jsonl": {
+      "prefix_bytes": 4072980,
+      "prefix_sha256": "0adb57831b1a25e45a3730f2796328181eedc575e6468098505afa57f7c4340e"
+    },
+    "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/logs/console.log": {
+      "prefix_bytes": 116506,
+      "prefix_sha256": "9aafbfa33de162bae2595bec3122c94410b39196d067c6eafbee101f78fdbe4e"
+    }
+  },
+  "latest_committed_step": 20,
+  "selected_steps": [
+    17,
+    18,
+    19,
+    20
+  ],
+  "sample_count": 4,
+  "rows": [
+    {
+      "step": 17,
+      "generation": 519.2494870168157,
+      "student_logprob_reuse": 0.08797082118690014,
+      "teacher_total": 94.50079836184159,
+      "cpu_overlap": 12.544861814938486,
+      "advantage_gap": 2.570855,
+      "student_update": 152.75471051083878,
+      "weight_sync": 2.030531818047166,
+      "step_total": 783.9161952277645,
+      "update_actor_envelope": 262.60842215595767,
+      "mean_response_tokens": 7413.546875,
+      "max_response_tokens": 16384.0,
+      "response_cap_fraction": 0.0625,
+      "total_tokens": 962494,
+      "teacher_breakdown": {
+        "student_model_optimizer_offload": 0.07017513690516353,
+        "cpu_tokenizer_span_alignment": 7.627852300181985,
+        "cpu_scoring_request_commit": 4.262095893733203,
+        "teacher_wake_ack": 1.6812915331684053,
+        "cpu_scoring_request_read": 0.13799483282491565,
+        "teacher_model_scoring": 73.70461251493543,
+        "teacher_sleep_ack": 1.5246245940215886,
+        "teacher_model_wake": 1.5268758139573038,
+        "teacher_model_sleep": 1.4308056612499058,
+        "other": 5.492151556070894
+      },
+      "save_checkpoint": 0.0,
+      "testing": 0.0,
+      "other": 0.1769798840958856,
+      "actor_other": 0.14922564715192266
+    },
+    {
+      "step": 18,
+      "generation": 583.8486711164005,
+      "student_logprob_reuse": 0.08883334323763847,
+      "teacher_total": 109.8592817070894,
+      "cpu_overlap": 9.13718099007383,
+      "advantage_gap": 3.039908,
+      "student_update": 190.6702257557772,
+      "weight_sync": 1.9930182062089443,
+      "step_total": 898.7994544506073,
+      "update_actor_envelope": 312.94119226094335,
+      "mean_response_tokens": 9027.40625,
+      "max_response_tokens": 16384.0,
+      "response_cap_fraction": 0.1484375,
+      "total_tokens": 1169484,
+      "teacher_breakdown": {
+        "student_model_optimizer_offload": 0.09092728514224291,
+        "cpu_tokenizer_span_alignment": 8.06426423881203,
+        "cpu_scoring_request_commit": 5.21707604592666,
+        "teacher_wake_ack": 1.5883523980155587,
+        "cpu_scoring_request_read": 0.12716931710019708,
+        "teacher_model_scoring": 86.4347722879611,
+        "teacher_sleep_ack": 1.5935545428656042,
+        "teacher_model_wake": 1.4708843119442463,
+        "teacher_model_sleep": 1.4079373287968338,
+        "other": 6.743165591266006
+      },
+      "save_checkpoint": 0.0,
+      "testing": 0.0,
+      "other": 0.1623353318198042,
+      "actor_other": 0.14576246476525512
+    },
+    {
+      "step": 19,
+      "generation": 852.2869325373322,
+      "student_logprob_reuse": 0.09557003574445844,
+      "teacher_total": 129.49180465517566,
+      "cpu_overlap": 10.999360163230449,
+      "advantage_gap": 3.580523,
+      "student_update": 230.17843673564494,
+      "weight_sync": 1.9908332591876388,
+      "step_total": 1228.8114569201134,
+      "update_actor_envelope": 374.5226281899959,
+      "mean_response_tokens": 10716.453125,
+      "max_response_tokens": 16384.0,
+      "response_cap_fraction": 0.234375,
+      "total_tokens": 1385050,
+      "teacher_breakdown": {
+        "student_model_optimizer_offload": 0.09252893505617976,
+        "cpu_tokenizer_span_alignment": 10.669817227870226,
+        "cpu_scoring_request_commit": 5.849724932573736,
+        "teacher_wake_ack": 1.5911798886954784,
+        "cpu_scoring_request_read": 0.1297374488785863,
+        "teacher_model_scoring": 101.74871542816982,
+        "teacher_sleep_ack": 1.5293905357830226,
+        "teacher_model_wake": 1.4715764340944588,
+        "teacher_model_sleep": 1.4063373398967087,
+        "other": 7.880710258148611
+      },
+      "save_checkpoint": 0.0,
+      "testing": 0.0,
+      "other": 0.18799653379801384,
+      "actor_other": 0.17693360020035698
+    },
+    {
+      "step": 20,
+      "generation": 807.6138226897456,
+      "student_logprob_reuse": 0.09004109399393201,
+      "teacher_total": 135.56286892667413,
+      "cpu_overlap": 10.801902707666159,
+      "advantage_gap": 3.589723,
+      "student_update": 232.5680018858984,
+      "weight_sync": 2.0561295370571315,
+      "step_total": 1192.4669900801964,
+      "update_actor_envelope": 382.786166400183,
+      "mean_response_tokens": 10774.1875,
+      "max_response_tokens": 16384.0,
+      "response_cap_fraction": 0.1953125,
+      "total_tokens": 1394076,
+      "teacher_breakdown": {
+        "student_model_optimizer_offload": 0.19175696978345513,
+        "cpu_tokenizer_span_alignment": 10.723566777072847,
+        "cpu_scoring_request_commit": 5.883972923271358,
+        "teacher_wake_ack": 1.5840788800269365,
+        "cpu_scoring_request_read": 0.1371309459209442,
+        "teacher_model_scoring": 107.6142303859815,
+        "teacher_sleep_ack": 1.494218077044934,
+        "teacher_model_wake": 1.4674902791157365,
+        "teacher_model_sleep": 1.3990454520098865,
+        "other": 7.933913967572153
+      },
+      "save_checkpoint": 0.0,
+      "testing": 0.0,
+      "other": 0.1845002391610251,
+      "actor_other": 0.17362878595037046
+    }
+  ],
+  "phase_statistics": {
+    "generation": {
+      "mean": 690.7497283400735,
+      "min": 519.2494870168157,
+      "max": 852.2869325373322
+    },
+    "student_logprob_reuse": {
+      "mean": 0.09060382354073226,
+      "min": 0.08797082118690014,
+      "max": 0.09557003574445844
+    },
+    "teacher_total": {
+      "mean": 117.35368841269519,
+      "min": 94.50079836184159,
+      "max": 135.56286892667413
+    },
+    "cpu_overlap": {
+      "mean": 10.87082641897723,
+      "min": 9.13718099007383,
+      "max": 12.544861814938486
+    },
+    "advantage_gap": {
+      "mean": 3.1952522500000002,
+      "min": 2.570855,
+      "max": 3.589723
+    },
+    "student_update": {
+      "mean": 201.54284372203983,
+      "min": 152.75471051083878,
+      "max": 232.5680018858984
+    },
+    "weight_sync": {
+      "mean": 2.01762820512522,
+      "min": 1.9908332591876388,
+      "max": 2.0561295370571315
+    },
+    "other": {
+      "mean": 0.17795299721868219,
+      "min": 0.1623353318198042,
+      "max": 0.18799653379801384
+    },
+    "step_total": {
+      "mean": 1025.9985241696704,
+      "min": 783.9161952277645,
+      "max": 1228.8114569201134
+    },
+    "update_actor_envelope": {
+      "mean": 333.21460225177,
+      "min": 262.60842215595767,
+      "max": 382.786166400183
+    },
+    "actor_other": {
+      "mean": 0.1613876245169763,
+      "min": 0.14576246476525512,
+      "max": 0.17693360020035698
+    },
+    "mean_response_tokens": {
+      "mean": 9482.8984375,
+      "min": 7413.546875,
+      "max": 10774.1875
+    },
+    "max_response_tokens": {
+      "mean": 16384.0,
+      "min": 16384.0,
+      "max": 16384.0
+    },
+    "response_cap_fraction": {
+      "mean": 0.16015625,
+      "min": 0.0625,
+      "max": 0.234375
+    },
+    "total_tokens": {
+      "mean": 1227776,
+      "min": 962494,
+      "max": 1394076
+    }
+  },
+  "teacher_statistics": {
+    "student_model_optimizer_offload": {
+      "mean": 0.11134708172176033,
+      "min": 0.07017513690516353,
+      "max": 0.19175696978345513
+    },
+    "cpu_tokenizer_span_alignment": {
+      "mean": 9.271375135984272,
+      "min": 7.627852300181985,
+      "max": 10.723566777072847
+    },
+    "cpu_scoring_request_commit": {
+      "mean": 5.303217448876239,
+      "min": 4.262095893733203,
+      "max": 5.883972923271358
+    },
+    "teacher_wake_ack": {
+      "mean": 1.6112256749765947,
+      "min": 1.5840788800269365,
+      "max": 1.6812915331684053
+    },
+    "cpu_scoring_request_read": {
+      "mean": 0.1330081361811608,
+      "min": 0.12716931710019708,
+      "max": 0.13799483282491565
+    },
+    "teacher_model_scoring": {
+      "mean": 92.37558265426196,
+      "min": 73.70461251493543,
+      "max": 107.6142303859815
+    },
+    "teacher_sleep_ack": {
+      "mean": 1.5354469374287874,
+      "min": 1.494218077044934,
+      "max": 1.5935545428656042
+    },
+    "teacher_model_wake": {
+      "mean": 1.4842067097779363,
+      "min": 1.4674902791157365,
+      "max": 1.5268758139573038
+    },
+    "teacher_model_sleep": {
+      "mean": 1.4110314454883337,
+      "min": 1.3990454520098865,
+      "max": 1.4308056612499058
+    },
+    "other": {
+      "mean": 7.012485343264416,
+      "min": 5.492151556070894,
+      "max": 7.933913967572153
+    }
+  },
+  "phase_evidence": {
+    "17": {
+      "reuse": {
+        "phase": "student_rollout_logprob_reuse",
+        "step": 17,
+        "start": "2026-11-19T17:16:45.557259+08:00",
+        "end": "2026-11-19T17:16:45.603303+08:00",
+        "seconds": 0.08797082118690014
+      },
+      "teacher": {
+        "phase": "teacher_scoring_phase",
+        "step": 17,
+        "start": "2026-11-19T17:16:45.653766+08:00",
+        "end": "2026-11-19T17:18:20.117801+08:00",
+        "seconds": 94.50079836184159
+      },
+      "overlap": {
+        "phase": "cpu_top16_overlap",
+        "step": 17,
+        "start": "2026-11-19T17:18:20.155737+08:00",
+        "end": "2026-11-19T17:18:32.662918+08:00",
+        "seconds": 12.544861814938486
+      },
+      "update": {
+        "phase": "student_update",
+        "step": 17,
+        "start": "2026-11-19T17:18:35.233773+08:00",
+        "end": "2026-11-19T17:21:07.940989+08:00",
+        "seconds": 152.75471051083878
+      },
+      "weight_sync": {
+        "phase": "student_rollout_weight_sync",
+        "step": null,
+        "start": "2026-11-19T17:21:08.172431+08:00",
+        "end": "2026-11-19T17:21:10.154230+08:00",
+        "seconds": 2.030252748169005
+      },
+      "teacher_children": {
+        "student_model_optimizer_offload": {
+          "phase": "student_model_optimizer_offload",
+          "step": null,
+          "start": "2026-11-19T17:16:45.688566+08:00",
+          "end": "2026-11-19T17:16:45.724552+08:00",
+          "seconds": 0.07017513690516353
+        },
+        "cpu_tokenizer_span_alignment": {
+          "phase": "cpu_tokenizer_span_alignment",
+          "step": null,
+          "start": "2026-11-19T17:16:45.757936+08:00",
+          "end": "2026-11-19T17:16:53.352775+08:00",
+          "seconds": 7.627852300181985
+        },
+        "cpu_scoring_request_commit": {
+          "phase": "cpu_scoring_request_commit",
+          "step": null,
+          "start": "2026-11-19T17:16:53.391799+08:00",
+          "end": "2026-11-19T17:16:57.615081+08:00",
+          "seconds": 4.262095893733203
+        },
+        "teacher_wake_ack": {
+          "phase": "teacher_wake_ack",
+          "step": null,
+          "start": "2026-11-19T17:16:57.653504+08:00",
+          "end": "2026-11-19T17:16:59.297047+08:00",
+          "seconds": 1.6812915331684053
+        },
+        "cpu_scoring_request_read": {
+          "phase": "cpu_scoring_request_read",
+          "step": null,
+          "start": "2026-11-19T17:16:59.235852+08:00",
+          "end": "2026-11-19T17:16:59.320346+08:00",
+          "seconds": 0.13799483282491565
+        },
+        "teacher_model_scoring": {
+          "phase": "teacher_model_scoring",
+          "step": null,
+          "start": "2026-11-19T17:16:59.443150+08:00",
+          "end": "2026-11-19T17:18:13.101721+08:00",
+          "seconds": 73.70461251493543
+        },
+        "teacher_sleep_ack": {
+          "phase": "teacher_sleep_ack",
+          "step": null,
+          "start": "2026-11-19T17:18:15.133303+08:00",
+          "end": "2026-11-19T17:18:16.579086+08:00",
+          "seconds": 1.5246245940215886
+        },
+        "teacher_model_wake": {
+          "phase": "teacher_model_wake",
+          "step": null,
+          "start": "2026-11-19T17:16:57.731850+08:00",
+          "end": "2026-11-19T17:16:59.181405+08:00",
+          "seconds": 1.5268758139573038
+        },
+        "teacher_model_sleep": {
+          "phase": "teacher_model_sleep",
+          "step": null,
+          "start": "2026-11-19T17:18:15.135194+08:00",
+          "end": "2026-11-19T17:18:16.518725+08:00",
+          "seconds": 1.4308056612499058
+        }
+      },
+      "logged_metrics": {
+        "timing_s/gen": 519.2494870168157,
+        "timing_s/update_actor": 262.60842215595767,
+        "timing_s/update_weights": 2.030531818047166,
+        "timing_s/step": 783.9161952277645,
+        "response_length/mean": 7413.546875,
+        "response_length/max": 16384.0,
+        "response_length/clip_ratio": 0.0625,
+        "perf/total_num_tokens": 962494.0,
+        "actor/loss": -0.13067683577537537,
+        "actor/grad_norm": 1.060469388961792,
+        "overlap/coverage": 0.9998735423116887,
+        "alignment/verbatim_response_trajectories": 0.0
+      }
+    },
+    "18": {
+      "reuse": {
+        "phase": "student_rollout_logprob_reuse",
+        "step": 18,
+        "start": "2026-11-19T17:30:54.074621+08:00",
+        "end": "2026-11-19T17:30:54.119360+08:00",
+        "seconds": 0.08883334323763847
+      },
+      "teacher": {
+        "phase": "teacher_scoring_phase",
+        "step": 18,
+        "start": "2026-11-19T17:30:54.174182+08:00",
+        "end": "2026-11-19T17:32:43.989051+08:00",
+        "seconds": 109.8592817070894
+      },
+      "overlap": {
+        "phase": "cpu_top16_overlap",
+        "step": 18,
+        "start": "2026-11-19T17:32:44.028928+08:00",
+        "end": "2026-11-19T17:32:53.126446+08:00",
+        "seconds": 9.13718099007383
+      },
+      "update": {
+        "phase": "student_update",
+        "step": 18,
+        "start": "2026-11-19T17:32:56.166354+08:00",
+        "end": "2026-11-19T17:36:06.788599+08:00",
+        "seconds": 190.6702257557772
+      },
+      "weight_sync": {
+        "phase": "student_rollout_weight_sync",
+        "step": null,
+        "start": "2026-11-19T17:36:07.024834+08:00",
+        "end": "2026-11-19T17:36:08.964686+08:00",
+        "seconds": 1.9927712753415108
+      },
+      "teacher_children": {
+        "student_model_optimizer_offload": {
+          "phase": "student_model_optimizer_offload",
+          "step": null,
+          "start": "2026-11-19T17:30:54.219080+08:00",
+          "end": "2026-11-19T17:30:54.265290+08:00",
+          "seconds": 0.09092728514224291
+        },
+        "cpu_tokenizer_span_alignment": {
+          "phase": "cpu_tokenizer_span_alignment",
+          "step": null,
+          "start": "2026-11-19T17:30:54.304378+08:00",
+          "end": "2026-11-19T17:31:02.329812+08:00",
+          "seconds": 8.06426423881203
+        },
+        "cpu_scoring_request_commit": {
+          "phase": "cpu_scoring_request_commit",
+          "step": null,
+          "start": "2026-11-19T17:31:02.370023+08:00",
+          "end": "2026-11-19T17:31:07.547097+08:00",
+          "seconds": 5.21707604592666
+        },
+        "teacher_wake_ack": {
+          "phase": "teacher_wake_ack",
+          "step": null,
+          "start": "2026-11-19T17:31:07.587240+08:00",
+          "end": "2026-11-19T17:31:09.136138+08:00",
+          "seconds": 1.5883523980155587
+        },
+        "cpu_scoring_request_read": {
+          "phase": "cpu_scoring_request_read",
+          "step": null,
+          "start": "2026-11-19T17:31:09.093226+08:00",
+          "end": "2026-11-19T17:31:09.173484+08:00",
+          "seconds": 0.12716931710019708
+        },
+        "teacher_model_scoring": {
+          "phase": "teacher_model_scoring",
+          "step": null,
+          "start": "2026-11-19T17:31:09.318184+08:00",
+          "end": "2026-11-19T17:32:35.707461+08:00",
+          "seconds": 86.4347722879611
+        },
+        "teacher_sleep_ack": {
+          "phase": "teacher_sleep_ack",
+          "step": null,
+          "start": "2026-11-19T17:32:38.161032+08:00",
+          "end": "2026-11-19T17:32:39.708969+08:00",
+          "seconds": 1.5935545428656042
+        },
+        "teacher_model_wake": {
+          "phase": "teacher_model_wake",
+          "step": null,
+          "start": "2026-11-19T17:31:07.609367+08:00",
+          "end": "2026-11-19T17:31:09.045582+08:00",
+          "seconds": 1.4708843119442463
+        },
+        "teacher_model_sleep": {
+          "phase": "teacher_model_sleep",
+          "step": null,
+          "start": "2026-11-19T17:32:38.208310+08:00",
+          "end": "2026-11-19T17:32:39.572758+08:00",
+          "seconds": 1.4079373287968338
+        }
+      },
+      "logged_metrics": {
+        "timing_s/gen": 583.8486711164005,
+        "timing_s/update_actor": 312.94119226094335,
+        "timing_s/update_weights": 1.9930182062089443,
+        "timing_s/step": 898.7994544506073,
+        "response_length/mean": 9027.40625,
+        "response_length/max": 16384.0,
+        "response_length/clip_ratio": 0.1484375,
+        "perf/total_num_tokens": 1169484.0,
+        "actor/loss": -0.12116099148988724,
+        "actor/grad_norm": 1.1322929859161377,
+        "overlap/coverage": 0.9999056691948476,
+        "alignment/verbatim_response_trajectories": 0.0
+      }
+    },
+    "19": {
+      "reuse": {
+        "phase": "student_rollout_logprob_reuse",
+        "step": 19,
+        "start": "2026-11-19T17:50:21.325456+08:00",
+        "end": "2026-11-19T17:50:21.371018+08:00",
+        "seconds": 0.09557003574445844
+      },
+      "teacher": {
+        "phase": "teacher_scoring_phase",
+        "step": 19,
+        "start": "2026-11-19T17:50:21.427181+08:00",
+        "end": "2026-11-19T17:52:30.874672+08:00",
+        "seconds": 129.49180465517566
+      },
+      "overlap": {
+        "phase": "cpu_top16_overlap",
+        "step": 19,
+        "start": "2026-11-19T17:52:30.914591+08:00",
+        "end": "2026-11-19T17:52:41.874251+08:00",
+        "seconds": 10.999360163230449
+      },
+      "update": {
+        "phase": "student_update",
+        "step": 19,
+        "start": "2026-11-19T17:52:45.454774+08:00",
+        "end": "2026-11-19T17:56:35.585348+08:00",
+        "seconds": 230.17843673564494
+      },
+      "weight_sync": {
+        "phase": "student_rollout_weight_sync",
+        "step": null,
+        "start": "2026-11-19T17:56:35.847814+08:00",
+        "end": "2026-11-19T17:56:37.789014+08:00",
+        "seconds": 1.9905789489857852
+      },
+      "teacher_children": {
+        "student_model_optimizer_offload": {
+          "phase": "student_model_optimizer_offload",
+          "step": null,
+          "start": "2026-11-19T17:50:21.471787+08:00",
+          "end": "2026-11-19T17:50:21.519893+08:00",
+          "seconds": 0.09252893505617976
+        },
+        "cpu_tokenizer_span_alignment": {
+          "phase": "cpu_tokenizer_span_alignment",
+          "step": null,
+          "start": "2026-11-19T17:50:21.559788+08:00",
+          "end": "2026-11-19T17:50:32.189962+08:00",
+          "seconds": 10.669817227870226
+        },
+        "cpu_scoring_request_commit": {
+          "phase": "cpu_scoring_request_commit",
+          "step": null,
+          "start": "2026-11-19T17:50:32.231138+08:00",
+          "end": "2026-11-19T17:50:38.039898+08:00",
+          "seconds": 5.849724932573736
+        },
+        "teacher_wake_ack": {
+          "phase": "teacher_wake_ack",
+          "step": null,
+          "start": "2026-11-19T17:50:38.082144+08:00",
+          "end": "2026-11-19T17:50:39.631734+08:00",
+          "seconds": 1.5911798886954784
+        },
+        "cpu_scoring_request_read": {
+          "phase": "cpu_scoring_request_read",
+          "step": null,
+          "start": "2026-11-19T17:50:39.599634+08:00",
+          "end": "2026-11-19T17:50:39.691757+08:00",
+          "seconds": 0.1297374488785863
+        },
+        "teacher_model_scoring": {
+          "phase": "teacher_model_scoring",
+          "step": null,
+          "start": "2026-11-19T17:50:39.854625+08:00",
+          "end": "2026-11-19T17:52:21.557399+08:00",
+          "seconds": 101.74871542816982
+        },
+        "teacher_sleep_ack": {
+          "phase": "teacher_sleep_ack",
+          "step": null,
+          "start": "2026-11-19T17:52:24.373690+08:00",
+          "end": "2026-11-19T17:52:25.819234+08:00",
+          "seconds": 1.5293905357830226
+        },
+        "teacher_model_wake": {
+          "phase": "teacher_model_wake",
+          "step": null,
+          "start": "2026-11-19T17:50:38.133647+08:00",
+          "end": "2026-11-19T17:50:39.561366+08:00",
+          "seconds": 1.4715764340944588
+        },
+        "teacher_model_sleep": {
+          "phase": "teacher_model_sleep",
+          "step": null,
+          "start": "2026-11-19T17:52:24.374854+08:00",
+          "end": "2026-11-19T17:52:25.738652+08:00",
+          "seconds": 1.4063373398967087
+        }
+      },
+      "logged_metrics": {
+        "timing_s/gen": 852.2869325373322,
+        "timing_s/update_actor": 374.5226281899959,
+        "timing_s/update_weights": 1.9908332591876388,
+        "timing_s/step": 1228.8114569201134,
+        "response_length/mean": 10716.453125,
+        "response_length/max": 16384.0,
+        "response_length/clip_ratio": 0.234375,
+        "perf/total_num_tokens": 1385050.0,
+        "actor/loss": -0.11771006882190704,
+        "actor/grad_norm": 1.2145103216171265,
+        "overlap/coverage": 0.9999278270999762,
+        "alignment/verbatim_response_trajectories": 0.0
+      }
+    },
+    "20": {
+      "reuse": {
+        "phase": "student_rollout_logprob_reuse",
+        "step": 20,
+        "start": "2026-11-19T18:10:05.476361+08:00",
+        "end": "2026-11-19T18:10:05.520312+08:00",
+        "seconds": 0.09004109399393201
+      },
+      "teacher": {
+        "phase": "teacher_scoring_phase",
+        "step": 20,
+        "start": "2026-11-19T18:10:05.577010+08:00",
+        "end": "2026-11-19T18:12:21.095543+08:00",
+        "seconds": 135.56286892667413
+      },
+      "overlap": {
+        "phase": "cpu_top16_overlap",
+        "step": 20,
+        "start": "2026-11-19T18:12:21.134015+08:00",
+        "end": "2026-11-19T18:12:31.897645+08:00",
+        "seconds": 10.801902707666159
+      },
+      "update": {
+        "phase": "student_update",
+        "step": 20,
+        "start": "2026-11-19T18:12:35.487368+08:00",
+        "end": "2026-11-19T18:16:28.009959+08:00",
+        "seconds": 232.5680018858984
+      },
+      "weight_sync": {
+        "phase": "student_rollout_weight_sync",
+        "step": null,
+        "start": "2026-11-19T18:16:28.263152+08:00",
+        "end": "2026-11-19T18:16:30.272512+08:00",
+        "seconds": 2.055895486846566
+      },
+      "teacher_children": {
+        "student_model_optimizer_offload": {
+          "phase": "student_model_optimizer_offload",
+          "step": null,
+          "start": "2026-11-19T18:10:05.620615+08:00",
+          "end": "2026-11-19T18:10:05.768978+08:00",
+          "seconds": 0.19175696978345513
+        },
+        "cpu_tokenizer_span_alignment": {
+          "phase": "cpu_tokenizer_span_alignment",
+          "step": null,
+          "start": "2026-11-19T18:10:05.811200+08:00",
+          "end": "2026-11-19T18:10:16.492827+08:00",
+          "seconds": 10.723566777072847
+        },
+        "cpu_scoring_request_commit": {
+          "phase": "cpu_scoring_request_commit",
+          "step": null,
+          "start": "2026-11-19T18:10:16.533580+08:00",
+          "end": "2026-11-19T18:10:22.377017+08:00",
+          "seconds": 5.883972923271358
+        },
+        "teacher_wake_ack": {
+          "phase": "teacher_wake_ack",
+          "step": null,
+          "start": "2026-11-19T18:10:22.417920+08:00",
+          "end": "2026-11-19T18:10:23.961671+08:00",
+          "seconds": 1.5840788800269365
+        },
+        "cpu_scoring_request_read": {
+          "phase": "cpu_scoring_request_read",
+          "step": null,
+          "start": "2026-11-19T18:10:23.918425+08:00",
+          "end": "2026-11-19T18:10:24.006367+08:00",
+          "seconds": 0.1371309459209442
+        },
+        "teacher_model_scoring": {
+          "phase": "teacher_model_scoring",
+          "step": null,
+          "start": "2026-11-19T18:10:24.171255+08:00",
+          "end": "2026-11-19T18:12:11.741207+08:00",
+          "seconds": 107.6142303859815
+        },
+        "teacher_sleep_ack": {
+          "phase": "teacher_sleep_ack",
+          "step": null,
+          "start": "2026-11-19T18:12:14.593829+08:00",
+          "end": "2026-11-19T18:12:16.042164+08:00",
+          "seconds": 1.494218077044934
+        },
+        "teacher_model_wake": {
+          "phase": "teacher_model_wake",
+          "step": null,
+          "start": "2026-11-19T18:10:22.443093+08:00",
+          "end": "2026-11-19T18:10:23.868103+08:00",
+          "seconds": 1.4674902791157365
+        },
+        "teacher_model_sleep": {
+          "phase": "teacher_model_sleep",
+          "step": null,
+          "start": "2026-11-19T18:12:14.606268+08:00",
+          "end": "2026-11-19T18:12:15.963629+08:00",
+          "seconds": 1.3990454520098865
+        }
+      },
+      "logged_metrics": {
+        "timing_s/gen": 807.6138226897456,
+        "timing_s/update_actor": 382.786166400183,
+        "timing_s/update_weights": 2.0561295370571315,
+        "timing_s/step": 1192.4669900801964,
+        "response_length/mean": 10774.1875,
+        "response_length/max": 16384.0,
+        "response_length/clip_ratio": 0.1953125,
+        "perf/total_num_tokens": 1394076.0,
+        "actor/loss": -0.11682115495204926,
+        "actor/grad_norm": 1.2181483507156372,
+        "overlap/coverage": 0.9999253133937014,
+        "alignment/verbatim_response_trajectories": 0.0
+      }
+    }
+  },
+  "startup_and_periodic_phases": [
+    {
+      "phase": "queue_for_two_idle_gpus",
+      "step": null,
+      "start": "2026-11-19T16:58:45.746599+08:00",
+      "end": "2026-11-19T16:58:48.190687+08:00",
+      "seconds": 2.4836877859197557
+    },
+    {
+      "phase": "teacher_model_initialization",
+      "step": null,
+      "start": "2026-11-19T16:59:14.856229+08:00",
+      "end": "2026-11-19T17:00:02.597754+08:00",
+      "seconds": 47.78495565010235
+    },
+    {
+      "phase": "frozen_scorer_service_initialization",
+      "step": null,
+      "start": "2026-11-19T16:59:08.895411+08:00",
+      "end": "2026-11-19T17:00:09.812434+08:00",
+      "seconds": 60.957365311682224
+    },
+    {
+      "phase": "student_model_and_rollout_initialization",
+      "step": null,
+      "start": "2026-11-19T17:00:16.107216+08:00",
+      "end": "2026-11-19T17:01:25.355924+08:00",
+      "seconds": 69.29010250000283
+    },
+    {
+      "phase": "checkpoint_load",
+      "step": null,
+      "start": "2026-11-19T17:01:25.539031+08:00",
+      "end": "2026-11-19T17:01:36.566107+08:00",
+      "seconds": 11.06715354602784
+    },
+    {
+      "phase": "bare_student_benchmark_evaluation",
+      "step": 16,
+      "start": "2026-11-19T17:01:40.174889+08:00",
+      "end": "2026-11-19T17:08:06.000762+08:00",
+      "seconds": 385.86337490566075
+    }
+  ],
+  "remaining_training_steps": 44,
+  "remaining_ordinary_step_seconds_linear": 45143.9350634655
+}

@@ -1,13 +1,253 @@
 {
-  "status": "observing",
-  "updates": [],
+  "status": "passed_previous_failure_step",
+  "updates": [
+    {
+      "time": "2026-11-19T13:40:38.433515+08:00",
+      "event": "optimizer_update_committed",
+      "pid": 3092861,
+      "step": 1,
+      "metrics": {
+        "actor/pg_loss": [
+          -0.18837855570018291
+        ],
+        "actor/train_rollout_logprob_abs_diff_mean": [
+          0.12314042868092656
+        ],
+        "actor/train_rollout_logprob_signed_diff_mean": [
+          -0.07488690665923059
+        ],
+        "actor/train_rollout_logprob_abs_diff_max": [
+          19.75940704345703
+        ],
+        "actor/loss": [
+          -0.18837854266166687
+        ],
+        "actor/grad_norm": [
+          2.1225931644439697
+        ],
+        "actor/lr": [
+          1e-06
+        ],
+        "actor/perf/max_memory_allocated_gb": [
+          37.46239948272705
+        ],
+        "actor/perf/max_memory_reserved_gb": [
+          43.744140625
+        ],
+        "actor/perf/cpu_memory_used_gb": [
+          250.79984664916992
+        ],
+        "perf/mfu/actor": [
+          0.0
+        ],
+        "overlap/coverage": [
+          0.999678572863514
+        ],
+        "overlap/valid_tokens": [
+          398096
+        ],
+        "overlap/questions": [
+          32
+        ],
+        "alignment/invalid_utf8_bytes": [
+          0
+        ],
+        "alignment/invalid_utf8_trajectories": [
+          0
+        ],
+        "overlap/token_value": [
+          0.7025869702282866
+        ],
+        "overlap/question_value": [
+          0.7025463567868272
+        ],
+        "P_overlap/token_value": [
+          0.8944016418113478
+        ],
+        "P_overlap/question_value": [
+          0.8930339518120949
+        ],
+        "rollout/H16_cond_native": [
+          0.41742920451289767
+        ],
+        "overlap/cpu_wall_seconds": [
+          7.782192399259657
+        ]
+      }
+    },
+    {
+      "time": "2026-11-19T13:44:34.972095+08:00",
+      "event": "optimizer_update_committed",
+      "pid": 3092861,
+      "step": 2,
+      "metrics": {
+        "actor/pg_loss": [
+          -0.17739640176296234
+        ],
+        "actor/train_rollout_logprob_abs_diff_mean": [
+          0.1262726318091154
+        ],
+        "actor/train_rollout_logprob_signed_diff_mean": [
+          -0.08047772571444511
+        ],
+        "actor/train_rollout_logprob_abs_diff_max": [
+          24.1248722076416
+        ],
+        "actor/loss": [
+          -0.17739640176296234
+        ],
+        "actor/grad_norm": [
+          2.077877998352051
+        ],
+        "actor/lr": [
+          1e-06
+        ],
+        "actor/perf/max_memory_allocated_gb": [
+          50.66252279281616
+        ],
+        "actor/perf/max_memory_reserved_gb": [
+          56.224609375
+        ],
+        "actor/perf/cpu_memory_used_gb": [
+          289.2818832397461
+        ],
+        "perf/mfu/actor": [
+          0.0
+        ],
+        "overlap/coverage": [
+          0.9996675195137473
+        ],
+        "overlap/valid_tokens": [
+          384857
+        ],
+        "overlap/questions": [
+          32
+        ],
+        "alignment/invalid_utf8_bytes": [
+          0
+        ],
+        "alignment/invalid_utf8_trajectories": [
+          0
+        ],
+        "overlap/token_value": [
+          0.6975704612362514
+        ],
+        "overlap/question_value": [
+          0.6965057599921397
+        ],
+        "P_overlap/token_value": [
+          0.8944222059181809
+        ],
+        "P_overlap/question_value": [
+          0.8910360085065658
+        ],
+        "rollout/H16_cond_native": [
+          0.4136081864825027
+        ],
+        "overlap/cpu_wall_seconds": [
+          3.4905704776756465
+        ]
+      }
+    },
+    {
+      "time": "2026-11-19T13:48:45.719607+08:00",
+      "event": "optimizer_update_committed",
+      "pid": 3092861,
+      "step": 3,
+      "metrics": {
+        "actor/pg_loss": [
+          -0.19860944524407387
+        ],
+        "actor/train_rollout_logprob_abs_diff_mean": [
+          0.1636963589116931
+        ],
+        "actor/train_rollout_logprob_signed_diff_mean": [
+          -0.10961674014106393
+        ],
+        "actor/train_rollout_logprob_abs_diff_max": [
+          23.625755310058594
+        ],
+        "actor/loss": [
+          -0.19860944151878357
+        ],
+        "actor/grad_norm": [
+          2.066681385040283
+        ],
+        "actor/lr": [
+          1e-06
+        ],
+        "actor/perf/max_memory_allocated_gb": [
+          50.66252279281616
+        ],
+        "actor/perf/max_memory_reserved_gb": [
+          56.595703125
+        ],
+        "actor/perf/cpu_memory_used_gb": [
+          283.3479537963867
+        ],
+        "perf/mfu/actor": [
+          0.0
+        ],
+        "overlap/coverage": [
+          0.9997100017671767
+        ],
+        "overlap/valid_tokens": [
+          441254
+        ],
+        "overlap/questions": [
+          32
+        ],
+        "alignment/invalid_utf8_bytes": [
+          0
+        ],
+        "alignment/invalid_utf8_trajectories": [
+          0
+        ],
+        "overlap/token_value": [
+          0.7064974198534177
+        ],
+        "overlap/question_value": [
+          0.703943084090272
+        ],
+        "P_overlap/token_value": [
+          0.8927375727645154
+        ],
+        "P_overlap/question_value": [
+          0.8906782227099709
+        ],
+        "rollout/H16_cond_native": [
+          0.4373058108371098
+        ],
+        "overlap/cpu_wall_seconds": [
+          3.583645402919501
+        ]
+      }
+    }
+  ],
   "failures": [],
-  "observed_at": "2026-11-19T13:36:24.509356+08:00",
-  "committed_steps": [],
-  "synchronized_updates": 0,
+  "observed_at": "2026-11-19T13:48:54.551495+08:00",
+  "committed_steps": [
+    1,
+    2,
+    3
+  ],
+  "synchronized_updates": 3,
   "current_phase": {
-    "time": "2026-11-19T13:35:20.239042+08:00",
-    "phase": "bare_student_benchmark_evaluation",
-    "step": 0
+    "time": "2026-11-19T13:48:47.906118+08:00",
+    "phase": "student_rollout_weight_sync",
+    "status": "completed"
+  },
+  "plan_binding": "a1a4f6cdf863159b41986ab95ddcc4872b62b0c5731d46d5a96eb780a44ecf86",
+  "implementation_matches_frozen_plan": true,
+  "formal_runtime_acceptance": {
+    "status": "passed",
+    "plan_binding": "a1a4f6cdf863159b41986ab95ddcc4872b62b0c5731d46d5a96eb780a44ecf86",
+    "actual_step": 1,
+    "trajectories": 128,
+    "loss_type": "traditional_opd",
+    "resource_mode": "shared_two_gpu",
+    "student_logprob_source": "vllm_rollout_raw_logprobs_v1",
+    "validation_scope": "full-batch generation, scoring, handover and finite optimizer update",
+    "numeric_equivalence": "not_claimed; rollout/actor discrepancy logged per step"
   }
 }

@@ -2,6 +2,8 @@
 
 原全流程已完成1024题、教师S−T／global／all／Slerp0.1的overlap。旧OPD在2次更新后因UTF-8文本对齐错误退出；修复通过429项CPU回归及包检查，已在tmux ste中以opd_n1024_project_outputs_utf8_v2从初始学生重跑，仍用GPU2／3和相同超参数。16组消融已完成并归档至主outputs根目录。后续方案固定为教师空间S−T，历史学生空间T−S仅保留作对比；原100／1000题及已完成参数结果不改身份或内容。唯一执行计划仍为[ablation计划](docs/ablation.md)，唯一配置为[ablation.json](configs/ablation.json)。
 
+本次UTF-8修复重启已通过429项CPU回归及包检查，GPU正式训练前3步更新和权重同步全部成功，已越过旧第3步的失败位置。验证凭据：audit/opd_utf8_restart_20261119/runtime_verification.json。
+
 ## 当前1024题消融：S−T的16组组合（已完成并归档）
 
 - [x] 固定2×2×2×2矩阵：global／per_sample × SV前2048／full × 教师all／最低50%排序mask × additive／Slerp。教师L29、alpha0.1，0次更新，到overlap停止。

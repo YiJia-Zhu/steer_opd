@@ -1,5 +1,5 @@
 {
-  "status": "launching",
+  "status": "running_verified_through_step_3",
   "time": "2026-11-19T13:32:37.545579+08:00",
   "tmux_target": "ste",
   "pane_id": "%25",
@@ -59,5 +59,18 @@
     "src/steer_opd/training/verl_trainer.py": "7a007decedcbad24d77097efcfa949aea8518085f2d66911f522aa05fad3346d"
   },
   "new_output": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_utf8_v2",
-  "command": "bash audit/opd_utf8_restart_20261119/launch.sh"
+  "command": "bash audit/opd_utf8_restart_20261119/launch.sh",
+  "actual_plan_binding": "a1a4f6cdf863159b41986ab95ddcc4872b62b0c5731d46d5a96eb780a44ecf86",
+  "source_snapshot": "audit/opd_utf8_restart_20261119/implementation_snapshot.tar.gz",
+  "source_snapshot_sha256": "9d6803d429f04de496f5e1bb520cd1443fb0af1e8ffa2f7979d90978c6cb1409",
+  "validation_evidence": "audit/opd_utf8_restart_20261119/runtime_verification.json",
+  "verified_at": "2026-11-19T13:49:33.454310+08:00",
+  "committed_steps": [
+    1,
+    2,
+    3
+  ],
+  "synchronized_updates": 3,
+  "training_job_pid": 3089716,
+  "implementation_matches_frozen_plan": true
 }

@@ -1,0 +1,65 @@
+{
+  "status": "cpu_passed",
+  "shell_syntax": "passed",
+  "settings_delta": {
+    "alpha": {
+      "steer": 0.1,
+      "vanilla": 0.0
+    },
+    "run_name": {
+      "steer": "opd_n1024_project_outputs_verbatim_v3",
+      "vanilla": "opd_n1024_vanilla_seed42_v1"
+    }
+  },
+  "scientific_inputs_and_models": "identical",
+  "formal_plan_validation": "passed",
+  "actual_teacher_zero_alpha_build_spec": false,
+  "zero_alpha_skips_injection_selector_and_vector_lookup": true,
+  "inherited_steered_training_state": false,
+  "source_checkpoint": "initial_Qwen3-4B_unless_resuming_same_vanilla_run",
+  "current_live_implementation_unchanged": true,
+  "current_live_plan": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/metadata/plan.json",
+  "new_output": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_vanilla_seed42_v1",
+  "vanilla_plan_binding": "3054238f83fde464c00794c1d4fb6148e5cf5c11ce75cf5fc041059978c7c339",
+  "verl_overrides_delta": {
+    "data.train_files": {
+      "steer": [
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/data/train.parquet"
+      ],
+      "vanilla": [
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_vanilla_seed42_v1/data/train.parquet"
+      ]
+    },
+    "data.val_files": {
+      "steer": [
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/data/benchmarks.parquet"
+      ],
+      "vanilla": [
+        "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_vanilla_seed42_v1/data/benchmarks.parquet"
+      ]
+    },
+    "trainer.experiment_name": {
+      "steer": "opd_n1024_project_outputs_verbatim_v3",
+      "vanilla": "opd_n1024_vanilla_seed42_v1"
+    },
+    "trainer.default_local_dir": {
+      "steer": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/checkpoints",
+      "vanilla": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_vanilla_seed42_v1/checkpoints"
+    },
+    "trainer.resume_mode": {
+      "steer": "resume_path",
+      "vanilla": "auto"
+    },
+    "ray_kwargs.ray_init.namespace": {
+      "steer": "opd_n1024_project_outputs_verbatim_v3",
+      "vanilla": "opd_n1024_vanilla_seed42_v1"
+    },
+    "ray_kwargs.ray_init.runtime_env.env_vars.TENSORBOARD_DIR": {
+      "steer": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_verbatim_v3/logs/tensorboard/train",
+      "vanilla": "/local_nvme/data/zhenning/working_tmp/steer_opd/outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_vanilla_seed42_v1/logs/tensorboard/train"
+    }
+  },
+  "gpu_started": false,
+  "execution": "user_manual_bash_vanilla.sh_--run",
+  "script_sha256": "da34ca09db03755400266de944ef092464f48019404de065661d336a87a9a091"
+}

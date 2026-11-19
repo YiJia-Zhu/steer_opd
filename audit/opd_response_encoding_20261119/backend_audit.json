@@ -1,0 +1,52 @@
+{
+  "reference_and_source_generation": {
+    "source": "scripts/generate_static_sources.py",
+    "line": 62,
+    "entrypoint": "engine.generate",
+    "backend": "easysteer_vllm"
+  },
+  "shared_S0_activation_capture": {
+    "source": "src/steer_opd/easysteer_extraction.py",
+    "line": 89,
+    "entrypoint": "hs.capture",
+    "backend": "easysteer_vllm"
+  },
+  "native_teacher_scoring": {
+    "source": "scripts/score_compass_sources.py",
+    "line": 31,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
+  "baseline_and_four_fixed_schemes": {
+    "source": "scripts/run_overlap_ablation.py",
+    "line": 253,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
+  "fixed_prefix_engine_call": {
+    "source": "src/steer_opd/easysteer_static.py",
+    "line": 189,
+    "entrypoint": "llm.generate",
+    "backend": "easysteer_vllm"
+  },
+  "teacher_space_S_T_scoring": {
+    "source": "src/steer_opd/teacher_screen.py",
+    "line": 218,
+    "entrypoint": "fixed_prefix_scores",
+    "backend": "easysteer_vllm"
+  },
+  "scope": "Current zero-update panel and explicit HF acceptance/reference; legacy execution code removed",
+  "probability_statistics": "vLLM raw Top16 IDs/logprobs only; exact matching on at most 32 candidate nodes; no full-vocabulary collector",
+  "cpu_work": [
+    "tokenization",
+    "byte/span alignment",
+    "mean pooling",
+    "T-S bank construction",
+    "metrics",
+    "serialization",
+    "plots"
+  ],
+  "hf_model_forward": "Explicit hf_batched_static numerical reference only; no automatic fallback",
+  "resume_granularity": "engine_call",
+  "gpu_validated": false
+}

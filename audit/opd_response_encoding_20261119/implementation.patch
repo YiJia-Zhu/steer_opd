@@ -1,0 +1,264 @@
+diff --git "a/docs/\344\273\243\347\240\201\346\241\206\346\236\266\351\200\273\350\276\221.md" "b/docs/\344\273\243\347\240\201\346\241\206\346\236\266\351\200\273\350\276\221.md"
+index 7cb32b0..8b9d229 100644
+--- "a/docs/\344\273\243\347\240\201\346\241\206\346\236\266\351\200\273\350\276\221.md"
++++ "b/docs/\344\273\243\347\240\201\346\241\206\346\236\266\351\200\273\350\276\221.md"
+@@ -81,6 +81,8 @@ CPU分别计算两份回答激活的均值，再相减：
+ 
+ 训练对齐允许生成内容包含不合法UTF-8：保留实际学生token，教师对合法Unicode片段使用原生BPE、对损坏字节使用其原生单字节token，并核验师生完整回答字节完全一致。只将涉及损坏字节的共同span标为无效，后续合法span继续参与loss与overlap；显示文本中的反斜杠转义不作为模型输入。每步记录`alignment/invalid_utf8_bytes`和`alignment/invalid_utf8_trajectories`及有效覆盖率。静态消融默认仍严格拒绝不合法UTF-8，既有产物和提交身份不改写。
+ 
++生成内容还可能包含未做NFC规范化的合法Unicode，例如`e`与组合重音。若教师常规重编码改写了原回答字节，训练对齐改用独立的原生BPE回答编码器副本，仅关闭该副本的normalizer，再校验完整字节完全一致。原tokenizer及prompt处理、实际学生token、静态消融的严格默认值均保持；不把规范化后的文本替换进训练。新plan记录`response_encoding_policy=native_bpe_without_response_normalization_v1`，受影响的alignment记录角色及策略，每步标量`alignment/verbatim_response_trajectories`记录发生次数。旧冻结plan不改写，恢复训练须使用新运行身份绑定已有完整checkpoint。
++
+ ### 第6步：用更新后的学生完成第2步，并继续循环
+ 
+ 第2步使用已经更新过的学生，重复同一流程：
+diff --git a/src/steer_opd/compass_alignment.py b/src/steer_opd/compass_alignment.py
+index 1067aae..03bb1af 100644
+--- a/src/steer_opd/compass_alignment.py
++++ b/src/steer_opd/compass_alignment.py
+@@ -16,6 +16,7 @@ from steer_opd.resumable_core import digest
+ 
+ METRIC = "rethinking_cross_family_top16_overlap"
+ INVALID_UTF8_POLICY = "exact_bytes_invalid_utf8_spans_mask_v1"
++VERBATIM_RESPONSE_POLICY = "native_bpe_without_response_normalization_v1"
+ 
+ 
+ def _byte_decoder():
+@@ -62,6 +63,22 @@ class ByteLevelCodec:
+     def encode(self, text):
+         return list(self.tokenizer.encode(text, add_special_tokens=False))
+ 
++    def encode_verbatim(self, text):
++        """Encode a response without normalizing its generated Unicode bytes.
++
++        Clone only the backend: prompts and other users of the original
++        tokenizer retain its normalizer, special-token handling and settings.
++        """
++        if not hasattr(self, '_verbatim_backend'):
++            from tokenizers import Tokenizer
++            state = json.loads(self.tokenizer.backend_tokenizer.to_str())
++            state['normalizer'] = None
++            self._verbatim_backend = Tokenizer.from_str(json.dumps(state, ensure_ascii=False))
++        tokens = list(self._verbatim_backend.encode(text, add_special_tokens=False).ids)
++        if self.bytes(tokens) != text.encode('utf-8'):
++            raise ValueError('Verbatim response encoding does not preserve exact bytes')
++        return tokens
++
+     def bytes(self, ids):
+         try:
+             return b"".join(self.raw[int(t)] for t in ids)
+@@ -88,7 +105,7 @@ def _utf8_chunks(raw):
+     return chunks
+ 
+ 
+-def _encode_exact_chunks(codec, raw, chunks):
++def _encode_exact_chunks(codec, raw, chunks, *, verbatim=False):
+     """Use native text BPE and native single-byte IDs without replacing bytes."""
+     if not hasattr(codec, '_single_byte_token_ids'):
+         single = {}
+@@ -99,7 +116,7 @@ def _encode_exact_chunks(codec, raw, chunks):
+     result = []
+     for start, end, text in chunks:
+         if text is not None:
+-            result.extend(codec.encode(text))
++            result.extend(codec.encode_verbatim(text) if verbatim else codec.encode(text))
+         else:
+             try:
+                 result.extend(codec._single_byte_token_ids[bytes([byte])] for byte in raw[start:end])
+@@ -108,7 +125,7 @@ def _encode_exact_chunks(codec, raw, chunks):
+     return result
+ 
+ 
+-def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='raise'):
++def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='raise', response_encoding=None):
+     """Smallest common UTF-8-safe spans; never retokenize the sampled student.
+ 
+     Special/control tokens and trailing EOS have no scored text span. Their
+@@ -117,9 +134,17 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
+ 
+     Static experiments reject malformed UTF-8 by default. Training explicitly
+     requests exact-byte scorer inputs and masks only affected common spans.
++    A separate verbatim response backend handles tokenizer normalization that
++    would otherwise alter generated text; original student IDs are unchanged.
+     """
+     if invalid_utf8 not in ('raise', 'mask'):
+         raise ValueError('invalid_utf8 must be raise or mask')
++    # The existing exact-byte training route already opts into UTF-8 masking.
++    # Keep its loss caller unchanged so compatible checkpoints can be resumed.
++    if response_encoding is None:
++        response_encoding = 'verbatim' if invalid_utf8 == 'mask' else 'strict'
++    if response_encoding not in ('strict', 'verbatim'):
++        raise ValueError('response_encoding must be strict or verbatim')
+     source_ids = list(source_ids)
+     if not source_ids or "student" in scoring_codecs:
+         raise ValueError("Need source tokens and distinct scoring-role names")
+@@ -143,8 +168,12 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
+     codecs = {"student": student_codec, **scoring_codecs}
+     ids = {"student": body, **{role: (_encode_exact_chunks(codec, raw, chunks) if bad_ranges else codec.encode(text))
+                               for role, codec in scoring_codecs.items()}}
+-    boundaries = {}
++    boundaries, verbatim_roles = {}, []
+     for role, tokens in ids.items():
++        if role != 'student' and response_encoding == 'verbatim' and codecs[role].bytes(tokens) != raw:
++            tokens = _encode_exact_chunks(codecs[role], raw, chunks, verbatim=True)
++            ids[role] = tokens
++            verbatim_roles.append(role)
+         if codecs[role].bytes(tokens) != raw:
+             raise ValueError(f"{role} retokenization does not preserve the exact response bytes")
+         ends = {0: 0}
+@@ -196,6 +225,8 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
+         result['invalid_utf8'] = {'policy': INVALID_UTF8_POLICY, 'byte_ranges': bad_ranges,
+                                   'bytes': sum(end-start for start, end in bad_ranges),
+                                   'response_text_format': 'backslash_escaped_display_only'}
++    if verbatim_roles:
++        result['verbatim_response_encoding'] = {'policy': VERBATIM_RESPONSE_POLICY, 'roles': verbatim_roles}
+     result["alignment_id"] = digest(result)
+     return result
+ 
+diff --git a/src/steer_opd/training/overlap_monitor.py b/src/steer_opd/training/overlap_monitor.py
+index cf07c8d..29d4021 100644
+--- a/src/steer_opd/training/overlap_monitor.py
++++ b/src/steer_opd/training/overlap_monitor.py
+@@ -54,6 +54,7 @@ def row_statistics(row,alignment,student,teacher,codecs):
+     h16=torch.special.entr(conditional).sum(-1)
+     return {'question_id':row['question_id'],'trajectory_id':row['id'],
+         'invalid_utf8_bytes':alignment.get('invalid_utf8',{}).get('bytes',0),
++        'verbatim_response':bool(alignment.get('verbatim_response_encoding')),
+         'total_tokens':len(row['token_ids']),'valid_tokens':int(valid.sum()),
+         'student_H16_cond_sum':float(h16[valid].sum()),
+         'overlap_sum':float(result['overlap'][valid].sum()),
+@@ -70,6 +71,7 @@ def summarize_statistics(parts):
+     metrics={'overlap/coverage':valid/max(1,total),'overlap/valid_tokens':valid,'overlap/questions':len(groups)}
+     metrics['alignment/invalid_utf8_bytes']=sum(p.get('invalid_utf8_bytes',0) for p in parts)
+     metrics['alignment/invalid_utf8_trajectories']=sum(p.get('invalid_utf8_bytes',0)>0 for p in parts)
++    metrics['alignment/verbatim_response_trajectories']=sum(bool(p.get('verbatim_response',False)) for p in parts)
+     for name in ('overlap','P_overlap'):
+         metrics[name+'/token_value']=sum(p[name+'_sum'] for p in parts)/valid
+         metrics[name+'/question_value']=sum(g[name+'_sum']/g['valid_tokens'] for g in groups.values())/len(groups)
+diff --git a/src/steer_opd/training/resume_handover.py b/src/steer_opd/training/resume_handover.py
+index ace32c0..944bb44 100644
+--- a/src/steer_opd/training/resume_handover.py
++++ b/src/steer_opd/training/resume_handover.py
+@@ -1,4 +1,4 @@
+-"""Explicit checkpoint transfer when adding monitoring to an already running plan."""
++"""Explicit checkpoint transfer between compatible frozen training plans."""
+ from pathlib import Path
+ import shutil
+ 
+@@ -49,7 +49,7 @@ def bind_resume_source(plan,checkpoint):
+     plan['resume_source']={'checkpoint':stored_path(path),'step':step,
+         'plan_binding':source['binding'],'source_plan':stored_path(source_root/'metadata/plan.json'),
+         'source_plan_sha256':file_sha256(source_root/'metadata/plan.json'),'files':files,
+-        'change':'Top16 monitoring only; model, optimizer, scheduler, RNG and dataloader restored'}
++        'change':'Compatible run transfer; model, optimizer, scheduler, RNG and dataloader restored'}
+ 
+ 
+ def validate_resume_source(plan):
+diff --git a/src/steer_opd/training/verl_plan.py b/src/steer_opd/training/verl_plan.py
+index 467fccd..724c996 100644
+--- a/src/steer_opd/training/verl_plan.py
++++ b/src/steer_opd/training/verl_plan.py
+@@ -10,7 +10,7 @@ from steer_opd.training.config import TrainingLossConfig
+ from steer_opd.training.rollout_seeds import SEED_POLICY
+ from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
+ from steer_opd.training.scoring_request import SCHEMA as SCORING_REQUEST_SCHEMA
+-from steer_opd.compass_alignment import INVALID_UTF8_POLICY
++from steer_opd.compass_alignment import INVALID_UTF8_POLICY, VERBATIM_RESPONSE_POLICY
+ from steer_opd.retention import MINIMAL,minimal,ALL_MODELS_LATEST_STATE,checkpoint_policy,keep_model_history
+ from steer_opd.training.paths import training_output_dir
+ from steer_opd.generation_policy import (DEFAULT_MAX_GENERATION_LENGTH, DEFAULT_PRESENCE_PENALTY, presence_penalty,
+@@ -119,6 +119,7 @@ def build_verl_plan(experiment, settings=None, loss=None):
+             'sampling_policy': training_sampling_policy(asdict(settings)),
+             'scoring_request_schema': SCORING_REQUEST_SCHEMA,
+             'invalid_utf8_alignment_policy': INVALID_UTF8_POLICY,
++            'response_encoding_policy': VERBATIM_RESPONSE_POLICY,
+             'retention_policy':experiment.get('retention_policy',MINIMAL),
+             'checkpoint_retention':settings.checkpoint_retention,
+             'resource_mode':'shared_two_gpu',
+diff --git a/tests/test_training_utf8.py b/tests/test_training_utf8.py
+index f06447c..8a3291b 100644
+--- a/tests/test_training_utf8.py
++++ b/tests/test_training_utf8.py
+@@ -7,7 +7,7 @@ import pytest
+ import torch
+ from transformers import AutoTokenizer
+ 
+-from steer_opd.compass_alignment import ByteLevelCodec, INVALID_UTF8_POLICY, align_response
++from steer_opd.compass_alignment import ByteLevelCodec, INVALID_UTF8_POLICY, VERBATIM_RESPONSE_POLICY, align_response
+ from steer_opd.resumable_core import ROOT, read_json
+ from steer_opd.training.losses import distillation_loss, training_alignment
+ from steer_opd.training.overlap_monitor import row_statistics, summarize_statistics
+@@ -139,3 +139,74 @@ def test_real_qwen_student_teacher_keep_all_bytes_and_recover_valid_suffix(real_
+     assert any(plan['alignment_mask'][:len(before)])
+     assert any(plan['alignment_mask'][-len(after)-1:-1])
+     assert not any(plan['alignment_mask'][len(before):len(before)+len(bad)])
++
++
++def raw_student_ids(codec, raw):
++    single={value:token for token,value in codec.raw.items() if len(value)==1 and token not in codec.special}
++    return [single[bytes([byte])] for byte in raw]+[codec.tokenizer.eos_token_id]
++
++
++@pytest.mark.parametrize('text', [
++    'Let Cafe\u0301 = 2.',
++    'x = A\u030a + 1.',
++    'a\u0308\u0301 then b.',
++    'x = \u212b; y = \u2126.',
++    'a\u0315\u0300 then z.',
++])
++def test_real_qwen_normalization_preserves_generated_bytes_and_original_tokenizer(real_codecs,text):
++    s,t=real_codecs['student'],real_codecs['teacher']
++    original=t.tokenizer.backend_tokenizer.to_str()
++    raw=text.encode('utf-8');tokens=raw_student_ids(s,raw)
++    assert t.bytes(t.encode(text))!=raw  # Reproduce the previous failure with actual assets.
++    with pytest.raises(ValueError,match='teacher retokenization'):
++        align_response(tokens,s,{'teacher':t})  # Static default stays strict.
++    with pytest.raises(ValueError,match='teacher retokenization'):
++        align_response(tokens,s,{'teacher':t},invalid_utf8='mask',response_encoding='strict')
++    plan=training_alignment(tokens,s,t)
++    assert plan['source_token_ids']==tokens and plan['native_response_ids']['student']==tokens[:-1]
++    assert t.bytes(plan['native_response_ids']['teacher'])==raw
++    assert plan['response_text']==text
++    assert plan['alignment_mask']==[True]*(len(tokens)-1)+[False]
++    assert 'invalid_utf8' not in plan
++    assert plan['verbatim_response_encoding']=={'policy':VERBATIM_RESPONSE_POLICY,'roles':['teacher']}
++    assert t.tokenizer.backend_tokenizer.to_str()==original
++    backend=t._verbatim_backend
++    assert training_alignment(tokens,s,t)==plan and t._verbatim_backend is backend
++
++
++def test_normalization_and_malformed_bytes_share_exact_native_scorer_prefix(real_codecs):
++    s,t=real_codecs['student'],real_codecs['teacher']
++    before='Cafe\u0301 '.encode();after=' a\u0308 then z.'.encode()
++    raw=before+b'\xff'+after;tokens=raw_student_ids(s,raw)
++    plan=training_alignment(tokens,s,t)
++    assert t.bytes(plan['native_response_ids']['teacher'])==raw
++    assert plan['invalid_utf8']['bytes']==1 and plan['verbatim_response_encoding']['roles']==['teacher']
++    assert not plan['alignment_mask'][len(before)]
++    assert any(plan['alignment_mask'][len(before)+1:-1])
++
++
++def test_verbatim_alignment_roundtrip_and_gradients_keep_same_generated_text(real_codecs,tmp_path):
++    s,t=real_codecs['student'],real_codecs['teacher']
++    raw='Cafe\u0301 = A\u030a.'.encode();tokens=raw_student_ids(s,raw);plan=training_alignment(tokens,s,t)
++    source={'id':'r','question_id':'q','question':'x?','prompt_token_ids':[1],'token_ids':tokens}
++    native={'teacher':{'id':'r','key':'r','prompt_token_ids':[1],'token_ids':plan['native_response_ids']['teacher']}}
++    request={'plan_binding':'verbatim','seed':42,'rows':[{'source':source,'alignment':plan,'native':native}]}
++    marker=write_request(tmp_path,request)
++    assert read_full_request(tmp_path,marker['request_id'],'verbatim')==request
++    _,rows=read_native_request(tmp_path,marker['request_id'],'verbatim','teacher')
++    assert t.bytes(rows[0]['token_ids'])==raw
++    student=torch.full((len(tokens),),-1.,requires_grad=True)
++    teacher=torch.full((len(native['teacher']['token_ids']),),-.5,requires_grad=True)
++    result=distillation_loss(plan,student,teacher)
++    assert result.valid_tokens==len(tokens)-1
++    result.loss.backward()
++    torch.testing.assert_close(student.grad[:-1],torch.full((len(tokens)-1,),-.5/(len(tokens)-1)))
++    assert student.grad[-1]==0 and teacher.grad is None
++
++
++def test_verbatim_encoding_keeps_the_final_byte_integrity_guard(real_codecs,monkeypatch):
++    s,t=real_codecs['student'],real_codecs['teacher']
++    tokens=raw_student_ids(s,'Cafe\u0301'.encode())
++    monkeypatch.setattr(t,'encode_verbatim',t.encode)
++    with pytest.raises(ValueError,match='teacher retokenization'):
++        training_alignment(tokens,s,t)

@@ -10,7 +10,7 @@ from steer_opd.training.config import TrainingLossConfig
 from steer_opd.training.rollout_seeds import SEED_POLICY
 from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
 from steer_opd.training.scoring_request import SCHEMA as SCORING_REQUEST_SCHEMA
-from steer_opd.compass_alignment import INVALID_UTF8_POLICY
+from steer_opd.compass_alignment import INVALID_UTF8_POLICY, VERBATIM_RESPONSE_POLICY
 from steer_opd.retention import MINIMAL,minimal,ALL_MODELS_LATEST_STATE,checkpoint_policy,keep_model_history
 from steer_opd.training.paths import training_output_dir
 from steer_opd.generation_policy import (DEFAULT_MAX_GENERATION_LENGTH, DEFAULT_PRESENCE_PENALTY, presence_penalty,
@@ -119,6 +119,7 @@ def build_verl_plan(experiment, settings=None, loss=None):
             'sampling_policy': training_sampling_policy(asdict(settings)),
             'scoring_request_schema': SCORING_REQUEST_SCHEMA,
             'invalid_utf8_alignment_policy': INVALID_UTF8_POLICY,
+            'response_encoding_policy': VERBATIM_RESPONSE_POLICY,
             'retention_policy':experiment.get('retention_policy',MINIMAL),
             'checkpoint_retention':settings.checkpoint_retention,
             'resource_mode':'shared_two_gpu',

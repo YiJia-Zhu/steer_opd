@@ -1,0 +1,43 @@
+{
+  "status": "fixed_cpu_verified",
+  "verified_at": "2026-11-19T16:49:23.584019+08:00",
+  "failure": "teacher retokenization does not preserve the exact response bytes",
+  "reproduced_cause": "Teacher NFC normalizer changes generated non-NFC Unicode byte sequences. Reproduced with the actual local student/teacher tokenizers.",
+  "fix": "A separately cloned native BPE response backend bypasses normalization only after normal encoding changes bytes; keep the final exact-byte check.",
+  "response_encoding_policy": "native_bpe_without_response_normalization_v1",
+  "preserved": [
+    "actual student token IDs",
+    "original response bytes",
+    "original tokenizer backend and prompt processing",
+    "strict static alignment default",
+    "existing outputs/checkpoint/config bytes"
+  ],
+  "cpu_tests_passed": 437,
+  "package_check": "passed",
+  "gpu_started": false,
+  "training_restarted": false,
+  "step_19_original_trajectory_available": false,
+  "coverage": [
+    "decomposed and reordered combining marks",
+    "Unicode singleton normalization",
+    "normalization mixed with malformed UTF-8",
+    "array-backed scoring request roundtrip",
+    "valid-token gradients and terminal mask",
+    "unmodified default tokenizer",
+    "final exact-byte guard"
+  ],
+  "resume_checkpoint_step": 16,
+  "resume_checkpoint_receipt_sha256": "47a73c694434018825e1bdb2c6a637f192b2261082733148d06579685ed0e8fd",
+  "resume_requires_new_run_identity": true,
+  "files": {
+    "src/steer_opd/compass_alignment.py": "41eb4fbfe3367d648255dd0ae3ea11ec1f444c05a7d69f428d4ca9e121baf391",
+    "src/steer_opd/training/losses.py": "446e3acbe4ff426760588e0adb5ac99c8b2a8be08fc83461e2c80a03954fd5e8",
+    "src/steer_opd/training/verl_plan.py": "17ef25e5d5fa603a2017ed4febe43a3710f7179db863e146ee3c474ea45ddfd0",
+    "src/steer_opd/training/overlap_monitor.py": "8525218056ca66968b97b0d456ad7c1b5c483a88c3d6e098ee2a14cb2edce618",
+    "tests/test_training_utf8.py": "261f9e65f80849b08b8e1629a5d583f1c8b8ee096a22ee168777308511f3b69b",
+    "docs/代码框架逻辑.md": "a1bfbd14cd62b9aa30a56e54657c2f4c840692e40dc90cb2259b0c18c53543e1"
+  },
+  "test_log": "audit/opd_response_encoding_20261119/cpu_regression.log",
+  "resume_cpu_tests_passed": 437,
+  "loss_file_preserved_for_checkpoint_compatibility": true
+}

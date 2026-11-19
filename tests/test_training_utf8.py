@@ -7,7 +7,7 @@ import pytest
 import torch
 from transformers import AutoTokenizer
 
-from steer_opd.compass_alignment import ByteLevelCodec, INVALID_UTF8_POLICY, align_response
+from steer_opd.compass_alignment import ByteLevelCodec, INVALID_UTF8_POLICY, VERBATIM_RESPONSE_POLICY, align_response
 from steer_opd.resumable_core import ROOT, read_json
 from steer_opd.training.losses import distillation_loss, training_alignment
 from steer_opd.training.overlap_monitor import row_statistics, summarize_statistics
@@ -139,3 +139,74 @@ def test_real_qwen_student_teacher_keep_all_bytes_and_recover_valid_suffix(real_
     assert any(plan['alignment_mask'][:len(before)])
     assert any(plan['alignment_mask'][-len(after)-1:-1])
     assert not any(plan['alignment_mask'][len(before):len(before)+len(bad)])
+
+
+def raw_student_ids(codec, raw):
+    single={value:token for token,value in codec.raw.items() if len(value)==1 and token not in codec.special}
+    return [single[bytes([byte])] for byte in raw]+[codec.tokenizer.eos_token_id]
+
+
+@pytest.mark.parametrize('text', [
+    'Let Cafe\u0301 = 2.',
+    'x = A\u030a + 1.',
+    'a\u0308\u0301 then b.',
+    'x = \u212b; y = \u2126.',
+    'a\u0315\u0300 then z.',
+])
+def test_real_qwen_normalization_preserves_generated_bytes_and_original_tokenizer(real_codecs,text):
+    s,t=real_codecs['student'],real_codecs['teacher']
+    original=t.tokenizer.backend_tokenizer.to_str()
+    raw=text.encode('utf-8');tokens=raw_student_ids(s,raw)
+    assert t.bytes(t.encode(text))!=raw  # Reproduce the previous failure with actual assets.
+    with pytest.raises(ValueError,match='teacher retokenization'):
+        align_response(tokens,s,{'teacher':t})  # Static default stays strict.
+    with pytest.raises(ValueError,match='teacher retokenization'):
+        align_response(tokens,s,{'teacher':t},invalid_utf8='mask',response_encoding='strict')
+    plan=training_alignment(tokens,s,t)
+    assert plan['source_token_ids']==tokens and plan['native_response_ids']['student']==tokens[:-1]
+    assert t.bytes(plan['native_response_ids']['teacher'])==raw
+    assert plan['response_text']==text
+    assert plan['alignment_mask']==[True]*(len(tokens)-1)+[False]
+    assert 'invalid_utf8' not in plan
+    assert plan['verbatim_response_encoding']=={'policy':VERBATIM_RESPONSE_POLICY,'roles':['teacher']}
+    assert t.tokenizer.backend_tokenizer.to_str()==original
+    backend=t._verbatim_backend
+    assert training_alignment(tokens,s,t)==plan and t._verbatim_backend is backend
+
+
+def test_normalization_and_malformed_bytes_share_exact_native_scorer_prefix(real_codecs):
+    s,t=real_codecs['student'],real_codecs['teacher']
+    before='Cafe\u0301 '.encode();after=' a\u0308 then z.'.encode()
+    raw=before+b'\xff'+after;tokens=raw_student_ids(s,raw)
+    plan=training_alignment(tokens,s,t)
+    assert t.bytes(plan['native_response_ids']['teacher'])==raw
+    assert plan['invalid_utf8']['bytes']==1 and plan['verbatim_response_encoding']['roles']==['teacher']
+    assert not plan['alignment_mask'][len(before)]
+    assert any(plan['alignment_mask'][len(before)+1:-1])
+
+
+def test_verbatim_alignment_roundtrip_and_gradients_keep_same_generated_text(real_codecs,tmp_path):
+    s,t=real_codecs['student'],real_codecs['teacher']
+    raw='Cafe\u0301 = A\u030a.'.encode();tokens=raw_student_ids(s,raw);plan=training_alignment(tokens,s,t)
+    source={'id':'r','question_id':'q','question':'x?','prompt_token_ids':[1],'token_ids':tokens}
+    native={'teacher':{'id':'r','key':'r','prompt_token_ids':[1],'token_ids':plan['native_response_ids']['teacher']}}
+    request={'plan_binding':'verbatim','seed':42,'rows':[{'source':source,'alignment':plan,'native':native}]}
+    marker=write_request(tmp_path,request)
+    assert read_full_request(tmp_path,marker['request_id'],'verbatim')==request
+    _,rows=read_native_request(tmp_path,marker['request_id'],'verbatim','teacher')
+    assert t.bytes(rows[0]['token_ids'])==raw
+    student=torch.full((len(tokens),),-1.,requires_grad=True)
+    teacher=torch.full((len(native['teacher']['token_ids']),),-.5,requires_grad=True)
+    result=distillation_loss(plan,student,teacher)
+    assert result.valid_tokens==len(tokens)-1
+    result.loss.backward()
+    torch.testing.assert_close(student.grad[:-1],torch.full((len(tokens)-1,),-.5/(len(tokens)-1)))
+    assert student.grad[-1]==0 and teacher.grad is None
+
+
+def test_verbatim_encoding_keeps_the_final_byte_integrity_guard(real_codecs,monkeypatch):
+    s,t=real_codecs['student'],real_codecs['teacher']
+    tokens=raw_student_ids(s,'Cafe\u0301'.encode())
+    monkeypatch.setattr(t,'encode_verbatim',t.encode)
+    with pytest.raises(ValueError,match='teacher retokenization'):
+        training_alignment(tokens,s,t)

@@ -1,4 +1,4 @@
-"""Explicit checkpoint transfer when adding monitoring to an already running plan."""
+"""Explicit checkpoint transfer between compatible frozen training plans."""
 from pathlib import Path
 import shutil
 
@@ -49,7 +49,7 @@ def bind_resume_source(plan,checkpoint):
     plan['resume_source']={'checkpoint':stored_path(path),'step':step,
         'plan_binding':source['binding'],'source_plan':stored_path(source_root/'metadata/plan.json'),
         'source_plan_sha256':file_sha256(source_root/'metadata/plan.json'),'files':files,
-        'change':'Top16 monitoring only; model, optimizer, scheduler, RNG and dataloader restored'}
+        'change':'Compatible run transfer; model, optimizer, scheduler, RNG and dataloader restored'}
 
 
 def validate_resume_source(plan):

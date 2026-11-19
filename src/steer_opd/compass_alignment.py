@@ -16,6 +16,7 @@ from steer_opd.resumable_core import digest
 
 METRIC = "rethinking_cross_family_top16_overlap"
 INVALID_UTF8_POLICY = "exact_bytes_invalid_utf8_spans_mask_v1"
+VERBATIM_RESPONSE_POLICY = "native_bpe_without_response_normalization_v1"
 
 
 def _byte_decoder():
@@ -62,6 +63,22 @@ class ByteLevelCodec:
     def encode(self, text):
         return list(self.tokenizer.encode(text, add_special_tokens=False))
 
+    def encode_verbatim(self, text):
+        """Encode a response without normalizing its generated Unicode bytes.
+
+        Clone only the backend: prompts and other users of the original
+        tokenizer retain its normalizer, special-token handling and settings.
+        """
+        if not hasattr(self, '_verbatim_backend'):
+            from tokenizers import Tokenizer
+            state = json.loads(self.tokenizer.backend_tokenizer.to_str())
+            state['normalizer'] = None
+            self._verbatim_backend = Tokenizer.from_str(json.dumps(state, ensure_ascii=False))
+        tokens = list(self._verbatim_backend.encode(text, add_special_tokens=False).ids)
+        if self.bytes(tokens) != text.encode('utf-8'):
+            raise ValueError('Verbatim response encoding does not preserve exact bytes')
+        return tokens
+
     def bytes(self, ids):
         try:
             return b"".join(self.raw[int(t)] for t in ids)
@@ -88,7 +105,7 @@ def _utf8_chunks(raw):
     return chunks
 
 
-def _encode_exact_chunks(codec, raw, chunks):
+def _encode_exact_chunks(codec, raw, chunks, *, verbatim=False):
     """Use native text BPE and native single-byte IDs without replacing bytes."""
     if not hasattr(codec, '_single_byte_token_ids'):
         single = {}
@@ -99,7 +116,7 @@ def _encode_exact_chunks(codec, raw, chunks):
     result = []
     for start, end, text in chunks:
         if text is not None:
-            result.extend(codec.encode(text))
+            result.extend(codec.encode_verbatim(text) if verbatim else codec.encode(text))
         else:
             try:
                 result.extend(codec._single_byte_token_ids[bytes([byte])] for byte in raw[start:end])
@@ -108,7 +125,7 @@ def _encode_exact_chunks(codec, raw, chunks):
     return result
 
 
-def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='raise'):
+def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='raise', response_encoding=None):
     """Smallest common UTF-8-safe spans; never retokenize the sampled student.
 
     Special/control tokens and trailing EOS have no scored text span. Their
@@ -117,9 +134,17 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
 
     Static experiments reject malformed UTF-8 by default. Training explicitly
     requests exact-byte scorer inputs and masks only affected common spans.
+    A separate verbatim response backend handles tokenizer normalization that
+    would otherwise alter generated text; original student IDs are unchanged.
     """
     if invalid_utf8 not in ('raise', 'mask'):
         raise ValueError('invalid_utf8 must be raise or mask')
+    # The existing exact-byte training route already opts into UTF-8 masking.
+    # Keep its loss caller unchanged so compatible checkpoints can be resumed.
+    if response_encoding is None:
+        response_encoding = 'verbatim' if invalid_utf8 == 'mask' else 'strict'
+    if response_encoding not in ('strict', 'verbatim'):
+        raise ValueError('response_encoding must be strict or verbatim')
     source_ids = list(source_ids)
     if not source_ids or "student" in scoring_codecs:
         raise ValueError("Need source tokens and distinct scoring-role names")
@@ -143,8 +168,12 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
     codecs = {"student": student_codec, **scoring_codecs}
     ids = {"student": body, **{role: (_encode_exact_chunks(codec, raw, chunks) if bad_ranges else codec.encode(text))
                               for role, codec in scoring_codecs.items()}}
-    boundaries = {}
+    boundaries, verbatim_roles = {}, []
     for role, tokens in ids.items():
+        if role != 'student' and response_encoding == 'verbatim' and codecs[role].bytes(tokens) != raw:
+            tokens = _encode_exact_chunks(codecs[role], raw, chunks, verbatim=True)
+            ids[role] = tokens
+            verbatim_roles.append(role)
         if codecs[role].bytes(tokens) != raw:
             raise ValueError(f"{role} retokenization does not preserve the exact response bytes")
         ends = {0: 0}
@@ -196,6 +225,8 @@ def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='r
         result['invalid_utf8'] = {'policy': INVALID_UTF8_POLICY, 'byte_ranges': bad_ranges,
                                   'bytes': sum(end-start for start, end in bad_ranges),
                                   'response_text_format': 'backslash_escaped_display_only'}
+    if verbatim_roles:
+        result['verbatim_response_encoding'] = {'policy': VERBATIM_RESPONSE_POLICY, 'roles': verbatim_roles}
     result["alignment_id"] = digest(result)
     return result
 

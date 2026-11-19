@@ -1,0 +1,121 @@
+--- a/src/steer_opd/experiment_runtime.py
++++ b/src/steer_opd/experiment_runtime.py
+@@ -65,5 +65,5 @@
+ def child_environment(python=None):
+     env={**os.environ, 'PYTHONHASHSEED':'42', 'PYTHONUNBUFFERED':'1', 'VLLM_WORKER_MULTIPROC_METHOD':'spawn',
+-            'PYTHONPATH':os.pathsep.join([str(ROOT/'src'),str(ROOT/'.runtime/easysteer-plugin')])}
++            'PYTHONPATH':os.pathsep.join([str(Path(__file__).resolve().parents[1]),str(ROOT/'.runtime/easysteer-plugin')])}
+     prefix=Path(python or sys.executable).parent.parent
+     cuda=cuda_toolkit(prefix)
+--- a/src/steer_opd/training/resume_handover.py
++++ b/src/steer_opd/training/resume_handover.py
+@@ -28,7 +28,12 @@
+     new={k:v for k,v in plan['settings'].items() if k not in ignore}
+     if old!=new or source['assets']!=plan['assets']:raise ValueError('Resume hyperparameters or assets changed')
++    def computation_sha(frozen, name):
++        suffix = ('src', 'steer_opd', 'training', name)
++        matches = [sha for path, sha in frozen['implementation_sha256'].items() if Path(path).parts[-4:] == suffix]
++        if len(matches) != 1:
++            raise ValueError(f'Resume requires one frozen computation source for {name}')
++        return matches[0]
+     for name in ('losses.py','verl_adapter.py','config.py','sleep_engine.py'):
+-        key='src/steer_opd/training/'+name
+-        if source['implementation_sha256'][key]!=plan['implementation_sha256'][key]:
++        if computation_sha(source, name) != computation_sha(plan, name):
+             raise ValueError(f'Resume changes training computation: {name}')
+     frozen=ROOT/plan['output']/'metadata/plan.json'
+--- a/src/steer_opd/training/verl_entry.py
++++ b/src/steer_opd/training/verl_entry.py
+@@ -47,5 +47,5 @@
+                 if not actual.is_file() or actual.read_bytes()!=expected:raise ValueError(f'Pinned VERL source changed: {item.name}')
+     sys.path.insert(0,str(source))
+-    os.environ['PYTHONPATH']=os.pathsep.join([str(source),str(ROOT/'src'),os.environ.get('PYTHONPATH','')])
++    os.environ['PYTHONPATH']=os.pathsep.join([str(source),str(Path(__file__).resolve().parents[2]),os.environ.get('PYTHONPATH','')])
+     return source
+ 
+@@ -120,4 +120,28 @@
+ 
+ 
++def use_frozen_runtime(path):
++    """Resume an existing run with the implementation recorded when it was prepared."""
++    path = Path(path)
++    if not path.is_file():
++        return
++    frozen = read_json(path)
++    suffix = Path('src/steer_opd/training/verl_entry.py')
++    entries = [name for name in frozen['implementation_sha256'] if Path(name).parts[-4:] == suffix.parts]
++    if len(entries) != 1:
++        raise ValueError('Prepared plan must identify one training entry point')
++    entry = (ROOT / entries[0]).resolve()
++    if entry == Path(__file__).resolve():
++        return
++    src = entry.parents[2]
++    if src != ROOT/'src' and not (src.name == 'src' and src.parent.parent in
++                                  (ROOT/'.runtime/training', ROOT/'.runtime/baselines')):
++        raise ValueError('Unrecognized frozen training source')
++    if (frozen['binding'] != digest({k:v for k,v in frozen.items() if k != 'binding'})
++            or hashlib.sha256(entry.read_bytes()).hexdigest() != frozen['implementation_sha256'][entries[0]]):
++        raise ValueError('Frozen training plan or entry point changed')
++    env = {**os.environ, 'PYTHONPATH': os.pathsep.join([str(src), os.environ.get('PYTHONPATH','')])}
++    os.execve(sys.executable, [sys.executable, '-m', 'steer_opd.training.verl_entry', *sys.argv[1:]], env)
++
++
+ def validate_plan(plan):
+     if plan['binding']!=digest({k:v for k,v in plan.items() if k!='binding'}):
+@@ -232,4 +256,5 @@
+     args=parser.parse_args()
+     if args.execute_prepared:
++        use_frozen_runtime(args.execute_prepared)
+         plan=read_json(args.execute_prepared)
+         if args.acceptance_run:validate_acceptance_plan(plan)
+@@ -275,4 +300,5 @@
+     if args.train_output_root:experiment['train_output_root']=args.train_output_root
+     plan=build_verl_plan(experiment,settings,loss)
++    use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
+     if args.acceptance_run:plan['run_purpose']='two_step_gpu_acceptance'
+     else:plan['run_purpose']='formal_training'
+--- a/src/steer_opd/training/verl_plan.py
++++ b/src/steer_opd/training/verl_plan.py
+@@ -136,6 +136,10 @@
+     from steer_opd.training.benchmarks import benchmark_rows
+     _,plan['evaluation']=benchmark_rows(original)
++    if settings.monitor_evaluation:
++        from steer_opd.evaluation_text import FORMAT
++        plan['evaluation_response_format'] = FORMAT
+     plan['input_sha256'].update(plan['evaluation']['sources'])
+-    sources = [*Path(__file__).resolve().parent.glob('*.py'),
++    sources = [Path(__file__).resolve().parents[1]/'experiment_runtime.py', Path(__file__).resolve().parents[1]/'evaluation_text.py',
++               *Path(__file__).resolve().parent.glob('*.py'),
+                *Path(__file__).resolve().parent.glob('*.yaml'), ROOT/'src/steer_opd/compass_alignment.py',
+                ROOT/'src/steer_opd/easysteer_static.py', ROOT/'src/steer_opd/easysteer_worker.py',
+@@ -250,4 +254,7 @@
+             'trainer.rollout_data_dir':None,'trainer.validation_data_dir':None,
+             'trainer.log_val_generations':0})
++    if plan.get('evaluation_response_format'):
++        overrides['trainer.validation_data_dir'] = str(root/'evaluation/responses')
++        overrides['trainer.log_val_generations'] = 0
+     if plan.get('resume_source') and not (root/'checkpoints/latest_checkpointed_iteration.txt').exists():
+         overrides.update({'trainer.resume_mode':'resume_path',
+--- a/src/steer_opd/training/verl_reward.py
++++ b/src/steer_opd/training/verl_reward.py
+@@ -7,5 +7,8 @@
+         from verl.utils.reward_score.math_verify import compute_score as verify_math
+         acc=float(verify_math(solution_str,str(ground_truth),timeout=10.))
+-        return {'score':acc,'acc':acc}
++        result = {'score': acc, 'acc': acc}
++        if extra_info and 'question_id' in extra_info:
++            result['eval_question_id'] = extra_info['question_id']
++        return result
+     if data_source!='steer_opd':raise ValueError(f'Unknown reward data source: {data_source}')
+     return 0.0
+--- a/src/steer_opd/training/verl_trainer.py
++++ b/src/steer_opd/training/verl_trainer.py
+@@ -26,5 +26,7 @@
+     from verl.trainer.ppo.ray_trainer import RayPPOTrainer
+ 
+-    class SteerTrainer(RayPPOTrainer):
++    from steer_opd.evaluation_text import EvaluationTextMixin
++
++    class SteerTrainer(EvaluationTextMixin, RayPPOTrainer):
+         def init_workers(self):
+             self.scorer.ensure_asleep()
