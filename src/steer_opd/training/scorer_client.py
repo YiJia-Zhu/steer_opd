@@ -16,7 +16,7 @@ from steer_opd.training.scoring import codecs_for_plan,prepare_request
 from steer_opd.training.scoring_request import SCHEMA as REQUEST_SCHEMA,write_request
 from steer_opd.training.telemetry import phase
 from steer_opd.training.retention import batch_root,reset_batch_workspace
-from steer_opd.retention import minimal
+from steer_opd.retention import minimal,keep_model_history
 
 
 class ScorerClient:
@@ -100,6 +100,7 @@ class ScorerClient:
         if result!={'command_id':command_id,'state':expected,'role':role,'plan_binding':self.plan['binding']}:
             raise ValueError('Shared GPU handover acknowledgement changed')
         self.states[role]=expected
+        if minimal(self.plan) and keep_model_history(self.plan):path.unlink()
 
     def score(self,rows):
         if not self.shared_phase:raise RuntimeError('Scoring requires a confirmed shared-pool handover')

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from steer_opd.resumable_core import ROOT
 
-DEFAULT_TRAIN_ROOT = '~/steer_opd_outputs'
+DEFAULT_TRAIN_ROOT = 'outputs'
 
 
 def training_path(value):

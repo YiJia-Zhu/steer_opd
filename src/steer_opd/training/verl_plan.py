@@ -10,7 +10,8 @@ from steer_opd.training.config import TrainingLossConfig
 from steer_opd.training.rollout_seeds import SEED_POLICY
 from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
 from steer_opd.training.scoring_request import SCHEMA as SCORING_REQUEST_SCHEMA
-from steer_opd.retention import MINIMAL,minimal
+from steer_opd.compass_alignment import INVALID_UTF8_POLICY
+from steer_opd.retention import MINIMAL,minimal,ALL_MODELS_LATEST_STATE,checkpoint_policy,keep_model_history
 from steer_opd.training.paths import training_output_dir
 from steer_opd.generation_policy import (DEFAULT_MAX_GENERATION_LENGTH, DEFAULT_PRESENCE_PENALTY, presence_penalty,
     training_sampling_policy, validate_training_sampling_policy)
@@ -21,7 +22,7 @@ VERL_SOURCE = '.runtime/verl_training/verl-' + VERL_REVISION
 PAIR = 'T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/'
 DEFAULT_DATA = 'outputs/step_0_data/ablation/' + PAIR + 'n1024_all_train_seed42_v1'
 DEFAULT_BANK = ('outputs/step_2_sv/ablation/' + PAIR +
-    'n1024_slerp0.1_S26_T29_seed42_trainall_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1_st_global_all_full_v2/reader_teacher/banks/S-T_global.pt')
+    'n1024_slerp0.1_S26_T29_seed42_trainall_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1_st_global_all_full_v3/reader_teacher/banks/S-T_global.pt')
 
 
 def gpu_ids(value):
@@ -48,7 +49,8 @@ class VerlSettings:
     reference_memory: float = 0.06
     anchor_memory: float = 0.18
     rollout_memory: float = 0.8
-    save_freq: int = 20
+    save_freq: int = 16
+    checkpoint_retention: str = ALL_MODELS_LATEST_STATE
     gpu_wait_seconds: int = 3600
     scorer_timeout: int = 1800
     run_name: str = 'verl_st_global_shared2_pp2_len16384_minimal_v1'
@@ -78,6 +80,7 @@ class VerlSettings:
         if self.rollout_n<1:raise ValueError('Positive responses per prompt required')
         if self.evaluation_freq<1:raise ValueError('Positive evaluation frequency required')
         if self.gpu_wait_seconds<0:raise ValueError('GPU wait seconds must be nonnegative')
+        checkpoint_policy({'checkpoint_retention':self.checkpoint_retention})
         safe_name(self.run_name)
         presence_penalty({'presence_penalty': self.presence_penalty})
 
@@ -102,7 +105,7 @@ def build_verl_plan(experiment, settings=None, loss=None):
         inputs.append(membership)
     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in inputs}
-    plan = {'schema': 'steer_verl_training_shared_two_gpu_v7', 'verl_revision': VERL_REVISION,
+    plan = {'schema': 'steer_verl_training_shared_two_gpu_v8', 'verl_revision': VERL_REVISION,
             'verl_source': VERL_SOURCE, 'output': str(base), 'settings': asdict(settings),
             'training_loss': asdict(loss), 'student': experiment['student'], 'teacher': experiment['teacher'],
             'tokenizer_paths': experiment['tokenizer_paths'], 'seed': 42, 'input_sha256': hashes,
@@ -115,7 +118,9 @@ def build_verl_plan(experiment, settings=None, loss=None):
             'student_logprob_source': STUDENT_LOGPROB_SOURCE,
             'sampling_policy': training_sampling_policy(asdict(settings)),
             'scoring_request_schema': SCORING_REQUEST_SCHEMA,
+            'invalid_utf8_alignment_policy': INVALID_UTF8_POLICY,
             'retention_policy':experiment.get('retention_policy',MINIMAL),
+            'checkpoint_retention':settings.checkpoint_retention,
             'resource_mode':'shared_two_gpu',
             'gpu_admission':'single_admission_for_whole_pool',
             'phase_order':['student_rollout','student_rollout_logprob_reuse','frozen_scoring','student_update'],
@@ -205,7 +210,8 @@ def verl_overrides(plan):
         'trainer.n_gpus_per_node': len(s['gpu_pool']), 'trainer.nnodes': 1,
         'trainer.total_epochs': math.ceil(s['total_steps']/max(1,plan['train_questions']//s['train_batch_size'])), 'trainer.total_training_steps': s['total_steps'],
         'trainer.val_before_train': False, 'trainer.test_freq': -1,
-        'trainer.save_freq': s['save_freq'], 'trainer.max_actor_ckpt_to_keep': 1, 'trainer.logger': ['console','tensorboard'],
+        'trainer.save_freq': s['save_freq'], 'trainer.max_actor_ckpt_to_keep': None if keep_model_history(plan) else 1,
+        'trainer.logger': ['console','tensorboard'],
         'trainer.project_name': 'steer_opd', 'trainer.experiment_name': s['run_name'],
         'trainer.default_local_dir': str(root/'checkpoints'), 'trainer.resume_mode': 'auto',
         'ray_kwargs.ray_init.num_gpus': len(s['gpu_pool']),

@@ -24,7 +24,7 @@ def training_alignment(source_ids, student_codec, teacher_codec, *, settings=Non
         scorers['reference'] = reference_codec
     elif reference_codec is not None:
         raise ValueError('Traditional OPD uses S/T only; do not load Ref')
-    return align_response(source_ids, student_codec, scorers)
+    return align_response(source_ids, student_codec, scorers, invalid_utf8='mask')
 
 
 @dataclass

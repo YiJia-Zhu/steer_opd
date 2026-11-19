@@ -16,6 +16,7 @@ from steer_opd.direction_bank import file_sha256
 from steer_opd.resumable_core import ROOT, digest, read_json
 from steer_opd.stage_io import component_target, frozen_data_dir, metadata_dir, project
 from steer_opd.tensor_checkpoint import DEFAULT_CANDIDATE_FORMAT, SUPPORTED_FORMATS
+from steer_opd.retention import ALL_MODELS_LATEST_STATE,CHECKPOINT_POLICIES
 from steer_opd.training.verl_plan import DEFAULT_DATA, VerlSettings, build_verl_plan, gpu_ids
 
 
@@ -37,6 +38,8 @@ def parser():
     p.add_argument('--batch-size',type=int,default=32)
     p.add_argument('--total-steps',type=int,default=64)
     p.add_argument('--evaluation-freq',type=int,default=16)
+    p.add_argument('--save-freq',type=int,default=16)
+    p.add_argument('--checkpoint-retention',choices=CHECKPOINT_POLICIES,default=ALL_MODELS_LATEST_STATE)
     p.add_argument('--gpu-ids', default='0,1')
     p.add_argument('--wait-seconds', type=int, default=3600)
     p.add_argument('--prep-gpu-memory', type=float, default=.75)
@@ -50,7 +53,7 @@ def parser():
     p.add_argument('--base-question-source', default='')
     p.add_argument('--param-name', default='')
     p.add_argument('--train-run-name', default='')
-    p.add_argument('--train-output-root', default='~/steer_opd_outputs')
+    p.add_argument('--train-output-root', default='outputs')
     return p
 
 
@@ -82,7 +85,7 @@ def preparation(args):
     }.items():
         options += ['--' + name, str(value)]
     cfg = build_config(ablation_parser().parse_args(options))
-    name = args.param_name or cfg['param_name'] + '_st_global_all_full_v2'
+    name = args.param_name or cfg['param_name'] + '_st_global_all_full_v3'
     options += ['--param-name', name]
     return build_config(ablation_parser().parse_args(options)), options
 
@@ -97,7 +100,8 @@ def training_settings(args, cfg):
         sv_bank=str(component_target(cfg, 'bank_teacher') / 'S-T_global.pt'),
         presence_penalty=args.presence_penalty, monitor_overlap=bool(args.overlap_metrics),
         monitor_evaluation=True, gpu_wait_seconds=args.wait_seconds,
-        train_batch_size=args.batch_size,total_steps=args.total_steps,evaluation_freq=args.evaluation_freq)
+        train_batch_size=args.batch_size,total_steps=args.total_steps,evaluation_freq=args.evaluation_freq,
+        save_freq=args.save_freq,checkpoint_retention=args.checkpoint_retention)
 
 
 def prepare_pool(cfg):
@@ -144,6 +148,7 @@ def training_command(args, cfg, settings, bank):
                '--wait-seconds', str(settings.gpu_wait_seconds),
                '--batch-size',str(settings.train_batch_size),'--total-steps',str(settings.total_steps),
                '--evaluation-freq',str(settings.evaluation_freq),
+               '--save-freq',str(settings.save_freq),'--checkpoint-retention',settings.checkpoint_retention,
                '--run-name', settings.run_name, '--sv-bank', str(bank),
                '--teacher-layer', str(settings.teacher_layer), '--operator', settings.operator,
                '--alpha', str(settings.alpha), '--presence-penalty', str(settings.presence_penalty),
@@ -182,6 +187,7 @@ def main():
     print(f'物理GPU池：{args.gpu_ids}；同一1024题用于SV、overlap及OPD；最多{settings.total_steps}步。', flush=True)
     print(f'训练：{settings.train_batch_size}题×4条/step，lr=1e-6，seed42/43/44/45；固定SV与强度。', flush=True)
     print(f'评测：step0、每{settings.evaluation_freq}步及末步；裸学生 MATH-500(500) + AIME2025(30)，每题1条。', flush=True)
+    print(f'模型checkpoint：每{settings.save_freq}步及末步；策略={settings.checkpoint_retention}。',flush=True)
     print(f"准备输出：{cfg['run_dir']}\n训练输出：{plan['output']}\n存储：{plan['retention_policy']}", flush=True)
     print(f"冻结题集（只读）：{cfg['input_data_dir']}", flush=True)
     missing = missing_assets(cfg)
@@ -203,14 +209,14 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     with (meta / 'full_pipeline.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        request = {'schema': 'teacher_global_all_full_pipeline_v2', 'preparation': cfg,
+        request = {'schema': 'teacher_global_all_full_pipeline_v3', 'preparation': cfg,
                    'training_settings': {**asdict(settings), 'gpu_pool': list(settings.gpu_pool)},
                    'train_output_root': args.train_output_root,
                    'launcher_sources': {name: (ROOT / name).read_text() for name in
                                         ('scripts/run_full_pipeline.sh', 'scripts/run_full_pipeline.py')}}
         frozen_json(meta / 'full_pipeline' / settings.run_name / 'request.json', request)
         execute(args, cfg, options, settings)
-    print(f"全流程完成。训练标量、评测和最近完整checkpoint：{plan['output']}", flush=True)
+    print(f"全流程完成。模型checkpoint、最新恢复状态、训练标量及评测：{plan['output']}", flush=True)
 
 
 if __name__ == '__main__':

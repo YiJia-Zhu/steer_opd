@@ -12,7 +12,7 @@ from steer_opd.compass_alignment import aligned_metrics
 from steer_opd.prefix_matching import METRIC_VERSION,RULE_VERSION,P_DEFINITION
 from steer_opd.resumable_core import ROOT,atomic_json
 from steer_opd.static_masks import validate_native_score
-from steer_opd.retention import minimal
+from steer_opd.retention import minimal,keep_model_history
 
 
 def save_top16(path,records):
@@ -53,6 +53,7 @@ def row_statistics(row,alignment,student,teacher,codecs):
     conditional=student['logps'].double().softmax(dim=-1)
     h16=torch.special.entr(conditional).sum(-1)
     return {'question_id':row['question_id'],'trajectory_id':row['id'],
+        'invalid_utf8_bytes':alignment.get('invalid_utf8',{}).get('bytes',0),
         'total_tokens':len(row['token_ids']),'valid_tokens':int(valid.sum()),
         'student_H16_cond_sum':float(h16[valid].sum()),
         'overlap_sum':float(result['overlap'][valid].sum()),
@@ -67,6 +68,8 @@ def summarize_statistics(parts):
         for key in g:g[key]+=part[key]
     groups={qid:g for qid,g in groups.items() if g['valid_tokens']}
     metrics={'overlap/coverage':valid/max(1,total),'overlap/valid_tokens':valid,'overlap/questions':len(groups)}
+    metrics['alignment/invalid_utf8_bytes']=sum(p.get('invalid_utf8_bytes',0) for p in parts)
+    metrics['alignment/invalid_utf8_trajectories']=sum(p.get('invalid_utf8_bytes',0)>0 for p in parts)
     for name in ('overlap','P_overlap'):
         metrics[name+'/token_value']=sum(p[name+'_sum'] for p in parts)/valid
         metrics[name+'/question_value']=sum(g[name+'_sum']/g['valid_tokens'] for g in groups.values())/len(groups)
@@ -112,7 +115,9 @@ class OverlapMonitor:
         metrics=summarize_statistics(parts);metrics['overlap/cpu_wall_seconds']=time.monotonic()-began
         folder=ROOT/self.plan['output']/f'overlap/step_{step:06d}'
         if not minimal(self.plan):save_top16(folder/'student_top16.pt.gz',student)
-        atomic_json(folder/'summary.json',{'step':step,'student_policy_step':step-1,
+        target=(ROOT/self.plan['output']/'overlap/latest.json' if minimal(self.plan) and keep_model_history(self.plan)
+                else folder/'summary.json')
+        atomic_json(target,{'step':step,'student_policy_step':step-1,
             'measurement':'same_rollout_pre_update','teacher':'actual_S-T_global_steered_teacher',
             'metric_version':METRIC_VERSION,'matching_rule_version':RULE_VERSION,
             'P_overlap_definition':P_DEFINITION,'normalization':'original_probabilities_no_top16_renormalization',

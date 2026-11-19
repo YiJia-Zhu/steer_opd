@@ -42,7 +42,7 @@ def test_both_sv_source_generation_jobs_include_penalty(role,source):
 def test_training_plan_records_raw_scores_and_penalized_sampling_separately():
     cfg=read_json(ROOT/'configs/ablation.json')
     plan=build_verl_plan(cfg)
-    assert plan['schema']=='steer_verl_training_shared_two_gpu_v7'
+    assert plan['schema']=='steer_verl_training_shared_two_gpu_v8'
     policy=validate_training_sampling_policy(plan)
     assert plan['settings']['presence_penalty']==policy['presence_penalty']==2.
     assert policy['probability_basis']==RAW_PROBABILITY_BASIS

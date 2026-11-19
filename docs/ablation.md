@@ -1,10 +1,59 @@
 # Ablation 实验计划
 
-当前全流程使用同一1024题训练池：保留原1000题并按seed42同源补充24题，不再划分Select／Confirm。1024题共同用于SV提取、overlap及OPD；固定global／all／Slerp0.1、教师第29层，每步32题×4条回答，最多64步，每16步及末步评测裸学生，step0也评测。入口及参数见[代码框架§8.1](代码框架逻辑.md#81-环境和手动入口)。本次已在CPU冻结题集并验证代码，GPU训练未启动。下文Select／Confirm及参数搜索设置属于原冻结实验，不用于新的全流程。
+当前全流程使用同一1024题训练池：保留原1000题并按seed42同源补充24题，不再划分Select／Confirm。1024题共同用于SV提取、overlap及OPD；固定global／all／Slerp0.1、教师第29层，每步32题×4条回答，最多64步，每16步及末步评测裸学生，step0也评测。入口及参数见[代码框架§8.1](代码框架逻辑.md#81-环境和手动入口)。1024题overlap已完成；旧OPD在2次更新后因UTF-8文本对齐错误退出。修复通过429项CPU回归和包检查，2026-11-19已在tmux ste中以`opd_n1024_project_outputs_utf8_v2`从初始学生重跑，继续使用GPU2／3和原SV，训练输出位于项目`outputs/step_4_train/`。原冻结配置和结果保留。下文Select／Confirm及参数搜索设置属于原冻结实验，不用于新的全流程。
 
-当前新配置的存储策略为`minimal_v1`：新建SV pool在bank全部提交校验后清理，OPD只临时保留当前批过程数据，长期保留标量及最近完整checkpoint。历史实验输出保持原字节，模板hold不解除；细则见[代码框架§8.5](代码框架逻辑.md#85-最小保留策略)。
+当前新配置使用`minimal_v1`清理过程数据，并使用`all_models_latest_state_v1`保留各保存点的模型：每16步及末步的模型都保存，优化器／scheduler／RNG／dataloader状态只保留最新完整点。当前批过程数据及overlap状态滚动更新，标量曲线长期保留。历史实验输出保持原字节，模板hold不解除；细则见[代码框架§8.5](代码框架逻辑.md#85-最小保留策略)。
 
-以下记录此前按ablation结构筛选、param参数实验及baseline方法对比规划的实验，其模型计算为固定前缀overlap、0次更新。原100／1000题T−S及1000题教师S−T四组均已完成，结果见[overlap.md](overlap.md#7-新增实测1000题教师空间s−t消融2026-11-16)。S−T四组的alpha=.05／.1／.2强度扫描已于2026-11-17 02:12:57全部完成，两部分的双指标、图表和汇总齐全。历史执行范围以各自冻结配置为准。
+## 当前消融：S−T完整16组矩阵（2026-11-19，已完成并归档）
+
+1024题OPD的GPU池固定为2／3，其代码、配置和输出身份保持不变。独立消融固定教师空间S−T、教师0-based29层和alpha=0.1，已完成overlap／P_overlap、图表和汇总，0次更新。原学生T−S仅保留作历史对比。此前建议的额外反向／随机方向及24点层位／强度网格不纳入本次执行。
+
+| 轴 | 取值 | 实际含义 |
+|---|---|---|
+| SV粒度 | global／per_sample | global沿用当前单条学生回答的提取协议；per_sample先由S0每题rollout四条，再由教师读取并形成每题一个方向 |
+| SV提取长度 | 2048／full | 2048限制每份prompt＋回答的总token数；full读取完整推理，不右截断。只改变提取，评分前缀始终完整 |
+| 教师注入位置 | all／bottom_half | all注入教师所有回答预测位置；bottom_half逐题按原无SV overlap排序，选择最低50%的合法教师原生token位置 |
+| 注入算子 | additive／Slerp | additive为h＋0.1×对应原始S−T差分，无额外范数缩放；Slerp使用单位方向、alpha=0.1 |
+
+共2×2×2×2＝16个SV条件，另有一份共同无SV基线。当前全流程的global／2048／all／Slerp0.1即主参考，完成提交与SHA核验后直接纳入矩阵；无SV概率、指标和教师重复评分证据也直接复用，均不再GPU重算。因此主参考可复用时仅新增15个候选评分。尚未提交的依赖显示待就绪，不用进度条完成数冒充提交。
+
+### 提取与评分分开
+
+所有候选沿当前全流程原每题一条学生回答评分，复用其真实token与学生Top16，教师参考回答也保持同一份。四条提取rollout不替换评分回答，不增加overlap的每题评分样本数。两个长度、两个位置和两个算子共享同一批提取文本。
+
+per_sample固定顺序：S0关闭SV，每题rollout四条 → 整批／分片提交并SHA核验 → T0分别读取四条及同题教师参考 → 每条独立做回答token的FP32均值池化 → 四个学生回答池化值等权平均减教师参考池化值 → 每题一个S−T方向，并只注入对应题目。不能拼接后按长度加权，也不能先逐条单位化。零方向精确无干预，无对应题目向量时不回退到global。
+
+随机数与训练相同：每题固定slot 0→42、1→43、2→44、3→45，跨题和批次复用，不按整批继续递增；分发worker前给四个n=1请求分别设置seed。重试／resume保持(question_id,slot,seed)不变，与GPU／worker调度无关。记录多样性；整批所有题四条都相同时报错排查，少量自然重复保留，不挑选或重采样。任一输入无有效回答token时记录缺失，不静默减少四条数量。
+
+用户已明确global保留当前单条提取协议，per_sample使用四条提取。这一轴同时改变方向粒度与学生提取采样量，报告中须披露，不能将差异全部解释为纯粒度效应。
+
+### 排序取最低50%的静态mask
+
+只使用原单条评分回答上的无SV overlap。将共同合法span起点的overlap映射到教师原生预测位置，逐题按(overlap值,教师位置)稳定排序，选前floor(N_valid／2)个位置；并列按位置顺序打破，不再用strict-<阈值近似20%或50%。EOS目标及无法形成合法共同span的位置不参与排序；报告合法位置覆盖与实际注入比例。
+
+真实教师mask与映射到学生坐标的展示mask分别保存；一个span内只选部分教师位置时，学生展示mask标明“该span至少一个教师位置被选中”，不能据此声称每个学生token都实际注入。mask在无SV分布上冻结，候选不重新排序；整体指标统计所有共同有效位置，不能只统计选中位置。
+
+### bank、缓存与结果复用
+
+四种bank组合为global／2048、global／full、per_sample／2048、per_sample／full。第一种直接核验复用当前bank；只需新建其余三种，不为15个候选重复提取。per_sample的四条回答只生成一批，2048和full都读取同一批；各bank供all／bottom_half及两种算子共用，原始差分及尺度、有效题集、文本／seed／模型／上下文／协议身份保留。alpha不参与bank提取依赖。
+
+原单条评分回答、教师原生概率、对齐和源双指标必须来自当前运行已提交的同一来源，不混入旧1000题或不同采样协议。原无SV和主参考不重跑；新候选仅获取受控教师概率。教师原无SV重放漂移复用现有凭据，单独展示，不自动扣除。
+
+消融实现和执行时使用项目内隔离工作树，避免改变全流程的源码指纹。完成后按用户要求统一迁至主`outputs/`，保持相同的项目相对路径及原文件字节，19个产物描述文件、bank退休凭据和上游SHA全部核验通过，原owner不改写。新产物使用新的PARAM_NAME，遵守step1／2／3／6结构；minimal_v1只退休新bank完成校验后的本运行pool，所有bank保留可复用。原工作树已删除；完整实现、启动脚本和补丁保存在结果汇总目录的`metadata/implementation/`，其71个冻结Python文件与原源码指纹一致。
+
+### 并行执行与汇总
+
+本次用户已授权修改代码／文档、完成检查后立即启动16组消融。物理GPU2／3永久排除，包括当前暂时空闲的3；其余0／1／4／5／6／7持续按显存、利用率、实际计算进程及租约检测。繁忙卡不使用，不停止其他项目进程；GPU6当前有其他作业，只在以后实际空闲并通过准入时才可用。
+
+每个学生引擎用一张卡，教师引擎用两张；允许多个独立引擎并行，总准入上限为其余六张卡，统一锁与租约避免本消融内部抢占。先完成新协议GPU验收，再并行生成每题四条的题目分片；分片完整提交后汇合。bank按依赖只构建一次，四种bank对应的候选组在依赖就绪后并行评分；同一组共享模型加载和bank。未就绪的无SV／主参考等待原全流程提交，不另行重跑。
+
+已通过437项CPU回归、包检查、学生四请求seed验收及教师加法／Slerp验收。矩阵`matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1`于2026-11-19 04:16全部完成：4096条提取rollout、4类bank、1024道共同有效题，新增15组评分并复用1组主参考。
+
+归档后的[完整CSV](../outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1/comparison.csv)、[汇总分析](../outputs/step_6_summary/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1/analysis.md)和[迁移凭据](../audit/matrix16_20261119/relocation.json)均位于主项目。所有20783个源文件SHA核验通过，其中13483个新文件复制入outputs，7300个已有文件保持原字节。冻结配置中的原工作树绝对路径属于历史执行记录；产物读取统一使用相同的项目相对outputs路径。
+
+只清理已完成工作树、旧测试目录和闲置缓存／日志。`.runtime/verl_training`、EasySteer环境、源身份缓存、当前tmp／ray、GPU锁及租约和远端挂载程序继续保留；迁移及清理前后，OPD源码、plan、准备配置及SV的SHA均保持一致，未重启或停止训练。
+
+每个候选提交后更新CSV／图／来源索引，16组全部留档，不设置Select／Confirm。分别报告overlap和P_overlap的绝对值及相对共同基线的百分点差、题目等权和token加权、1024题覆盖、合法位置数与实际注入率；P_overlap使用Top16原始概率，不重新归一化。按题配对区间只表示固定bank／固定回答下的不确定性，overlap改善不直接证明学生学习收益。
 
 ## 历史参数搜索授权：固定S−T／all／global
 
@@ -42,7 +91,7 @@
 
 旧扫描定义保存在其冻结search_request.json中；唯一模板parameter_search现定义上节的新网格。模板execution_hold保持，显式运行入口生成各参数独立执行配置。旧RUN_NAME=param，各参数目录使用n1000_slerp<alpha>_S26_T29_seed42_st_only_v1；总表在step6/param对应的st_strength_L29_n1000_seed42_v1目录。取值是本轮补充的实施默认范围，不能称原MD已经规定。
 
-按Select题目等权Δoverlap选择的结果如下，Confirm不参与选择。数值均为相对共同无SV基线的百分点变化；完整三档表见[参数汇总](../outputs/step_6_summary/param/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/st_strength_L29_n1000_seed42_v1/analysis.md)。
+按Select题目等权Δoverlap选择的结果如下，Confirm不参与选择。数值均为相对共同无SV基线的百分点变化；三档表的历史参数身份为`st_strength_L29_n1000_seed42_v1`；下表保留当时的择优记录，原始文件按备份清单追溯。
 
 跨参数comparison.csv同时记录value／delta_pp及token_value／token_delta_pp：前一对按题目平均，后一对按所有有效学生token位置平均。value和token_value均为注入后的绝对指标，取值0–1；delta列为相对共同无SV基线的百分点变化。单参数CSV保留原题目平均列名question_weighted_value／question_weighted_delta_pp和token_weighted_delta_pp，并同样增加token_value。两种指标分别占一行，整体统计包含未注入位置。已有CSV从已冻结summaries读取token平均值补齐，不重新评分或改变排名。
 
@@ -88,9 +137,9 @@ RUN_NAME=ablation PARAM_NAME=n1000_slerp0.1_layer26_seed42_v1 bash scripts/run_a
 
 设置STOP_AFTER=source_overlap可单独只计算普通源图，该模式跳过教师回答、capture、方向bank及SV注入。此次按上面命令显式选择panel，执行教师文本、普通学生源rollout、S0方向提取、T源前缀评分和4组固定前缀比较。两模式均不更新参数；完整OPD另行实现和授权。
 
-## Overlap阶段的四组候选
+## 历史对比：T−S overlap四组候选
 
-本次授权比较以下4组固定强度候选，加共同无SV基线。**退火不属于本阶段，不按题目分配退火强度。**
+以下为历史学生空间T−S对比的4组固定强度候选，加共同无SV基线，不是后续S−T主线的默认设置。**退火不属于该阶段，不按题目分配退火强度。**
 
 | ID | 方向 | 位置 | 粒度 | 强度 |
 |---|---|---|---|---|
@@ -105,7 +154,7 @@ RUN_NAME=ablation PARAM_NAME=n1000_slerp0.1_layer26_seed42_v1 bash scripts/run_a
 
 选择候选子集时，显式设置`STOP_AFTER=panel`、`SCHEME_IDS=1,3`等子集及新PARAM_NAME；原四组配置为confirm_top_n=4，两部分都比较完整四方案；本轮仅新增下述教师镜像对照，不自动扩展其他方向、层或强度网格。源缓存是否可复用，须按checkpoint、前缀、原生概率及代码身份独立校验，不能改旧run配置后直接续接。
 
-## 新增：教师空间S−T，与原T−S镜像对照
+## 历史已完成：教师空间S−T与原T−S镜像对照
 
 记μ(A←B)为模型A在自身隐空间读取模型B回答后的正文均值。原方向与新增方向分别为：
 

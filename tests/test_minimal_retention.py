@@ -28,8 +28,9 @@ def test_new_plan_keeps_save_cadence_and_scalar_monitoring_but_disables_archives
     cfg=read_json(ROOT/'configs/ablation.json')
     plan=build_verl_plan(cfg,VerlSettings(monitor_evaluation=True,monitor_overlap=True))
     result=verl_overrides(plan)
-    assert plan['retention_policy']==MINIMAL and plan['schema'].endswith('_v7')
-    assert result['trainer.save_freq']==20 and result['trainer.test_freq']==16
+    assert plan['retention_policy']==MINIMAL and plan['schema'].endswith('_v8')
+    assert plan['checkpoint_retention']=='all_models_latest_state_v1'
+    assert result['trainer.save_freq']==16 and result['trainer.test_freq']==16
     assert result['trainer.logger']==['console','tensorboard']
     assert result['trainer.max_actor_ckpt_to_keep'] is None  # project rotates after commit
     assert result['trainer.rollout_data_dir'] is None and result['trainer.validation_data_dir'] is None

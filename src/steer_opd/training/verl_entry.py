@@ -211,7 +211,7 @@ def main():
     parser.add_argument('--gpu-ids',default='0,1',help='Exactly two physical GPUs shared by all roles')
     parser.add_argument('--wait-seconds',type=int,default=3600,help='Maximum wait for the specified shared GPU pool; 0 fails immediately if busy')
     parser.add_argument('--run-name');parser.add_argument('--teacher-layer',type=int,default=29)
-    parser.add_argument('--train-output-root',help='Training output root; default ~/steer_opd_outputs, other stages stay in outputs/')
+    parser.add_argument('--train-output-root',help='Training output root; default project outputs/, other stages stay in outputs/')
     parser.add_argument('--operator',choices=['slerp','additive'],default='slerp')
     parser.add_argument('--alpha',type=float,default=.1);parser.add_argument('--sv-bank')
     from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,DEFAULT_PRESENCE_PENALTY
@@ -220,6 +220,10 @@ def main():
     parser.add_argument('--reference-model',default='assets/models/Qwen3.5-0.8B')
     parser.add_argument('--batch-size',type=int);parser.add_argument('--total-steps',type=int)
     parser.add_argument('--evaluation-freq',type=int,default=16,help='Evaluate the bare student every N updates and at the final step')
+    parser.add_argument('--save-freq',type=int,default=16,help='Save a model checkpoint every N updates and at the final step')
+    from steer_opd.retention import ALL_MODELS_LATEST_STATE,CHECKPOINT_POLICIES
+    parser.add_argument('--checkpoint-retention',choices=CHECKPOINT_POLICIES,default=ALL_MODELS_LATEST_STATE,
+        help='Keep each saved model and only the newest full resume state by default')
     parser.add_argument('--acceptance-receipt')
     parser.add_argument('--overlap-metrics',action='store_true')
     parser.add_argument('--resume-from')
@@ -263,6 +267,7 @@ def main():
         operator=args.operator,alpha=args.alpha,
         presence_penalty=args.presence_penalty,gpu_wait_seconds=args.wait_seconds,
         monitor_evaluation=not args.acceptance_run,monitor_overlap=args.overlap_metrics,evaluation_freq=args.evaluation_freq,
+        save_freq=args.save_freq,checkpoint_retention=args.checkpoint_retention,
         run_name=args.run_name or f'verl_{args.loss}_st_T{args.teacher_layer}_{args.operator}{args.alpha:g}_pp{args.presence_penalty:g}_len{DEFAULT_MAX_GENERATION_LENGTH}_seed42_shared2_{"acceptance_minimal_v1" if args.acceptance_run else "formal_minimal_v1"}')
     if args.sv_bank:settings=replace(settings,sv_bank=args.sv_bank)
     loss=TrainingLossConfig(loss_type=args.loss,anchor_coef=args.anchor_coef,reference_model=args.reference_model)

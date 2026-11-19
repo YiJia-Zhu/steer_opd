@@ -1,0 +1,23 @@
+{
+  "observed_at": "2026-11-19T13:05:03.719249+08:00",
+  "run_name": "opd_n1024_project_outputs_v1",
+  "status": "exited",
+  "completed_updates": 2,
+  "failed_step": 3,
+  "failed_phase": "cpu_tokenizer_span_alignment",
+  "exception": "UnicodeDecodeError: invalid UTF-8 continuation byte",
+  "source": "src/steer_opd/compass_alignment.py:87",
+  "training_exit_file": "outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/opd_n1024_project_outputs_v1/shared_gpu_admission/launch_cea12dfcd157/exit.json",
+  "training_exit": {
+    "exit_code": 1,
+    "pid": 2702784,
+    "start_ticks": 229182437
+  },
+  "traceback": "ray.exceptions.RayTaskError(UnicodeDecodeError): \u001b[36mray::SteerTaskRunner.run()\u001b[39m (pid=2706104, ip=10.1.0.15, actor_id=2e7a283dca82b98a8b9e93da01000000, repr=<steer_opd.training.verl_trainer.SteerTaskRunner object at 0x7e9ef0973b30>)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/verl_trainer.py\", line 168, in run\n    trainer.fit()\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/verl_training/verl-61adb0c7eb90730306e7794c2bf248331211e657/verl/trainer/ppo/ray_trainer.py\", line 1692, in fit\n    actor_output = self._update_actor(batch)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/verl_trainer.py\", line 61, in _update_actor\n    with self.handover.frozen_scoring():scored=self.scorer.score(rows)\n                                               ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/scorer_client.py\", line 109, in score\n    request=prepare_request(self.plan,rows,self.codecs)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/scoring.py\", line 72, in prepare_request\n    alignment=training_alignment(row['token_ids'],codecs['student'],codecs['teacher'],settings=settings,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/training/losses.py\", line 27, in training_alignment\n    return align_response(source_ids, student_codec, scorers)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local_nvme/data/zhenning/working_tmp/steer_opd/src/steer_opd/compass_alignment.py\", line 87, in align_response\n    text = raw.decode(\"utf-8\", errors=\"strict\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeDecodeError: 'utf-8' codec can't decode bytes in position 13262-13263: invalid continuation byte\nException ignored in: <function ResourceTracker.__del__ at 0x77755b8049a0>\nTraceback (most recent call last):\n  File \"/home/zhenning/data/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/multiprocess/resource_tracker.py\", line 80, in __del__\n  File \"/home/zhenning/data/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/multiprocess/resource_tracker.py\", line 89, in _stop\n  File \"/home/zhenning/data/working_tmp/steer_opd/.venv-opd/lib/python3.12/site-packages/multiprocess/resource_tracker.py\", line 102, in _stop_locked\nAttributeError: '_thread.RLock' object has no attribute '_recursion_count'",
+  "training_source_plan_config_and_bank_match_pre_transfer_sha": true,
+  "cleanup_finished_at": "2026-11-19T13:01:34.832391+08:00",
+  "training_master_alive_at_cleanup_completion": true,
+  "error_time": "2026-11-19T13:02:43+08:00",
+  "training_restarted_by_this_task": false,
+  "signals_sent_to_training_by_this_task": false
+}

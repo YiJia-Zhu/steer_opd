@@ -54,9 +54,9 @@ def provenance():
             'old_logprobs':'Reuse raw model scores at vLLM sampled tokens through the old-policy bypass. Presence-penalized sampling is distinct from these raw scores; retain sampled raw-model OPD and log actor/raw-rollout differences. No exact unpenalized on-policy KL claim or automatic PPO/IS/RS/centering.',
             'offload':'Explicit CPU offload and sleep acknowledgements are required for two-card sharing; actor param/optimizer offload=True instead of official False.',
             'teacher_dtype':'Preserve BF16 EasySteer teacher, not official FP32 FSDP teacher.',
-            'training_budget':'Use 32 questions x4 responses per step, at most 64 steps (two epochs), and evaluate every16 steps plus step0/final; checkpoint cadence stays every20/final.',
+            'training_budget':'Use 32 questions x4 responses per step, at most 64 steps (two epochs), and evaluate/save every16 steps plus final; also evaluate step0.',
             'generation_length':'User 2026-11-18 efficiency choice: max response length16384 for training rollouts and validation, instead of the official7168; prompt1024, student context17408, frozen scoring context24576.',
             'seed_and_logging':'Global seed42; each training question uses rollout seeds42,43,44,45, reused across questions and steps and assigned before worker dispatch; evaluation requests keep42. Local console; no global Ray stop or automatic remote logging.',
             'compatibility':'Use current pinned VERL public loss hook; actor gradient is the discussed sampled OPD surrogate, not the Rethinking TopK/PPO objective.',
-            'checkpoint_retention':'Keep one complete training checkpoint after durable SHA commit; save every20 steps as official. Project rotation replaces eager upstream pruning.',
+            'checkpoint_retention':'Keep every saved model; only the latest save retains optimizer/scheduler/RNG/dataloader state. Save every16 steps/final per user choice instead of the official20. Durable full and model receipts precede old-state retirement; disable upstream eager pruning.',
             'storage_retention':'minimal_v1 retains current-batch inputs/scores until a successful update, then retires them; keep scalar monitoring and disable rollout/validation text archives.'}}

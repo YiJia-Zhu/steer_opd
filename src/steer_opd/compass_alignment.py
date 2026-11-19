@@ -15,6 +15,7 @@ from steer_opd.resumable_core import digest
 
 
 METRIC = "rethinking_cross_family_top16_overlap"
+INVALID_UTF8_POLICY = "exact_bytes_invalid_utf8_spans_mask_v1"
 
 
 def _byte_decoder():
@@ -69,13 +70,56 @@ class ByteLevelCodec:
 
 
 
-def align_response(source_ids, student_codec, scoring_codecs):
+def _utf8_chunks(raw):
+    """Partition bytes into Unicode runs and exact, undecodable byte runs."""
+    chunks, chars = [], []
+    start = offset = 0
+    previous_bad = None
+    for char in raw.decode('utf-8', errors='surrogateescape'):
+        bad = 0xDC80 <= ord(char) <= 0xDCFF
+        if chars and bad != previous_bad:
+            chunks.append((start, offset, None if previous_bad else ''.join(chars)))
+            chars, start = [], offset
+        chars.append(char)
+        offset += 1 if bad else len(char.encode('utf-8'))
+        previous_bad = bad
+    if chars:
+        chunks.append((start, offset, None if previous_bad else ''.join(chars)))
+    return chunks
+
+
+def _encode_exact_chunks(codec, raw, chunks):
+    """Use native text BPE and native single-byte IDs without replacing bytes."""
+    if not hasattr(codec, '_single_byte_token_ids'):
+        single = {}
+        for token, value in codec.raw.items():
+            if len(value) == 1 and token not in codec.special:
+                single[value] = min(token, single.get(value, token))
+        codec._single_byte_token_ids = single
+    result = []
+    for start, end, text in chunks:
+        if text is not None:
+            result.extend(codec.encode(text))
+        else:
+            try:
+                result.extend(codec._single_byte_token_ids[bytes([byte])] for byte in raw[start:end])
+            except KeyError as error:
+                raise ValueError('Scorer vocabulary cannot preserve an invalid UTF-8 byte') from error
+    return result
+
+
+def align_response(source_ids, student_codec, scoring_codecs, *, invalid_utf8='raise'):
     """Smallest common UTF-8-safe spans; never retokenize the sampled student.
 
     Special/control tokens and trailing EOS have no scored text span. Their
     alignment mask is False, and their reason is persisted rather than given
     an invented likelihood. Later consistent text spans remain usable.
+
+    Static experiments reject malformed UTF-8 by default. Training explicitly
+    requests exact-byte scorer inputs and masks only affected common spans.
     """
+    if invalid_utf8 not in ('raise', 'mask'):
+        raise ValueError('invalid_utf8 must be raise or mask')
     source_ids = list(source_ids)
     if not source_ids or "student" in scoring_codecs:
         raise ValueError("Need source tokens and distinct scoring-role names")
@@ -84,9 +128,21 @@ def align_response(source_ids, student_codec, scoring_codecs):
         stop -= 1
     body = source_ids[:stop]
     raw = student_codec.bytes(body)
-    text = raw.decode("utf-8", errors="strict")
+    bad_ranges = []
+    try:
+        text = raw.decode("utf-8", errors="strict")
+        chunks = [(0, len(raw), text)]
+    except UnicodeDecodeError:
+        if invalid_utf8 == 'raise':
+            raise
+        chunks = _utf8_chunks(raw)
+        bad_ranges = [[start, end] for start, end, part in chunks if part is None]
+        # Display only: scorer IDs below are made from the ORIGINAL bytes.
+        # Never use replacement characters or this escaped text as model input.
+        text = raw.decode('utf-8', errors='backslashreplace')
     codecs = {"student": student_codec, **scoring_codecs}
-    ids = {"student": body, **{role: codec.encode(text) for role, codec in scoring_codecs.items()}}
+    ids = {"student": body, **{role: (_encode_exact_chunks(codec, raw, chunks) if bad_ranges else codec.encode(text))
+                              for role, codec in scoring_codecs.items()}}
     boundaries = {}
     for role, tokens in ids.items():
         if codecs[role].bytes(tokens) != raw:
@@ -100,20 +156,28 @@ def align_response(source_ids, student_codec, scoring_codecs):
             offset += width
             ends[offset] = index+1
         boundaries[role] = ends
-    safe, offset = {0}, 0
-    for char in text:
-        offset += len(char.encode("utf-8"))
-        safe.add(offset)
+    safe = {0}
+    for start, end, part in chunks:
+        safe.update((start, end))
+        if part is not None:
+            offset = start
+            for char in part:
+                offset += len(char.encode('utf-8'))
+                safe.add(offset)
     common = sorted(safe.intersection(*(set(v) for v in boundaries.values())))
     mask = [False]*len(source_ids)
     positions = [-1]*len(source_ids)
     units = []
+    bad_index = 0
     for start, end in zip(common, common[1:]):
         ranges = {role: [bounds[start], bounds[end]] for role, bounds in boundaries.items()}
-        valid = all(not any(t in codecs[role].special for t in ids[role][lo:hi])
-                    for role, (lo, hi) in ranges.items())
+        while bad_index < len(bad_ranges) and bad_ranges[bad_index][1] <= start:
+            bad_index += 1
+        bad = bad_index < len(bad_ranges) and bad_ranges[bad_index][0] < end
+        valid = not bad and all(not any(t in codecs[role].special for t in ids[role][lo:hi])
+                                for role, (lo, hi) in ranges.items())
         unit = {"byte_start": start, "byte_end": end, "ranges": ranges, "valid": valid,
-                "reason": None if valid else "control_token_in_span"}
+                "reason": None if valid else 'invalid_utf8_in_span' if bad else "control_token_in_span"}
         index = len(units)
         units.append(unit)
         if valid:
@@ -127,6 +191,11 @@ def align_response(source_ids, student_codec, scoring_codecs):
               "tokenizer_mapping_sha256": {r: c.mapping_sha256 for r, c in codecs.items()},
               "units": units, "alignment_mask": mask, "student_to_unit": positions,
               "terminal_unscored_positions": list(range(stop, len(source_ids)))}
+    if bad_ranges:
+        result['method'] = 'common_utf8_boundaries_exact_bytes_invalid_mask_v3'
+        result['invalid_utf8'] = {'policy': INVALID_UTF8_POLICY, 'byte_ranges': bad_ranges,
+                                  'bytes': sum(end-start for start, end in bad_ranges),
+                                  'response_text_format': 'backslash_escaped_display_only'}
     result["alignment_id"] = digest(result)
     return result
 

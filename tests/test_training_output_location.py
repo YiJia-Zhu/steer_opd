@@ -1,4 +1,4 @@
-"""Training-only external paths and quota checks, using isolated synthetic inputs."""
+"""Default project training paths, explicit external paths and quota checks."""
 import json
 from pathlib import Path
 from types import SimpleNamespace as NS
@@ -21,11 +21,11 @@ def experiment(tmp_path):
     return {**cfg,'input_data_dir':str(data),'training_input_data_dir':str(data)}
 
 
-def test_only_training_uses_home_output_root(experiment):
+def test_default_training_uses_project_output_root(experiment):
     assert training_path('~/steer_opd_outputs')==(Path.home()/'steer_opd_outputs').resolve()
     before=layout_paths(experiment)
     plan=build_verl_plan(experiment)
-    expected=(Path.home()/'steer_opd_outputs/step_4_train/ablation').resolve()
+    expected=(ROOT/'outputs/step_4_train/ablation').resolve()
     assert Path(plan['output']).is_relative_to(expected)
     assert plan['settings']['sv_bank'].startswith('outputs/step_2_sv/')
     assert layout_paths(experiment)==before
@@ -64,6 +64,7 @@ def test_path_guard_preserves_project_paths_and_rejects_unapproved_external_path
 def test_resume_handover_can_bind_validate_and_retire_home_checkpoint(experiment,tmp_path,monkeypatch):
     import steer_opd.training.paths as paths
     import steer_opd.training.resume_handover as resume
+    from steer_opd.training.retention import commit_checkpoint,validate_model_checkpoint
     home=tmp_path/'isolated_home';project=tmp_path/'isolated_project'
     monkeypatch.setattr(Path,'home',lambda:home)
     monkeypatch.setattr(paths,'ROOT',project);monkeypatch.setattr(resume,'ROOT',project)
@@ -76,6 +77,7 @@ def test_resume_handover_can_bind_validate_and_retire_home_checkpoint(experiment
     for kind in ('model','optim','extra_state'):
         for rank in (0,1):(checkpoint/'actor'/f'{kind}_world_size_2_rank_{rank}.pt').write_bytes(b'fixture')
     (checkpoint.parent/'latest_checkpointed_iteration.txt').write_text('20')
+    commit_checkpoint(checkpoint.parent,20,old)
     atomic_json(source/'metadata/plan.json',old)
     new=build_verl_plan(experiment,VerlSettings(run_name='new'));new['assets']=old['assets']
     resume.bind_resume_source(new,checkpoint)
@@ -84,8 +86,15 @@ def test_resume_handover_can_bind_validate_and_retire_home_checkpoint(experiment
     resume.validate_resume_source(new)
     new_root=Path(new['output']);(new_root/'checkpoints').mkdir(parents=True)
     (new_root/'checkpoints/latest_checkpointed_iteration.txt').write_text('40')
+    current=new_root/'checkpoints/global_step_40';(current/'actor').mkdir(parents=True)
+    (current/'data.pt').write_bytes(b'new dataloader')
+    for kind in ('model','optim','extra_state'):
+        for rank in (0,1):(current/'actor'/f'{kind}_world_size_2_rank_{rank}.pt').write_bytes(b'new fixture')
+    commit_checkpoint(new_root/'checkpoints',40,new)
     resume.retire_resume_source(new,40)
-    assert not checkpoint.exists() and (new_root/'metadata/resume_source_retired.json').is_file()
+    assert validate_model_checkpoint(checkpoint,old) and not (checkpoint/'data.pt').exists()
+    assert not list((checkpoint/'actor').glob('optim_*.pt'))
+    assert (new_root/'metadata/resume_source_retired.json').is_file()
 
 
 @pytest.mark.parametrize('line,expected',[

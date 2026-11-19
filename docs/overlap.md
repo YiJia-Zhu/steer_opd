@@ -170,14 +170,14 @@ Q处前缀匹配分给calculate↔calcu的质量：0.25
 
 **因此，P_overlap=0.84不能解释为“84%的概率生成同一个完整词”。** 要比较完整词/文本，需要接入后续条件分布。仅把上例0.25换成0.20也不够：其他候选同样可能需要展开，还可能存在多条token路径；不同长度字符串之间也要重新定义互不重叠的比较事件。现有两张Q处分布无法给出这种完整文本重合度。
 
-对于本项目固定前缀、固定强度的T−S／S−T消融，明确使用本文的单步前缀兼容指标，避免为所有候选额外展开后续分支。它解决“仅因首字节相同就把两个完整长token当成兼容”的问题，同时保留短token后续尚未确定这一局限。
+本项目后续固定前缀消融以教师空间S−T为主线，历史学生空间T−S保留作对比，两者均使用本文的单步前缀兼容指标，避免为所有候选额外展开后续分支。它解决“仅因首字节相同就把两个完整长token当成兼容”的问题，同时保留短token后续尚未确定这一局限。
 
 ## 6. 怎样落实到当前静态实验
 
-- 无SV源rollout后，S、T对同一正文批量评分；在合法共同span起点取分布，不在线追问教师，不为候选额外生成分支。
+- 无SV源rollout后，S、T对同一正文批量评分；在合法共同span起点取分布，不在线追问教师，不为Top16候选额外生成续写分支。后续per-sample另需学生每题rollout四条供教师读取、均值提取SV；这四条不替换原每题一条overlap评分回答，完整顺序见[消融计划](ablation.md#提取与评分分开)。
 - 每个span起点计算一次两项指标，并广播到该span覆盖的学生tokens。如果学生把 `calculate` 分成多个token，它们复用span起点值；内部学生位置不是各自完成了独立对齐的精确比较点。
 - 源文本终止EOS目标、含控制符或不可对齐的span按既定规则记NaN及覆盖率。有效起点Top16中的EOS候选仍参与指标，未进入Top16的尾部不计。
-- 原T−S含2个static_overlap方案和2个all方案，新增教师S−T使用相同的global/per_question × static_overlap/all组合，共8类候选。static_overlap按gate_metric和strict-<阈值冻结位置，all请求全部回答预测位置；两项指标都记录和画图。后续训练退火规则见[ablation计划](ablation.md#固定强度与线性退火)，零强度不实际注入。
+- 后续主方案固定教师S−T，比较global/per_sample × static_overlap/all及方向／位置控制；global沿用当前单条提取协议，per_sample使用四条；两种提取长度共享各自的文本。历史T−S与S−T各四组的8类对比保留在§7，不作为后续默认联合面板。static_overlap按gate_metric和strict-<阈值冻结位置，all请求教师全部回答预测位置；两项指标都记录和画图。后续训练退火规则见[ablation计划](ablation.md#固定强度与线性退火)，零强度不实际注入。
 - 用同一兼容规则计算overlap与P_overlap，并留档定义版本。新规则下重新校准阈值；既有静态mask、排名和缓存不能直接沿用。
 - 直接请求EasySteer/vLLM的`logprobs=16`与`prompt_logprobs=16`。保存原生ID(int32)、原始logprob(FP32)，以及实际观察token的logprob。vLLM额外返回的观察token若不在Top16，只用于路径似然，不加入两项指标。
 

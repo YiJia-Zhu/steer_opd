@@ -7,7 +7,15 @@ import uuid
 
 from steer_opd.direction_bank import file_sha256
 from steer_opd.resumable_core import atomic_json, digest, read_json
-from steer_opd.retention import MINIMAL, minimal
+from steer_opd.retention import MINIMAL, minimal, ALL_MODELS_LATEST_STATE, keep_model_history
+
+MODEL_RECEIPT='model_checkpoint.complete.json'
+STATE_RETIREMENT='state_retirement.json'
+CHECKPOINT_METADATA={'checkpoint.complete.json',MODEL_RECEIPT,STATE_RETIREMENT}
+
+
+def _resume_only(name):
+    return name=='data.pt' or re.fullmatch(r'actor/(?:optim|extra_state)_world_size_[0-9]+_rank_[0-9]+\.pt',name) is not None
 
 
 def batch_root(folder, plan):
@@ -56,16 +64,22 @@ def reset_batch_workspace(folder, plan):
     return stats
 
 
-def _checkpoint_entries(folder,*,sync=False):
+def _checkpoint_entries(folder,*,sync=False,model_only=False):
     if folder.is_symlink():raise ValueError('Symlinked training checkpoint')
-    files = {}
+    files = {};directories={folder}
     for path in sorted(folder.rglob('*')):
         if path.is_symlink():raise ValueError('Symlink inside training checkpoint')
-        if path.is_file() and path.name != 'checkpoint.complete.json':
+        name=str(path.relative_to(folder))
+        if path.is_file() and name not in CHECKPOINT_METADATA and not (model_only and _resume_only(name)):
             if sync:
                 with path.open('rb') as stream:os.fsync(stream.fileno())
-            files[str(path.relative_to(folder))] = {'bytes': path.stat().st_size,
+                parent=path.parent
+                while parent!=folder:
+                    directories.add(parent);parent=parent.parent
+            files[name] = {'bytes': path.stat().st_size,
                                                    'sha256': file_sha256(path)}
+    if sync:
+        for directory in sorted(directories,key=lambda p:len(p.parts),reverse=True):_sync_directory(directory)
     return files
 
 
@@ -77,6 +91,97 @@ def validate_checkpoint(folder, plan):
             or receipt.get('files') != _checkpoint_entries(folder)):
         raise ValueError('Training checkpoint identity or files changed')
     return receipt
+
+
+def _read_full_receipt(folder,plan):
+    saved=read_json(folder/'checkpoint.complete.json')
+    if (folder.is_symlink() or saved.get('schema')!='opd_checkpoint_v1'
+            or saved.get('plan_binding')!=plan['binding']
+            or saved.get('binding')!=digest({k:v for k,v in saved.items() if k!='binding'})):
+        raise ValueError('Checkpoint receipt identity changed')
+    return saved
+
+
+def _model_receipt(folder,full,plan):
+    return {'schema':'opd_model_checkpoint_v1','plan_binding':plan['binding'],'step':full['step'],
+        'checkpoint_retention':ALL_MODELS_LATEST_STATE,
+        'source_receipt_sha256':file_sha256(folder/'checkpoint.complete.json'),
+        'files':{name:item for name,item in full['files'].items() if not _resume_only(name)}}
+
+
+def _commit_model_receipt(folder,full,plan):
+    packet=_model_receipt(folder,full,plan)
+    packet['binding']=digest(packet)
+    atomic_json(folder/MODEL_RECEIPT,packet)
+    _sync_directory(folder)
+    return packet
+
+
+def validate_model_checkpoint(folder,plan):
+    """Validate retained model shards/config without requiring retired optimizer state."""
+    folder=Path(folder);full=_read_full_receipt(folder,plan)
+    packet=read_json(folder/MODEL_RECEIPT)
+    expected=_model_receipt(folder,full,plan)
+    expected['binding']=digest(expected)
+    ranks=len(plan['settings']['gpu_pool'])
+    required={f'actor/model_world_size_{ranks}_rank_{rank}.pt' for rank in range(ranks)}
+    if (full.get('checkpoint_retention')!=ALL_MODELS_LATEST_STATE or packet!=expected
+            or not required.issubset(packet['files'])
+            or packet['files']!=_checkpoint_entries(folder,model_only=True)):
+        raise ValueError('Retained model checkpoint identity or files changed')
+    if (folder/STATE_RETIREMENT).exists():_retirement_receipt(folder,plan,packet)
+    return packet
+
+
+def _retirement_receipt(folder,plan,model):
+    full=_read_full_receipt(folder,plan)
+    removed={name:item for name,item in full['files'].items() if _resume_only(name)}
+    packet=read_json(folder/STATE_RETIREMENT)
+    if (packet.get('schema')!='opd_checkpoint_state_retirement_v1'
+            or packet.get('plan_binding')!=plan['binding'] or packet.get('step')!=model['step']
+            or packet.get('model_receipt_sha256')!=file_sha256(folder/MODEL_RECEIPT)
+            or packet.get('source_receipt_sha256')!=model['source_receipt_sha256']
+            or packet.get('removed_files')!=removed
+            or packet.get('binding')!=digest({k:v for k,v in packet.items() if k!='binding'})):
+        raise ValueError('Checkpoint state retirement identity changed')
+    return packet
+
+
+def retire_checkpoint_state(folder,plan,*,replacement):
+    """Commit evidence first, then remove only known resume files; retry is idempotent.
+
+    The caller must first validate and publish the newer complete checkpoint.
+    All retained model bytes and all still-present state files are checked before
+    the first unlink. A failed cleanup leaves the newer restore point intact.
+    """
+    folder=Path(folder)
+    if not keep_model_history(plan):raise ValueError('Model history retention is required')
+    model=validate_model_checkpoint(folder,plan)
+    full=_read_full_receipt(folder,plan)
+    removed={name:item for name,item in full['files'].items() if _resume_only(name)}
+    marker=folder/STATE_RETIREMENT
+    if marker.exists():packet=_retirement_receipt(folder,plan,model)
+    else:
+        packet={'schema':'opd_checkpoint_state_retirement_v1','plan_binding':plan['binding'],
+            'step':model['step'],'source_receipt_sha256':model['source_receipt_sha256'],
+            'model_receipt_sha256':file_sha256(folder/MODEL_RECEIPT),'removed_files':removed,
+            'replacement':replacement}
+        packet['binding']=digest(packet)
+    # Missing files are legitimate only after the durable retirement marker.
+    for name,item in removed.items():
+        path=folder/name
+        if path.is_symlink():raise ValueError('Symlink inside checkpoint state')
+        if not path.exists():
+            if marker.exists():continue
+            raise ValueError('Unexplained missing checkpoint state before retirement')
+        if path.stat().st_size!=item['bytes'] or file_sha256(path)!=item['sha256']:
+            raise ValueError('Checkpoint state changed before retirement')
+    if not marker.exists():
+        atomic_json(marker,packet);_sync_directory(folder)
+    for name in removed:(folder/name).unlink(missing_ok=True)
+    for parent in {folder,(folder/'actor')}:
+        if parent.is_dir():_sync_directory(parent)
+    return packet
 
 
 def commit_checkpoint(root, step, plan):
@@ -95,9 +200,11 @@ def commit_checkpoint(root, step, plan):
         raise ValueError('Incomplete model/optimizer/RNG/dataloader checkpoint')
     receipt = {'schema': 'opd_checkpoint_v1', 'retention_policy': MINIMAL,
                'plan_binding': plan['binding'], 'step': step, 'files': files}
+    if keep_model_history(plan):receipt['checkpoint_retention']=ALL_MODELS_LATEST_STATE
     receipt['binding'] = digest(receipt)
     atomic_json(folder / 'checkpoint.complete.json', receipt)
     _sync_directory(folder)
+    if keep_model_history(plan):_commit_model_receipt(folder,receipt,plan)
     _publish_latest(root,step,plan)
     return receipt
 
@@ -109,7 +216,9 @@ def prune_checkpoints(root,step,plan,*,committed=None):
         validate_checkpoint(folder,plan)
     elif read_json(folder/'checkpoint.complete.json')!=committed:
         raise ValueError('New checkpoint commit changed before rotation')
-    if read_json(root/'latest_complete.json')['step']!=step:
+    pointer=read_json(root/'latest_complete.json')
+    if (pointer.get('step')!=step or pointer.get('plan_binding')!=plan['binding']
+            or pointer.get('receipt_sha256')!=file_sha256(folder/'checkpoint.complete.json')):
         raise ValueError('New checkpoint is not the committed restore point')
     # A new durable receipt exists before any old checkpoint can be removed.
     older = []
@@ -120,7 +229,19 @@ def prune_checkpoints(root,step,plan,*,committed=None):
         saved = read_json(path / 'checkpoint.complete.json')
         if saved.get('retention_policy') == MINIMAL and saved.get('plan_binding') == plan['binding']:
             older.append(path)
-    for path in older:shutil.rmtree(path)
+    if keep_model_history(plan):
+        # Bind retirement to the already durable newest full restore point.
+        replacement={'checkpoint':str(folder),'step':step,'plan_binding':plan['binding'],
+            'receipt_sha256':file_sha256(folder/'checkpoint.complete.json')}
+        full=_read_full_receipt(folder,plan)
+        expected=_model_receipt(folder,full,plan);expected['binding']=digest(expected)
+        if read_json(folder/MODEL_RECEIPT)!=expected:raise ValueError('Newest model receipt changed before rotation')
+        for path in older:
+            # Historical checkpoints without the explicit model-history mark are untouched.
+            if read_json(path/'checkpoint.complete.json').get('checkpoint_retention')==ALL_MODELS_LATEST_STATE:
+                retire_checkpoint_state(path,plan,replacement=replacement)
+    else:
+        for path in older:shutil.rmtree(path)
 
 
 def _sync_directory(folder):

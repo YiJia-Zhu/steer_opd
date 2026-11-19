@@ -41,10 +41,12 @@ def test_same_steering_parameters_reach_preparation_and_training(launcher, opera
     assert command[command.index('--sv-bank') + 1] == '/resolved/owner/S-T_global.pt'
     assert command[command.index('--wait-seconds') + 1] == '17'
     assert '--overlap-metrics' in command and settings.monitor_evaluation
-    assert cfg['param_name'].endswith('_st_global_all_full_v2')
+    assert cfg['param_name'].endswith('_st_global_all_full_v3')
     assert command[command.index('--batch-size')+1]=='32'
     assert command[command.index('--total-steps')+1]=='64'
     assert command[command.index('--evaluation-freq')+1]=='16'
+    assert command[command.index('--save-freq')+1]=='16'
+    assert command[command.index('--checkpoint-retention')+1]=='all_models_latest_state_v1'
 
 
 @pytest.mark.parametrize('options', [

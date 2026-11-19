@@ -2,9 +2,9 @@
 
 ## Current authorization and experiment
 
-2026-11-18训练输出位置授权：用户明确只把后续train步骤保存到~/steer_opd_outputs，其他阶段路径保持。configs/ablation.json的train_output_root仅供训练plan使用，输出为~/steer_opd_outputs/step_4_train/ablation/<模型组合>/<数据集>/shared/<运行名>/。允许训练评分服务、准入日志及checkpoint恢复访问这个明确目录；不放宽静态阶段的项目内路径边界，不迁移或恢复旧outputs。训练启动和checkpoint保存均须读取实际目标文件系统的用户配额，不能按整盘剩余空间绕过限制；此次不启动GPU。
+2026-11-19训练输出位置授权：用户将后续train步骤改回/home/zhenning/data/working_tmp/steer_opd/outputs；该路径解析到/local_nvme/data/zhenning/working_tmp/steer_opd/outputs。configs/ablation.json的train_output_root与启动入口默认值均为outputs，训练输出为outputs/step_4_train/ablation/<模型组合>/<数据集>/shared/<运行名>/，其他阶段路径保持。旧~/steer_opd_outputs仅保留显式指定及已有checkpoint读取能力；不迁移或恢复旧outputs，不改冻结运行配置。训练启动和checkpoint保存继续检查实际目标文件系统的空间与可见配额。更改训练保存位置时使用新的TRAIN_RUN_NAME，保留原冻结请求。此次只改输出默认值、相关文档并做CPU验证，不启动GPU或重启训练。
 
-2026-11-18最新存储授权：新配置采用retention_policy=minimal_v1。SV bank完整提交并校验后，只清理本运行新建且明确标记为minimal的pooled.pt，保留bank／尺度／有效题集／身份及pool退休凭据；跨参数恢复先核验bank，不要求已退休pool重新出现。OPD仅保留当前批请求／回复／Top16／对齐工作区，有限梯度更新及标量提交成功后清理；不长期保存训练及训练内评测原文、逐轨迹监控或Top16历史。保留每步标量、配置和最新完整模型／优化器／scheduler／RNG／dataloader checkpoint，频率仍每20步及最后一步；新checkpoint同步写盘、SHA校验与latest_complete提交后才淘汰旧版本。覆盖下文历史“池化和训练逐步概率长期保留”约定。此次只改代码、文档并做CPU验证，现有outputs及正在备份的文件保持原字节，不启动GPU，不解除hold。
+2026-11-18最新存储授权：新配置采用retention_policy=minimal_v1。SV bank完整提交并校验后，只清理本运行新建且明确标记为minimal的pooled.pt，保留bank／尺度／有效题集／身份及pool退休凭据；跨参数恢复先核验bank，不要求已退休pool重新出现。OPD仅保留当前批请求／回复／Top16／对齐工作区，有限梯度更新及标量提交成功后清理；不长期保存训练及训练内评测原文、逐轨迹监控或Top16历史。用户最新确认模型checkpoint与评测对齐，每16步及末步保存，checkpoint_retention=all_models_latest_state_v1：各保存点的模型分片及配置全部保留，优化器／scheduler／RNG／dataloader状态只留最新完整点；新完整checkpoint和模型SHA清单及latest_complete提交后，核验旧模型并写退休凭据，再只删除旧恢复状态。overlap当前状态实时覆盖，已消费的控制回复及时清理；每步标量、准确率曲线及配置继续保留。覆盖下文历史“池化和训练逐步概率长期保留”及“只留最新模型／每20步保存”约定。此次只改代码、文档并做CPU验证，现有outputs及正在备份的文件保持原字节，不启动GPU，不解除hold。
 
 2026-11-18最新清理授权：用户要求删除全部exploration相关实验，并确认包括OPD诊断和教师基准。已删除exploration源码、outputs各step的exploration分类、对应compar诊断／补充评测及.runtime/diagnostics临时导出；不自动恢复或重启。保留ablation／param、OPD训练本体、共享模型／数据和核心研究稿；固定外部文献已迁至ref/opd_repetition_literature_20261118。清理凭据audit/exploration_cleanup_20261118.json。
 

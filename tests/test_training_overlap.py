@@ -62,8 +62,9 @@ def test_top16_agent_requests_head_without_an_extra_generation(monkeypatch):
     assert original=={'temperature':1.}
 
 
-@pytest.mark.parametrize('policy',[None,'minimal_v1'])
-def test_parallel_monitor_uses_real_codecs_and_same_response_prefix(tmp_path,monkeypatch,policy):
+@pytest.mark.parametrize('policy,checkpoint_retention',[(None,None),('minimal_v1',None),
+    ('minimal_v1','all_models_latest_state_v1')])
+def test_parallel_monitor_uses_real_codecs_and_same_response_prefix(tmp_path,monkeypatch,policy,checkpoint_retention):
     from transformers import AutoTokenizer
     from steer_opd.resumable_core import ROOT,read_json
     from steer_opd.compass_alignment import ByteLevelCodec
@@ -78,12 +79,17 @@ def test_parallel_monitor_uses_real_codecs_and_same_response_prefix(tmp_path,mon
     replies=[{'alignment':alignment,'teacher_top16':t} for _ in rows]
     plan={'tokenizer_paths':paths,'output':str(tmp_path),'binding':'cpu_test'}
     if policy:plan['retention_policy']=policy
+    if checkpoint_retention:plan['checkpoint_retention']=checkpoint_retention
     monkeypatch.setenv('STEER_OPD_METRIC_WORKERS','2');monitor=OverlapMonitor(plan,codecs)
-    try:metrics=monitor.compute(batch,rows,replies,21)
+    try:
+        metrics=monitor.compute(batch,rows,replies,21)
+        if checkpoint_retention:metrics=monitor.compute(batch,rows,replies,22)
     finally:monitor.close()
     assert 0<=metrics['overlap/token_value']<=1 and 0<=metrics['P_overlap/token_value']<=1
-    result=read_json(tmp_path/'overlap/step_000021/summary.json')
-    assert result['student_policy_step']==20 and result['extra_model_forward_calls']==0
+    target=tmp_path/('overlap/latest.json' if checkpoint_retention else 'overlap/step_000021/summary.json')
+    result=read_json(target)
+    assert result['student_policy_step']==(21 if checkpoint_retention else 20) and result['extra_model_forward_calls']==0
+    if checkpoint_retention:assert list((tmp_path/'overlap').iterdir())==[target]
     assert (tmp_path/'overlap/step_000021/student_top16.pt.gz').exists()==(policy is None)
     assert ('trajectories' in result)==(policy is None)
 

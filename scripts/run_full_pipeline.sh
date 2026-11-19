@@ -16,6 +16,8 @@ QUESTION_COUNT="${QUESTION_COUNT:-1024}"  # 当前统一训练池固定1024题�
 TRAIN_BATCH_SIZE="${TRAIN_BATCH_SIZE:-32}" # 当前正式训练每step32题，每题4条回答，共128条；1024题一轮32个step。
 TOTAL_STEPS="${TOTAL_STEPS:-64}"          # 正整数，最多64；64步正好完整遍历两轮，改小可提前停止。
 EVAL_EVERY="${EVAL_EVERY:-16}"            # 正整数；默认step0/16/32/48/64评测，提前结束时最后一步也评测。
+SAVE_EVERY="${SAVE_EVERY:-$EVAL_EVERY}"    # 正整数；默认与评测对齐，每16步及最终步保存模型。
+CHECKPOINT_RETENTION="${CHECKPOINT_RETENTION:-all_models_latest_state_v1}" # all_models_latest_state_v1：各保存点的模型都保留，恢复状态仅留最新；latest_full_v1：只留最新完整ckpt。
 
 # ==================== GPU、采样与监控 ====================
 GPU_IDS="${GPU_IDS:-2,3}"                 # 恰好两张物理卡，例如 0,1 或 2,3；准备和训练共用此池，繁忙时排队。
@@ -37,8 +39,9 @@ BASE_QUESTION_SOURCE="${BASE_QUESTION_SOURCE:-}" # 留空：优先本地原1000�
 # 全部1024题同时用于SV、overlap和OPD；MATH-500/AIME2025用于独立评测，新增24题也排除这两个评测集。
 PARAM_NAME="${PARAM_NAME:-}"             # 留空：按准备超参数自动命名；改参数须用新身份。同参数重跑 --run 自动复用/恢复。
 TRAIN_RUN_NAME="${TRAIN_RUN_NAME:-}"     # 留空：opd_<PARAM_NAME>；更换训练监控/保存位置等设置时使用新名字。
-TRAIN_OUTPUT_ROOT="${TRAIN_OUTPUT_ROOT:-$HOME/steer_opd_outputs}" # 训练输出根：~/steer_opd_outputs 或项目内目录（如 outputs）；准备产物仍在项目 outputs/。
-# 使用 minimal_v1：保留 SV bank、标量、配置及最近完整 checkpoint；checkpoint 每20步及最后一步提交。
+TRAIN_OUTPUT_ROOT="${TRAIN_OUTPUT_ROOT:-outputs}" # 训练输出根：默认项目 outputs，即 /home/zhenning/data/working_tmp/steer_opd/outputs；可用同名环境变量覆盖。
+# minimal_v1 清理过程数据；默认保留step16/32/48/64全部模型，优化器/scheduler/RNG/dataloader只保留最新完整一份。
+# overlap状态实时覆盖overlap/latest.json；loss/overlap/准确率等标量曲线继续保留。
 
 set -euo pipefail
 if (( $# > 1 )) || [[ "${1:---check}" != --check && "${1:---check}" != --run && "${1:---check}" != --prepare-data && "${1:---check}" != --help ]]; then
@@ -53,6 +56,7 @@ exec "$STEER_OPD_PYTHON" scripts/run_full_pipeline.py "${1:---check}" \
     --sv-max-context-len "$SV_MAX_CONTEXT_LEN" --gpu-ids "$GPU_IDS" \
     --question-count "$QUESTION_COUNT" --batch-size "$TRAIN_BATCH_SIZE" \
     --total-steps "$TOTAL_STEPS" --evaluation-freq "$EVAL_EVERY" \
+    --save-freq "$SAVE_EVERY" --checkpoint-retention "$CHECKPOINT_RETENTION" \
     --wait-seconds "$WAIT_SECONDS" --prep-gpu-memory "$PREP_GPU_MEMORY" \
     --presence-penalty "$PRESENCE_PENALTY" --reference-max-tokens "$REFERENCE_MAX_TOKENS" \
     --source-max-tokens "$SOURCE_MAX_TOKENS" --overlap-metrics "$OVERLAP_METRICS" \

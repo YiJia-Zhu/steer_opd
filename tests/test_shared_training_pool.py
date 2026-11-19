@@ -118,7 +118,7 @@ def test_official_defaults_and_explicit_length_retention_adaptations():
     assert cfg['trainer.total_training_steps']==64 and cfg['trainer.total_epochs']==2
     assert cfg['actor_rollout_ref.rollout.n']==official['actor_rollout_ref.rollout.n']==4
     assert cfg['actor_rollout_ref.rollout.gpu_memory_utilization']==.8
-    assert cfg['trainer.save_freq']==official['trainer.save_freq']==20
+    assert official['trainer.save_freq']==20 and cfg['trainer.save_freq']==16
     assert cfg['actor_rollout_ref.actor.fsdp_config.param_offload'] is True
     assert cfg['actor_rollout_ref.actor.fsdp_config.optimizer_offload'] is True
     assert plan['resource_mode']=='shared_two_gpu' and plan['settings']['gpu_pool']==[0,1]

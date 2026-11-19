@@ -5,6 +5,7 @@ import shutil
 from steer_opd.direction_bank import file_sha256
 from steer_opd.resumable_core import ROOT,read_json,atomic_json,digest
 from steer_opd.training.paths import training_path,stored_path,is_retirable_training_checkpoint
+from steer_opd.retention import keep_model_history
 
 
 def bind_resume_source(plan,checkpoint):
@@ -72,6 +73,26 @@ def retire_resume_source(plan,step):
         raise ValueError('Refuse to retire unrelated checkpoint')
     proof=root/'metadata/resume_source_retired.json'
     if proof.exists():return
+    if keep_model_history(plan):
+        from steer_opd.training.retention import validate_checkpoint,retire_checkpoint_state,MODEL_RECEIPT
+        current=root/'checkpoints'/f'global_step_{step}'
+        validate_checkpoint(current,plan)
+        pointer=read_json(root/'checkpoints/latest_complete.json')
+        if (pointer.get('plan_binding')!=plan['binding'] or pointer.get('step')!=step
+                or pointer.get('receipt_sha256')!=file_sha256(current/'checkpoint.complete.json')):
+            raise ValueError('Replacement checkpoint is not the latest complete save')
+        if file_sha256(ROOT/source['source_plan'])!=source['source_plan_sha256']:
+            raise ValueError('Resume source metadata changed before state retirement')
+        previous=read_json(ROOT/source['source_plan'])
+        action='historical_source_preserved'
+        if keep_model_history(previous) and (path/MODEL_RECEIPT).exists():
+            retire_checkpoint_state(path,previous,replacement={'checkpoint':stored_path(current),'step':step,
+                'plan_binding':plan['binding'],'receipt_sha256':file_sha256(current/'checkpoint.complete.json')})
+            action='source_state_retired_models_preserved'
+        atomic_json(proof,{'source_checkpoint':source['checkpoint'],'retained_model_checkpoint':source['checkpoint'],
+            'replaced_by_step':step,'source_plan_binding':source['plan_binding'],
+            'current_plan_binding':plan['binding'],'action':action})
+        return
     if path.exists():shutil.rmtree(path)
     atomic_json(proof,{'retired_checkpoint':source['checkpoint'],'replaced_by_step':step,
         'source_plan_binding':source['plan_binding'],'current_plan_binding':plan['binding']})

@@ -1,0 +1,1714 @@
+--- a/scripts/capture_student_activations.py
++++ b/scripts/capture_student_activations.py
+@@ -18,8 +18,8 @@
+ 
+ def capture(cfg, reader_role="student"):
+     require_execution_allowed(cfg)
+-    if cfg.get('direction')!='T-S' or cfg.get('direction_version')!=DIRECTION_VERSION:
+-        raise ValueError('Expected the current T-S capture configuration')
++    from steer_opd.sv_rollouts import direction_version, validate_records, AGGREGATION, validate_reader_config
++    k4=validate_reader_config(cfg,reader_role)
+     direction=reader_direction(reader_role)
+     if reader_role=='teacher' and not cfg.get('include_teacher_ablation'):
+         raise ValueError('Teacher-space capture requires explicit teacher ablation selection')
+@@ -29,12 +29,27 @@
+              for role in ('teacher','student')}
+     tokenizer=AutoTokenizer.from_pretrained(model_path(cfg['tokenizer_paths'][reader_role]),local_files_only=True)
+     questions=read_json(project_path(cfg['data_dir'])/'questions.json');records=[];encodings={}
++    if k4:
++        from steer_opd.artifact_reuse import verify_commit
++        folder=project_path(artifact_dir(cfg,'student_sv'))
++        verify_commit(folder)
++        source_job=read_json(folder/'job.json')['job']
++        request_rows=[read_json(folder/(r['key']+'.json')) for r in source_job['requests']]
++        validate_records(source_job['requests'],request_rows,model=cfg['student'],content_id=content['student'])
++        by_question={q['id']:[] for q in questions}
++        for row in sorted(request_rows,key=lambda r:r['rollout_slot']):
++            if row['id'] not in by_question:raise ValueError('Extraction question pool changed')
++            by_question[row['id']].append(row)
++        if any(len(values)!=4 for values in by_question.values()):
++            raise ValueError('Every frozen question needs all four committed extraction answers')
++        roles=('student',)*4+('teacher',)
+     for q in questions:
+         texts={'teacher':read_json(project_path(artifact_dir(cfg,'teacher'))/f"{q['id']}.json"),
+                'student':read_json(project_path(artifact_dir(cfg,'student'))/f"{q['id']}_0.json")}
+-        pair=[texts[role] for role in roles]
++        pair=by_question[q['id']]+[texts['teacher']] if k4 else [texts[role] for role in roles]
+         for role,record in zip(roles,pair):
+             if (record['id']!=q['id'] or record['model']!=cfg[role]
++                    or (k4 and record.get('question')!=q['question'])
+                     or record.get('model_content_id')!=content[role]):
+                 raise ValueError('Teacher/self text question or checkpoint contents changed')
+         item={**q,'reader_prompt_text':prompt_text(tokenizer,q['question'],cfg['enable_thinking'])}
+@@ -52,7 +67,7 @@
+             'ready_for_capture':all(n>=cfg['minimum_split_questions'] for n in counts.values())}
+     quality={'input_questions':len(records),'paired_usable_questions':len(valid_ids),
+         **quality_scope,
+-        'roles':{role:{'length_truncated':sum(pair[i]['finish_reason']=='length' for _,pair,_ in records),
++        'roles':{(f'{role}_{i}' if k4 else role):{'length_truncated':sum(pair[i]['finish_reason']=='length' for _,pair,_ in records),
+             'empty':sum(not pair[i].get('text','').strip() for _,pair,_ in records),
+             'context_truncated':sum(encodings[q['id']][i]['context_truncated'] for q,_,_ in records),
+             'usable':sum(bool(encodings[q['id']][i]['response_ids']) for q,_,_ in records)}
+@@ -63,7 +78,7 @@
+         'finish_reason_correctness_repetition_filter':False,
+         'pooling':'sv_training_all_retained_answer_tokens',
+         'input_manifest_sha256':{role:file_sha256(project_path(artifact_dir(cfg,role))/'complete.json')
+-            for role in ('teacher','student')}}
++            for role in (('teacher','student','student_sv') if k4 else ('teacher','student'))}}
+     if (output/'complete.json').exists():
+         if read_json(output/'text_quality.json')!=quality:
+             raise ValueError('Committed capture text quality inputs changed')
+@@ -78,7 +93,9 @@
+         'layer':layers[0],'reader_role':reader_role,'direction':direction,'pool_roles':list(roles),'tokenizer_sha256':digest(tokenizer.get_vocab()),
+         'template_sha256':digest(tokenizer.chat_template),'enable_thinking':cfg['enable_thinking'],
+         'pooling':'sv_training_all_retained_answer_tokens','sv_max_context_len':cfg['sv_max_context_len'],
+-        'direction_version':DIRECTION_VERSIONS[direction],
++        'direction_version':direction_version(cfg,reader_role),
++        **({'sv_rollout_count':4,'aggregation':AGGREGATION,
++            'student_sv_complete_sha256':file_sha256(folder/'complete.json')} if k4 else {}),
+         'runtime_binding':runtime,'texts_hash':digest([(q['id'],q['question'],rs,valid) for q,rs,valid in records])}
+     stage=StageCheckpoint(output,digest(identity))
+     with Progress(output/'progress',reader_role+'_paired_answer_capture',len(records),unit='question',show_bar=False) as progress:
+--- /dev/null
++++ b/scripts/generate_sv_rollouts.py
+@@ -0,0 +1,71 @@
++#!/usr/bin/env python3
++"""Generate a committed K4 extraction batch; never replace the scoring rollout."""
++import argparse
++
++from steer_opd.compass_job import load_codecs, model_path, project_path
++from steer_opd.checkpoint_identity import checkpoint_content_id
++from steer_opd.easysteer_static import create_engine
++from steer_opd.execution_policy import require_execution_allowed, require_default_scheduler_options
++from steer_opd.experiment_runtime import initialize_stage, Progress, StageCheckpoint, compute_required
++from steer_opd.resumable_core import atomic_json, digest, read_json
++from steer_opd.sv_rollouts import POLICY, sampling_params, validate_records, validate_requests
++
++
++def generate(job):
++    require_execution_allowed(job)
++    require_default_scheduler_options(job)
++    if (job.get('role') != 'student' or job.get('purpose') != 'sv_extraction_only'
++            or job.get('request_seed_policy') != POLICY or job.get('vector') is not None):
++        raise ValueError('Expected explicit unsteered K4 extraction job')
++    requests = job['requests']
++    validate_requests(requests)
++    output = project_path(job['output'])
++    content = checkpoint_content_id(model_path(job['model']), receipt_dir=output/'provenance/checkpoints')
++    effective = {**job, 'model_content_id': content}
++    runtime = initialize_stage(effective, output)
++    stage = StageCheckpoint(output, digest({'job': effective, 'runtime': runtime}))
++    with Progress(output, 'student_sv_four_rollouts', len(requests), show_bar=False) as progress:
++        if stage.load() is not None:
++            validate_records(requests, [read_json(output/(r['key']+'.json')) for r in requests],
++                             model=job['model'], content_id=content)
++            progress.resume(len(requests))
++            return
++        compute_required()
++        codec = load_codecs(job)['student']
++        engine = create_engine(model_path(job['model']), codec.support_size,
++            max_model_len=job['max_tokens']+max(len(r['prompt_token_ids']) for r in requests),
++            tensor_parallel_size=1, gpu_memory_utilization=job['gpu_memory_utilization'],
++            batch_invariant=True, prefix_caching=True, seed=42, progress=progress)
++        from vllm import SamplingParams
++        params = sampling_params({**job, 'stop_token_ids': sorted(codec.eos)}, requests, SamplingParams)
++        with progress.phase_scope('continuous_generation'):
++            outputs = engine.generate([{'prompt_token_ids': r['prompt_token_ids']} for r in requests],
++                params, steering=False, use_tqdm=progress.engine_tqdm)
++        if len(outputs) != len(requests):
++            raise RuntimeError('Incomplete extraction generation call')
++        progress.finished_call(len(requests))
++        rows = []
++        for request, param, response in zip(requests, params, outputs):
++            if list(response.prompt_token_ids) != request['prompt_token_ids'] or len(response.outputs) != 1:
++                raise ValueError('Extraction engine changed prompt order or n=1')
++            sample = response.outputs[0]
++            rows.append({**request, 'token_ids': list(sample.token_ids), 'text': sample.text,
++                'finish_reason': sample.finish_reason, 'stop_reason': sample.stop_reason,
++                'model': job['model'], 'model_content_id': content, 'steering': False,
++                'seed_policy': POLICY, 'sampling_seed': param.seed, 'job_hash': digest(effective)})
++        audit = validate_records(requests, rows, model=job['model'], content_id=content)
++        atomic_json(output/'job.json', {'job': effective, 'hash': digest(effective)})
++        atomic_json(output/'rollout_seeds.json', audit)
++        files = [output/'job.json', output/'rollout_seeds.json']
++        for row in rows:
++            path = output/(row['key']+'.json')
++            atomic_json(path, row)
++            files.append(path)
++        stage.commit(files, requests=len(rows), questions=audit['question_count'], seed_policy=POLICY)
++        progress.mark_committed(len(rows))
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--job', required=True)
++    generate(read_json(parser.parse_args().job))
+--- a/scripts/launch_ablation.py
++++ b/scripts/launch_ablation.py
+@@ -66,6 +66,10 @@
+     p.add_argument('--gpu-memory',type=float,default=.75);p.add_argument('--wait-seconds',type=int,default=3600)
+     p.add_argument('--reference-max-tokens',type=int,default=DEFAULT_MAX_GENERATION_LENGTH);p.add_argument('--source-max-tokens',type=int,default=DEFAULT_MAX_GENERATION_LENGTH)
+     p.add_argument('--sv-max-context-len',type=int,default=2048,help='Prompt+answer limit for SV-training activation extraction')
++    p.add_argument('--sv-rollouts',type=int,choices=[1,4],default=None,
++        help='S-T per-sample requires four extraction rollouts; scoring keeps the original single answer')
++    p.add_argument('--scoring-source-config',default='',
++        help='Read-only original run config; pin its committed teacher/student trajectory owners for K4')
+     p.add_argument('--reference-temperature',type=float,default=1.);p.add_argument('--reference-top-p',type=float,default=1.)
+     p.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,
+         help='Teacher and student generation penalty; fixed-prefix scores remain raw')
+@@ -91,6 +95,13 @@
+         try:ids=[f'scheme_{int(i.strip().removeprefix("scheme_")):02d}' for i in args.schemes.split(',')]
+         except ValueError:raise ValueError(f'SCHEME_IDS must be all or IDs 1..{count} separated by commas') from None
+     cfg=read_json(ROOT/'configs/ablation.json')
++    teacher_only=bool(args.teacher_ablation) and all(int(s.removeprefix('scheme_'))>=5 for s in ids)
++    per_sample=teacher_only and not args.student_baseline_run and any(s in ('scheme_06','scheme_08') for s in ids)
++    rollout_count=args.sv_rollouts if args.sv_rollouts is not None else (4 if per_sample else 1)
++    if per_sample and rollout_count!=4:
++        raise ValueError('Every future per-sample S-T ablation requires four student extraction rollouts')
++    if rollout_count==4 and (not teacher_only or args.data_policy!='all_train' or args.stop_after!='panel'):
++        raise ValueError('K4 extraction requires S-T-only schemes 5..8, all_train and the overlap panel')
+     cfg.update(id=f'{args.run_name}_{args.phase}',experiment=args.run_name,phase=args.phase,
+         run_name=args.run_name,param_name=args.param_name,question_count=args.question_count,input_data_dir=args.input_data_dir,
+         scheme_ids=ids,operator=args.operator,alpha=args.alpha,layers=[args.layer],
+@@ -106,6 +117,11 @@
+         include_teacher_ablation=bool(args.teacher_ablation),teacher_layers=[args.teacher_layer],
+         teacher_direction_version=TEACHER_DIRECTION_VERSION,
+         startup_hf_parity=bool(args.hf_parity))
++    if rollout_count==4:
++        from steer_opd.sv_rollouts import VERSION, POLICY
++        cfg.update(sv_rollout_count=4,direction='S-T',direction_version=VERSION,
++                   teacher_direction_version=VERSION,sv_seed_policy=POLICY)
++        if args.scoring_source_config:cfg['scoring_source_config']=args.scoring_source_config
+     cfg['candidate_tensor_compression']=args.candidate_tensor_compression
+     if args.base_question_source:
+         cfg['base_question_source']=args.base_question_source
+@@ -150,6 +166,7 @@
+                         'include_teacher_ablation':cfg.get('include_teacher_ablation',False),
+                         'teacher_layers':cfg.get('teacher_layers'),
+                         'teacher_direction_version':cfg.get('teacher_direction_version'),
++                        'sv_rollout_count':cfg.get('sv_rollout_count',1),'sv_seed_policy':cfg.get('sv_seed_policy'),
+                         'experiment':cfg['experiment'],'phase':cfg['phase'],
+                         'strength_policies':cfg['strength_policies'],
+                         'stop_after':cfg['stop_after'],
+@@ -211,10 +228,13 @@
+     else:
+         print(f"Questions: {cfg['question_count']}; select fraction={cfg['select_fraction']}; confirm schemes={cfg['confirm_top_n']}; data={cfg['data_dir']}",flush=True)
+     print(f"Stop after: {cfg['stop_after']}; source_overlap skips teacher answer generation, SV capture/banks/injection and OPD",flush=True)
+-    print(f"Operator={cfg.get('operator','slerp')}, strength={cfg['alpha']}, layer={cfg['layers']}, seed=42; gate={cfg['gate_metric']}, rank={cfg['rank_metric']}",flush=True)
++    selected_layer=cfg['teacher_layers'] if cfg.get('direction')=='S-T' else cfg['layers']
++    print(f"Operator={cfg.get('operator','slerp')}, strength={cfg['alpha']}, layer={selected_layer}, seed=42; gate={cfg['gate_metric']}, rank={cfg['rank_metric']}",flush=True)
+     print(f"SV extraction: all samples, mean over retained answer tokens; prompt+answer limit={cfg['sv_max_context_len']}; no finish/correctness/repetition filter",flush=True)
++    if cfg.get('sv_rollout_count')==4:
++        print('SV extraction: four student rollouts/question, seeds 42/43/44/45; teacher reads all four and averages answer pools. Overlap uses the original one-answer prefix.',flush=True)
+     roles={c['steer_role'] for c in scheme_conditions(cfg)}
+-    print('Direction: S-T in teacher space; four schemes with a frozen student baseline' if roles=={'teacher'}
++    print('Direction: S-T in teacher space; selected schemes with a frozen student baseline' if roles=={'teacher'}
+           else 'Directions: selected student T-S / optional teacher S-T schemes; shared no-SV baseline',flush=True)
+     if cfg.get('include_teacher_ablation'):
+         print(f"Teacher ablation: S-T in teacher space, layer={cfg['teacher_layers']}; schemes 5..8; student stays unsteered",flush=True)
+@@ -240,7 +260,8 @@
+     if not args.run:
+         if conflict:
+             print(conflict+' Existing artifacts preserved; execution requires an explicit identity migration or a separate run.',flush=True)
+-        print('CPU preview only. Use bash scripts/run_ablation.sh --run to explicitly launch.')
++        entry='run_matrix16.sh' if cfg.get('sv_rollout_count')==4 else 'run_ablation.sh'
++        print(f'CPU preview only. Use bash scripts/{entry} --run to explicitly launch.')
+         return
+     # Refuse changed identities before any validation/model or artifact writes.
+     if conflict:raise ValueError(conflict+' Do not mix existing artifacts with this configuration.')
+--- a/scripts/prepare_compass_banks.py
++++ b/scripts/prepare_compass_banks.py
+@@ -17,8 +17,8 @@
+ 
+ def build(config, reader_role="student"):
+     require_execution_allowed(config)
+-    if config.get('direction')!='T-S' or config.get('direction_version')!=DIRECTION_VERSION:
+-        raise ValueError('Expected the current T-S bank configuration')
++    from steer_opd.sv_rollouts import direction_version, aggregate_pools, AGGREGATION, validate_reader_config
++    k4=validate_reader_config(config,reader_role)
+     direction=reader_direction(reader_role);layers=reader_layers(config,reader_role)
+     if reader_role=='teacher' and not config.get('include_teacher_ablation'):
+         raise ValueError('Teacher banks require explicit teacher ablation selection')
+@@ -30,13 +30,13 @@
+     if StageCheckpoint(capture_path.parent,digest(meta)).load() is None:
+         raise ValueError('Student activation pool is not committed')
+     if (meta['checkpoint']!=config[reader_role] or meta['layer']!=layers[0]
+-            or meta['direction_version']!=DIRECTION_VERSIONS[direction]
++            or meta['direction_version']!=direction_version(config,reader_role)
+             or meta['checkpoint_content_id']!=checkpoint_content_id(model_path(config[reader_role]))):
+         raise ValueError('Student activation checkpoint, layer or direction protocol changed')
+     if set(capture['pooled'])!={q['id'] for q in questions}:
+         raise ValueError('Activation questions differ from the frozen campaign pool')
+     paired_pool=None
+-    if config.get('include_teacher_ablation'):
++    if config.get('include_teacher_ablation') and not k4 and not config.get('teacher_only_extraction'):
+         other=project_path(artifact_dir(config,'capture_'+('teacher' if reader_role=='student' else 'student')))/'pooled.pt'
+         paired_pool=torch.load(other,weights_only=True,map_location='cpu')
+         if StageCheckpoint(other.parent,digest(paired_pool['identity'])).load() is None:
+@@ -51,7 +51,13 @@
+         if set(paired_pool['pooled'])!=set(capture['pooled']):
+             raise ValueError('Reader pools must contain the same frozen question IDs')
+     identity={'checkpoint':config[reader_role],'step':0,'checkpoint_content_id':meta['checkpoint_content_id'],
+-              'activation_pool_hash':file_sha256(capture_path),'direction_version':DIRECTION_VERSIONS[direction]}
++              'activation_pool_hash':file_sha256(capture_path),'direction_version':direction_version(config,reader_role),
++              'sv_max_context_len':config.get('sv_max_context_len',2048)}
++    if k4:
++        if meta.get('sv_rollout_count')!=4 or meta.get('aggregation')!=AGGREGATION:
++            raise ValueError('Cannot use a single-answer capture as a four-rollout bank')
++        identity.update(sv_rollout_count=4,aggregation=AGGREGATION,
++                        student_sv_complete_sha256=meta['student_sv_complete_sha256'])
+     if config.get('data_policy')=='all_train':
+         identity.update(data_policy='all_train',question_source_sha256=file_sha256(project_path(config['question_source'])),
+                         training_ids_sha256=digest([q['id'] for q in questions]))
+@@ -61,6 +67,7 @@
+         if stage.load() is not None:progress.resume(len(questions));return
+         compute_required()
+         pooled={q['id']:capture['pooled'][q['id']] for q in questions}
++        if k4:pooled=aggregate_pools(pooled,layers)
+         if paired_pool is not None:
+             pooled={qid:record if paired_pool['pooled'][qid]['usable'] else
+                     {'usable':False,'reason':'unusable_in_paired_reader'} for qid,record in pooled.items()}
+--- a/scripts/run_ablation.py
++++ b/scripts/run_ablation.py
+@@ -80,7 +80,7 @@
+         attempt=logroot/'attempts'/f'{name}_{time.time_ns()}'
+         attempt.mkdir(parents=True,exist_ok=True)
+         launch=[sys.executable,str(ROOT/'scripts/run_on_idle_gpus.py'),'--count',str(count),
+-            '--max-project-gpus','2','--wait-seconds',str(cfg['gpu_wait_seconds']),'--run-dir',str(attempt)]
++            '--max-project-gpus',str(cfg.get('max_project_gpus',2)),'--wait-seconds',str(cfg['gpu_wait_seconds']),'--run-dir',str(attempt)]
+         if os.environ.get('STEER_OPD_GPU_IDS'):launch+=['--gpu-ids',os.environ['STEER_OPD_GPU_IDS']]
+         launch+=['--',*expected]
+         with (attempt/'supervisor.log').open('xb') as log:
+@@ -161,6 +161,11 @@
+         status['data_policy']='all_train'
+         status['stages']=['training_question_pool','teacher_texts','unsteered_source_top16',
+             'reader_captures','direction_banks','native_teacher_span_scores','all_training_question_overlap','user_review']
++    if cfg.get('sv_rollout_count')==4:
++        status['sv_rollout_count']=4
++        status['stages']=['training_question_pool','teacher_reference','original_single_scoring_rollout',
++            'student_four_extraction_rollouts_seed42to45','teacher_five_answer_capture',
++            'four_answer_mean_S_T_banks','native_teacher_span_scores','fixed_single_prefix_overlap','user_review']
+     atomic_json(project_path(metadata_dir(cfg))/"preflight.json",status)
+     if not args.execute:
+         print(status)
+--- /dev/null
++++ b/scripts/run_matrix16.py
+@@ -0,0 +1,281 @@
++#!/usr/bin/env python3
++"""Run the authorized shared-bank 16-case S-T study outside the live checkout."""
++import argparse
++import fcntl
++import os
++from pathlib import Path
++import signal
++import subprocess
++import sys
++import time
++
++from steer_opd.checkpoint_identity import checkpoint_content_id
++from steer_opd.compass_campaign import frozen_json
++from steer_opd.compass_job import model_path
++from steer_opd.direction_bank import file_sha256
++from steer_opd.experiment_runtime import Progress,child_environment,source_revision,timestamp
++from steer_opd.matrix16 import (GROUPS,cases,group_config,generation_job,assemble_extraction,
++    prepare_banks,score_group,matrix_summary,upstream,freeze_common_questions)
++from steer_opd.resumable_core import ROOT,atomic_json,digest,read_json
++from steer_opd.source_bridge import SourceBridge
++from steer_opd.stage_io import project,layout_paths
++
++
++def make_spec(authorization):
++    value=read_json(authorization)
++    pool=value['allowed_gpu_pool']
++    if (not pool or len(set(pool))!=len(pool) or {2,3}.intersection(pool)
++            or set(pool)-{0,1,4,5,6,7}):raise ValueError('Matrix GPU pool must exclude physical GPUs 2 and 3')
++    if value.get('authorized_to_launch') is not True:raise ValueError('Matrix launch authorization is absent')
++    original=Path(value['original_root']).resolve();source=read_json(original/value['source_config'])
++    if (source['question_count']!=1024 or source['teacher_layers']!=[29] or source['alpha']!=.1
++            or source['operator']!='slerp' or source['scheme_ids']!=['scheme_05']
++            or source['seed']!=42 or source.get('data_policy')!='all_train'):
++        raise ValueError('The reused reference must be the declared 1024-question S-T/global/all/Slerp0.1 run')
++    revision=source_revision()[0]
++    name='matrix16_n1024_ST_L29_a0.1_'+revision[:10]+'_v1'
++    root=layout_paths({**source,'run_name':'ablation','param_name':name})['6']
++    binding=digest({'code':revision,'source_config_sha256':file_sha256(original/value['source_config']),
++        'axes':value['axes'],'global_source':'original_single','per_sample_source':'K4_seed42to45',
++        'mask':'bottom_half_native_teacher_positions_overlap_stable_v1','alpha':.1,'teacher_layer':29})
++    return {**value,'name':name,'root':root,'code_revision':revision,'acceptance_binding':binding,
++        'source_config_sha256':file_sha256(original/value['source_config']),
++        'acceptance_receipt':root+'/metadata/acceptance/passed.json',
++        'student_receipt':root+'/metadata/acceptance/student_passed.json','generation_shards':value.get('generation_shards',5)}
++
++
++def task_path(spec,name):return project(spec['root'])/'tasks'/name
++
++
++def birth(pid):
++    try:
++        proc=Path('/proc')/str(pid)
++        fields=(proc/'stat').read_text().rsplit(')',1)[1].split()
++        if fields[0]=='Z' or (proc/'cwd').resolve()!=ROOT:return None
++        return int(fields[19])
++    except (OSError,ValueError):return None
++
++
++class AdoptedWorker:
++    def __init__(self,record,result):self.pid=record['pid'];self.start=record['start_ticks'];self.result=result
++    def poll(self):
++        if birth(self.pid)==self.start:return None
++        return 0 if self.result.is_file() else 1
++    def terminate(self):
++        if birth(self.pid)==self.start:os.kill(self.pid,signal.SIGTERM)
++    def kill(self):
++        if birth(self.pid)==self.start:os.kill(self.pid,signal.SIGKILL)
++    def wait(self,timeout):
++        deadline=time.monotonic()+timeout
++        while self.poll() is None:
++            if time.monotonic()>deadline:raise subprocess.TimeoutExpired('adopted matrix worker',timeout)
++            time.sleep(.2)
++        return self.poll()
++
++
++def admission(spec,name,count,command):
++    from run_on_idle_gpus import tee_process
++    attempt=task_path(spec,name)/'admission'/str(time.time_ns())
++    env={**child_environment(command[0]),'STEER_OPD_MATRIX16_PARALLEL':'1',
++         'STEER_OPD_GPU_IDS':','.join(map(str,spec['allowed_gpu_pool'])),
++         'STEER_OPD_METRIC_WORKERS':'16'}
++    launch=[sys.executable,'scripts/run_on_idle_gpus.py','--count',str(count),
++        '--max-project-gpus',str(len(spec['allowed_gpu_pool'])),'--gpu-ids',env['STEER_OPD_GPU_IDS'],
++        '--wait-seconds','86400','--run-dir',str(attempt),'--',*command]
++    child=subprocess.Popen(launch,cwd=ROOT,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
++    try:code=tee_process(child,None)
++    except BaseException:
++        child.terminate()
++        try:child.wait(timeout=45)
++        except subprocess.TimeoutExpired:child.kill();child.wait()
++        raise
++    if code:raise subprocess.CalledProcessError(code,launch)
++
++
++def worker(spec,name):
++    if source_revision()[0]!=spec['code_revision']:raise ValueError('Matrix source changed after launch; use a new identity')
++    if file_sha256(project(spec['source_config']))!=spec['source_config_sha256']:
++        raise ValueError('Original scoring source config changed')
++    def interrupted(signum,frame):raise KeyboardInterrupt(f'signal {signum}')
++    signal.signal(signal.SIGTERM,interrupted)
++    target=task_path(spec,name);target.mkdir(parents=True,exist_ok=True)
++    if (target/'result.json').exists():return
++    engine=str(ROOT/'.venv-easysteer/bin/python')
++    if name.startswith('validate_'):
++        role='student' if name=='validate_student' else 'teacher'
++        operator='additive' if name=='validate_additive' else 'slerp'
++        cfg=group_config(spec,'per_sample','2048')
++        cfg.update(param_name=spec['name']+'_'+name,operator=operator,stage='static_gpu_acceptance',
++            gpu_acceptance_binding=spec['acceptance_binding'],startup_hf_parity=False,
++            stop_after='source_overlap' if role=='student' else 'panel')
++        from steer_opd.stage_io import configure_layout,component_target
++        cfg=configure_layout(cfg)
++        if role=='student':
++            from steer_opd.sv_rollouts import POLICY
++            cfg['request_seed_policy']=POLICY
++        cfg.pop('gpu_acceptance_receipt',None)
++        file=target/'job.json';frozen_json(file,cfg)
++        admission(spec,name,1 if role=='student' else 2,[engine,'scripts/validate_static_gpu.py',
++            '--job',str(file),'--role',role,'--backend','easysteer'])
++        report=project(component_target(cfg,'acceptance'))/role/'easysteer/report.json'
++        result={'report':str(report.relative_to(ROOT)),'report_sha256':file_sha256(report)}
++    elif name.startswith('generate_'):
++        index=int(name.removeprefix('generate_'))
++        job=generation_job(spec,index,spec['generation_shards'])
++        file=target/'job.json';frozen_json(file,job)
++        admission(spec,name,1,[engine,'scripts/generate_sv_rollouts.py','--job',str(file)])
++        folder=project(job['output'])
++        result={'output':job['output'],'complete_sha256':file_sha256(folder/'complete.json')}
++    else:
++        from run_ablation import stage_runners
++        action,granularity,context=name.split('_',1)[0],None,None
++        for gran,ctx in GROUPS:
++            if name==f'{action}_{gran}_{ctx}':granularity,context=gran,ctx
++        if granularity is None:raise ValueError('Unknown matrix task')
++        cfg=group_config(spec,granularity,context,bank_only=action=='bank')
++        os.environ.update(STEER_OPD_MATRIX16_PARALLEL='1',STEER_OPD_GPU_IDS=','.join(map(str,spec['allowed_gpu_pool'])))
++        with Progress(target/'progress',name,8,unit='stage',eta=False,show_bar=False) as progress:
++            gpu,cpu=stage_runners(cfg,progress)
++            if action=='bank':result=prepare_banks(spec,granularity,context,progress,gpu,cpu)
++            elif action=='score':
++                if (granularity,context)==('global','2048'):
++                    _,packet=upstream(read_json(project(spec['source_config'])),'bank_teacher')
++                    bank={'descriptor':packet['descriptor_path'],'descriptor_sha256':file_sha256(project(packet['descriptor_path'])),
++                          'artifact_id':packet['artifact_id']}
++                else:bank=read_json(task_path(spec,f'bank_{granularity}_{context}')/'result.json')['result']
++                result=score_group(spec,granularity,context,bank,progress,gpu,cpu)
++            else:raise ValueError('Unknown worker action')
++    atomic_json(target/'result.json',{'status':'passed','task':name,'finished_at':timestamp(),'result':result})
++
++
++def run(spec):
++    root=project(spec['root']);root.mkdir(parents=True,exist_ok=True)
++    lock=(root/'.supervisor.lock').open('a')
++    fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
++    spec_file=root/'metadata/spec.json';frozen_json(spec_file,spec)
++    bridge=SourceBridge(spec['original_root'],spec['source_config'])
++    active={};finished={};failed={};assembled=False
++    names=['validate_slerp','validate_additive','validate_student']
++    names += [f'generate_{i}' for i in range(spec['generation_shards'])]
++    names += [f'bank_{g}_{c}' for g,c in GROUPS if (g,c)!=('global','2048')]
++    names += [f'score_{g}_{c}' for g,c in GROUPS]
++    for name in names:
++        path=task_path(spec,name)/'result.json'
++        if path.exists():finished[name]=read_json(path)['result']
++        else:
++            record=task_path(spec,name)/'worker.json'
++            if record.is_file():
++                value=read_json(record)
++                if value.get('start_ticks') is not None and birth(value['pid'])==value['start_ticks']:
++                    active[name]=(AdoptedWorker(value,path),(task_path(spec,name)/'console.log').open('ab'))
++    print(f"[{timestamp()}] Matrix {spec['name']} started; GPU pool={spec['allowed_gpu_pool']}; excluded=2,3",flush=True)
++    try:
++        while True:
++            if source_revision()[0]!=spec['code_revision']:raise ValueError('Frozen matrix source changed')
++            available=bridge.poll()
++            for name,(child,stream) in list(active.items()):
++                code=child.poll()
++                if code is None:continue
++                stream.close();active.pop(name)
++                path=task_path(spec,name)/'result.json'
++                if code or not path.is_file():
++                    failed[name]={'exit_code':code,'log':str(task_path(spec,name)/'console.log')}
++                    raise RuntimeError(f'Matrix task failed: {name}; {failed[name]}')
++                finished[name]=read_json(path)['result']
++                print(f'[{timestamp()}] Completed {name}',flush=True)
++            if 'validate_student' in finished and not project(spec['student_receipt']).exists():
++                atomic_json(project(spec['student_receipt']),{'status':'passed','binding':spec['acceptance_binding'],
++                    'scope':'student_four_request_seeds_and_native_replay','evidence':finished['validate_student']})
++            accepted=all(name in finished for name in ['validate_student','validate_slerp','validate_additive'])
++            if accepted and not project(spec['acceptance_receipt']).exists():
++                atomic_json(project(spec['acceptance_receipt']),{'status':'passed','binding':spec['acceptance_binding'],
++                    'scope':'K4 seeds; teacher capture and both operators; actual full-context captures remain separately recorded',
++                    'evidence':{name:finished[name] for name in names[:3]}})
++            generated=all(f'generate_{i}' in finished for i in range(spec['generation_shards']))
++            if generated and not assembled:
++                assemble_extraction(spec,spec['generation_shards']);assembled=True
++                print(f'[{timestamp()}] Committed all 4096 extraction rollouts',flush=True)
++            all_banks=all(f'bank_{g}_{c}' in finished for g,c in GROUPS if (g,c)!=('global','2048'))
++            common_file=root/'metadata/common_questions.json'
++            if all_banks and 'bank_teacher' in available and 'screen_train_teacher' in available and not common_file.exists():
++                common=freeze_common_questions(spec,finished)
++                print(f'[{timestamp()}] Frozen {len(common)} common scoring questions',flush=True)
++            for name in names:
++                if name in active or name in finished:continue
++                ready=False
++                if name.startswith('validate_'):ready=True
++                elif name.startswith('generate_'):ready='validate_student' in finished and 'data' in available
++                elif name.startswith('bank_'):
++                    ready=accepted and all(k in available for k in ('teacher','student','data'))
++                    if 'per_sample' in name:ready=ready and assembled
++                elif name.startswith('score_'):
++                    ready=accepted and common_file.exists() and all(k in available for k in ('data','teacher','student','alignment',
++                        'native_teacher','source_metrics','bank_teacher','screen_train_teacher'))
++                    if name!='score_global_2048':ready=ready and name.replace('score_','bank_',1) in finished
++                if not ready:continue
++                directory=task_path(spec,name);directory.mkdir(parents=True,exist_ok=True)
++                stream=(directory/'console.log').open('ab')
++                env={**child_environment(),'STEER_OPD_MATRIX16_PARALLEL':'1',
++                     'STEER_OPD_GPU_IDS':','.join(map(str,spec['allowed_gpu_pool'])),'STEER_OPD_METRIC_WORKERS':'16'}
++                child=subprocess.Popen([sys.executable,'scripts/run_matrix16.py','--config',str(spec_file),'--worker',name],
++                    cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
++                active[name]=(child,stream)
++                for _ in range(50):
++                    ticks=birth(child.pid)
++                    if ticks is not None or child.poll() is not None:break
++                    time.sleep(.01)
++                atomic_json(directory/'worker.json',{'pid':child.pid,'start_ticks':ticks,'code_revision':spec['code_revision']})
++                print(f'[{timestamp()}] Launched {name}, PID={child.pid}',flush=True)
++            complete=matrix_summary(spec,finished)
++            state={'status':'complete' if complete else 'running','updated_at':timestamp(),'pid':os.getpid(),
++                'name':spec['name'],'original_process_untouched':True,'excluded_gpus':[2,3],
++                'source_components':list(available),'finished':list(finished),
++                'active':{name:child.pid for name,(child,_) in active.items()},'failed':failed,
++                'waiting':[name for name in names if name not in active and name not in finished],
++                'parameter_updates':0,'reference_rerun':False,'unsteered_rerun':False}
++            atomic_json(root/'progress.json',state)
++            if complete:
++                print(f'[{timestamp()}] All 16 conditions committed; stopped after overlap',flush=True)
++                return
++            time.sleep(10)
++    except BaseException as error:
++        atomic_json(root/'failure.json',{'error':repr(error),'failed':failed,'updated_at':timestamp()})
++        for child,stream in active.values():
++            if child.poll() is None:child.terminate()
++        for child,stream in active.values():
++            try:child.wait(timeout=55)
++            except subprocess.TimeoutExpired:child.kill();child.wait()
++            stream.close()
++        raise
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--authorization',default='.matrix_authorization.json')
++    parser.add_argument('--gpu-pool',default='0,1,4,5,6,7')
++    parser.add_argument('--config')
++    parser.add_argument('--worker')
++    parser.add_argument('--run',action='store_true')
++    parser.add_argument('--check',action='store_true')
++    args=parser.parse_args()
++    if args.worker:
++        if not args.config:parser.error('--worker requires a frozen --config')
++        return worker(read_json(args.config),args.worker)
++    spec=make_spec(args.authorization)
++    pool=[int(value) for value in args.gpu_pool.split(',')]
++    if not pool or len(set(pool))!=len(pool) or set(pool)-set(spec['allowed_gpu_pool']):
++        raise ValueError('Choose a nonempty subset of the authorized GPU pool, excluding 2 and 3')
++    spec['allowed_gpu_pool']=pool
++    if not args.run:
++        print({'name':spec['name'],'root':spec['root'],'cases':len(cases()),'new_candidate_scores':15,
++            'gpu_pool':spec['allowed_gpu_pool'],'excluded_gpus':[2,3],
++            'banks':'reuse global/2048; prepare global/full and per_sample/{2048,full}',
++            'extraction_seeds':[42,43,44,45],'unsteered':'reuse only','reference':'reuse only',
++            'parameter_updates':0,'mode':'CPU preview'})
++        return
++    def interrupted(signum,frame):raise KeyboardInterrupt(f'signal {signum}')
++    signal.signal(signal.SIGTERM,interrupted)
++    return run(spec)
++
++
++if __name__=='__main__':main()
+--- /dev/null
++++ b/scripts/run_matrix16.sh
+@@ -0,0 +1,10 @@
++#!/usr/bin/env bash
++set -euo pipefail
++# 16组固定S-T消融；无参数默认仅CPU预览，--run显式启动／恢复。
++GPU_POOL="${GPU_POOL:-0,1,4,5,6,7}" # 排除2、3；6等繁忙卡仅在实际空闲且通过准入后使用。
++AUTHORIZATION="${AUTHORIZATION:-.matrix_authorization.json}" # 已冻结的16组定义、原运行引用及本轮启动授权。
++export STEER_OPD_IPC_ROOT="${STEER_OPD_IPC_ROOT:-/home/zhenning/data/working_tmp/steer_opd/.runtime/m16}" # 项目内短路径别名，避免Unix socket长度超限。
++cd "$(dirname "${BASH_SOURCE[0]}")/.."
++source scripts/runtime_env.sh
++if (( $# == 0 )); then set -- --check; fi
++exec "$STEER_OPD_PYTHON" scripts/run_matrix16.py --authorization "$AUTHORIZATION" --gpu-pool "$GPU_POOL" "$@"
+--- a/scripts/run_on_idle_gpus.py
++++ b/scripts/run_on_idle_gpus.py
+@@ -177,9 +177,13 @@
+     parser.add_argument("command", nargs=argparse.REMAINDER)
+     args = parser.parse_args()
+     command = args.command[1:] if args.command[:1] == ["--"] else args.command
+-    if not command or not 1 <= args.count <= args.max_project_gpus <= 2:
+-        parser.error("A command is required; project GPU limit is1 or2")
++    parallel=os.environ.get('STEER_OPD_MATRIX16_PARALLEL')=='1'
++    ceiling=6 if parallel else 2
++    if not command or not 1<=args.count<=2 or not args.count<=args.max_project_gpus<=ceiling:
++        parser.error('Each engine uses at most two GPUs; the authorized matrix may admit six in total')
+     gpu_ids=parse_gpu_ids(args.gpu_ids)
++    if parallel and (gpu_ids is None or {2,3}.intersection(gpu_ids)):
++        parser.error('The matrix requires an explicit pool excluding physical GPUs 2 and 3')
+     if gpu_ids is not None and len(gpu_ids)<args.count:
+         parser.error('Selected GPU pool is smaller than the requested tensor parallelism')
+     run_dir = args.run_dir.resolve()
+--- a/scripts/runtime_env.sh
++++ b/scripts/runtime_env.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ # Source from the project root. Do not alter shared asset directories.
+-STEER_OPD_ROOT=/home/zhenning/data/working_tmp/steer_opd
++STEER_OPD_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+ # Isolate the validated experiment dependencies from the shared Conda environment.
+ if [[ -x "${STEER_OPD_ROOT}/.venv-opd/bin/python" ]]; then
+     STEER_OPD_RUNTIME_PREFIX="${STEER_OPD_ROOT}/.venv-opd"
+@@ -27,8 +27,8 @@
+ export PATH="${STEER_OPD_RUNTIME_PREFIX}/bin:${CUDA_HOME}/bin:${PATH}"
+ export PIP_CACHE_DIR="${STEER_OPD_ROOT}/.cache/pip"
+ export UV_CACHE_DIR="${STEER_OPD_ROOT}/.cache/uv"
+-export TMPDIR="${STEER_OPD_ROOT}/.runtime/tmp"
+-export RAY_TMPDIR="${STEER_OPD_ROOT}/.runtime/ray"
++export TMPDIR="${STEER_OPD_IPC_ROOT:-${STEER_OPD_ROOT}/.runtime}/tmp"
++export RAY_TMPDIR="${STEER_OPD_IPC_ROOT:-${STEER_OPD_ROOT}/.runtime}/ray"
+ export WANDB_MODE=disabled
+ export HF_HUB_OFFLINE=1
+ export HF_DATASETS_OFFLINE=1
+--- a/scripts/validate_static_gpu.py
++++ b/scripts/validate_static_gpu.py
+@@ -209,6 +209,53 @@
+                 replay=fixed_prefix_scores(engine,replay_rows,[False]*len(rows),include_sampled=True)
+                 report['source_replay']=compare_scores(source,replay)
+                 report['presence_penalty']=penalty
++                if job.get('sv_rollout_count')==4:
++                    from steer_opd.sv_rollouts import requests_for,sampling_params,validate_records,POLICY
++                    questions=[{'id':r['id'],'question':r['id'],'answer':''} for r in rows]
++                    prompts={r['id']:r['prompt_token_ids'] for r in rows}
++                    requests=requests_for(questions,lambda q:prompts[q['id']])
++                    params=sampling_params({'temperature':1.,'top_p':1.,'max_tokens':8,
++                        'presence_penalty':penalty,'stop_token_ids':sorted(codec.eos)},requests,SamplingParams)
++                    sampled=engine.generate([{'prompt_token_ids':r['prompt_token_ids']} for r in requests],params,
++                        steering=False,use_tqdm=True)
++                    if len(sampled)!=len(requests):raise ValueError('Incomplete K4 acceptance generation')
++                    records=[]
++                    for request,param,out in zip(requests,params,sampled):
++                        if list(out.prompt_token_ids)!=request['prompt_token_ids'] or len(out.outputs)!=1:
++                            raise ValueError('K4 acceptance changed prompt order or request n')
++                        records.append({**request,'token_ids':list(out.outputs[0].token_ids),
++                            'steering':False,'seed_policy':POLICY,'sampling_seed':param.seed})
++                    report['sv_rollout_seeds']=validate_records(requests,records)
++            if role=='teacher' and job.get('sv_rollout_count')==4:
++                # Exercise one five-input teacher capture, then compare GPU-returned
++                # pools with the explicitly computed four-answer mean difference.
++                from steer_opd.sv_rollouts import aggregate_pools
++                prompts=[{'prompt_token_ids':r['prompt_token_ids']+r['token_ids']}
++                         for r in [rows[0],rows[1],rows[0],rows[1],rows[0]]]
++                selected=[list(range(len(r['prompt_token_ids'])-1,
++                    len(r['prompt_token_ids'])+len(r['token_ids'])))
++                    for r in [rows[0],rows[1],rows[0],rows[1],rows[0]]]
++                result=hs.capture(engine,prompts,layers=capture_layers,dtype='bfloat16',steering=False,
++                    seed=42,presence_penalty=presence_penalty(job),
++                    per_prompt_selects=[SelectSpec(prompt_positions=positions) for positions in selected])
++                if len(result.outputs)!=5 or list(result.layer_ids)!=capture_layers:
++                    raise ValueError('K4 teacher capture needs exactly five inputs at the requested layer')
++                for i,prompt in enumerate(prompts):
++                    if (result.sample_positions(i)!=selected[i] or result.sample_token_ids(i)!=
++                            [prompt['prompt_token_ids'][p] for p in selected[i]]):
++                        raise ValueError('K4 teacher capture changed sample positions or token labels')
++                values={}
++                for layer in capture_layers:
++                    states=[result.sample(i)[layer][1:].float().cpu() for i in range(5)]
++                    if any(s.numel()==0 or not torch.isfinite(s).all() for s in states):
++                        raise ValueError('K4 teacher returned empty or nonfinite answer states')
++                    values[str(layer)]={'pools':[s.mean(0) for s in states],
++                        'norms':[s.norm(dim=-1) for s in states]}
++                aggregated=aggregate_pools({'q':{'usable':True,'layers':values}},capture_layers)['q']
++                for layer in capture_layers:
++                    pools=values[str(layer)]['pools'];actual=aggregated['layers'][str(layer)]['pools']
++                    torch.testing.assert_close(actual[0]-actual[1],torch.stack(pools[:4]).mean(0)-pools[4],rtol=0,atol=0)
++                report['sv_four_answer_teacher_capture']='passed'
+             atomic_json(output/'report.json',report)
+             store.commit([output/'report.json'])
+         progress.finished_call(1);progress.mark_committed(1)
+--- a/src/steer_opd/compass_banks.py
++++ b/src/steer_opd/compass_banks.py
+@@ -20,6 +20,6 @@
+         method=Method(direction=direction,granularity=granularity,extractor='initial',layers=tuple(layers),
+                       gate='all',operator='slerp',alpha=alpha)
+         result[f'{direction}_{granularity}']=make_bank(pooled,method,
+-            {**identity,'direction_version':DIRECTION_VERSIONS[direction],'zero_direction_policy':'exact_no_intervention'},
++            {**identity,'direction_version':identity.get('direction_version',DIRECTION_VERSIONS[direction]),'zero_direction_policy':'exact_no_intervention'},
+             fixed_scales=scales,allow_zero_directions=True)
+     return result,scales
+--- a/src/steer_opd/compass_campaign.py
++++ b/src/steer_opd/compass_campaign.py
+@@ -27,6 +27,9 @@
+ 
+ 
+ def validate_config(cfg):
++    from steer_opd.sv_rollouts import enabled, VERSION, POLICY
++    k4=enabled(cfg)
++    matrix=cfg.get('matrix_protocol')=='st_2x2x2x2_v1'
+     require_default_scheduler_options(cfg)
+     if cfg.get('data_policy','select_confirm') not in ('select_confirm','all_train'):
+         raise ValueError('Unknown training question data policy')
+@@ -54,9 +57,17 @@
+         raise ValueError("This campaign uses the selected Qwen3.5 teacher and Qwen3-4B student")
+     if cfg.get("optimizer_updates") != 0:
+         raise ValueError("The selected screen requires zero updates")
+-    if cfg.get('direction')!='T-S' or cfg.get('direction_version')!=DIRECTION_VERSION:
++    if k4 and (cfg.get('direction')!='S-T' or cfg.get('direction_version')!=VERSION
++            or cfg.get('sv_seed_policy')!=POLICY
++            or not cfg.get('include_teacher_ablation') or not cfg.get('layout_version')==1
++            or any(c['steer_role']!='teacher' for c in scheme_conditions(cfg))):
++        raise ValueError('Four-rollout extraction is only supported for teacher-space S-T schemes')
++    if matrix and (cfg.get('direction')!='S-T' or not cfg.get('teacher_only_extraction')
++            or any(c['steer_role']!='teacher' for c in scheme_conditions(cfg))):
++        raise ValueError('The matrix fixes S-T in the teacher space')
++    if not k4 and not matrix and (cfg.get('direction')!='T-S' or cfg.get('direction_version')!=DIRECTION_VERSION):
+         raise ValueError('Select the current T-S direction protocol and a new run')
+-    if type(cfg.get('sv_max_context_len')) is not int or cfg['sv_max_context_len'] < 2:
++    if cfg.get('sv_max_context_len') is not None and (type(cfg['sv_max_context_len']) is not int or cfg['sv_max_context_len'] < 2):
+         raise ValueError('Set sv_max_context_len >= 2 for the SV-training extraction protocol')
+     from steer_opd.operators import validate_operator
+     validate_operator(cfg.get('operator','slerp'),cfg['alpha'])
+@@ -75,7 +86,7 @@
+         if (len(teacher_layers)!=1 or type(teacher_layers[0]) is not int
+                 or not 0<=teacher_layers[0]<count):
+             raise ValueError(f'Select one teacher layer in 0..{count-1}')
+-        if cfg.get('teacher_direction_version')!=TEACHER_DIRECTION_VERSION:
++        if cfg.get('teacher_direction_version')!=(VERSION if k4 else TEACHER_DIRECTION_VERSION):
+             raise ValueError('Select the teacher-space S-T direction protocol')
+     if cfg.get("metric") != METRIC or cfg.get("screen_backend") not in ("hf_batched_static", "easysteer"):
+         raise ValueError("Explicitly select the aligned project metric and an available backend")
+@@ -87,8 +98,9 @@
+         raise ValueError("Select one explicit static gate/ranking metric; both metrics are always recorded")
+     if cfg.get('data_policy')=='all_train':
+         if cfg.get('stop_after','panel')!='panel':raise ValueError('Unified training overlap requires the complete panel')
+-        if cfg['teacher_gpus'] not in (1,2) or any(c['gate']!='all' for c in scheme_conditions(cfg)):
++        if cfg['teacher_gpus'] not in (1,2) or (not (k4 or matrix) and any(c['gate']!='all' for c in scheme_conditions(cfg))):
+             raise ValueError('The unified training pool requires all-position injection and one or two teacher GPUs')
++        if not 0<cfg['gate_target_rate']<1:raise ValueError('Invalid static gate target rate')
+     elif (not 0 < cfg["select_fraction"] < 1 or cfg["minimum_split_questions"] < 1
+             or not 1 <= cfg["confirm_top_n"] <= len(scheme_conditions(cfg)) or not 0 < cfg["gate_target_rate"] < 1
+             or cfg["teacher_gpus"] not in (1, 2)):
+@@ -96,6 +108,18 @@
+ 
+ 
+ def scheme_conditions(cfg):
++    from steer_opd.sv_rollouts import direction_version
++    if cfg.get('matrix_conditions') is not None:
++        from steer_opd.operators import validate_operator
++        chosen=cfg['matrix_conditions']
++        if not chosen or len({c['id'] for c in chosen})!=len(chosen):raise ValueError('Invalid matrix condition IDs')
++        for c in chosen:
++            if (c['direction']!='S-T' or c['steer_role']!='teacher' or c['strength_policy']!='fixed'
++                    or c['granularity'] not in ('global','per_question') or c['gate'] not in ('all','static_overlap')
++                    or c['direction_version']!=direction_version(cfg,'teacher')):
++                raise ValueError('The 16-case matrix uses teacher-space S-T only')
++            validate_operator(c['operator'],c['alpha'])
++        return chosen
+     conditions=[]
+     policies=cfg.get('strength_policies',['fixed'])
+     if cfg.get('phase')=='overlap' and policies!=['fixed']:
+@@ -122,7 +146,7 @@
+                     'steer_role':'teacher','gate':gate,'granularity':granularity,
+                     'bank':f'S-T_{granularity}','operator':cfg.get('operator','slerp'),'alpha':cfg['alpha'],
+                     'layers':cfg['teacher_layers'],'strength_policy':'fixed',
+-                    'direction_version':TEACHER_DIRECTION_VERSION})
++                    'direction_version':direction_version(cfg,'teacher')})
+     selected=cfg.get('scheme_ids',[c['id'] for c in conditions])
+     if (not selected or len(set(selected))!=len(selected)
+             or set(selected)-{c['id'] for c in conditions}):
+@@ -335,8 +359,8 @@
+         banks=banks, conditions=conditions,
+         identity={"metric": METRIC, "metric_version": METRIC_VERSION, "matching_rule_version": RULE_VERSION,
+                   "P_overlap_definition": P_DEFINITION, "topk_tie_policy": TOPK_TIE_POLICY,
+-                  'direction_version':DIRECTION_VERSION,
+-                  'direction_versions':{c['direction']:DIRECTION_VERSIONS[c['direction']] for c in conditions}},
++                  'direction_version':cfg.get('direction_version',DIRECTION_VERSION),
++                  'direction_versions':{c['direction']:c['direction_version'] for c in conditions}},
+         backend=cfg["screen_backend"], batch_size=cfg["student_score_batch_size"],
+         teacher_batch_size=cfg["teacher_score_batch_size"],
+         gpu_memory_utilization=cfg["gpu_memory_utilization"], chunk=cfg["logit_chunk_size"])
+@@ -349,7 +373,8 @@
+         bind_checkpoint_content=cfg.get("bind_checkpoint_content", False),
+         gate_metric=cfg.get("gate_metric", "overlap"), rank_metric=cfg.get("rank_metric", "overlap"),
+         probability_backend=cfg.get("probability_backend", "easysteer"), teacher_gpus=cfg["teacher_gpus"])
+-    job.update(direction='T-S',direction_version=DIRECTION_VERSION,experiment=cfg['experiment'],phase=cfg['phase'])
++    job.update(direction=cfg.get('direction','T-S'),direction_version=cfg.get('direction_version',DIRECTION_VERSION),
++        sv_rollout_count=cfg.get('sv_rollout_count',1),experiment=cfg['experiment'],phase=cfg['phase'])
+     if schedule is not None:job['strength_schedule']=schedule
+     return job
+ 
+@@ -363,7 +388,7 @@
+     output=job['output']+'/'+role if mixed else job['output']
+     result={**job,'conditions':conditions,'steer_role':role,'output':output,
+             'direction':'T-S' if role=='student' else 'S-T',
+-            'direction_version':DIRECTION_VERSIONS['T-S' if role=='student' else 'S-T'],
++            'direction_version':conditions[0]['direction_version'],
+             'banks':{c['bank']:job['banks'][c['bank']] for c in conditions}}
+     if role=='teacher' and any(c.get('steer_role','student')=='student' for c in job['conditions']):
+         result['paired_student_baseline']=job['output']+'/student/baseline'
+@@ -482,16 +507,46 @@
+     """Score every training question once; all injection needs no calibrated gate."""
+     rows,_,_,_=prepare_plans(base_job,codecs)
+     expected=read_json(project_path(cfg['data_dir'])/'train_ids.json')['train_ids']
+-    if {r['id'] for r in rows}!=set(expected):
++    from steer_opd.sv_rollouts import enabled
++    k4=enabled(cfg);matrix=cfg.get('matrix_protocol')=='st_2x2x2x2_v1'
++    original=read_json(project_path(base_job['rows'])) if k4 or matrix else rows
++    if {r['id'] for r in (original if k4 or matrix else rows)}!=set(expected):
+         raise ValueError('Overlap requests must cover the complete training question pool')
+-    if any(c['gate']!='all' for c in base_job['conditions']):
++    if k4 or matrix:
++        allowed=set(cfg['allowed_question_ids'])
++        rows=[r for r in rows if r['id'] in allowed]
++        if not rows:raise ValueError('No common usable extraction/scoring questions')
++    if not (k4 or matrix) and any(c['gate']!='all' for c in base_job['conditions']):
+         raise ValueError('Unified training overlap currently requires all-position injection')
+     run=project_path(cfg['run_dir'])
++    threshold=0.
++    if k4 or matrix:
++        frozen_json(run/'train_scope.json',{'total_questions':len(expected),'extraction_usable':len(allowed),
++            'scored_questions':len(rows),'scored_question_ids':[r['id'] for r in rows],
++            'scoring_rollouts_per_question':1,'extraction_rollouts_per_question':4 if k4 else 1,
++            'excluded_ids':[qid for qid in expected if qid not in {r['id'] for r in rows}]})
++    if k4 and not matrix and any(c['gate']=='static_overlap' for c in base_job['conditions']):
++        _,plans,_,_=prepare_plans(base_job,codecs)
++        adapter=AlignedMetricAdapter(plans,codecs['student'],codecs['teacher'],require_dual=True)
++        values=[]
++        for row in rows:
++            key=safe_key(row);root=project_path(base_job['source_dir'])
++            student=load_rollout_topk(root,row,16,base_job['support_size'])
++            teacher_file=project_path(base_job['teacher_scores'])/f'{key}.pt'
++            metrics=cached_source_metrics(base_job,row,student,
++                torch.load(teacher_file,weights_only=True,map_location='cpu'),adapter,
++                file_sha256(root/row['rollout_topk']),file_sha256(teacher_file))
++            metric=metrics[cfg['gate_metric']]
++            values.extend(metric[torch.isfinite(metric)].tolist())
++        calibrated=calibrate_threshold(values,cfg['gate_target_rate'],'lt')
++        threshold=calibrated['threshold']
++        frozen_json(run/'calibration_all.json',{'data_policy':'all_train','question_ids':[r['id'] for r in rows],
++            'gate_metric':cfg['gate_metric'],**calibrated})
+     frozen_json(run/'train_rows.json',rows)
+     job={**base_job,'rows':str((run/'train_rows.json').relative_to(ROOT)),
+          'alignment_dir':str((run/'train_alignment').relative_to(ROOT)),
+          'alignment_source_dir':str(artifact_dir(cfg,'alignment')),
+          'output':str((run/'train').relative_to(ROOT)),
+-         'threshold':0.,'data_policy':'all_train'}
++         'threshold':threshold,'data_policy':'all_train'}
+     frozen_json(project_path(metadata_dir(cfg))/'jobs/train.json',job)
+     return job
+--- a/src/steer_opd/compass_job.py
++++ b/src/steer_opd/compass_job.py
+@@ -196,7 +196,10 @@
+     banks = {k: torch.load(project_path(p), weights_only=True, map_location="cpu") for k, p in job["banks"].items()}
+     from steer_opd.method_config import DIRECTION_VERSION, DIRECTION_VERSIONS, reader_direction
+     steer_role=job.get('steer_role','student');direction=reader_direction(steer_role)
+-    version=DIRECTION_VERSIONS[direction]
++    from steer_opd.sv_rollouts import direction_version, enabled
++    version=direction_version(job,steer_role)
++    if enabled(job) and (steer_role!='teacher' or any(b['identity'].get('sv_rollout_count')!=4 for b in banks.values())):
++        raise ValueError('Per-sample S-T requires a verified four-rollout teacher bank')
+     if (job.get('direction_version',DIRECTION_VERSION)!=version
+             or any(b['method']['direction']!=direction or b['identity'].get('direction_version')!=version
+                    for b in banks.values())):
+@@ -263,6 +266,10 @@
+                                        alignment_mask=plans[key]["alignment_mask"],
+                                        source_metrics={name: metrics[name] for name in ("overlap", "P_overlap")}
+                                        if job.get("require_dual_metrics") else None)
++        if job.get('mask_policy')=='bottom_half_native_teacher_positions_overlap_stable_v1':
++            from steer_opd.matrix_masks import bottom_half_mask
++            native_row=next(r for r in role_rows['teacher'] if r['key']==key)
++            masks[key]=bottom_half_mask(row,metrics,plans[key],len(native_row['token_ids']),identity)
+         for c in conditions:
+             bank = banks[c["bank"]]
+             if row["id"] not in bank["valid_ids"] or bank["identity"]["checkpoint"] != job[steer_role]:
+--- a/src/steer_opd/experiment_runtime.py
++++ b/src/steer_opd/experiment_runtime.py
+@@ -111,7 +111,7 @@
+         os.link(bundle,local_bundle)
+     toolkit=cuda_toolkit(Path(sys.prefix))
+     compiler_version=subprocess.check_output([str(toolkit/'bin/nvcc'),'--version'],text=True).strip()
+-    metadata={'schema':1,'seed':42,'request_seed_policy':'all_requests_42',
++    metadata={'schema':1,'seed':42,'request_seed_policy':job.get('request_seed_policy','all_requests_42'),
+         'source_revision':revision,'source_bundle':str(local_bundle.relative_to(ROOT)) if local_bundle.is_relative_to(ROOT) else str(local_bundle),
+         'python':sys.version,'executable':sys.executable,
+         'versions':{p:importlib.metadata.version(p) for p in ('torch','transformers','numpy','tqdm')},
+--- a/src/steer_opd/extraction.py
++++ b/src/steer_opd/extraction.py
+@@ -9,14 +9,14 @@
+     upstream mean_hidden_all_layers. Every retained answer token is pooled,
+     including reasoning/control markers; correctness and finish_reason are unused.
+     """
+-    if type(max_context_len) is not int or max_context_len < 2:
++    if max_context_len is not None and (type(max_context_len) is not int or max_context_len < 2):
+         raise ValueError('SV max_context_len must be an integer >= 2')
+     if getattr(tokenizer, 'truncation_side', 'right') != 'right':
+         raise ValueError('SV-training extraction requires right context truncation')
+     text = (text or '').strip()
+     prefix = tokenizer(prompt_text, add_special_tokens=False)['input_ids']
+     encoded = tokenizer(prompt_text + text, add_special_tokens=False, return_offsets_mapping=True)
+-    full = encoded['input_ids']; retained = full[:max_context_len]; boundary = len(prefix)
++    full = encoded['input_ids']; retained = full if max_context_len is None else full[:max_context_len]; boundary = len(prefix)
+     response = retained[boundary:] if text and boundary > 0 else []
+     offsets = [(max(0, a-len(prompt_text)), max(0, b-len(prompt_text)))
+                for a,b in encoded['offset_mapping'][boundary:len(retained)]] if response else []
+@@ -24,7 +24,7 @@
+             'offsets':offsets, 'body_mask':[True]*len(response),
+             'original_response_tokens':max(0,len(full)-boundary),
+             'retained_response_tokens':len(response), 'max_context_len':max_context_len,
+-            'context_truncated':len(full)>max_context_len,
++            'context_truncated':max_context_len is not None and len(full)>max_context_len,
+             'pooling':'sv_training_all_retained_answer_tokens'}
+ 
+ 
+--- /dev/null
++++ b/src/steer_opd/matrix16.py
+@@ -0,0 +1,256 @@
++"""Shared banks and frozen scoring sources for the authorized 16-case S-T study."""
++from copy import deepcopy
++import csv
++from pathlib import Path
++
++import torch
++
++from steer_opd.artifact_reuse import StageArtifacts, verify_commit
++from steer_opd.compass_campaign import frozen_json, make_base_job, prepare_all_training_job
++from steer_opd.compass_job import load_codecs, model_path
++from steer_opd.checkpoint_identity import checkpoint_content_id
++from steer_opd.direction_bank import file_sha256
++from steer_opd.experiment_runtime import StageCheckpoint
++from steer_opd.matrix_masks import POLICY as MASK_POLICY
++from steer_opd.method_config import DIRECTION_VERSION, TEACHER_DIRECTION_VERSION
++from steer_opd.resumable_core import ROOT, atomic_json, digest, read_json
++from steer_opd.stage_campaign import Campaign, write_summary
++from steer_opd.stage_io import configure_layout, metadata_dir, component_target, project
++from steer_opd.stage_contracts import student_sv, runtime_key
++from steer_opd.sv_rollouts import VERSION, POLICY, requests_for, validate_records
++
++PROTOCOL='st_2x2x2x2_v1'
++GROUPS=[(g,c) for g in ('global','per_sample') for c in ('2048','full')]
++
++
++def cases():
++    return [{'id':f'{gran}_{context}_{gate}_{operator}','granularity':gran,'context':context,
++        'gate':gate,'operator':operator,
++        'reuse_reference':(gran,context,gate,operator)==('global','2048','all','slerp')}
++        for gran,context in GROUPS for gate in ('all','bottom_half') for operator in ('additive','slerp')]
++
++
++def group_config(spec,granularity,context,*,bank_only=False):
++    cfg=deepcopy(read_json(project(spec['source_config'])))
++    cfg.pop('student_baseline_run',None)
++    for name in ('teacher_text_reuse','source_rollout_reuse','candidate_tensor_compression'):
++        cfg.pop(name,None)
++    k4=granularity=='per_sample'
++    cfg.update(param_name=f"{spec['name']}_{granularity}_{context}"+('_banks' if bank_only else ''),
++        experiment='ablation',run_name='ablation',phase='overlap',optimizer_updates=0,automatic_opd=False,
++        data_policy='all_train',include_teacher_ablation=True,teacher_only_extraction=True,
++        direction='S-T',direction_version=VERSION if k4 else TEACHER_DIRECTION_VERSION,
++        teacher_direction_version=VERSION if k4 else TEACHER_DIRECTION_VERSION,
++        sv_rollout_count=4 if k4 else 1,sv_seed_policy=POLICY,
++        sv_max_context_len=2048 if context=='2048' else None,
++        teacher_layers=[29],alpha=.1,operator='slerp',strength_policies=['fixed'],
++        matrix_protocol=PROTOCOL,max_project_gpus=len(spec['allowed_gpu_pool']),
++        gpu_wait_seconds=86400,scoring_source_config=spec['source_config'],
++        execution_hold=None,execution_blockers=[],candidate_tensor_format='parquet_zstd',
++        retention_policy='minimal_v1',gate_metric='overlap',gate_target_rate=.5,
++        gpu_acceptance_receipt=spec['acceptance_receipt'],gpu_acceptance_binding=spec['acceptance_binding'])
++    cfg=configure_layout(cfg)
++    internal='per_question' if k4 else 'global'
++    cfg['matrix_conditions']=[{'id':case['id'],'direction':'S-T','steer_role':'teacher',
++        'gate':'all' if case['gate']=='all' else 'static_overlap','granularity':internal,
++        'bank':f'S-T_{internal}','operator':case['operator'],'alpha':.1,'layers':[29],
++        'direction_version':VERSION if k4 else TEACHER_DIRECTION_VERSION,'strength_policy':'fixed',
++        **({'additive_scaling':'raw_mean_difference_v1'} if case['operator']=='additive' else {})}
++        for case in cases() if case['granularity']==granularity and case['context']==context and not case['reuse_reference']]
++    return cfg
++
++
++def upstream(cfg,name):
++    ref=read_json(project(metadata_dir(cfg))/'upstreams'/f'{name}.json')
++    if file_sha256(project(ref['descriptor']))!=ref['descriptor_sha256']:
++        raise ValueError(f'Frozen {name} descriptor changed')
++    found=StageArtifacts(cfg).validate(ref['descriptor'])
++    if found[1]['artifact_id']!=ref['artifact_id'] or found[1]['owner']!=ref['owner']:
++        raise ValueError('Frozen upstream owner or artifact ID changed')
++    return found
++
++
++def campaign_sources(campaign,spec):
++    source=read_json(project(spec['source_config']))
++    campaign.remember('data',upstream(source,'data'))
++    questions=read_json(project(campaign.cfg['data_dir'])/'questions.json')
++    if len(questions)!=1024:raise ValueError('The matrix fixes all 1024 questions')
++    for role in ('teacher','student'):campaign.generation(role,questions)
++    return questions
++
++
++def prepare_banks(spec,granularity,context,progress,gpu,cpu):
++    cfg=group_config(spec,granularity,context,bank_only=True)
++    campaign=Campaign(cfg,progress,gpu,cpu)
++    questions=campaign_sources(campaign,spec)
++    campaign.directions(questions)
++    packet=campaign.records['bank_teacher']
++    return {'descriptor':packet['descriptor_path'],'descriptor_sha256':file_sha256(project(packet['descriptor_path'])),
++            'artifact_id':packet['artifact_id'],'owner':packet['owner']}
++
++
++def score_group(spec,granularity,context,bank_reference,progress,gpu,cpu):
++    cfg=group_config(spec,granularity,context)
++    campaign=Campaign(cfg,progress,gpu,cpu)
++    questions=campaign_sources(campaign,spec)
++    if file_sha256(project(bank_reference['descriptor']))!=bank_reference['descriptor_sha256']:
++        raise ValueError('Prepared direction bank descriptor changed')
++    found=campaign.store.validate(bank_reference['descriptor'])
++    if found[1]['artifact_id']!=bank_reference['artifact_id']:raise ValueError('Prepared bank identity changed')
++    folder=campaign.remember('bank_teacher',found)
++    bank=torch.load(folder/('S-T_per_question.pt' if granularity=='per_sample' else 'S-T_global.pt'),
++                    weights_only=True,map_location='cpu')
++    if bank['method']['direction']!='S-T' or bank['identity']['checkpoint']!=cfg['teacher']:
++        raise ValueError('This matrix injects teacher-space S-T only')
++    if granularity=='per_sample' and bank['identity'].get('sv_rollout_count')!=4:
++        raise ValueError('Per-sample scoring cannot omit its four-rollout extraction')
++    common=read_json(project(spec['root'])/'metadata/common_questions.json')['ids']
++    if not set(common).issubset(bank['valid_ids']):raise ValueError('Frozen common questions lost their direction vectors')
++    campaign.cfg['allowed_question_ids']=common
++    source=read_json(project(spec['source_config']))
++    for name in ('alignment','native_teacher','source_metrics'):
++        campaign.remember(name,upstream(source,name))
++    rows=[read_json(project(campaign.cfg['stage_inputs']['student'])/(q['id']+'_0.json')) for q in questions]
++    rowfile=project(cfg['run_dir'])/'source_rows.json';frozen_json(rowfile,rows)
++    base=make_base_job(campaign.cfg,campaign.codecs,str(rowfile.relative_to(ROOT)))
++    base.update(alignment_source_dir=campaign.cfg['stage_inputs']['alignment'])
++    job=prepare_all_training_job(campaign.cfg,base,campaign.codecs)
++    _,reference=upstream(source,'screen_train_teacher')
++    drift=project(reference['owner'])/'teacher_repeat_drift.json'
++    baseline=project(reference['owner'])/'baseline'
++    job.update(mask_policy=MASK_POLICY,teacher_drift_reference={'path':str(drift.relative_to(ROOT)),
++                                                             'sha256':file_sha256(drift)},
++        baseline_reference={'path':str(baseline.relative_to(ROOT)),
++                            'complete_sha256':file_sha256(baseline/'complete.json')})
++    summaries=campaign.screen(job,'train')
++    write_summary(cfg,{'train':summaries},campaign.records)
++    return {'summary':str((project(cfg['step_dirs']['6'])/'summaries.json').relative_to(ROOT)),
++            'summaries':summaries,'source_rows':len(rows),'new_scoring_rows_per_question':1,
++            'unsteered_teacher_rerun':False}
++
++
++def generation_job(spec,shard,shards):
++    from steer_opd.compass_campaign import generation_job as single_job
++    from steer_opd.math_data import prompt_ids
++    source=read_json(project(spec['source_config']));folder,_=upstream(source,'data')
++    questions=read_json(folder/'questions.json')
++    subset=questions[shard::shards]
++    codec=load_codecs(source)['student']
++    cfg={**source,'gpu_acceptance_receipt':spec['student_receipt'],
++         'gpu_acceptance_binding':spec['acceptance_binding'],'execution_hold':None,'execution_blockers':[]}
++    job=single_job(cfg,codec,'student',subset)
++    job.update(output=spec['root']+f'/extraction_shards/{shard}',purpose='sv_extraction_only',
++        request_seed_policy=POLICY,max_tokens=source['source_max_tokens'],temperature=1.,top_p=1.,
++        requests=requests_for(subset,lambda q:prompt_ids(codec.tokenizer,q['question'],source['enable_thinking'])))
++    return job
++
++
++def assemble_extraction(spec,shards):
++    source=read_json(project(spec['source_config']));folder,_=upstream(source,'data')
++    questions=read_json(folder/'questions.json');codecs=load_codecs(source)
++    from steer_opd.math_data import prompt_ids
++    requests=requests_for(questions,lambda q:prompt_ids(codecs['student'].tokenizer,q['question'],source['enable_thinking']))
++    records={};parents={}
++    for shard in range(shards):
++        path=project(spec['root'])/'extraction_shards'/str(shard)
++        verify_commit(path)
++        job=read_json(path/'job.json')['job']
++        values=[read_json(path/(r['key']+'.json')) for r in job['requests']]
++        validate_records(job['requests'],values,model=source['student'])
++        for row in values:
++            if row['key'] in records:raise ValueError('Duplicate assembled extraction slot')
++            records[row['key']]=row
++        parents[str(shard)]={'complete_sha256':file_sha256(path/'complete.json'),'job_sha256':digest(job)}
++    ordered=[records[r['key']] for r in requests]
++    content=checkpoint_content_id(model_path(source['student']))
++    audit=validate_records(requests,ordered,model=source['student'],content_id=content)
++    cfg=group_config(spec,'per_sample','2048',bank_only=True)
++    target=project(component_target(cfg,'student_sv'));target.mkdir(parents=True,exist_ok=True)
++    science=student_sv(cfg,questions,codecs['student'],content,runtime_key(ROOT/cfg['engine_python']))
++    saved=StageArtifacts(cfg).find('student_sv',science,target)
++    if saved:return {'descriptor':saved[1]['descriptor_path'],'artifact_id':saved[1]['artifact_id']}
++    files=[]
++    for row in ordered:
++        file=target/(row['key']+'.json');atomic_json(file,row);files.append(file)
++    job=generation_job(spec,0,1)
++    job.update(output=str(target.relative_to(ROOT)),requests=requests,shard_commits=parents)
++    atomic_json(target/'job.json',{'job':job,'hash':digest(job)})
++    atomic_json(target/'rollout_seeds.json',audit)
++    files += [target/'job.json',target/'rollout_seeds.json']
++    StageCheckpoint(target,digest({'science':science,'shards':parents})).commit(files,requests=len(requests),questions=1024)
++    _,packet=StageArtifacts(cfg).publish('student_sv',science,target)
++    return {'descriptor':packet['descriptor_path'],'artifact_id':packet['artifact_id']}
++
++
++def matrix_summary(spec,task_results):
++    rows=[];reference=None
++    source=read_json(project(spec['source_config']))
++    try:
++        owner,_=upstream(source,'screen_train_teacher')
++        reference=read_json(owner/'summaries.json')['scheme_05']
++        subset=project(spec['root'])/'metadata/reference_common_summary.json'
++        if subset.exists():reference=read_json(subset)
++    except FileNotFoundError:pass
++    for case in cases():
++        result=reference if case['reuse_reference'] else task_results.get(f"score_{case['granularity']}_{case['context']}",{}).get('summaries',{}).get(case['id'])
++        for metric in ('overlap','P_overlap'):
++            value=result['metrics'][metric] if result else {}
++            rows.append({**case,'metric':metric,'status':'reused' if result and case['reuse_reference'] else 'complete' if result else 'pending',
++                'value':value.get('question_weighted_value'),'delta_pp':value.get('question_weighted_delta_pp'),
++                'token_value':value.get('token_weighted_value',value.get('token_weighted_overlap16')),
++                'token_delta_pp':value.get('token_weighted_delta_pp'),'questions':value.get('questions'),
++                'positions':value.get('positions'),'valid_position_fraction':value.get('valid_position_fraction'),
++                'actual_steering_rate':value.get('actual_steering_rate')})
++    root=project(spec['root']);root.mkdir(parents=True,exist_ok=True)
++    file=root/'comparison.csv';tmp=file.with_suffix('.csv.tmp')
++    with tmp.open('w',newline='') as stream:
++        writer=csv.DictWriter(stream,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
++    tmp.replace(file)
++    atomic_json(root/'results.json',{'cases':16,'unsteered':'reused_only','reference':'reused_only','rows':rows,
++        'source_config':spec['source_config'],'group_artifacts':task_results})
++    lines=['# S−T 16组消融','',
++        '无SV及global／2048／all／Slerp0.1主参考直接复用；四条学生rollout只用于per_sample提取，评分始终沿原单条完整回答。',
++        'global使用单条提取，per_sample使用四条，不能将差异全部归因于粒度。GPU2／3排除；0次参数更新。','',
++        '| 配置 | 指标 | 状态 | 题目等权 | Δ（pp） |','|---|---|---|---:|---:|']
++    for row in rows:lines.append(f"| {row['id']} | {row['metric']} | {row['status']} | {row['value']} | {row['delta_pp']} |")
++    (root/'analysis.md').write_text('\n'.join(lines)+'\n')
++    return all(row['status']!='pending' for row in rows)
++
++
++def freeze_common_questions(spec,task_results):
++    source=read_json(project(spec['source_config']))
++    _,original=upstream(source,'bank_teacher')
++    references={('global','2048'):{'descriptor':original['descriptor_path']}}
++    references.update({group:task_results[f'bank_{group[0]}_{group[1]}'] for group in GROUPS if group!=('global','2048')})
++    common=None;proofs={}
++    for (gran,context),ref in references.items():
++        folder,packet=StageArtifacts(source).validate(ref['descriptor'])
++        file=folder/('S-T_per_question.pt' if gran=='per_sample' else 'S-T_global.pt')
++        bank=torch.load(file,weights_only=True,map_location='cpu')
++        ids=set(bank['valid_ids']);common=ids if common is None else common.intersection(ids)
++        proofs[f'{gran}_{context}']={'artifact_id':packet['artifact_id'],'bank_sha256':file_sha256(file)}
++    data,_=upstream(source,'data');questions=read_json(data/'questions.json')
++    ordered=[q['id'] for q in questions if q['id'] in common]
++    if not ordered:raise ValueError('No questions are valid in all four bank families')
++    root=project(spec['root'])
++    frozen_json(root/'metadata/common_questions.json',{'ids':ordered,'total_questions':1024,
++        'valid_questions':len(ordered),'bank_sources':proofs})
++    # If an extraction input was empty, aggregate the existing reference tensors
++    # on the same subset on CPU. The original model forward is never repeated.
++    if len(ordered)!=1024:
++        owner,_=upstream(source,'screen_train_teacher')
++        from steer_opd.tensor_checkpoint import StageCheckpoint as TensorCheckpoint
++        from steer_opd.teacher_screen import summarize_teacher
++        folder,_=upstream(source,'student')
++        rows=[read_json(folder/(qid+'_0.json')) for qid in ordered];keys=[r['key'] for r in rows]
++        fields=['overlap','P_overlap','alignment_mask','native_prediction_positions',
++                'native_steering_mask','steering_mask','student_shared_mass','teacher_shared_mass']
++        values={}
++        for name in ('baseline','scheme_05'):
++            marker=read_json(owner/name/'complete.json')
++            values[name]=TensorCheckpoint(owner/name,marker['binding']).load_tensor_fields(keys,fields)
++        summary=read_json(owner/'summaries.json')['scheme_05']
++        summary={**summary,'metrics':summarize_teacher(rows,values['scheme_05'],values['baseline']),
++                 'aggregation_only_on_common_subset':True}
++        frozen_json(root/'metadata/reference_common_summary.json',summary)
++    return ordered
+--- /dev/null
++++ b/src/steer_opd/matrix_masks.py
+@@ -0,0 +1,43 @@
++"""Exactly the lower half of valid native teacher positions, ranked per question."""
++import math
++
++from steer_opd.resumable_core import digest
++from steer_opd.static_masks import freeze_static_mask
++
++POLICY = 'bottom_half_native_teacher_positions_overlap_stable_v1'
++
++
++def bottom_half_mask(row, metrics, plan, native_length, identity):
++    values = metrics['overlap']
++    alignment = [bool(v) for v in metrics['alignment_mask']]
++    result = freeze_static_mask(row, values, 0., identity, alignment_mask=alignment,
++                               source_metrics={m: metrics[m] for m in ('overlap','P_overlap')})
++    eligible = {}
++    for unit in plan['units']:
++        if not unit['valid']:
++            continue
++        a,b = unit['ranges']['student'];c,d = unit['ranges']['teacher']
++        if not (0 <= a < b <= len(values) and 0 <= c < d <= native_length):
++            raise ValueError('Mask alignment exceeds the scoring trajectory')
++        score = float(values[a])
++        if not math.isfinite(score) or not all(alignment[a:b]):
++            raise ValueError('Cannot rank an invalid common span')
++        for position in range(c,d):
++            if position in eligible:raise ValueError('Teacher prediction belongs to multiple spans')
++            eligible[position] = score
++    selected = sorted(eligible,key=lambda position:(eligible[position],position))[:len(eligible)//2]
++    native = [False]*native_length
++    for position in selected:native[position] = True
++    mapped = [False]*len(row['token_ids'])
++    for unit in plan['units']:
++        if unit['valid']:
++            a,b=unit['ranges']['student'];c,d=unit['ranges']['teacher']
++            mapped[a:b]=[any(native[c:d])]*(b-a)
++    result.update(mask_kind='static_overlap',mask_policy=POLICY,comparison='rank_then_native_position',
++        fraction=.5,threshold=None,requested_mask=mapped,native_requested_mask=native,
++        eligible_native_positions=len(eligible),selected_native_positions=len(selected),
++        tie_break='ascending_native_prediction_position',metric_position_role='student',
++        injection_position_role='teacher',mapped_mask_semantics='any_selected_teacher_position_in_shared_span')
++    result.pop('mask_id')
++    result['mask_id']=digest(result)
++    return result
+--- a/src/steer_opd/raw_additive.py
++++ b/src/steer_opd/raw_additive.py
+@@ -6,16 +6,24 @@
+ 
+ 
+ def raw_global_vectors(bank,layers,strength):
++    if bank['method']['granularity']!='global':raise ValueError('Raw additive requires S-T/global bank')
++    return raw_vectors(bank,layers,strength)
++
++
++def raw_vectors(bank,layers,strength,question_id=None):
+     validate_operator('additive',strength)
+-    if bank['method']['direction']!='S-T' or bank['method']['granularity']!='global':
+-        raise ValueError('Raw additive requires S-T/global bank')
++    if bank['method']['direction']!='S-T':raise ValueError('Raw additive requires a teacher-space S-T bank')
++    assigned='global' if bank['method']['granularity']=='global' else question_id
++    if assigned!='global' and assigned not in bank['per_question']:
++        raise ValueError('Missing corresponding per-sample direction; no global fallback')
++    records=bank['layers'] if assigned=='global' else bank['per_question'][assigned]
+     if not layers or len(set(layers))!=len(layers):raise ValueError('Select unique bank layers')
+     vectors={}
+     for layer in layers:
+-        direction=bank['layers'][str(layer)]['direction'].float()
++        direction=records[str(layer)]['direction'].float()
+         if not torch.isfinite(direction).all():raise ValueError('Nonfinite raw global difference')
+         vectors[layer]=direction*strength
+-    identity={'bank_id':bank['bank_id'],'assigned':'global','operator':'additive',
++    identity={'bank_id':bank['bank_id'],'assigned':assigned,'operator':'additive',
+               'strength':strength,'selected_layers':list(layers),
+               'additive_scaling':'raw_mean_difference_v1','seed':bank['method']['seed']}
+     return vectors,digest(identity)
+--- /dev/null
++++ b/src/steer_opd/source_bridge.py
+@@ -0,0 +1,79 @@
++"""Verified immutable aliases of completed source artifacts in an isolated checkout."""
++import os
++from pathlib import Path
++import shutil
++
++from steer_opd.direction_bank import file_sha256
++from steer_opd.resumable_core import ROOT, atomic_json, read_json
++
++COMPONENTS=('data','teacher','student','alignment','native_teacher','source_metrics','bank_teacher','screen_train_teacher')
++
++
++class SourceBridge:
++    def __init__(self, original_root, source_config):
++        self.original=Path(original_root).resolve()
++        if not ROOT.resolve().is_relative_to(self.original):
++            raise ValueError('The isolated checkout must remain inside the authorized project')
++        self.config_relative=Path(source_config)
++        self.done={}
++
++    def source(self, relative):
++        relative=Path(relative)
++        if relative.is_absolute() or '..' in relative.parts or relative.parts[:1]==('output_remote',):
++            raise ValueError('Only explicit local completed artifacts may be imported')
++        path=self.original/relative
++        if not path.resolve().is_relative_to(self.original):raise ValueError('Original artifact escapes its project')
++        return path
++
++    def copy(self, relative, *, sha=None):
++        source=self.source(relative);target=ROOT/relative
++        expected=sha or file_sha256(source)
++        if target.exists():
++            if file_sha256(target)!=expected:raise ValueError(f'Immutable source alias changed: {target}')
++            return target
++        if file_sha256(source)!=expected:raise ValueError(f'Original source checksum changed: {source}')
++        target.parent.mkdir(parents=True,exist_ok=True)
++        temporary=target.with_name(target.name+f'.import.{os.getpid()}')
++        # Large committed tensors share storage; metadata is copied byte-for-byte.
++        # Neither these immutable aliases nor the original owner are ever edited.
++        if source.suffix in ('.pt','.gz','.parquet','.npz'):os.link(source,temporary)
++        else:shutil.copy2(source,temporary)
++        os.replace(temporary,target)
++        return target
++
++    def poll(self):
++        config=self.copy(self.config_relative)
++        cfg=read_json(config)
++        meta=Path(cfg['run_dir'])/'metadata'
++        for name in COMPONENTS:
++            ref_path=meta/'upstreams'/f'{name}.json'
++            if not self.source(ref_path).is_file():continue
++            upstream=read_json(self.source(ref_path))
++            if self.done.get(name)==upstream:continue
++            descriptor=self.source(upstream['descriptor'])
++            if file_sha256(descriptor)!=upstream['descriptor_sha256']:
++                raise ValueError('Original upstream descriptor changed')
++            packet=read_json(descriptor);owner=Path(packet['owner'])
++            if (packet['component']!=name or packet['artifact_id']!=upstream['artifact_id']
++                    or packet['owner']!=upstream['owner']):raise ValueError('Original upstream identity changed')
++            if packet.get('external_snapshot'):raise ValueError('This bridge expects current native commits')
++            complete=owner/'complete.json'
++            if file_sha256(self.source(complete))!=packet['complete_sha256']:
++                raise ValueError('Original engine-call completion changed')
++            for filename,item in packet['files'].items():
++                path=self.source(owner/filename)
++                if path.stat().st_size!=item['bytes']:raise ValueError('Original artifact size changed')
++                self.copy(owner/filename,sha=item['sha256'])
++                if Path(filename).name=='complete.json':
++                    stage_input=(owner/filename).with_name('stage_input.json')
++                    if self.source(stage_input).is_file():self.copy(stage_input)
++            self.copy(complete,sha=packet['complete_sha256'])
++            for filename in ('stage_input.json','reproducibility.json'):
++                if self.source(owner/filename).is_file():self.copy(owner/filename)
++            self.copy(upstream['descriptor'],sha=upstream['descriptor_sha256'])
++            self.copy(ref_path)
++            self.done[name]=upstream
++        atomic_json(ROOT/'.runtime/matrix16/source_aliases.json',{'original_root':str(self.original),
++            'source_config':str(self.config_relative),'components':self.done,
++            'large_tensor_storage':'immutable_hardlink_aliases','original_bytes_modified':False})
++        return self.done
+--- a/src/steer_opd/stage_campaign.py
++++ b/src/steer_opd/stage_campaign.py
+@@ -100,6 +100,28 @@
+ 
+     def generation(self,role,questions):
+         science=keys.generation(self.cfg,role,questions,self.codecs[role],self.models[role],self.runtime)
++        from steer_opd.sv_rollouts import enabled
++        if enabled(self.cfg) or self.cfg.get('matrix_protocol')=='st_2x2x2x2_v1':
++            # K4 adds extraction answers only. Never silently regenerate the
++            # original scoring/reference trajectories when their cache is absent.
++            target=component_target(self.cfg,role)
++            source_cfg=self.cfg.get('scoring_source_config')
++            if source_cfg:
++                upstream=read_json(project(metadata_dir(read_json(project(source_cfg))))/'upstreams'/f'{role}.json')
++                if file_sha256(project(upstream['descriptor']))!=upstream['descriptor_sha256']:
++                    raise ValueError('Original scoring trajectory descriptor changed')
++                found=self.store.validate(upstream['descriptor'],science)
++                if (found[1]['component']!=role or found[1]['artifact_id']!=upstream['artifact_id']
++                        or found[1]['owner']!=upstream['owner']):
++                    raise ValueError('Original scoring trajectory owner changed')
++            else:
++                found=self.store.find(role,science,target)
++            if found is None:
++                raise FileNotFoundError(f'Wait for the committed original {role} trajectories; K4 cannot regenerate scoring inputs')
++            folder=self.remember(role,self.store.bind(target,found,science))
++            self.progress.event('cache_reused',name=role,extraction_rollouts=False)
++            self.progress.update(key=role)
++            return folder
+         def run(target):
+             job=generation_job(self.cfg,self.codecs[role],role,questions,source=role=='student')
+             job['output']=str(target.relative_to(ROOT))
+@@ -110,8 +132,26 @@
+         return self.use(role,science,run)
+ 
+     def directions(self,questions):
++        from steer_opd.sv_rollouts import enabled, requests_for, POLICY
+         parents={r:self.pid(r) for r in ('teacher','student')}
+-        roles=('student','teacher') if self.cfg.get('include_teacher_ablation') else ('student',)
++        if enabled(self.cfg):
++            from steer_opd.math_data import prompt_ids
++            def generate(target):
++                job=generation_job(self.cfg,self.codecs['student'],'student',questions)
++                job.update(output=str(target.relative_to(ROOT)),purpose='sv_extraction_only',
++                    max_tokens=self.cfg['source_max_tokens'],temperature=1.,top_p=1.,
++                    request_seed_policy=POLICY,requests=requests_for(questions,lambda q:
++                        prompt_ids(self.codecs['student'].tokenizer,q['question'],self.cfg['enable_thinking'])))
++                file=self.jobfile(1,'student_sv',job)
++                self.gpu('student_sv_four_rollouts',1,['scripts/generate_sv_rollouts.py','--job',str(file)],
++                         stage_output=target,stage=1)
++            self.use('student_sv',keys.student_sv(self.cfg,questions,self.codecs['student'],
++                self.models['student'],self.runtime),generate)
++            parents['student_sv']=self.pid('student_sv')
++            roles=('teacher',)
++        else:
++            roles=(('teacher',) if self.cfg.get('teacher_only_extraction') else
++                   ('student','teacher') if self.cfg.get('include_teacher_ablation') else ('student',))
+         if minimal(self.cfg) and self.reuse_direction_banks(questions,roles,parents):
+             self.retire_direction_pools(roles)
+             return
+--- a/src/steer_opd/stage_contracts.py
++++ b/src/steer_opd/stage_contracts.py
+@@ -47,21 +47,36 @@
+ 
+ 
+ def capture(cfg,role,model_id,codec,parents,runtime):
++    from steer_opd.sv_rollouts import enabled, direction_version, AGGREGATION
+     direction=reader_direction(role)
+     code=CAP_CODE+(('scripts/capture_student_activations.py',) if cfg.get('data_policy')=='all_train' else ())
++    if enabled(cfg):code+=('src/steer_opd/sv_rollouts.py',)
+     return contract('capture_'+role,{'model_content_id':model_id,'codec':codec_key(codec),
+         'layers':reader_layers(cfg,role),'context_len':cfg['sv_max_context_len'],
+-        'pooling':'sv_training_all_retained_answer_tokens','direction_version':DIRECTION_VERSIONS[direction],
++        'pooling':'sv_training_all_retained_answer_tokens','direction_version':direction_version(cfg,role),
++        **({'sv_rollout_count':4,'aggregation':AGGREGATION} if enabled(cfg) else {}),
+         'tensor_parallel_size':cfg['teacher_gpus'] if role=='teacher' else 1,
+         'gpu_memory_utilization':cfg['gpu_memory_utilization'],'backend':cfg['extraction_backend'],
+         'batch_invariant':role=='student','runtime':runtime},parents=parents,code=code)
+ 
+ 
+ def bank(cfg,role,own_capture,common_ids):
++    from steer_opd.sv_rollouts import enabled, AGGREGATION
+     code=BANK_CODE+(('scripts/prepare_compass_banks.py',) if cfg.get('data_policy')=='all_train' else ())
++    if enabled(cfg):code+=('src/steer_opd/sv_rollouts.py',)
+     return contract('bank_'+role,{'direction':reader_direction(role),'layers':reader_layers(cfg,role),
+         'valid_question_ids':list(common_ids),'pooling_and_scaling':'raw_difference_mean_before_unit_norm_own_reader_median_norm',
++        **({'sv_rollout_count':4,'aggregation':AGGREGATION} if enabled(cfg) else {}),
+         'injection_alpha_is_not_a_bank_dependency':True},parents={'capture':own_capture},code=code)
++
++
++def student_sv(cfg,questions,codec,model_id,runtime):
++    from steer_opd.sv_rollouts import requests_for, POLICY
++    values=dict(generation(cfg,'student',questions,codec,model_id,runtime)['science'])
++    requests=requests_for(questions,lambda q:prompt_ids(codec.tokenizer,q['question'],cfg['enable_thinking']))
++    values.update(requests=digest(requests),logprobs=None,purpose='sv_extraction_only',request_seed_policy=POLICY)
++    return contract('student_sv',values,code=('scripts/generate_sv_rollouts.py','src/steer_opd/sv_rollouts.py',
++        'src/steer_opd/easysteer_static.py','src/steer_opd/easysteer_worker.py','src/steer_opd/generation_policy.py'))
+ 
+ 
+ def alignment(cfg,source,codecs):
+@@ -89,9 +104,11 @@
+ 
+ 
+ def screen(cfg,role,conditions,parents,rows):
++    from steer_opd.sv_rollouts import enabled
+     return contract('screen_'+role,{'conditions':conditions,'row_prefixes':digest([
+         {k:r[k] for k in ('id','key','prompt_token_ids','token_ids')} for r in rows]),
+         'rank_metric':cfg['rank_metric'],'backend':cfg['screen_backend'],
++        **({'gate_target_rate':cfg['gate_target_rate']} if enabled(cfg) and any(c['gate']=='static_overlap' for c in conditions) else {}),
+         'runtime':cfg.get('_screen_runtime'), 'teacher_gpus':cfg['teacher_gpus'],
+         'gpu_memory_utilization':cfg['gpu_memory_utilization'],
+         'batch_size':cfg['student_score_batch_size'] if role=='student' else cfg['teacher_score_batch_size']},parents=parents,
+--- a/src/steer_opd/stage_io.py
++++ b/src/steer_opd/stage_io.py
+@@ -24,6 +24,7 @@
+            else f"layer{cfg['layers'][0]}")
+     label=f"n{cfg['question_count']}_{cfg.get('operator','slerp')}{cfg['alpha']:g}_{layer}_seed{cfg['seed']}"
+     if cfg.get('data_policy')=='all_train':label+='_trainall'
++    if cfg.get('sv_rollout_count')==4:label+='_svK4_seed42to45'
+     for key,default,tag in [('gate_metric','overlap','gate'),('rank_metric','overlap','rank'),('gate_target_rate',.2,'rate'),
+         ('reference_max_tokens',12288,'Tgen'),('source_max_tokens',7168,'Sgen'),
+         ('sv_max_context_len',2048,'ctx'),('reference_temperature',.7,'Ttemp'),('reference_top_p',.95,'Tp')]:
+@@ -62,7 +63,7 @@
+ def component_target(cfg, component):
+     steps=cfg['step_dirs']
+     if component=='data':return Path(steps['0'])
+-    if component in ('teacher','student'):return Path(steps['1'])/component
++    if component in ('teacher','student','student_sv'):return Path(steps['1'])/component
+     if component.startswith('capture_') or component.startswith('bank_'):
+         kind,role=component.split('_',1)
+         return Path(steps['2'])/('reader_'+role)/('activations' if kind=='capture' else 'banks')
+--- a/src/steer_opd/static_screen.py
++++ b/src/steer_opd/static_screen.py
+@@ -22,8 +22,8 @@
+             or bank["method"]["granularity"] != condition["granularity"]):
+         raise ValueError("Static candidate bank direction/granularity/S0 identity mismatch")
+     if condition.get('operator')=='additive' and condition.get('additive_scaling')=='raw_mean_difference_v1':
+-        from steer_opd.raw_additive import raw_global_vectors
+-        return raw_global_vectors(bank,condition['layers'],condition['alpha'])
++        from steer_opd.raw_additive import raw_vectors
++        return raw_vectors(bank,condition['layers'],condition['alpha'],row['id'])
+     return bank_vectors(bank, row["id"], operator=condition.get("operator", "slerp"),
+                         alpha=condition.get("alpha", 0.1), rho=condition.get("rho"),
+                         layers=condition["layers"])
+--- /dev/null
++++ b/src/steer_opd/sv_rollouts.py
+@@ -0,0 +1,140 @@
++"""Four student extraction trajectories per question, separate from scoring text."""
++from collections import Counter, defaultdict
++
++import torch
++
++from steer_opd.resumable_core import digest
++
++SEEDS = (42, 43, 44, 45)
++POLICY = 'sv_per_question_rollout_slot_42to45_v1'
++VERSION = 'teacher_space_student_four_answer_mean_minus_reference_v1'
++AGGREGATION = 'mean_of_four_independent_answer_pools_minus_teacher_reference'
++
++
++def enabled(cfg):
++    count = cfg.get('sv_rollout_count', 1)
++    if type(count) is not int or count not in (1, 4):
++        raise ValueError('SV extraction supports the historical single answer or exactly four rollouts')
++    return count == 4
++
++
++def direction_version(cfg, role='teacher'):
++    from steer_opd.method_config import DIRECTION_VERSIONS, reader_direction
++    return VERSION if role == 'teacher' and enabled(cfg) else DIRECTION_VERSIONS[reader_direction(role)]
++
++
++def validate_reader_config(cfg, role):
++    from steer_opd.method_config import DIRECTION_VERSION
++    k4=enabled(cfg)
++    primary=cfg.get('matrix_protocol')=='st_2x2x2x2_v1'
++    if k4 or primary:
++        if (role!='teacher' or cfg.get('direction')!='S-T'
++                or cfg.get('direction_version')!=direction_version(cfg,'teacher')):
++            raise ValueError('New extraction requires teacher-space S-T with the declared rollout protocol')
++    elif cfg.get('direction')!='T-S' or cfg.get('direction_version')!=DIRECTION_VERSION:
++        raise ValueError('Expected the frozen historical T-S reader protocol')
++    return k4
++
++
++def requests_for(questions, encode_prompt):
++    ids = [q['id'] for q in questions]
++    if not ids or len(set(ids)) != len(ids):
++        raise ValueError('Extraction requires distinct question IDs')
++    requests = []
++    for q in questions:
++        prompt = list(encode_prompt(q))
++        if not prompt:
++            raise ValueError('Empty extraction prompt')
++        for slot, seed in enumerate(SEEDS):
++            requests.append({'id': q['id'], 'key': 'sv_' + digest([q['id'], slot]),
++                'question': q['question'], 'answer': q['answer'], 'rollout_slot': slot,
++                'seed': seed, 'prompt_token_ids': prompt})
++    validate_requests(requests)
++    return requests
++
++
++def validate_requests(requests):
++    grouped = defaultdict(dict)
++    keys = set()
++    for request in requests:
++        slot = request.get('rollout_slot')
++        if (type(slot) is not int or slot not in range(4)
++                or type(request.get('seed')) is not int or request['seed'] != SEEDS[slot]):
++            raise ValueError('Each rollout slot must explicitly use seed42/43/44/45')
++        if slot in grouped[request['id']] or request['key'] in keys:
++            raise ValueError('Duplicate extraction question/slot or response key')
++        grouped[request['id']][slot] = request
++        keys.add(request['key'])
++    if not grouped or any(set(slots) != set(range(4)) for slots in grouped.values()):
++        raise ValueError('Every question requires exactly four extraction rollout slots')
++    for slots in grouped.values():
++        first = slots[0]
++        if any(any(row[field] != first[field] for field in ('question', 'answer', 'prompt_token_ids'))
++               for row in slots.values()):
++            raise ValueError('Rollout slots must belong to the same question and prompt')
++    return grouped
++
++
++def sampling_params(job, requests, factory):
++    """Assign each seed before worker dispatch, independent of request ordering."""
++    validate_requests(requests)
++    from steer_opd.generation_policy import presence_penalty
++    params = [factory(n=1, seed=r['seed'], temperature=job['temperature'], top_p=job['top_p'],
++        top_k=-1, presence_penalty=presence_penalty(job, require_explicit=True),
++        max_tokens=job['max_tokens'], stop_token_ids=job.get('stop_token_ids', [])) for r in requests]
++    if any(p.seed != r['seed'] or p.n != 1 for p, r in zip(params, requests)):
++        raise ValueError('Sampling parameters changed the per-question rollout seeds')
++    return params
++
++
++def validate_records(requests, records, *, model=None, content_id=None):
++    groups = validate_requests(requests)
++    if len(records) != len(requests):
++        raise ValueError('Incomplete four-rollout extraction batch')
++    saved = {}
++    for row in records:
++        if row['key'] in saved:
++            raise ValueError('Duplicate extraction result key')
++        saved[row['key']] = row
++    unique = {}
++    for qid, slots in groups.items():
++        tokens = set()
++        for request in slots.values():
++            row = saved.get(request['key'])
++            if row is None or any(row.get(k) != v for k, v in request.items()):
++                raise ValueError('Extraction result differs from its question, slot, seed or prompt')
++            if (row.get('steering') is not False or row.get('seed_policy') != POLICY
++                    or row.get('sampling_seed') != request['seed']):
++                raise ValueError('Extraction must use unsteered, explicitly seeded student requests')
++            if model is not None and row.get('model') != model:
++                raise ValueError('Extraction student checkpoint changed')
++            if content_id is not None and row.get('model_content_id') != content_id:
++                raise ValueError('Extraction student weights changed')
++            tokens.add(tuple(row['token_ids']))
++        unique[qid] = len(tokens)
++    if all(n == 1 for n in unique.values()):
++        raise ValueError('All questions have identical four-way rollouts; check per-request seed propagation')
++    return {'policy': POLICY, 'question_count': len(groups), 'trajectories': len(requests),
++        'unique_responses_per_question': dict(Counter(unique.values())), 'unique_counts': unique}
++
++
++def aggregate_pools(pooled, layers):
++    """Four equal-weight FP32 answer pools first, then subtract the reference."""
++    result = {}
++    for qid, record in pooled.items():
++        if not record['usable']:
++            result[qid] = record
++            continue
++        grouped = {}
++        for layer in layers:
++            values = record['layers'][str(layer)]
++            if len(values['pools']) != 5 or len(values['norms']) != 5:
++                raise ValueError('Need four student answer pools and one teacher reference pool')
++            pools = [p.float() for p in values['pools']]
++            if (any(p.ndim != 1 or p.shape != pools[0].shape or not torch.isfinite(p).all() for p in pools)
++                    or any(n.numel() == 0 or not torch.isfinite(n).all() for n in values['norms'])):
++                raise ValueError('Malformed or nonfinite teacher-space answer pools')
++            grouped[str(layer)] = {'pools': [torch.stack(pools[:4]).mean(0), pools[4]],
++                'norms': values['norms']}
++        result[qid] = {**record, 'layers': grouped}
++    return result
+--- a/src/steer_opd/teacher_screen.py
++++ b/src/steer_opd/teacher_screen.py
+@@ -40,9 +40,12 @@
+         alpha=condition['alpha'] if condition else 0.
+         source_requested=(masks[key]['requested_mask'] if condition and condition['gate']=='static_overlap'
+                           else [bool(condition)]*len(row['token_ids']))
+-        native_requested=(project_teacher_mask(plans[key],source_requested,len(native['token_ids']))
++        native_requested=(masks[key]['native_requested_mask'] if condition and condition['gate']=='static_overlap'
++                          and 'native_requested_mask' in masks[key] else
++                          project_teacher_mask(plans[key],source_requested,len(native['token_ids']))
+                           if condition and condition['gate']=='static_overlap'
+                           else [bool(condition)]*len(native['token_ids']))
++        if len(native_requested)!=len(native['token_ids']):raise ValueError('Native static mask length changed')
+         values=None;vector_id=None;nonzero=False
+         if condition and alpha!=0:
+             assigned=row['id'] if condition['granularity']=='per_question' else 'global'
+@@ -144,6 +147,26 @@
+                   **({'mask_adapter':legacy} if legacy else {})}
+ 
+ 
++def reuse_baseline_records(reference,rows,masks,teachers,metadata,fixed_identity):
++    folder=project_path(reference['path']);marker=folder/'complete.json'
++    if file_sha256(marker)!=reference['complete_sha256']:raise ValueError('Frozen no-SV baseline commit changed')
++    packet=read_json(marker)
++    # Read the original full records, then select the frozen common subset.
++    saved=StageCheckpoint(folder,packet['binding']).load_tensors(packet['record_keys'])
++    if saved is None:raise ValueError('Original no-SV baseline is not committed')
++    result={}
++    for row,meta in zip(rows,metadata):
++        key=safe_key(row);record=saved[key]
++        if (record.get('condition') is not None or record.get('source_binding')!=masks[key]['source_binding']
++                or record['steering_mask'].any() or record['native_steering_mask'].any()):
++            raise ValueError('Original no-SV baseline uses another scoring prefix or protocol')
++        for field in ('ids','logps','sampled_logps'):
++            torch.testing.assert_close(record[field],teachers[key][field],rtol=0,atol=0,equal_nan=True)
++        result[key]={**record,**meta,'fixed_student_identity':fixed_identity,'parameter_updates':0,
++                     'baseline_reused_from':reference}
++    return result
++
++
+ def run_teacher_screen(job, rows, masks, teachers, banks):
+     require_execution_allowed(job);require_default_scheduler_options(job)
+     if job.get('steer_role')!='teacher' or any(c['direction']!='S-T' for c in job['conditions']):
+@@ -154,7 +177,8 @@
+     support=adapter.teacher_codec.support_size
+     binding=digest({'manifest':read_json(output/'manifest.json'),'runtime':runtime,
+                     'paired_student':fixed_identity,'protocol':'teacher_st_fixed_student_v1'})
+-    names=['baseline','teacher_unsteered_replay',*[c['id'] for c in job['conditions']]]
++    reuse_drift=job.get('teacher_drift_reference')
++    names=['baseline',*(() if reuse_drift else ('teacher_unsteered_replay',)),*[c['id'] for c in job['conditions']]]
+     if len(set(names))!=len(names):raise ValueError('Teacher candidate IDs overlap reserved baseline/replay names')
+     stores={name:StageCheckpoint(output/name,digest({'phase':binding,'candidate':name}),
+             tensor_format=job.get('candidate_tensor_format',job.get('candidate_tensor_compression'))) for name in names}
+@@ -181,7 +205,9 @@
+                 progress.mark_committed(progress.committed+len(rows))
+         if ready['baseline'] is None:
+             _,meta,_,_=teacher_requests(rows,masks,native_rows,adapter.plans,None,None)
+-            values=records([teachers[safe_key(r)] for r in rows],meta)
++            if job.get('baseline_reference'):
++                values=reuse_baseline_records(job['baseline_reference'],rows,masks,teachers,meta,fixed_identity)
++            else:values=records([teachers[safe_key(r)] for r in rows],meta)
+             if job.get('paired_student_baseline'):
+                 for key,value in values.items():
+                     for metric in ('overlap','P_overlap'):
+@@ -232,10 +258,17 @@
+                     for metric in ('overlap','P_overlap'):value['delta_'+metric]=value[metric]-baseline[key][metric]
+             commit(name,values,completed=start+len(rows))
+             return values
+-        replay=evaluate(None)
+-        drift=summarize_teacher(rows,replay,baseline)
++        if reuse_drift:
++            saved=read_json(project_path(reuse_drift['path']))
++            if file_sha256(project_path(reuse_drift['path']))!=reuse_drift['sha256']:
++                raise ValueError('Frozen no-SV replay evidence changed')
++            drift=saved['metrics']
++        else:
++            replay=evaluate(None)
++            drift=summarize_teacher(rows,replay,baseline)
+         atomic_json(output/'teacher_repeat_drift.json',{'metrics':drift,'batch_invariant':False,
+-            'reference':'frozen_common_baseline','automatic_drift_subtraction':False})
++            'reference':'frozen_common_baseline','automatic_drift_subtraction':False,
++            **({'reused_from':reuse_drift} if reuse_drift else {})})
+         summaries={}
+         from steer_opd.static_plotting import plot_dual_comparisons
+         for condition in job['conditions']:
+@@ -252,4 +285,4 @@
+                     requested_keys=[safe_key(r) for r in read_json(project_path(job['rows']))[:3]])
+         atomic_json(output/'complete.json',{'status':'awaiting_user_review','candidates':len(summaries),
+             'parameter_updates':0,'automatic_opd':False,'intervention_role':'teacher',
+-            'teacher_drift_recorded':True})
++            'teacher_drift_recorded':not bool(reuse_drift),'teacher_drift_reused':bool(reuse_drift)})

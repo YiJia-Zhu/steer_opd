@@ -1,0 +1,61 @@
+{
+  "scope": "code, documentation and CPU verification only; existing run artifacts unchanged",
+  "gpu_started": false,
+  "optimizer_updates": 0,
+  "actual_gpu_checkpoint_writes": 0,
+  "training_plan_schema": "steer_verl_training_shared_two_gpu_v8",
+  "checkpoint_retention": "all_models_latest_state_v1",
+  "default_model_save_steps": [
+    16,
+    32,
+    48,
+    64
+  ],
+  "evaluation_frequency": 16,
+  "latest_full_resume_state_only": true,
+  "all_saved_model_shards_and_configurations_retained": true,
+  "retirement_order": [
+    "new full save and SHA validation",
+    "model receipt and latest_complete commit",
+    "old model validation",
+    "durable state_retirement receipt",
+    "unlink only optimizer/extra_state/dataloader files"
+  ],
+  "intermediate_state": {
+    "overlap": "overwrite overlap/latest.json",
+    "worker_acks": "delete after validation",
+    "batch_inputs_top16_alignment": "release after finite update and scalar commit",
+    "scalar_history": "retained"
+  },
+  "validation": {
+    "cpu_tests_passed": 415,
+    "seconds": 51.19,
+    "log": ".runtime/checkpoint_models_cpu_checks_20261118.txt",
+    "shell_syntax": "passed",
+    "trainer_config_composition": "passed",
+    "faults_tested": [
+      "partial model-receipt commit",
+      "partial state unlink",
+      "retained-model corruption",
+      "optimizer corruption",
+      "retirement-receipt corruption",
+      "bad latest pointer",
+      "symlinked state"
+    ],
+    "cross_run_resume_preserves_source_model": "passed",
+    "package_check": "blocked by a pre-existing missing historical outputs/step_6_summary documentation link",
+    "gpu_acceptance": "pending"
+  },
+  "template_execution_hold": "awaiting_user_approval",
+  "implementation_sha256": {
+    "src/steer_opd/retention.py": "2d222cfc281a0cf413dffa4e18659f391386adf6b88ef7798c8d5f04fd86c179",
+    "src/steer_opd/training/retention.py": "af2dbd793ae55ca365e6f7207b44d7995569f2e41546c509640108f3b2d4511c",
+    "src/steer_opd/training/resume_handover.py": "89b02364df3f2c1025ae0ca82e7d82702d50b1c77a825f0d7a64b5b7001d50c7",
+    "src/steer_opd/training/verl_plan.py": "fc95717dbfa3c7ea13b64ab356ea9877218d0af5c3a9cddbe5b76bd7681e5730",
+    "src/steer_opd/training/verl_entry.py": "718c7ae63fb07758b9881923b7f0e8069a43c45fb5e1a706c270667cf5147d80",
+    "src/steer_opd/training/scorer_client.py": "f7b31ed60484d428c6d5c21a82201dc85d824cc273336856ce4ae1bd80a19948",
+    "src/steer_opd/training/overlap_monitor.py": "cf34fba20e970de1dfa7735bbd8810d051a9fe2e24bd32fad7e81e1ec693439a",
+    "scripts/run_full_pipeline.sh": "e695ed2182ec7390610fca37b159985c3ecc6408146e17ffca79551d46310291",
+    "scripts/run_full_pipeline.py": "1470b4566b506b0ceb564a430eaca9863c4b41fac30971a3b1f799bb1970df9a"
+  }
+}

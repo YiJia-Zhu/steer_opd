@@ -78,7 +78,7 @@
   ],
   "teacher_direction_version": "sv_training_student_teacher_answer_mean_teacher_space_v1",
   "output_root": "outputs",
-  "train_output_root": "~/steer_opd_outputs",
+  "train_output_root": "outputs",
   "training_input_data_dir": "outputs/step_0_data/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1024_all_train_seed42_v1",
   "run_name": "ablation",
   "param_name": "n1000_slerp0.1_layer26_seed42_v1",

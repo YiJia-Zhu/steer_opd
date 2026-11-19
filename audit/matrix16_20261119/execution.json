@@ -1,0 +1,163 @@
+{
+  "implementation_checkout": "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/worktrees/per_sample_k4",
+  "branch": "codex/per-sample-k4-20261119",
+  "live_sources_unchanged": true,
+  "live_source_files": 65,
+  "cpu_tests_passed": 437,
+  "package_check": "passed",
+  "easysteer_api_check": "passed",
+  "matrix_cases": 16,
+  "new_scores": 15,
+  "baseline_and_main_reference": "reuse_only",
+  "excluded_gpus": [
+    2,
+    3
+  ],
+  "launch": {
+    "pid": 3157786,
+    "cwd": "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/worktrees/per_sample_k4",
+    "command": "bash scripts/run_matrix16.sh --run",
+    "log": "/local_nvme/data/zhenning/working_tmp/steer_opd/.runtime/worktrees/per_sample_k4/audit/matrix16_20261119/console.log",
+    "started_at_epoch": 1795025736.785727,
+    "excluded_gpus": [
+      2,
+      3
+    ]
+  },
+  "implementation_files": {
+    "scripts/capture_student_activations.py": "02a883b695bb9ba7fe65f666149b55d2c20033c805af76930da094864949e60f",
+    "scripts/generate_sv_rollouts.py": "f8a9f305758cd6ff9fb5d613fd6e296de8048767aa2b4a250e73e5190ecef647",
+    "scripts/launch_ablation.py": "2d130f2c323b84a0c604c1381464a5ab32662058e4095e8e242ab43b06a5dcca",
+    "scripts/prepare_compass_banks.py": "b67214ae1158abf0b5ece150521c5bfb062ce5705821d76e46743c197b014503",
+    "scripts/run_ablation.py": "ed6d30eaeb207861b8814ca8d5b227acb65f4f7fe74942f2f24bc7dfdf81083c",
+    "scripts/run_matrix16.py": "f4af49ac9d08de94cbf0f72826111db0d14823d32d062edb887107d0955e63c7",
+    "scripts/run_matrix16.sh": "7e42d953a1659442e75c0f8968fe28167699cc59337a696be65f6a882a71e86d",
+    "scripts/run_on_idle_gpus.py": "9ed9b883e5b94abc4317632b126a3b757af0d8032649208477439726ff23e624",
+    "scripts/runtime_env.sh": "9b683bb0d714ff0120d3716ad551514be78ce8670732a8551bbe73d04ac8d633",
+    "scripts/validate_static_gpu.py": "fabb5667fba09bed1cb57fa5a5302d08f5377f4997e93ca1f869bf8aa9820297",
+    "src/steer_opd/compass_banks.py": "b3b6ae304153fe82d9e7cd302b9157641cc69bc1abbcb906bf842ba14e3f1539",
+    "src/steer_opd/compass_campaign.py": "0be8b3534a555cb316ca5743edce08539dd18a3fd09f6db8022089b91bf3496c",
+    "src/steer_opd/compass_job.py": "103410a48c75218f2fa04b49bcbaedd71757622cd61ebe209d4cdc18a89cac6c",
+    "src/steer_opd/experiment_runtime.py": "abf4c8479f61d0f0c4f92aa279dbcc55280e8c0fef51ffdc54ee1ed68b0579b6",
+    "src/steer_opd/extraction.py": "221b6311b4b026e8349d89a5ac0c38fe77c6746fcf266d919cbb7c03a89fa1c7",
+    "src/steer_opd/matrix16.py": "7af145ec24c1ace54ede8d5bfd763fd8882fafa8f36c73fc53eda9bd37c1d956",
+    "src/steer_opd/matrix_masks.py": "d8add09faa1ca01916ad436369dea18f55379d18f411a44e002a037f00eacee0",
+    "src/steer_opd/raw_additive.py": "47cc59190149dc758f36c9197cfc4dd35487d084c3e4be945b60a1b9d94cecec",
+    "src/steer_opd/source_bridge.py": "ae78ba772c5b4f2dc3ef32d169c132ed2c6126b637be84cd4e4133dd158373fb",
+    "src/steer_opd/stage_campaign.py": "4abf13226ea1cbdfca16d11b388a00c0fec127e85c92c35c0050d68d7e94f283",
+    "src/steer_opd/stage_contracts.py": "bc30c8b4ae8dddd508a8aacf87925654879de9bd90f4579280512a64ef5afacc",
+    "src/steer_opd/stage_io.py": "1b33ce864167d9e4d95a9eebd64ae5f84cc9bb8c38d77b792bfa5c4ecd120126",
+    "src/steer_opd/static_screen.py": "5158d237bae033c0d15f010c43578e95868d8e2d6302d2261cf2b01a022f80c4",
+    "src/steer_opd/sv_rollouts.py": "8996ca851678dea0102d16f712e733d0bbd58e0fbccf3cb70f916690fc14a106",
+    "src/steer_opd/teacher_screen.py": "b79a57d10dd848c88c1f02c58235c041d5eb14f2357ec54c196ae4d298caf741"
+  },
+  "original_full_pipeline_status": "overlap_complete; OPD blocked before startup by home quota check: need 98.92 GiB, available 73.08 GiB",
+  "last_runtime_verification": {
+    "observed_at": "2026-11-19T02:28:59.572328+08:00",
+    "progress": {
+      "status": "running",
+      "updated_at": "2026-11-19T02:28:56.244047+08:00",
+      "pid": 3157786,
+      "name": "matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1",
+      "original_process_untouched": true,
+      "excluded_gpus": [
+        2,
+        3
+      ],
+      "source_components": [
+        "data",
+        "teacher",
+        "student",
+        "alignment",
+        "native_teacher",
+        "source_metrics",
+        "bank_teacher",
+        "screen_train_teacher"
+      ],
+      "finished": [
+        "validate_slerp",
+        "validate_additive",
+        "validate_student"
+      ],
+      "active": {
+        "generate_0": 3203511,
+        "generate_1": 3203512,
+        "generate_2": 3203513,
+        "generate_3": 3203514,
+        "generate_4": 3203515,
+        "bank_global_full": 3203516
+      },
+      "failed": {},
+      "waiting": [
+        "bank_per_sample_2048",
+        "bank_per_sample_full",
+        "score_global_2048",
+        "score_global_full",
+        "score_per_sample_2048",
+        "score_per_sample_full"
+      ],
+      "parameter_updates": 0,
+      "reference_rerun": false,
+      "unsteered_rerun": false
+    },
+    "acceptance": {
+      "validate_slerp": {
+        "status": "passed",
+        "task": "validate_slerp",
+        "finished_at": "2026-11-19T02:22:11.010339+08:00",
+        "result": {
+          "report": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1_validate_slerp/metadata/acceptance/teacher/easysteer/report.json",
+          "report_sha256": "123539d5a300680e0a9740a6cd5b3a8668c4f2028f8f0727e616474d5dcb0a24"
+        }
+      },
+      "validate_additive": {
+        "status": "passed",
+        "task": "validate_additive",
+        "finished_at": "2026-11-19T02:22:10.870244+08:00",
+        "result": {
+          "report": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1_validate_additive/metadata/acceptance/teacher/easysteer/report.json",
+          "report_sha256": "887f84ccf7de13f007755f456cfde8c22ac9d3fc234a3f6b112de77d73474273"
+        }
+      },
+      "validate_student": {
+        "status": "passed",
+        "task": "validate_student",
+        "finished_at": "2026-11-19T02:23:58.337582+08:00",
+        "result": {
+          "report": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/matrix16_n1024_ST_L29_a0.1_53a97cdb70_v1_validate_student/metadata/acceptance/student/easysteer/report.json",
+          "report_sha256": "69413df00fda1cc8a66831b033d4c9d7efb6633a004023dcb30754b489a4855f"
+        }
+      }
+    },
+    "admitted_gpus_by_task": {
+      "validate_slerp": [
+        0,
+        4
+      ],
+      "validate_additive": [
+        5,
+        7
+      ],
+      "validate_student": [
+        0
+      ],
+      "generate_0": [
+        5
+      ],
+      "generate_1": [
+        7
+      ],
+      "generate_2": [
+        0
+      ],
+      "generate_3": [
+        4
+      ],
+      "generate_4": [
+        1
+      ]
+    },
+    "original_65_python_sources_unchanged": true,
+    "training_relocation": "CPU preview passed; awaiting user decision; not executed"
+  }
+}
