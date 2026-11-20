@@ -4,7 +4,25 @@
 
 当前新配置使用`minimal_v1`清理过程数据，并使用`all_models_latest_state_v1`保留各保存点的模型：每16步及末步的模型都保存，优化器／scheduler／RNG／dataloader状态只保留最新完整点。当前批过程数据及overlap状态滚动更新，标量曲线长期保留。历史实验输出保持原字节，模板hold不解除；细则见[代码框架§8.5](代码框架逻辑.md#85-最小保留策略)。
 
-从 2026-11-20 的新训练运行开始，step 0、每次定期评测及末步评测的 530 条回答写到训练目录的 `evaluation/responses/step_<步>.jsonl`。每行仅含冻结题号 `question_id` 和完整回答 `text`，与该步的准确率来自同一次生成。已冻结的 `verbatim_v3` 继续使用原评测设置。
+从 2026-11-20 的新训练运行开始，step 0、每次定期评测及末步评测的 530 条回答写到训练目录的 `evaluation/responses/step_<步>.jsonl`。每行仅含冻结题号 `question_id`、原题面 `question` 和完整回答 `text`，与该步的准确率来自同一次生成。已冻结的 `verbatim_v3` 继续使用原评测设置。
+
+## 动态 SV
+
+静态 SV 先在 step 1–3 准备师生回答、教师空间方向和 overlap 面板，后续 OPD 复用这个方向。动态 SV 从 step 0 的同一冻结 1024 题直接进入 step 4，沿用静态 SV 的教师空间 S−T 定义，每个训练步重算一个全局方向。
+
+1. 当前学生为当批 32 道题各生成 4 条回答，使用每题 seed 42／43／44／45。冻结教师关闭注入，为同一批 32 道题各生成 1 条参考回答，默认生成上限为 2048 token。教师采样沿用静态 step 1 的 seed 42、temperature=1、top_p=1、top_k=-1、presence_penalty=2 和原生终止 token。
+2. 同一个冻结教师关闭注入，读取两组回答。提取沿用静态协议，将题目 prompt 和去掉首尾空白的回答一起分词，默认保留前 2048 token，取保留的回答 token 在教师第 29 层的 FP32 平均激活。每题先等权平均各学生回答的池化值，再减去该题教师参考的池化值。对有效题的原始差分等权平均，得到当步全局 S−T。
+3. 将该方向以默认 Slerp 0.1 注入教师，沿同一批完整学生回答评分。OPD 的学生旧概率继续使用 rollout 返回的原始 logprob。教师评分与梯度更新沿用原训练链路。
+
+每步生成 128 条学生 rollout 和 32 条教师参考回答。提取上下文用 `--sv-max-context-len` 设置，教师生成上限用 `--reference-max-tokens` 设置。教师参考或任一学生回答没有保留回答 token 时，该题不参与方向估计。全批无有效题或平均方向退化时，本步使用无注入评分并记录状态。参考回答、方向和逐 token 激活在批次内使用，日志保留有效题数、方向范数与注入状态。运行使用独立身份，从本动态运行的 checkpoint 恢复后按批重新计算。
+
+```bash
+bash scripts/run_dynamic_sv.sh --check
+# 训练由显式 --run 启动
+bash scripts/run_dynamic_sv.sh --run --gpu-ids 4,5 --run-name opd_dynamic_st_seed42_v1
+```
+
+已完成 CPU 验证，实际双卡生成、捕获和训练吞吐待 GPU 验收。[训练入口](../scripts/run_dynamic_sv.sh)
 
 ## 无 steering 的训练基线
 

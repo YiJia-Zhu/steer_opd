@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / 'src/steer_opd'
 EVAL_PATCH = ROOT / 'runtime/training/evaluation_text.patch'
 BASELINE_PATCH = ROOT / 'runtime/baselines/native_training.patch'
+DYNAMIC_SV_PATCH = ROOT / 'runtime/training/dynamic_sv.patch'
 
 
 def contents(directory):
@@ -24,7 +25,7 @@ def contents(directory):
     }
 
 
-def prepare(*, baseline=False):
+def prepare(*, baseline=False, dynamic_sv=False):
     cache = ROOT / '.runtime' / ('baselines' if baseline else 'training')
     cache.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=cache) as temporary:
@@ -36,7 +37,13 @@ def prepare(*, baseline=False):
         for name in private_modules:
             shutil.copyfile(PACKAGE / name, package / name)
         # Apply only to private regular files, before linking shared project modules.
-        for patch in ((EVAL_PATCH, BASELINE_PATCH) if baseline else (EVAL_PATCH,)):
+        patches = [EVAL_PATCH]
+        if baseline:
+            patches.append(BASELINE_PATCH)
+        if dynamic_sv:
+            patches.append(DYNAMIC_SV_PATCH)
+            shutil.copyfile(DYNAMIC_SV_PATCH.with_suffix('.py'), package / 'training/dynamic_sv.py')
+        for patch in patches:
             subprocess.run(['patch', '--batch', '--forward', '--fuzz=0', '--no-backup-if-mismatch',
                             '-s', '-p1', '-i', str(patch)], cwd=build, check=True)
         for source in PACKAGE.glob('*.py'):
@@ -58,5 +65,8 @@ def prepare(*, baseline=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--baseline', action='store_true')
-    print(prepare(baseline=parser.parse_args().baseline))
+    role = parser.add_mutually_exclusive_group()
+    role.add_argument('--baseline', action='store_true')
+    role.add_argument('--dynamic-sv', action='store_true')
+    args = parser.parse_args()
+    print(prepare(baseline=args.baseline, dynamic_sv=args.dynamic_sv))

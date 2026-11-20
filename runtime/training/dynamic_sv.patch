@@ -1,0 +1,242 @@
+--- a/src/steer_opd/training/verl_plan.py
++++ b/src/steer_opd/training/verl_plan.py
+@@ -45,5 +45,7 @@
+     alpha: float = 0.1
+     operator: str = 'slerp'
+-    sv_bank: str = DEFAULT_BANK
++    sv_bank: str | None = None
++    sv_max_context_len: int = 2048
++    reference_max_tokens: int = 2048
+     teacher_memory: float = 0.75
+     reference_memory: float = 0.06
+@@ -73,4 +75,10 @@
+         if not 0 <= self.teacher_layer < 40:raise ValueError('Invalid teacher block')
+         validate_operator(self.operator, self.alpha)
++        if self.sv_bank is not None:
++            raise ValueError('Dynamic SV does not accept a static SV bank')
++        if not 1 < self.sv_max_context_len < self.score_max_model_len:
++            raise ValueError('Dynamic SV capture context must be shorter than the scorer context')
++        if not 0 < self.reference_max_tokens < self.score_max_model_len:
++            raise ValueError('Teacher reference length must leave room for its prompt')
+         if not 0 < self.learning_rate < 1:raise ValueError('Invalid learning rate')
+         if self.score_max_model_len <= 1024 + self.max_response_length:
+@@ -88,4 +96,8 @@
+ def build_verl_plan(experiment, settings=None, loss=None):
+     settings, loss = settings or VerlSettings(), loss or TrainingLossConfig.from_experiment(experiment)
++    from steer_opd.training.dynamic_sv import PROTOCOL
++
++    if loss.loss_type != 'traditional_opd':
++        raise ValueError('Dynamic SV uses the traditional OPD loss')
+     base = training_output_dir(experiment,settings.run_name,PAIR)
+     source = Path(experiment.get('training_input_data_dir',experiment['input_data_dir']))
+@@ -113,4 +125,8 @@
+             'training_ids_sha256':digest(ids),'question_source_sha256':hashes[str(questions.relative_to(ROOT))],
+             'automatic_evaluation': settings.monitor_evaluation, 'steering_role': 'teacher', 'direction': 'S-T',
++            'sv_mode': 'dynamic', 'sv_protocol': PROTOCOL,
++            'sv_reference_sampling': {'n': 1, 'temperature': 1., 'top_p': 1., 'top_k': -1,
++                                      'presence_penalty': settings.presence_penalty, 'seed': 42,
++                                      'max_tokens': settings.reference_max_tokens},
+             'granularity': 'global', 'gate': 'all', 'strength_policy': 'fixed',
+             'student_rollout_steering': False, 'student_training_steering': False,
+@@ -125,5 +141,6 @@
+             'resource_mode':'shared_two_gpu',
+             'gpu_admission':'single_admission_for_whole_pool',
+-            'phase_order':['student_rollout','student_rollout_logprob_reuse','frozen_scoring','student_update'],
++            'phase_order':['student_rollout','teacher_reference_generation','teacher_sv_capture',
++                           'dynamic_sv_teacher_scoring','student_update'],
+             'on_policy': {'ppo_epochs': 1, 'optimizer_steps_per_rollout_batch': 1,
+                           'rollout_n': settings.rollout_n, 'temperature': 1., 'top_p': 1., 'top_k': -1,
+@@ -145,5 +162,6 @@
+                ROOT/'src/steer_opd/easysteer_static.py', ROOT/'src/steer_opd/easysteer_worker.py',
+                ROOT/'scripts/run_on_idle_gpus.py', ROOT/'src/steer_opd/generation_policy.py',
+-               ROOT/'src/steer_opd/retention.py']
++               ROOT/'src/steer_opd/retention.py', ROOT/'src/steer_opd/extraction.py',
++               ROOT/'src/steer_opd/easysteer_extraction.py', ROOT/'src/steer_opd/math_data.py']
+     from steer_opd.training.rethinking_defaults import provenance
+     plan['rethinking_defaults']=provenance()
+--- a/src/steer_opd/training/verl_entry.py
++++ b/src/steer_opd/training/verl_entry.py
+@@ -210,4 +210,5 @@
+     tracker=root/'checkpoints/latest_checkpointed_iteration.txt'
+     if (updates!=[1,2] or count('teacher_scoring_phase')!=2
++            or count('dynamic_sv_teacher_reference')!=2 or count('dynamic_sv_teacher_read')!=2
+             or count('student_rollout_logprob_reuse')!=2 or count('student_logprob')!=0
+             or plan.get('student_logprob_source')!=STUDENT_LOGPROB_SOURCE
+@@ -239,5 +240,9 @@
+     parser.add_argument('--operator',choices=['slerp','additive'],default='slerp')
+     parser.add_argument('--alpha',type=float,default=.1);parser.add_argument('--sv-bank')
++    parser.add_argument('--sv-max-context-len', type=int, default=2048,
++                        help='Prompt plus answer context used to estimate the dynamic SV')
+     from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,DEFAULT_PRESENCE_PENALTY
++    parser.add_argument('--reference-max-tokens', type=int, default=VerlSettings.reference_max_tokens,
++                        help='Maximum tokens per unsteered teacher reference answer')
+     parser.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,help='Generation penalty for training rollouts and validation; raw OPD/Top16 probabilities remain unwarped')
+     parser.add_argument('--anchor-coef',type=float,default=.5)
+@@ -290,9 +295,10 @@
+         train_batch_size=args.batch_size if args.batch_size is not None else (2 if args.acceptance_run else 32),
+         total_steps=args.total_steps if args.total_steps is not None else (2 if args.acceptance_run else 64),teacher_layer=args.teacher_layer,
+-        operator=args.operator,alpha=args.alpha,
++        operator=args.operator,alpha=args.alpha,sv_max_context_len=args.sv_max_context_len,
++        reference_max_tokens=args.reference_max_tokens,
+         presence_penalty=args.presence_penalty,gpu_wait_seconds=args.wait_seconds,
+         monitor_evaluation=not args.acceptance_run,monitor_overlap=args.overlap_metrics,evaluation_freq=args.evaluation_freq,
+         save_freq=args.save_freq,checkpoint_retention=args.checkpoint_retention,
+-        run_name=args.run_name or f'verl_{args.loss}_st_T{args.teacher_layer}_{args.operator}{args.alpha:g}_pp{args.presence_penalty:g}_len{DEFAULT_MAX_GENERATION_LENGTH}_seed42_shared2_{"acceptance_minimal_v1" if args.acceptance_run else "formal_minimal_v1"}')
++        run_name=args.run_name or f'verl_{args.loss}_dynamic_sv_T{args.teacher_layer}_{args.operator}{args.alpha:g}_pp{args.presence_penalty:g}_len{DEFAULT_MAX_GENERATION_LENGTH}_Tref{args.reference_max_tokens}_seed42_shared2_{"acceptance_minimal_v1" if args.acceptance_run else "formal_minimal_v1"}')
+     if args.sv_bank:settings=replace(settings,sv_bank=args.sv_bank)
+     loss=TrainingLossConfig(loss_type=args.loss,anchor_coef=args.anchor_coef,reference_model=args.reference_model)
+@@ -300,5 +306,11 @@
+     if args.train_output_root:experiment['train_output_root']=args.train_output_root
+     plan=build_verl_plan(experiment,settings,loss)
+-    use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
++    frozen = ROOT / plan['output'] / 'metadata/plan.json'
++    if frozen.is_file():
++        previous = read_json(frozen)
++        fields = ('sv_protocol', 'sv_reference_sampling')
++        if any(previous.get(field) != plan[field] for field in fields):
++            raise ValueError('Use a separate run name when changing the dynamic SV protocol or reference sampling')
++    use_frozen_runtime(frozen)
+     if args.acceptance_run:plan['run_purpose']='two_step_gpu_acceptance'
+     else:plan['run_purpose']='formal_training'
+--- a/src/steer_opd/training/scoring.py
++++ b/src/steer_opd/training/scoring.py
+@@ -6,5 +6,4 @@
+ from steer_opd.checkpoint_identity import checkpoint_content_id
+ from steer_opd.compass_alignment import ByteLevelCodec
+-from steer_opd.direction_bank import file_sha256
+ from steer_opd.math_data import prompt_ids
+ from steer_opd.resumable_core import ROOT, read_json
+@@ -22,18 +21,7 @@
+ 
+ def validate_assets(plan):
+-    s = plan['settings']
+-    path = ROOT/s['sv_bank']
+-    bank = torch.load(path, map_location='cpu', weights_only=True)
++    if plan.get('sv_mode') != 'dynamic' or plan['settings']['sv_bank'] is not None:
++        raise ValueError('Expected dynamic SV without a frozen bank')
+     model_ids = {role: checkpoint_content_id(ROOT/plan[role]) for role in ('student', 'teacher')}
+-    if (bank['identity']['checkpoint_content_id'] != model_ids['teacher']
+-            or bank['identity']['step'] != 0 or bank['method']['direction'] != 'S-T'
+-            or bank['method']['granularity'] != 'global' or list(bank['method']['layers']) != [s['teacher_layer']]):
+-        raise ValueError('Teacher global bank layer, checkpoint or direction does not match training')
+-    if plan.get('data_policy')=='all_train':
+-        identity=bank['identity']
+-        if (identity.get('data_policy')!='all_train'
+-                or identity.get('question_source_sha256')!=plan['question_source_sha256']
+-                or identity.get('training_ids_sha256')!=plan['training_ids_sha256']):
+-            raise ValueError('Teacher SV bank must come from the same complete training question pool')
+     if plan['training_loss']['loss_type'] == 'compass_opd':
+         reference = ROOT/plan['training_loss']['reference_model']
+@@ -45,5 +33,5 @@
+             raise ValueError('Ref must belong to the teacher release family')
+     from steer_opd.stage_contracts import codec_key
+-    return {'model_content_ids': model_ids, 'sv_bank_sha256': file_sha256(path),
++    return {'model_content_ids': model_ids, 'sv_bank_sha256': None,
+             'codecs':{role:codec_key(codec) for role,codec in codecs_for_plan(plan).items()}}
+ 
+--- a/src/steer_opd/training/scoring_request.py
++++ b/src/steer_opd/training/scoring_request.py
+@@ -168,4 +168,6 @@
+     fields = ['native_'+role+'_'+field for field in ('prompt_token_ids', 'token_ids')]
+     names = [item for field in fields for item in (field, field+'_offsets')]
++    if role == 'teacher':
++        names.extend(('metadata_utf8', 'source_token_ids', 'source_token_ids_offsets'))
+     arrays = _arrays(path, manifest['payload'], names)
+     count = len(manifest['source_ids'])
+@@ -177,4 +179,17 @@
+              'prompt_token_ids': parts[0][i].tolist(), 'token_ids': parts[1][i].tolist()}
+             for i, source_id in enumerate(manifest['source_ids'])]
++    if role == 'teacher':
++        metadata = json.loads(arrays['metadata_utf8'].tobytes().decode('utf-8'))
++        source_tokens = _slices(arrays, 'source_token_ids', count)
++        steps = set()
++        for row, record, tokens in zip(rows, metadata['rows'], source_tokens, strict=True):
++            source = record['source']
++            if row['id'] != source['id']:
++                raise ValueError('Dynamic SV metadata belongs to another rollout')
++            row.update(question_id=source['question_id'], question=source['question'],
++                       source_token_ids=tokens.tolist())
++            steps.add(source['dynamic_sv_step'])
++        if len(steps) != 1 or min(steps) < 1:
++            raise ValueError('Dynamic SV request mixes training steps')
+     return manifest, rows
+ 
+--- a/src/steer_opd/training/scorer_service.py
++++ b/src/steer_opd/training/scorer_service.py
+@@ -13,5 +13,5 @@
+ from steer_opd.resumable_core import ROOT,atomic_json,atomic_torch,digest,read_json
+ from steer_opd.direction_bank import file_sha256
+-from steer_opd.training.telemetry import phase
++from steer_opd.training.telemetry import event,phase
+ from steer_opd.training.scoring_request import SCHEMA as REQUEST_SCHEMA,read_native_request
+ from steer_opd.training.retention import batch_root
+@@ -34,5 +34,7 @@
+     from steer_opd.compass_alignment import ByteLevelCodec
+     from steer_opd.easysteer_static import fixed_prefix_scores,build_spec
+-    from steer_opd.static_screen import candidate_vectors
++    from steer_opd.training.dynamic_sv import (
++        capture_answer_means, direction_from_batch, generate_references, group_rollouts,
++    )
+     from steer_opd.training.scoring import validate_assets
+     from steer_opd.training.sleep_engine import create_sleep_engine,FrozenEngineResidency
+@@ -50,11 +52,9 @@
+             tensor_parallel_size=2 if role=='teacher' else 1,memory=memory,batch_invariant=role=='student_anchor')
+     residency=FrozenEngineResidency(engine)
+-    vectors=None
+-    if role=='teacher':
+-        bank=torch.load(ROOT/s['sv_bank'],map_location='cpu',weights_only=True)
+-        condition={'direction':'S-T','granularity':'global','operator':s['operator'],
+-                   'alpha':s['alpha'],'layers':[s['teacher_layer']]}
+-        if s['operator']=='additive':condition['additive_scaling']='raw_mean_difference_v1'
+-        vectors,_=candidate_vectors(bank,{'id':'global'},condition)
++    if role == 'teacher':
++        config = read_json(ROOT / path / 'config.json')
++        hidden_size = config.get('text_config', config)['hidden_size']
++        student_tokenizer = AutoTokenizer.from_pretrained(ROOT / plan['tokenizer_paths']['student'],
++                                                         local_files_only=True)
+     with phase(logs,f'{role}_initial_sleep'):residency.sleep()
+     atomic_json(folder/('ready_'+role+'.json'),{'status':'ready','state':'asleep','pid':os.getpid(),'plan_binding':plan['binding']})
+@@ -85,4 +85,17 @@
+                     raise ValueError('Native scoring context exceeded; never truncate a student trajectory silently')
+                 usable=[i for i,r in enumerate(rows) if r['token_ids']];active=[rows[i] for i in usable]
++                vectors = {}
++                if role == 'teacher':
++                    groups = group_rollouts(rows, batch_size=s['train_batch_size'], rollout_n=s['rollout_n'])
++                    with phase(logs, 'dynamic_sv_teacher_reference', questions=len(groups)):
++                        references = generate_references(engine, codec, groups, plan['sv_reference_sampling'],
++                                                         max_model_len=s['score_max_model_len'])
++                    with phase(logs, 'dynamic_sv_teacher_read', trajectories=len(rows), references=len(references)):
++                        paired = capture_answer_means(engine, codec.tokenizer, student_tokenizer, groups, references,
++                                                      layer=s['teacher_layer'], hidden_size=hidden_size,
++                                                      max_context_len=s['sv_max_context_len'])
++                    vectors, summary = direction_from_batch(paired, layer=s['teacher_layer'],
++                                                            operator=s['operator'], alpha=s['alpha'])
++                    event(logs, 'dynamic_sv_direction', request_id=pending, **summary)
+                 specs=[build_spec(r,[True]*len(r['token_ids']),vectors,operator=s['operator'],alpha=s['alpha'])
+                        if role=='teacher' else False for r in active]
+--- a/src/steer_opd/training/verl_trainer.py
++++ b/src/steer_opd/training/verl_trainer.py
+@@ -60,4 +60,6 @@
+             if len(rows)!=expected:
+                 raise RuntimeError(f'Training rollout batch has {len(rows)} trajectories; expected {expected}')
++            for row in rows:
++                row['dynamic_sv_step'] = self.global_steps
+             with phase(self.log_folder,'teacher_scoring_phase',step=self.global_steps,trajectories=len(rows)):
+                 with self.handover.frozen_scoring():scored=self.scorer.score(rows)
+@@ -83,5 +85,6 @@
+                     'trajectories':len(rows),'loss_type':'traditional_opd','resource_mode':'shared_two_gpu',
+                     'student_logprob_source':STUDENT_LOGPROB_SOURCE,
+-                    'validation_scope':'full-batch generation, scoring, handover and finite optimizer update',
++                    'sv_mode':'dynamic',
++                    'validation_scope':'full-batch generation, dynamic SV, scoring, handover and finite optimizer update',
+                     'numeric_equivalence':'not_claimed; rollout/actor discrepancy logged per step'})
+             self.scorer.release_batch(self.global_steps)
+--- a/src/steer_opd/training/overlap_monitor.py
++++ b/src/steer_opd/training/overlap_monitor.py
+@@ -121,5 +121,5 @@
+                 else folder/'summary.json')
+         atomic_json(target,{'step':step,'student_policy_step':step-1,
+-            'measurement':'same_rollout_pre_update','teacher':'actual_S-T_global_steered_teacher',
++            'measurement':'same_rollout_pre_update','teacher':'actual_S-T_dynamic_steered_teacher',
+             'metric_version':METRIC_VERSION,'matching_rule_version':RULE_VERSION,
+             'P_overlap_definition':P_DEFINITION,'normalization':'original_probabilities_no_top16_renormalization',

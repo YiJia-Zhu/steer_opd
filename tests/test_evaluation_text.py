@@ -16,21 +16,22 @@ from steer_opd.evaluation_text import FORMAT, response_path, responses_complete,
 from steer_opd.resumable_core import ROOT
 
 
-def freeze_questions(run, ids):
+def freeze_questions(run, questions):
     (run / 'data').mkdir()
-    rows = [{'extra_info': {'question_id': question_id}} for question_id in ids]
+    rows = [{'extra_info': {'question_id': qid, 'question': q}} for qid, q in questions.items()]
     pq.write_table(pa.Table.from_pylist(rows), run / 'data/benchmarks.parquet')
 
 
 def test_archive_preserves_text_and_a_failed_retry_leaves_the_previous_file(tmp_path):
     ids = ['b:1', 'a:0']
+    questions = {'a:0': '第一道题\n第二行', 'b:1': 'What is $1+1$?'}
     texts = [' <think>\n' + '中文🙂\\boxed{2}\n' * 16384 + '</think>  ', '']
-    freeze_questions(tmp_path, ids)
+    freeze_questions(tmp_path, questions)
     save_responses(tmp_path, 0, ids, texts)
     target = response_path(tmp_path, 0)
     original = target.read_bytes()
     assert [json.loads(line) for line in original.decode().splitlines()] == [
-        {'question_id': q, 'text': t} for q, t in zip(ids, texts)]
+        {'question_id': q, 'question': questions[q], 'text': t} for q, t in zip(ids, texts)]
     for questions, bad in [(ids[:1], texts[:1]), (ids[:1] * 2, texts), (ids, ['ok', None])]:
         with pytest.raises(ValueError):
             save_responses(tmp_path, 0, questions, bad)
@@ -66,8 +67,9 @@ def test_real_verl_validation_saves_every_unpadded_answer_once(tmp_path, monkeyp
     trainer_type = inspect.getclosurevars(run_method).nonlocals['SteerTrainer']
     trainer = object.__new__(trainer_type)
     rows, _ = benchmark_rows([])
-    ids = [r['extra_info']['question_id'] for r in rows]
-    freeze_questions(tmp_path, ids)
+    questions = {r['extra_info']['question_id']: r['extra_info']['question'] for r in rows}
+    ids = list(questions)
+    freeze_questions(tmp_path, questions)
     index = {qid: i+1 for i, qid in enumerate(ids)}
     answers = {i: f' <think>推导 {i}\n</think>\n\\boxed{{{i}}}  ' for i in index.values()}
     monkeypatch.setattr(math_verify, 'compute_score', lambda *args, **kwargs: 1.)
@@ -109,5 +111,6 @@ def test_real_verl_validation_saves_every_unpadded_answer_once(tmp_path, monkeyp
     assert all('question_id' not in key for key in metrics)
     assert json.loads((tmp_path / 'evaluation/metrics/step_16.json').read_text()) == metrics
     records = [json.loads(line) for line in response_path(tmp_path, 16).read_text().splitlines()]
-    assert records == [{'question_id': q, 'text': answers[index[q]]} for q in reversed(ids)]
+    assert records == [{'question_id': q, 'question': questions[q], 'text': answers[index[q]]}
+                       for q in reversed(ids)]
     assert responses_complete(tmp_path, 16)

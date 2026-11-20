@@ -1,6 +1,6 @@
 # Steering-assisted OPD
 
-固定Qwen3.5-35B-A3B教师与Qwen3-4B学生，研究激活方向干预、师生分布相容性与OPD学习。后续方案固定为教师空间S−T，历史学生空间T−S保留作对比，具体已实现流程与后续规划统一在文档中说明。
+固定Qwen3.5-35B-A3B教师与Qwen3-4B学生，研究激活方向干预、师生分布相容性与OPD学习。训练支持教师空间的静态 SV 和动态 SV。
 
 - [代码框架逻辑](docs/代码框架逻辑.md)：先看共同参数与全流程表，再看训练内部拆分、启动／恢复、验收与日志。
 - [实验计划](docs/ablation.md)：实验授权、方案、选参与执行记录。
@@ -9,6 +9,8 @@
 - [TODO](TODO.md)：保留的任务检查记录。
 
 手动CPU预览使用`bash scripts/run_ablation.sh --check`；它不启动模型。GPU运行需使用对应的显式运行入口和独立配置，模板`execution_hold`保留。新参数不能覆盖已完成身份，既有模型／数据资产只读；当前流程和历史结果不在本页重复维护。
+
+动态 SV 用 `bash scripts/run_dynamic_sv.sh --check` 预览。训练直接读 step 0 冻结题集。每步生成 32 题 × 4 条学生回答和 32 条教师参考，由同一个教师读取两组文本，提取 S−T 后沿原学生回答注入评分。[动态 SV 入口](scripts/run_dynamic_sv.sh) · [方向定义](docs/ablation.md#动态-sv)
 
 全流程使用[`scripts/run_full_pipeline.sh`](scripts/run_full_pipeline.sh)，超参数及可选项集中在脚本开头。`--prepare-data`在CPU冻结1024题；`--check`预览；`--run`依次执行全局SV准备、all注入的全训练集overlap和OPD，默认Slerp0.1。全部1024题共用于SV、overlap和训练，无Select／Confirm；每step32题×4条回答，最多64步，每16步及末步评测裸学生。
 

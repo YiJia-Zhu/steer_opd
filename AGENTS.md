@@ -2,7 +2,9 @@
 
 ## Current authorization and experiment
 
-2026-11-20训练内评测保存授权：新训练运行（含steer、vanilla和CompassOPD）每次MATH-500／AIME2025评测都复用本次生成，按题保存完整回答文本到`evaluation/responses/step_<步>.jsonl`，每行仅`question_id`和`text`。这项授权取代下文关于训练内评测原文的旧约定。训练rollout继续按minimal_v1清理。已启动或已冻结的运行使用原版本，本次不重启、不向已有进程注入代码、不补跑历史评测。
+2026-11-20动态SV授权：动态分支直接使用step0冻结1024题，每步32题×4条学生rollout，并由冻结教师为同一批题各生成1条参考回答。教师参考默认最多生成2048 token，其余采样参数沿用静态step1。同一个教师关闭注入读取两组回答，按原静态定义计算教师隐空间S−T，再把本批方向注入教师沿完整学生回答评分。删除按似然分组和额外学生重读的旧动态逻辑。此次改代码、文档及CPU验证，不启动GPU或改冻结运行。
+
+2026-11-20训练内评测保存授权：新训练运行（含steer、vanilla和CompassOPD）每次MATH-500／AIME2025评测都复用本次生成，按题保存完整回答文本到`evaluation/responses/step_<步>.jsonl`，每行仅`question_id`、`question`（原题面）和`text`（完整回答）。这项授权取代下文关于训练内评测原文的旧约定。训练rollout继续按minimal_v1清理。已启动或已冻结的运行使用原版本，本次不重启、不向已有进程注入代码、不补跑历史评测。
 
 2026-11-19训练输出位置授权：用户将后续train步骤改回/home/zhenning/data/working_tmp/steer_opd/outputs；该路径解析到/local_nvme/data/zhenning/working_tmp/steer_opd/outputs。configs/ablation.json的train_output_root与启动入口默认值均为outputs，训练输出为outputs/step_4_train/ablation/<模型组合>/<数据集>/shared/<运行名>/，其他阶段路径保持。旧~/steer_opd_outputs仅保留显式指定及已有checkpoint读取能力；不迁移或恢复旧outputs，不改冻结运行配置。训练启动和checkpoint保存继续检查实际目标文件系统的空间与可见配额。更改训练保存位置时使用新的TRAIN_RUN_NAME，保留原冻结请求。此次只改输出默认值、相关文档并做CPU验证，不启动GPU或重启训练。
 

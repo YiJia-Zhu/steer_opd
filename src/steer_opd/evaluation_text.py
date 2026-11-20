@@ -5,26 +5,27 @@ from pathlib import Path
 from tempfile import mkstemp
 
 
-FORMAT = 'question_id_text_jsonl_v1'
+FORMAT = 'question_id_question_text_jsonl_v1'
 
 
 def response_path(run, step):
     return Path(run) / 'evaluation' / 'responses' / f'step_{step}.jsonl'
 
 
-def benchmark_ids(run):
+def benchmark_questions(run):
     import pyarrow.parquet as pq
 
-    table = pq.read_table(Path(run) / 'data/benchmarks.parquet', columns=['extra_info.question_id'])
-    ids = table.column(0).to_pylist()
-    if not ids or len(set(ids)) != len(ids):
-        raise ValueError('Expected unique question IDs in the frozen evaluation dataset')
-    return set(ids)
+    table = pq.read_table(Path(run) / 'data/benchmarks.parquet',
+                          columns=['extra_info.question_id', 'extra_info.question'])
+    questions = dict(zip(table.column(0).to_pylist(), table.column(1).to_pylist(), strict=True))
+    if not questions or len(questions) != table.num_rows or any(not q for q in questions.values()):
+        raise ValueError('Expected a question for each unique ID in the frozen evaluation dataset')
+    return questions
 
 
 def save_responses(run, step, question_ids, texts):
-    expected = benchmark_ids(run)
-    if len(question_ids) != len(texts) or len(texts) != len(expected) or set(question_ids) != expected:
+    questions = benchmark_questions(run)
+    if len(question_ids) != len(texts) or len(texts) != len(questions) or set(question_ids) != questions.keys():
         raise ValueError('Evaluation responses must cover each frozen benchmark question exactly once')
     target = response_path(run, step)
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -34,7 +35,8 @@ def save_responses(run, step, question_ids, texts):
             for question_id, text in zip(question_ids, texts, strict=True):
                 if not isinstance(text, str):
                     raise ValueError(f'Missing decoded evaluation text for {question_id}')
-                stream.write(json.dumps({'question_id': question_id, 'text': text}, ensure_ascii=False) + '\n')
+                row = {'question_id': question_id, 'question': questions[question_id], 'text': text}
+                stream.write(json.dumps(row, ensure_ascii=False) + '\n')
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temporary, target)
@@ -46,14 +48,14 @@ def responses_complete(run, step):
     path = response_path(run, step)
     if not path.is_file():
         return False
-    remaining = benchmark_ids(run)
+    remaining = benchmark_questions(run)
     try:
         with path.open(encoding='utf-8') as stream:
             for line in stream:
                 row = json.loads(line)
-                if set(row) != {'question_id', 'text'} or not isinstance(row['text'], str):
+                if (set(row) != {'question_id', 'question', 'text'} or not isinstance(row['text'], str)
+                        or remaining.pop(row['question_id']) != row['question']):
                     return False
-                remaining.remove(row['question_id'])
     except (ValueError, KeyError, TypeError):
         return False
     return not remaining
