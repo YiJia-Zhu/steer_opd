@@ -14,8 +14,9 @@ from steer_opd.resumable_core import digest
 from steer_opd.training.config import TrainingLossConfig
 
 
-def training_alignment(source_ids, student_codec, teacher_codec, *, settings=None, reference_codec=None):
-    """Keep actual student IDs; retokenize their exact response bytes per scorer."""
+def training_alignment(source_ids, student_codec, teacher_codec, *, settings=None,
+                       reference_codec=None, sampled_stop_id=None):
+    """Align the exact response text and the verified sampled EOS, if present."""
     settings = settings or TrainingLossConfig()
     scorers = {'teacher': teacher_codec}
     if settings.loss_type == 'compass_opd':
@@ -24,7 +25,39 @@ def training_alignment(source_ids, student_codec, teacher_codec, *, settings=Non
         scorers['reference'] = reference_codec
     elif reference_codec is not None:
         raise ValueError('Traditional OPD uses S/T only; do not load Ref')
-    return align_response(source_ids, student_codec, scorers, invalid_utf8='mask')
+    plan = align_response(source_ids, student_codec, scorers, invalid_utf8='mask')
+    if sampled_stop_id not in student_codec.eos:
+        return plan
+    stop_position = len(plan['source_token_ids']) - 1
+    if plan['source_token_ids'][stop_position] != sampled_stop_id:
+        raise ValueError('Observed stop token differs from the final rollout token')
+    if plan['terminal_unscored_positions'] != [stop_position]:
+        # Keep the text alignment if an earlier stripped marker would change the EOS prefix.
+        return plan
+
+    marker = student_codec.raw[sampled_stop_id]
+    eos_ids = {'student': sampled_stop_id}
+    for role, codec in scorers.items():
+        eos = next((token for token in codec.eos if codec.raw[token] == marker), None)
+        if eos is None:
+            return plan
+        eos_ids[role] = eos
+
+    # This singleton has no text bytes. The usual loss uses its native
+    # observed logprobs while text overlap uses the original alignment.
+    native_ids = plan['native_response_ids']
+    ranges = {role: [len(native_ids[role]), len(native_ids[role])+1] for role in eos_ids}
+    for role, token in eos_ids.items():
+        native_ids[role].append(token)
+    units = plan['units']
+    end = units[-1]['byte_end'] if units else 0
+    plan['alignment_mask'][stop_position] = True
+    plan['student_to_unit'][stop_position] = len(units)
+    units.append({'byte_start': end, 'byte_end': end, 'ranges': ranges, 'valid': True, 'reason': None})
+    plan['terminal_unscored_positions'] = []
+    plan['text_alignment_id'] = plan.pop('alignment_id')
+    plan['alignment_id'] = digest(plan)
+    return plan
 
 
 @dataclass
@@ -56,8 +89,8 @@ def _span_means(plan, logps, role, output):
     """Reduce native spans together, then broadcast to native student positions.
 
     Keep reductions local to each span: subtracting long FP32 prefix sums
-    would lose small logprobs near the end of a trajectory. Invalid/control
-    spans and terminal positions remain untouched, including their NaNs.
+    would lose small logprobs near the end of a trajectory. Excluded
+    positions remain untouched, including their NaNs.
     """
     ranges = [(*unit['ranges']['student'], *unit['ranges'][role])
               for unit in plan['units'] if unit['valid']]
@@ -148,7 +181,7 @@ def distillation_loss(plan: Mapping, student_logps, teacher_logps, *, settings=N
         _valid_logps(anchor[mask], 'student_anchor')
         reference_mean = _span_means(plan, reference_logps, 'reference', template.clone())
         teacher_signal = teacher_mean - reference_mean
-        # Avoid evaluating NaN EOS/padding in any loss term, including 0 * NaN.
+        # Avoid evaluating masked NaNs in any loss term, including 0 * NaN.
         displacement[mask] = student.detach()[mask] - anchor[mask]
         advantage = teacher_signal - settings.anchor_coef * displacement
     advantage = advantage.detach().masked_fill(~mask, 0.)

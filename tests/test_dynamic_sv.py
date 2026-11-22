@@ -35,6 +35,24 @@ def fake_module(monkeypatch, name, **values):
     monkeypatch.setitem(sys.modules, name, item)
 
 
+@pytest.mark.parametrize('output_mask', [(True, True, True), (True, False, False), (False, True, False)])
+def test_dense_linear_backward_matches_autograd(dynamic_src, output_mask):
+    linear = module(dynamic_src, 'actor_linear_backward')
+    rng = torch.Generator().manual_seed(42)
+    inputs = torch.randn(2, 3, 4, generator=rng, dtype=torch.float64).transpose(0, 1).requires_grad_()
+    weight = torch.randn(5, 4, generator=rng, dtype=torch.float64, requires_grad=True)
+    bias = torch.randn(5, generator=rng, dtype=torch.float64, requires_grad=True)
+    grad_output = torch.randn(3, 2, 5, generator=rng, dtype=torch.float64)
+    expected = torch.autograd.grad(torch.nn.functional.linear(inputs, weight, bias),
+                                  (inputs, weight, bias), grad_output)
+    actual = linear.dense_linear_backward(inputs, grad_output, weight, output_mask)
+    for enabled, result, reference in zip(output_mask, actual, expected, strict=True):
+        if enabled:
+            torch.testing.assert_close(result, reference)
+        else:
+            assert result is None
+
+
 def test_reference_generation_deduplicates_questions_and_preserves_order(dynamic_src, monkeypatch):
     dynamic = module(dynamic_src, 'dynamic_sv')
     rows = [{'question_id': q, 'question': q, 'prompt_token_ids': [token]}

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # 按列表从左到右串行执行。只跑一种就保留一个名字，也可用环境变量 METHODS 覆盖。
-# 示例  METHODS=compassopd bash scripts/baselines.sh --check
+# 示例  METHODS=sft bash scripts/baselines.sh --check
 BASELINES=(vanilla compassopd)
 
-TRAIN_BATCH_SIZE="${TRAIN_BATCH_SIZE:-32}"  # 每步32题，每题4条
-TOTAL_STEPS="${TOTAL_STEPS:-64}"          # 1..64，默认两轮
+TRAIN_BATCH_SIZE="${TRAIN_BATCH_SIZE:-32}"  # 每步32题，OPD每题4条
+TOTAL_STEPS="${TOTAL_STEPS:-64}"          # OPD步数
 EVAL_EVERY="${EVAL_EVERY:-16}"            # step 0、每16步及末步评测裸学生
 SAVE_EVERY="${SAVE_EVERY:-16}"            # 每16步及末步保存模型
 CHECKPOINT_RETENTION="${CHECKPOINT_RETENTION:-all_models_latest_state_v1}"
@@ -16,6 +16,9 @@ WAIT_SECONDS="${WAIT_SECONDS:-3600}"
 TRAIN_OUTPUT_ROOT="${TRAIN_OUTPUT_ROOT:-outputs}"
 VANILLA_RUN_NAME="${VANILLA_RUN_NAME:-${TRAIN_RUN_NAME:-opd_n1024_vanilla_seed42_v1}}"
 COMPASSOPD_RUN_NAME="${COMPASSOPD_RUN_NAME:-opd_n1024_compassopd_seed42_v1}"
+SFT_RUN_NAME="${SFT_RUN_NAME:-sft_n1024_seed42_v1}"
+SFT_OPD_RUN_NAME="${SFT_OPD_RUN_NAME:-opd_from_sft32_seed42_v1}"
+SFT_OPD_CHECKPOINT="${SFT_OPD_CHECKPOINT:-outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/sft_n974_32steps_seed42_v1/checkpoints/global_step_32}"
 REFERENCE_MODEL="${REFERENCE_MODEL:-assets/models/Qwen3.5-0.8B}" # CompassOPD的教师同家族参考
 ANCHOR_COEF="${ANCHOR_COEF:-0.5}"         # CompassOPD的冻结初始学生锚定系数
 # 默认模板中的 training_input_data_dir 指向冻结的1024题。也兼容显式指定旧的准备配置。
@@ -31,6 +34,8 @@ usage() {
 默认 --check 在 CPU 上预览。--prepare 在 CPU 上冻结各自的训练计划。--run 依次启动或恢复训练。
 脚本开头的 BASELINES 决定方法和顺序。临时覆盖示例
   METHODS=compassopd bash scripts/baselines.sh --check
+  METHODS=sft bash scripts/baselines.sh --check
+  METHODS=sft_opd TOTAL_STEPS=32 bash scripts/baselines.sh --check
   METHODS="compassopd vanilla" GPU_IDS=0,4 bash scripts/baselines.sh --run
 HELP
 }
@@ -46,7 +51,7 @@ if [[ -v METHODS ]]; then
     IFS=$' ,\t' read -r -a BASELINES <<< "${METHODS//$'\n'/ }"
 fi
 if (( ${#BASELINES[@]} == 0 )); then
-    echo '请至少选择 vanilla 或 compassopd 中的一种。' >&2
+    echo '请至少选择 vanilla、compassopd、sft 或 sft_opd 中的一种。' >&2
     exit 2
 fi
 
@@ -55,7 +60,9 @@ for method in "${BASELINES[@]}"; do
     case "$method" in
         vanilla) run_name="$VANILLA_RUN_NAME" ;;
         compassopd) run_name="$COMPASSOPD_RUN_NAME" ;;
-        *) printf '未知方法 %s，可选 vanilla 或 compassopd。\n' "$method" >&2; exit 2 ;;
+        sft) run_name="$SFT_RUN_NAME" ;;
+        sft_opd) run_name="$SFT_OPD_RUN_NAME" ;;
+        *) printf '未知方法 %s，可选 vanilla、compassopd、sft 或 sft_opd。\n' "$method" >&2; exit 2 ;;
     esac
     if [[ ! "$run_name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]; then
         printf '无效运行名 %s。\n' "$run_name" >&2
@@ -72,23 +79,41 @@ case "$OVERLAP_METRICS" in
     0) monitor_args=() ;;
     *) echo 'OVERLAP_METRICS 只能为 0 或 1。' >&2; exit 2 ;;
 esac
+scorer_args=()
+if [[ -n "${SCORE_MAX_MODEL_LEN:-}" ]]; then
+    scorer_args=(--score-max-model-len "$SCORE_MAX_MODEL_LEN")
+fi
 
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 source scripts/runtime_env.sh
 if [[ "$mode" != --run ]]; then export CUDA_VISIBLE_DEVICES=''; fi
-baseline_src=$("$STEER_OPD_PYTHON" scripts/prepare_baseline_runtime.py)
-export PYTHONPATH="$baseline_src:$PYTHONPATH"
+baseline_src=''
 for method in "${BASELINES[@]}"; do
+    printf '\n[baselines] %s %s\n' "$method" "$mode" >&2
+    if [[ "$method" == sft ]]; then
+        sft_args=()
+        if [[ -n "${SFT_TEACHER_DIR:-}" ]]; then sft_args=(--teacher-dir "$SFT_TEACHER_DIR"); fi
+        if [[ -n "${SFT_TOTAL_STEPS:-}" ]]; then sft_args+=(--total-steps "$SFT_TOTAL_STEPS"); fi
+        "$STEER_OPD_PYTHON" -m steer_opd.sft_baseline "$mode" \
+            --run-name "$SFT_RUN_NAME" --config "$PREPARED_CONFIG" --train-output-root "$TRAIN_OUTPUT_ROOT" \
+            --gpu-ids "$GPU_IDS" --wait-seconds "$WAIT_SECONDS" --batch-size "$TRAIN_BATCH_SIZE" \
+            --save-freq "$SAVE_EVERY" --presence-penalty "$PRESENCE_PENALTY" "${sft_args[@]}"
+        continue
+    fi
+    if [[ -z "$baseline_src" ]]; then
+        baseline_src=$("$STEER_OPD_PYTHON" scripts/prepare_baseline_runtime.py)
+    fi
     case "$method" in
         vanilla) method_args=(--loss traditional_opd --run-name "$VANILLA_RUN_NAME") ;;
         compassopd) method_args=(--loss compass_opd --run-name "$COMPASSOPD_RUN_NAME"
             --reference-model "$REFERENCE_MODEL" --anchor-coef "$ANCHOR_COEF") ;;
+        sft_opd) method_args=(--loss traditional_opd --run-name "$SFT_OPD_RUN_NAME"
+            --sft-checkpoint "$SFT_OPD_CHECKPOINT") ;;
     esac
-    printf '\n[baselines] %s %s\n' "$method" "$mode" >&2
-    "$STEER_OPD_PYTHON" -m steer_opd.training.verl_entry "$mode" \
+    PYTHONPATH="$baseline_src:$PYTHONPATH" "$STEER_OPD_PYTHON" -m steer_opd.training.verl_entry "$mode" \
         "${method_args[@]}" --config "$PREPARED_CONFIG" --operator slerp --alpha 0 \
         --train-output-root "$TRAIN_OUTPUT_ROOT" --gpu-ids "$GPU_IDS" --wait-seconds "$WAIT_SECONDS" \
         --batch-size "$TRAIN_BATCH_SIZE" --total-steps "$TOTAL_STEPS" \
         --evaluation-freq "$EVAL_EVERY" --save-freq "$SAVE_EVERY" \
-        --checkpoint-retention "$CHECKPOINT_RETENTION" --presence-penalty "$PRESENCE_PENALTY" "${monitor_args[@]}"
+        --checkpoint-retention "$CHECKPOINT_RETENTION" --presence-penalty "$PRESENCE_PENALTY" "${monitor_args[@]}" "${scorer_args[@]}"
 done

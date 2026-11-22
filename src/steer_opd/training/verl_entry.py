@@ -219,6 +219,8 @@ def main():
     parser.add_argument('--anchor-coef',type=float,default=.5)
     parser.add_argument('--reference-model',default='assets/models/Qwen3.5-0.8B')
     parser.add_argument('--batch-size',type=int);parser.add_argument('--total-steps',type=int)
+    parser.add_argument('--score-max-model-len', type=int, default=VerlSettings.score_max_model_len,
+                        help='Context limit for frozen scorers including their native prompt and re-tokenized answer')
     parser.add_argument('--evaluation-freq',type=int,default=16,help='Evaluate the bare student every N updates and at the final step')
     parser.add_argument('--save-freq',type=int,default=16,help='Save a model checkpoint every N updates and at the final step')
     from steer_opd.retention import ALL_MODELS_LATEST_STATE,CHECKPOINT_POLICIES
@@ -261,7 +263,7 @@ def main():
                 with phase(logs,'ray_model_process_shutdown'):ray.shutdown()
         return
     if args.bootstrap_source:bootstrap_source()
-    settings=VerlSettings(gpu_pool=gpu_ids(args.gpu_ids),
+    settings=VerlSettings(gpu_pool=gpu_ids(args.gpu_ids), score_max_model_len=args.score_max_model_len,
         train_batch_size=args.batch_size if args.batch_size is not None else (2 if args.acceptance_run else 32),
         total_steps=args.total_steps if args.total_steps is not None else (2 if args.acceptance_run else 64),teacher_layer=args.teacher_layer,
         operator=args.operator,alpha=args.alpha,

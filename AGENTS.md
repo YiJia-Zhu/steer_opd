@@ -1,5 +1,6 @@
 # Repository Guidelines
 
+ssh zhenning@1.15.156.186
 ## Current authorization and experiment
 
 2026-11-20动态SV授权：动态分支直接使用step0冻结1024题，每步32题×4条学生rollout，并由冻结教师为同一批题各生成1条参考回答。教师参考默认最多生成2048 token，其余采样参数沿用静态step1。同一个教师关闭注入读取两组回答，按原静态定义计算教师隐空间S−T，再把本批方向注入教师沿完整学生回答评分。删除按似然分组和额外学生重读的旧动态逻辑。此次改代码、文档及CPU验证，不启动GPU或改冻结运行。

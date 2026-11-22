@@ -44,7 +44,22 @@ def student_records(batch):
     return records
 
 
+def _text_overlap_inputs(alignment, teacher):
+    if 'text_alignment_id' not in alignment:
+        return alignment, teacher
+    text = dict(alignment)
+    text['alignment_id'] = text.pop('text_alignment_id')
+    text['native_response_ids'] = {role: ids[:-1] for role, ids in alignment['native_response_ids'].items()}
+    text['units'] = alignment['units'][:-1]
+    text['alignment_mask'] = [*alignment['alignment_mask'][:-1], False]
+    text['student_to_unit'] = [*alignment['student_to_unit'][:-1], -1]
+    text['terminal_unscored_positions'] = [len(alignment['source_token_ids'])-1]
+    scores = {**teacher, **{field: teacher[field][:-1] for field in ('ids', 'logps', 'sampled_logps')}}
+    return text, scores
+
+
 def row_statistics(row,alignment,student,teacher,codecs):
+    alignment, teacher = _text_overlap_inputs(alignment, teacher)
     validate_native_score(student,len(row['token_ids']),codecs['student'].support_size)
     result=aligned_metrics(alignment,student,teacher,codecs['student'],codecs['teacher'])
     valid=torch.isfinite(result['overlap']) & torch.isfinite(result['P_overlap'])
@@ -63,7 +78,6 @@ def row_statistics(row,alignment,student,teacher,codecs):
 
 def summarize_statistics(parts):
     groups={};valid=sum(p['valid_tokens'] for p in parts);total=sum(p['total_tokens'] for p in parts)
-    if not valid:raise ValueError('No aligned positions for training overlap')
     for part in parts:
         g=groups.setdefault(part['question_id'],{'valid_tokens':0,'overlap_sum':0.,'P_overlap_sum':0.})
         for key in g:g[key]+=part[key]
@@ -72,6 +86,8 @@ def summarize_statistics(parts):
     metrics['alignment/invalid_utf8_bytes']=sum(p.get('invalid_utf8_bytes',0) for p in parts)
     metrics['alignment/invalid_utf8_trajectories']=sum(p.get('invalid_utf8_bytes',0)>0 for p in parts)
     metrics['alignment/verbatim_response_trajectories']=sum(bool(p.get('verbatim_response',False)) for p in parts)
+    if not valid:
+        return metrics
     for name in ('overlap','P_overlap'):
         metrics[name+'/token_value']=sum(p[name+'_sum'] for p in parts)/valid
         metrics[name+'/question_value']=sum(g[name+'_sum']/g['valid_tokens'] for g in groups.values())/len(groups)

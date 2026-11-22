@@ -14,6 +14,7 @@ PACKAGE = ROOT / 'src/steer_opd'
 EVAL_PATCH = ROOT / 'runtime/training/evaluation_text.patch'
 BASELINE_PATCH = ROOT / 'runtime/baselines/native_training.patch'
 DYNAMIC_SV_PATCH = ROOT / 'runtime/training/dynamic_sv.patch'
+ACTOR_PATCH = ROOT / 'runtime/training/actor_linear_backward.patch'
 
 
 def contents(directory):
@@ -42,7 +43,10 @@ def prepare(*, baseline=False, dynamic_sv=False):
             patches.append(BASELINE_PATCH)
         if dynamic_sv:
             patches.append(DYNAMIC_SV_PATCH)
-            shutil.copyfile(DYNAMIC_SV_PATCH.with_suffix('.py'), package / 'training/dynamic_sv.py')
+            shutil.copyfile(DYNAMIC_SV_PATCH.with_name('dynamic_sv.py'), package / 'training' / 'dynamic_sv.py')
+        if baseline or dynamic_sv:
+            patches.append(ACTOR_PATCH)
+            shutil.copyfile(ACTOR_PATCH.with_suffix('.py'), package / 'training' / 'actor_linear_backward.py')
         for patch in patches:
             subprocess.run(['patch', '--batch', '--forward', '--fuzz=0', '--no-backup-if-mismatch',
                             '-s', '-p1', '-i', str(patch)], cwd=build, check=True)

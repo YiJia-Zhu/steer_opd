@@ -7,9 +7,10 @@
 +from steer_opd.compass_alignment import aligned_metrics, align_response
  from steer_opd.prefix_matching import METRIC_VERSION,RULE_VERSION,P_DEFINITION
  from steer_opd.resumable_core import ROOT,atomic_json
-@@ -46,4 +46,11 @@
+@@ -60,6 +60,13 @@
  
  def row_statistics(row,alignment,student,teacher,codecs):
+     alignment, teacher = _text_overlap_inputs(alignment, teacher)
 +    if 'reference' in alignment['native_response_ids']:
 +        # Compare overlap at S/T boundaries even when the loss also aligns R.
 +        pair = align_response(row['token_ids'], codecs['student'], {'teacher': codecs['teacher']},
@@ -19,7 +20,8 @@
 +        alignment = pair
      validate_native_score(student,len(row['token_ids']),codecs['student'].support_size)
      result=aligned_metrics(alignment,student,teacher,codecs['student'],codecs['teacher'])
-@@ -121,5 +128,5 @@
+     valid=torch.isfinite(result['overlap']) & torch.isfinite(result['P_overlap'])
+@@ -137,5 +144,5 @@
                  else folder/'summary.json')
          atomic_json(target,{'step':step,'student_policy_step':step-1,
 -            'measurement':'same_rollout_pre_update','teacher':'actual_S-T_global_steered_teacher',
@@ -66,7 +68,7 @@
 -from steer_opd.direction_bank import file_sha256
  from steer_opd.math_data import prompt_ids
  from steer_opd.resumable_core import ROOT, read_json
-@@ -23,20 +22,11 @@
+@@ -23,20 +22,14 @@
  def validate_assets(plan):
      s = plan['settings']
 -    path = ROOT/s['sv_bank']
@@ -74,6 +76,9 @@
 +    if plan.get('teacher_steering') is not False or s['operator'] != 'slerp' or s['alpha'] != 0 or s['sv_bank'] is not None:
 +        raise ValueError('Native baselines require an unsteered teacher and no SV bank')
      model_ids = {role: checkpoint_content_id(ROOT/plan[role]) for role in ('student', 'teacher')}
++    if plan.get('baseline_method') == 'sft_opd':
++        if model_ids['student'] != plan['student_initialization']['export_content_id']:
++            raise ValueError('SFT initialization export identity changed')
 -    if (bank['identity']['checkpoint_content_id'] != model_ids['teacher']
 -            or bank['identity']['step'] != 0 or bank['method']['direction'] != 'S-T'
 -            or bank['method']['granularity'] != 'global' or list(bank['method']['layers']) != [s['teacher_layer']]):
@@ -90,7 +95,7 @@
 +        model_ids['student_anchor'] = model_ids['student']
          def family(path):
              cfg=read_json(path/'config.json');cfg=cfg.get('text_config',cfg)
-@@ -45,5 +35,5 @@
+@@ -45,5 +38,5 @@
              raise ValueError('Ref must belong to the teacher release family')
      from steer_opd.stage_contracts import codec_key
 -    return {'model_content_ids': model_ids, 'sv_bank_sha256': file_sha256(path),
@@ -142,14 +147,31 @@
 +    return recover_checkpoint(checkpoints, plan) == checkpoints / f'global_step_{step}'
  
  
-@@ -238,5 +268,5 @@
+@@ -238,5 +268,6 @@
      parser.add_argument('--train-output-root',help='Training output root; default project outputs/, other stages stay in outputs/')
      parser.add_argument('--operator',choices=['slerp','additive'],default='slerp')
 -    parser.add_argument('--alpha',type=float,default=.1);parser.add_argument('--sv-bank')
 +    parser.add_argument('--alpha',type=float,default=0.);parser.add_argument('--sv-bank')
++    parser.add_argument('--sft-checkpoint', help='Initialize standard OPD with weights from a saved SFT model')
      from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH,DEFAULT_PRESENCE_PENALTY
      parser.add_argument('--presence-penalty',type=float,default=DEFAULT_PRESENCE_PENALTY,help='Generation penalty for training rollouts and validation; raw OPD/Top16 probabilities remain unwarped')
-@@ -309,10 +339,23 @@
+@@ -304,5 +335,14 @@
+     else:plan['run_purpose']='formal_training'
++    student_ready = True
++    if args.sft_checkpoint:
++        from steer_opd.sft_opd_baseline import bind_sft_student
++        student_ready = bind_sft_student(
++            plan, args.sft_checkpoint, materialize=args.prepare or args.run or args.acceptance_run,
++        )
+     from steer_opd.training.scoring import validate_assets
+-    plan['assets']=validate_assets(plan)
++    if student_ready:
++        plan['assets']=validate_assets(plan)
+     if args.resume_from:
++        if not student_ready:
++            raise ValueError('Prepare the SFT initialization export before checking an OPD resume')
+         from steer_opd.training.resume_handover import bind_resume_source
+@@ -309,10 +349,23 @@
          bind_resume_source(plan,ROOT/args.resume_from)
      plan['binding']=digest({k:v for k,v in plan.items() if k!='binding'})
 +    if not args.acceptance_run and not args.acceptance_receipt:

@@ -8,6 +8,7 @@ from typing import Mapping
 from steer_opd.resumable_core import ROOT
 
 ALIGNMENT = 'compass_a4_shared_text_span_mean_native_logp_v1'
+TERMINAL_EOS_POLICY = 'sampled_terminal_eos_same_marker_v1'
 DEFAULT_REFERENCE = 'assets/models/Qwen3.5-0.8B'
 
 
@@ -58,6 +59,7 @@ def training_plan(experiment: Mapping, settings=None):
         'stage': 'opd_loss_preparation', 'training_started': False,
         'settings': asdict(settings), 'model_roles': roles,
         'loss_reduction': 'mean_over_valid_student_tokens',
+        'terminal_eos_policy': TERMINAL_EOS_POLICY,
         'rollout_policy': 'current_student_on_policy',
         'student_logps': 'fresh_differentiable_forward_on_actual_rollout',
         'teacher_logps': 'observed_native_tokens_of_the_same_student_response',

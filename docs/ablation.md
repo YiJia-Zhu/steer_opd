@@ -26,20 +26,23 @@ bash scripts/run_dynamic_sv.sh --run --gpu-ids 4,5 --run-name opd_dynamic_st_see
 
 ## 无 steering 的训练基线
 
-`scripts/baselines.sh` 开头的 Bash 数组 `BASELINES=(vanilla compassopd)` 决定选择和顺序，也可以用环境变量 `METHODS` 临时覆盖。一次调用共用同一对 GPU，前一项成功退出才会进入下一项。两种方法各自从初始 Qwen3-4B 开始，分别保存和恢复 checkpoint。[启动脚本](../scripts/baselines.sh)
+`scripts/baselines.sh` 开头的 Bash 数组 `BASELINES=(vanilla compassopd)` 决定默认顺序，也可以用环境变量 `METHODS` 选择方法。一次调用共用同一对 GPU，前一项成功退出才会进入下一项。Vanilla、CompassOPD 和 SFT 从初始 Qwen3-4B 开始，SFT+OPD 从已保存的 SFT 模型开始。各自保存和恢复 checkpoint。[启动脚本](../scripts/baselines.sh)
 
 | 方法 | 每批训练信号 | 默认运行名 |
 |---|---|---|
 | `vanilla` | 当前学生采样，原生 Qwen3.5-35B-A3B 教师评分，使用传统 OPD loss | `opd_n1024_vanilla_seed42_v1` |
 | `compassopd` | 同一原生教师和教师同家族参考 Qwen3.5-0.8B 对学生回答评分，使用教师与参考的 span 平均 logp 差，加上相对冻结初始学生的逐 token 锚定项，默认系数 0.5 | `opd_n1024_compassopd_seed42_v1` |
+| `sft` | 复用 step 1 正常结束且非空的教师回答，从初始 Qwen3-4B 全参数训练，只在教师回答与结尾 EOS 上计算交叉熵 | `sft_n1024_seed42_v1` |
+| `sft_opd` | 从 SFT step 32 开始，用当前学生采样和原生教师评分做标准 OPD | `opd_from_sft32_seed42_v1` |
 
-两个基线的评分请求均传入 `steering=False`，无需 SV bank。CompassOPD 复用项目按论文实现的 loss 和文本对齐，在本项目共同的初始学生上比较。参考模型和锚定系数分别由 `REFERENCE_MODEL`、`ANCHOR_COEF` 设置。[目标函数](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)
+OPD 基线的评分请求均传入 `steering=False`。CompassOPD 复用项目按论文实现的 loss 和文本对齐，在本项目共同的初始学生上比较。参考模型和锚定系数分别由 `REFERENCE_MODEL`、`ANCHOR_COEF` 设置。[目标函数](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)
 
 ```bash
 bash scripts/baselines.sh --check                            # CPU 预览两组
 METHODS=vanilla bash scripts/baselines.sh --prepare          # CPU 冻结单组计划
 METHODS=compassopd GPU_IDS=0,4 bash scripts/baselines.sh --run
 METHODS="compassopd vanilla" GPU_IDS=0,4 bash scripts/baselines.sh --run
+METHODS=sft bash scripts/baselines.sh --check
 ```
 
 默认 GPU 池为 2、3，每个方法为指定两张卡最多等待 3600 秒。两组沿用冻结的 1024 题、AdamW lr=1e-6、每步 32 题 × 4 条、每题 seed 42／43／44／45、最多 64 步。temperature=1、top_p=1、top_k=-1、presence_penalty=2、回答上限 16384。step 0、每 16 步和末步评测裸学生，每 16 步和末步保存模型。两组的 overlap 和 P_overlap 都按学生与教师的共同 span 统计。训练沿用 TensorBoard 和 minimal_v1 保存策略。
@@ -47,6 +50,24 @@ METHODS="compassopd vanilla" GPU_IDS=0,4 bash scripts/baselines.sh --run
 输出位于 `outputs/step_4_train/ablation/<模型组合>/<训练数据集>/shared/<运行名>/`。可用 `VANILLA_RUN_NAME`、`COMPASSOPD_RUN_NAME` 分别设置运行名。重跑同一配置时各方法只恢复自己的 checkpoint，已完成最终保存和评测的方法核验后跳过。变更实验配置使用新的运行名。
 
 当前 steer 作业按 SHA 绑定训练源码。基线入口把训练模块及差异发布到项目内 `.runtime/baselines/` 的独立目录，plan 记录实际使用的实现。准入、Ray 和评分子进程都使用这份代码，两组仍共用原有的 GPU 准入和配额检查。
+
+### 教师轨迹 SFT
+
+CompassOPD 论文先在 OpenThoughts-114k 上用强教师替换原答案，只保留正常结束且非空的生成。SFT checkpoint 单独接受评测，也作为标准 OPD 和 CompassOPD 的共同起点。后续蒸馏用另一套题源，Qwen3-4B 用 DAPO-Math，Granite4.1-3B 和 OLMo-3-7B 用 DeepScaleR-Preview。[论文 §5.1、附录 A.2–A.3](../ref/2609.10154v1_compass_opd.pdf)
+
+仓库里的 `METHODS=sft` 是独立的本地对照，题源仍为 step 0 的 OpenThoughts3-1.2M 数学 1024 题，监督文本来自已提交的 step 1 冻结教师回答。默认 974 条符合论文过滤条件，另 50 条达到生成上限。学生使用与 rollout 相同的非 thinking 题面模板，教师回答用学生 tokenizer 编码，保留 `</think>` 前后的原始回答内容。可通过 `SFT_TEACHER_DIR` 选择同一冻结题池的其他已提交教师生成，通过 `SFT_RUN_NAME` 设置运行名。
+
+默认用 VERL FSDP 全参数训练一轮，AdamW 学习率 `2e-5`、weight decay `1e-6`、cosine 调度和 10% warmup，总序列上限 32768 token。每步最多 32 条，默认末批 14 条，共 31 次更新。指定 `SFT_TOTAL_STEPS=32` 会把这 14 条分成 8 条和 6 条两个批次，974 条仍各使用一次。先评测初始学生，训练后逐个评测已保存 checkpoint。默认评测 step 0、每 16 步及末步，每次生成的 530 条完整回答与准确率一并保存。SFT 的保存及评测间隔用 `SAVE_EVERY` 设置。
+
+### SFT 后的标准 OPD
+
+`METHODS=sft_opd` 默认使用 `sft_n974_32steps_seed42_v1/checkpoints/global_step_32`。准备时验证源模型分片，再用与 SFT 评测相同的 VERL 合并方式在 CPU 导出 BF16 初始权重。导出按源 checkpoint 身份缓存。OPD 重新初始化优化器、scheduler、数据加载器和步数，step 0 评测从 SFT 权重开始。训练继续用冻结 1024 题、vanilla 的 loss 和 EOS 监督。
+
+`--check` 预览源 checkpoint 和 OPD 计划，`--prepare` 会实际生成导出和冻结计划。`SFT_OPD_CHECKPOINT` 可指定另一个已提交的 SFT checkpoint，`SFT_OPD_RUN_NAME` 设置独立运行名。`TOTAL_STEPS` 表示 SFT 之后追加的 OPD 步数。
+
+```bash
+METHODS=sft_opd TOTAL_STEPS=32 bash scripts/baselines.sh --check
+```
 
 ## 当前消融：S−T完整16组矩阵（2026-11-19，已完成并归档）
 

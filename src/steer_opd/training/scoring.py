@@ -10,6 +10,7 @@ from steer_opd.math_data import prompt_ids
 from steer_opd.resumable_core import ROOT, read_json
 from steer_opd.training.config import TrainingLossConfig
 from steer_opd.training.losses import training_alignment
+from steer_opd.training.rollout_logprobs import STOPPED_LENGTH_FIELD
 
 
 def codecs_for_plan(plan):
@@ -51,14 +52,19 @@ def validate_assets(plan):
 def batch_rows(batch):
     response=batch.batch['responses'];width=response.shape[1]
     attention=batch.batch['attention_mask']
+    generated=batch.batch['response_mask']
+    stopped_lengths=batch.non_tensor_batch.get(STOPPED_LENGTH_FIELD)
     rows=[]
     for i in range(len(response)):
         info=batch.non_tensor_batch['extra_info'][i]
         n=int(attention[i,-width:].sum())
         prompt=batch.batch['prompts'][i][attention[i,:-width].bool()].tolist()
-        rows.append({'id':str(batch.non_tensor_batch['uid'][i]),
+        row={'id':str(batch.non_tensor_batch['uid'][i]),
             'question_id':str(info['question_id']), 'question':info['question'],
-            'prompt_token_ids':prompt, 'token_ids':response[i,:n].tolist()})
+            'prompt_token_ids':prompt, 'token_ids':response[i,:n].tolist()}
+        if n and stopped_lengths is not None and stopped_lengths[i] == n and generated[i,n-1]:
+            row['sampled_stop_id'] = row['token_ids'][-1]
+        rows.append(row)
     return rows
 
 
@@ -70,7 +76,8 @@ def prepare_request(plan, rows, codecs):
         if expected!=row['prompt_token_ids']:
             raise ValueError('VERL student prompt differs from the frozen math/chat template')
         alignment=training_alignment(row['token_ids'],codecs['student'],codecs['teacher'],settings=settings,
-                                     reference_codec=codecs.get('reference'))
+                                     reference_codec=codecs.get('reference'),
+                                     sampled_stop_id=row.get('sampled_stop_id'))
         native={role:{'id':row['id'],'key':row['id'],
                 'prompt_token_ids':prompt_ids(codec.tokenizer,row['question'],enable_thinking=False),
                 'token_ids':alignment['native_response_ids'][role]}

@@ -1,6 +1,7 @@
 """Reuse raw model scores at sampled tokens, not transformed sampling scores."""
 
 SOURCE = 'vllm_rollout_raw_logprobs_v1'
+STOPPED_LENGTH_FIELD = 'steer_opd_stopped_response_length'
 
 
 def bind_old_log_probs(batch):

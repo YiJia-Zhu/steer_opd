@@ -1,0 +1,31 @@
+--- a/src/steer_opd/training/verl_trainer.py
++++ b/src/steer_opd/training/verl_trainer.py
+@@ -23,8 +23,19 @@
+ def task_runner_class():
+     import ray
++    from verl.single_controller.base.decorator import Dispatch, register
+     from verl.trainer.main_ppo_v0 import BaseTaskRunner
+-    from verl.trainer.ppo.ray_trainer import RayPPOTrainer
++    from verl.trainer.ppo.ray_trainer import RayPPOTrainer, Role
++    from verl.workers.engine_workers import ActorRolloutRefWorker
+ 
+     from steer_opd.evaluation_text import EvaluationTextMixin
++    from steer_opd.training.actor_linear_backward import register_missing_cuda_linear_backward
++
++    class SteerActorRolloutWorker(ActorRolloutRefWorker):
++        @register(dispatch_mode=Dispatch.ONE_TO_ALL)
++        def init_model(self):
++            super().init_model()
++            self.linear_backward_library = register_missing_cuda_linear_backward()
++            if self.linear_backward_library is not None:
++                print('Registered dense CUDA linear backward for the actor', flush=True)
+ 
+     class SteerTrainer(EvaluationTextMixin, RayPPOTrainer):
+@@ -156,6 +167,7 @@
+                 # initialization. All processes inherit the same two-card lease.
+                 scorer.start()
+                 _,worker_group=self.add_actor_rollout_worker(config)
++                self.role_worker_mapping[Role.ActorRollout] = ray.remote(SteerActorRolloutWorker)
+                 validate_config(config=config,use_reference_policy=False,use_critic=False)
+                 model=omega_conf_to_dataclass(config.actor_rollout_ref.model,dataclass_type=HFModelConfig)
+                 train=create_rl_dataset(config.data.train_files,config.data,model.tokenizer,model.processor,is_train=True)

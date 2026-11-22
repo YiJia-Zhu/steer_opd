@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 from steer_opd.resumable_core import ROOT, digest, read_json
-from steer_opd.training.config import TrainingLossConfig
+from steer_opd.training.config import TERMINAL_EOS_POLICY, TrainingLossConfig
 from steer_opd.training.rollout_seeds import SEED_POLICY
 from steer_opd.training.rollout_logprobs import SOURCE as STUDENT_LOGPROB_SOURCE
 from steer_opd.training.scoring_request import SCHEMA as SCORING_REQUEST_SCHEMA
@@ -118,6 +118,7 @@ def build_verl_plan(experiment, settings=None, loss=None):
             'student_logprob_source': STUDENT_LOGPROB_SOURCE,
             'sampling_policy': training_sampling_policy(asdict(settings)),
             'scoring_request_schema': SCORING_REQUEST_SCHEMA,
+            'terminal_eos_policy': TERMINAL_EOS_POLICY,
             'invalid_utf8_alignment_policy': INVALID_UTF8_POLICY,
             'response_encoding_policy': VERBATIM_RESPONSE_POLICY,
             'retention_policy':experiment.get('retention_policy',MINIMAL),

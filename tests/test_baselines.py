@@ -28,7 +28,7 @@ if sys.argv[1] == 'scripts/prepare_baseline_runtime.py':
 else:
     with open('calls', 'a') as stream:
         stream.write(json.dumps(sys.argv[1:]) + '\\n')
-    if os.environ.get('FAIL_LOSS') == sys.argv[sys.argv.index('--loss') + 1]:
+    if '--loss' in sys.argv and os.environ.get('FAIL_LOSS') == sys.argv[sys.argv.index('--loss') + 1]:
         sys.exit(37)
 """)
     interpreter.chmod(0o755)
@@ -74,6 +74,34 @@ def test_invalid_list_is_rejected_before_first_method(launch, env):
 def test_failed_method_stops_the_suite(launch):
     code, calls = launch('--run', METHODS='compassopd vanilla', FAIL_LOSS='compass_opd')
     assert code == 37 and len(calls) == 1
+
+
+@pytest.mark.parametrize('sft_steps', ['', '32'])
+def test_sft_dispatch_uses_its_own_runner_and_source(launch, sft_steps):
+    code, (sft, compass) = launch('--prepare', METHODS='sft compassopd', SFT_TEACHER_DIR='a teacher directory',
+                                 TOTAL_STEPS='64', SFT_TOTAL_STEPS=sft_steps, GPU_IDS='4,5')
+    assert code == 0
+    assert sft[:3] == ['-m', 'steer_opd.sft_baseline', '--prepare']
+    assert sft[sft.index('--teacher-dir') + 1] == 'a teacher directory'
+    assert sft[sft.index('--gpu-ids') + 1] == '4,5'
+    assert '--loss' not in sft and '--reference-model' not in sft
+    if sft_steps:
+        assert sft[sft.index('--total-steps') + 1] == sft_steps
+    else:
+        assert '--total-steps' not in sft
+    assert compass[compass.index('--total-steps') + 1] == '64'
+
+
+def test_sft_opd_uses_vanilla_with_a_model_only_checkpoint(launch):
+    code, (args,) = launch('--check', METHODS='sft_opd', TOTAL_STEPS='32',
+                           SFT_OPD_RUN_NAME='opd_after_sft', SFT_OPD_CHECKPOINT='a checkpoint directory')
+    assert code == 0
+    assert args[:3] == ['-m', 'steer_opd.training.verl_entry', '--check']
+    assert args[args.index('--loss') + 1] == 'traditional_opd'
+    assert args[args.index('--sft-checkpoint') + 1] == 'a checkpoint directory'
+    assert args[args.index('--total-steps') + 1] == '32'
+    assert args[args.index('--run-name') + 1] == 'opd_after_sft'
+    assert not {'--resume-from', '--sv-bank', '--reference-model'} & set(args)
 
 
 @pytest.fixture(scope='module')
@@ -142,7 +170,10 @@ def test_completed_method_requires_its_final_checkpoint_and_both_accuracies(tmp_
 
 
 def test_compass_reference_tokenization_does_not_change_pairwise_overlap(baseline_src):
+    import torch
     from steer_opd.compass_alignment import align_response
+    from steer_opd.training.config import TrainingLossConfig
+    from steer_opd.training.losses import distillation_loss, training_alignment
     from test_compass_alignment import ToyCodec
     from test_training_overlap import record
     monitor = baseline_module(baseline_src, 'overlap_monitor')
@@ -158,3 +189,13 @@ def test_compass_reference_tokenization_does_not_change_pairwise_overlap(baselin
     teacher['ids'][1] += 8
     expected = monitor.row_statistics(row, pair, student, teacher, codecs)
     assert monitor.row_statistics(row, compass, student, teacher, codecs) == expected
+
+    settings = TrainingLossConfig(loss_type='compass_opd')
+    with_eos = training_alignment(row['token_ids'], codec, codec, settings=settings,
+                                  reference_codec=reference, sampled_stop_id=0)
+    assert with_eos['units'][-1]['ranges'] == {'student': [2, 3], 'teacher': [2, 3], 'reference': [1, 2]}
+    result = distillation_loss(with_eos, torch.tensor([-3., -3., -2.]), torch.tensor([-1., -1., -.5]),
+        settings=settings, reference_logps=torch.tensor([-1.5, -1.]), student_anchor_logps=torch.tensor([-3., -3., -2.5]))
+    assert result.advantages[-1].item() == pytest.approx(.25)
+    teacher_with_eos = {key: torch.cat([value, value[:1]]) for key, value in teacher.items()}
+    assert monitor.row_statistics(row, with_eos, student, teacher_with_eos, codecs) == expected

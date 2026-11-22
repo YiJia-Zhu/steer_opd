@@ -12,10 +12,19 @@ from steer_opd.retention import MINIMAL, minimal, ALL_MODELS_LATEST_STATE, keep_
 MODEL_RECEIPT='model_checkpoint.complete.json'
 STATE_RETIREMENT='state_retirement.json'
 CHECKPOINT_METADATA={'checkpoint.complete.json',MODEL_RECEIPT,STATE_RETIREMENT}
+SFT_LAYOUT = 'verl_sft_spmd_v1'
 
 
-def _resume_only(name):
+def _resume_only(name, plan):
+    if plan.get('checkpoint_layout') == SFT_LAYOUT:
+        return re.fullmatch(r'(?:data_[0-9]+|(?:optim|extra_state)_world_size_[0-9]+_rank_[0-9]+)\.pt', name) is not None
     return name=='data.pt' or re.fullmatch(r'actor/(?:optim|extra_state)_world_size_[0-9]+_rank_[0-9]+\.pt',name) is not None
+
+
+def _checkpoint_shards(plan, kind):
+    ranks = len(plan['settings']['gpu_pool'])
+    prefix = '' if plan.get('checkpoint_layout') == SFT_LAYOUT else 'actor/'
+    return {f'{prefix}{kind}_world_size_{ranks}_rank_{rank}.pt' for rank in range(ranks)}
 
 
 def batch_root(folder, plan):
@@ -64,13 +73,14 @@ def reset_batch_workspace(folder, plan):
     return stats
 
 
-def _checkpoint_entries(folder,*,sync=False,model_only=False):
+def _checkpoint_entries(folder,*,sync=False,model_plan=None):
     if folder.is_symlink():raise ValueError('Symlinked training checkpoint')
     files = {};directories={folder}
     for path in sorted(folder.rglob('*')):
         if path.is_symlink():raise ValueError('Symlink inside training checkpoint')
         name=str(path.relative_to(folder))
-        if path.is_file() and name not in CHECKPOINT_METADATA and not (model_only and _resume_only(name)):
+        if (path.is_file() and name not in CHECKPOINT_METADATA
+                and (model_plan is None or not _resume_only(name, model_plan))):
             if sync:
                 with path.open('rb') as stream:os.fsync(stream.fileno())
                 parent=path.parent
@@ -106,7 +116,7 @@ def _model_receipt(folder,full,plan):
     return {'schema':'opd_model_checkpoint_v1','plan_binding':plan['binding'],'step':full['step'],
         'checkpoint_retention':ALL_MODELS_LATEST_STATE,
         'source_receipt_sha256':file_sha256(folder/'checkpoint.complete.json'),
-        'files':{name:item for name,item in full['files'].items() if not _resume_only(name)}}
+        'files':{name:item for name,item in full['files'].items() if not _resume_only(name, plan)}}
 
 
 def _commit_model_receipt(folder,full,plan):
@@ -123,11 +133,10 @@ def validate_model_checkpoint(folder,plan):
     packet=read_json(folder/MODEL_RECEIPT)
     expected=_model_receipt(folder,full,plan)
     expected['binding']=digest(expected)
-    ranks=len(plan['settings']['gpu_pool'])
-    required={f'actor/model_world_size_{ranks}_rank_{rank}.pt' for rank in range(ranks)}
+    required = _checkpoint_shards(plan, 'model')
     if (full.get('checkpoint_retention')!=ALL_MODELS_LATEST_STATE or packet!=expected
             or not required.issubset(packet['files'])
-            or packet['files']!=_checkpoint_entries(folder,model_only=True)):
+            or packet['files']!=_checkpoint_entries(folder,model_plan=plan)):
         raise ValueError('Retained model checkpoint identity or files changed')
     if (folder/STATE_RETIREMENT).exists():_retirement_receipt(folder,plan,packet)
     return packet
@@ -135,7 +144,7 @@ def validate_model_checkpoint(folder,plan):
 
 def _retirement_receipt(folder,plan,model):
     full=_read_full_receipt(folder,plan)
-    removed={name:item for name,item in full['files'].items() if _resume_only(name)}
+    removed={name:item for name,item in full['files'].items() if _resume_only(name, plan)}
     packet=read_json(folder/STATE_RETIREMENT)
     if (packet.get('schema')!='opd_checkpoint_state_retirement_v1'
             or packet.get('plan_binding')!=plan['binding'] or packet.get('step')!=model['step']
@@ -158,7 +167,7 @@ def retire_checkpoint_state(folder,plan,*,replacement):
     if not keep_model_history(plan):raise ValueError('Model history retention is required')
     model=validate_model_checkpoint(folder,plan)
     full=_read_full_receipt(folder,plan)
-    removed={name:item for name,item in full['files'].items() if _resume_only(name)}
+    removed={name:item for name,item in full['files'].items() if _resume_only(name, plan)}
     marker=folder/STATE_RETIREMENT
     if marker.exists():packet=_retirement_receipt(folder,plan,model)
     else:
@@ -193,9 +202,10 @@ def commit_checkpoint(root, step, plan):
         raise ValueError('Upstream did not commit the requested checkpoint step')
     files = _checkpoint_entries(folder,sync=True)
     required = {'data.pt'}
-    for rank in range(len(plan['settings']['gpu_pool'])):
-        for kind in ('model', 'optim', 'extra_state'):
-            required.add(f'actor/{kind}_world_size_{len(plan["settings"]["gpu_pool"])}_rank_{rank}.pt')
+    if plan.get('checkpoint_layout') == SFT_LAYOUT:
+        required = {f'data_{rank}.pt' for rank in range(len(plan['settings']['gpu_pool']))}
+    for kind in ('model', 'optim', 'extra_state'):
+        required.update(_checkpoint_shards(plan, kind))
     if not required.issubset(files) or any(files[name]['bytes'] <= 0 for name in required):
         raise ValueError('Incomplete model/optimizer/RNG/dataloader checkpoint')
     receipt = {'schema': 'opd_checkpoint_v1', 'retention_policy': MINIMAL,

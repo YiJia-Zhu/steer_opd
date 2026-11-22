@@ -23,7 +23,14 @@ export TRITON_CACHE_DIR="${STEER_OPD_ROOT}/.cache/triton"
 export CUDA_CACHE_PATH="${STEER_OPD_ROOT}/.cache/cuda"
 # Match the pinned torch/vLLM cu130 build; the shell's shared default is CUDA12.8.
 export CUDA_HOME="${STEER_OPD_RUNTIME_PREFIX}/lib/python3.12/site-packages/nvidia/cu13"
-if [[ -x /usr/local/cuda-13.0/bin/nvcc ]]; then export CUDA_HOME=/usr/local/cuda-13.0; fi
+if [[ -n "${STEER_OPD_CUDA_HOME:-}" ]]; then
+    CUDA_HOME="$STEER_OPD_CUDA_HOME"
+elif [[ -x /usr/local/cuda-13.0/bin/nvcc ]]; then
+    CUDA_HOME=/usr/local/cuda-13.0
+elif [[ -x "${STEER_OPD_ROOT}/.runtime/cuda-13.0/bin/nvcc" ]]; then
+    export STEER_OPD_CUDA_HOME="${STEER_OPD_ROOT}/.runtime/cuda-13.0"
+    CUDA_HOME="$STEER_OPD_CUDA_HOME"
+fi
 export PATH="${STEER_OPD_RUNTIME_PREFIX}/bin:${CUDA_HOME}/bin:${PATH}"
 export PIP_CACHE_DIR="${STEER_OPD_ROOT}/.cache/pip"
 export UV_CACHE_DIR="${STEER_OPD_ROOT}/.cache/uv"
