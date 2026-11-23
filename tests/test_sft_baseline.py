@@ -1,10 +1,16 @@
 """Verified teacher supervision, answer masks, and the native SFT save layout."""
+import hashlib
+import importlib
+from pathlib import Path
+
 import pytest
 
 from steer_opd.experiment_runtime import StageCheckpoint
 from steer_opd.resumable_core import atomic_json, digest
 from steer_opd.retention import ALL_MODELS_LATEST_STATE, MINIMAL
-from steer_opd.sft_baseline import TokenizedAnswers, encode_example, one_epoch_batches, teacher_answers, write_parquet
+from steer_opd.sft_baseline import (
+    TokenizedAnswers, encode_example, filter_correct_teacher_answers, one_epoch_batches, teacher_answers, write_parquet,
+)
 from steer_opd.training.retention import (
     SFT_LAYOUT, commit_checkpoint, prune_checkpoints, recover_checkpoint, validate_model_checkpoint,
 )
@@ -60,11 +66,56 @@ def test_student_prompt_is_masked_and_response_is_encoded_in_full(tmp_path):
     assert entry['loss_mask'].tolist() == [0, 0, 0, 1, 1, 1, 1]
 
 
+def test_correctness_screen_uses_final_box_and_requires_reference(monkeypatch):
+    from verl.utils.reward_score import math_verify
+
+    questions = {'correct': 'A', 'revised_to_wrong': 'B', 'missing_reference': 'C', 'unclosed': 'D', 'empty': 'E'}
+    answers = {
+        'correct': r'Derivation \boxed{\frac{1}{2}}.',
+        'revised_to_wrong': r'Draft \boxed{1/2}. Final \boxed{2}.',
+        'missing_reference': r'\boxed{0}',
+        'unclosed': r'Draft \boxed{1/2}. Final \boxed{2',
+        'empty': r'Draft \boxed{1/2}. Final \boxed{}',
+    }
+    references = {hashlib.sha256(text.encode()).hexdigest(): '1/2'
+                  for qid, text in questions.items() if qid != 'missing_reference'}
+    seen = []
+
+    def grade(final, expected, timeout):
+        seen.append((final, expected))
+        return float(final == r'\boxed{\frac{1}{2}}' and expected == '1/2')
+
+    monkeypatch.setattr(math_verify, 'compute_score', grade)
+    retained, counts = filter_correct_teacher_answers(answers, questions, references)
+    assert retained == {'correct': answers['correct']}
+    assert seen == [(r'\boxed{\frac{1}{2}}', '1/2'), (r'\boxed{2}', '1/2')]
+    assert counts == {'referenced_questions': 4, 'normal_nonempty': 5, 'missing_reference': 1,
+                      'missing_final_box': 2, 'rejected_by_grader': 1, 'accepted': 1}
+
+
 def test_sft_step_override_splits_tail_and_keeps_one_pass():
     assert one_epoch_batches(974, 32, 2) == [32] * 30 + [14]
     assert one_epoch_batches(974, 32, 2, 32) == [32] * 30 + [8, 6]
     with pytest.raises(ValueError, match='supports 31'):
         one_epoch_batches(974, 32, 2, 30)
+
+
+def test_sft_expansion_skips_questions_with_conflicting_references(monkeypatch):
+    import pyarrow as pa
+
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / 'scripts'))
+    expansion = importlib.import_module('prepare_sft_expansion')
+    table = pa.table({'problem': ['ambiguous', 'valid', 'ambiguous', ' valid '],
+                      'answer': ['1', '7', '2', '7'],
+                      'problem_source': ['math'] * 4})
+
+    class Parquet:
+        def iter_batches(self, *, columns):
+            yield from table.select(columns).to_batches()
+
+    answers, conflicts = expansion.published_answers(Parquet(), 'answer', {'ambiguous', 'valid'})
+    assert answers == {'valid': ('7', 'math')}
+    assert conflicts == 1
 
 
 def test_sft_checkpoint_keeps_earlier_shards_and_only_latest_resume_state(tmp_path):

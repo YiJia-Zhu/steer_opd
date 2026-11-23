@@ -79,10 +79,12 @@ def test_failed_method_stops_the_suite(launch):
 @pytest.mark.parametrize('sft_steps', ['', '32'])
 def test_sft_dispatch_uses_its_own_runner_and_source(launch, sft_steps):
     code, (sft, compass) = launch('--prepare', METHODS='sft compassopd', SFT_TEACHER_DIR='a teacher directory',
+                                 SFT_REFERENCE_ANSWERS='a reference file',
                                  TOTAL_STEPS='64', SFT_TOTAL_STEPS=sft_steps, GPU_IDS='4,5')
     assert code == 0
     assert sft[:3] == ['-m', 'steer_opd.sft_baseline', '--prepare']
     assert sft[sft.index('--teacher-dir') + 1] == 'a teacher directory'
+    assert sft[sft.index('--reference-answers') + 1] == 'a reference file'
     assert sft[sft.index('--gpu-ids') + 1] == '4,5'
     assert '--loss' not in sft and '--reference-model' not in sft
     if sft_steps:
@@ -90,6 +92,14 @@ def test_sft_dispatch_uses_its_own_runner_and_source(launch, sft_steps):
     else:
         assert '--total-steps' not in sft
     assert compass[compass.index('--total-steps') + 1] == '64'
+
+
+def test_sft_expansion_keeps_the_opd_input_separate(launch):
+    code, (sft, vanilla) = launch('--check', METHODS='sft vanilla', SFT_DATA_DIR='expanded-sft-data')
+    assert code == 0
+    assert sft[sft.index('--data-dir') + 1] == 'expanded-sft-data'
+    assert sft[sft.index('--run-name') + 1] == 'sft_n4096_correct_seed42_v1'
+    assert '--data-dir' not in vanilla
 
 
 def test_sft_opd_uses_vanilla_with_a_model_only_checkpoint(launch):

@@ -16,7 +16,11 @@ WAIT_SECONDS="${WAIT_SECONDS:-3600}"
 TRAIN_OUTPUT_ROOT="${TRAIN_OUTPUT_ROOT:-outputs}"
 VANILLA_RUN_NAME="${VANILLA_RUN_NAME:-${TRAIN_RUN_NAME:-opd_n1024_vanilla_seed42_v1}}"
 COMPASSOPD_RUN_NAME="${COMPASSOPD_RUN_NAME:-opd_n1024_compassopd_seed42_v1}"
-SFT_RUN_NAME="${SFT_RUN_NAME:-sft_n1024_seed42_v1}"
+if [[ -n "${SFT_DATA_DIR:-}" ]]; then
+    SFT_RUN_NAME="${SFT_RUN_NAME:-sft_n4096_correct_seed42_v1}"
+else
+    SFT_RUN_NAME="${SFT_RUN_NAME:-sft_n1024_correct_seed42_v1}"
+fi
 SFT_OPD_RUN_NAME="${SFT_OPD_RUN_NAME:-opd_from_sft32_seed42_v1}"
 SFT_OPD_CHECKPOINT="${SFT_OPD_CHECKPOINT:-outputs/step_4_train/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/sft_n974_32steps_seed42_v1/checkpoints/global_step_32}"
 REFERENCE_MODEL="${REFERENCE_MODEL:-assets/models/Qwen3.5-0.8B}" # CompassOPD的教师同家族参考
@@ -92,7 +96,9 @@ for method in "${BASELINES[@]}"; do
     printf '\n[baselines] %s %s\n' "$method" "$mode" >&2
     if [[ "$method" == sft ]]; then
         sft_args=()
-        if [[ -n "${SFT_TEACHER_DIR:-}" ]]; then sft_args=(--teacher-dir "$SFT_TEACHER_DIR"); fi
+        if [[ -n "${SFT_DATA_DIR:-}" ]]; then sft_args+=(--data-dir "$SFT_DATA_DIR"); fi
+        if [[ -n "${SFT_TEACHER_DIR:-}" ]]; then sft_args+=(--teacher-dir "$SFT_TEACHER_DIR"); fi
+        if [[ -n "${SFT_REFERENCE_ANSWERS:-}" ]]; then sft_args+=(--reference-answers "$SFT_REFERENCE_ANSWERS"); fi
         if [[ -n "${SFT_TOTAL_STEPS:-}" ]]; then sft_args+=(--total-steps "$SFT_TOTAL_STEPS"); fi
         "$STEER_OPD_PYTHON" -m steer_opd.sft_baseline "$mode" \
             --run-name "$SFT_RUN_NAME" --config "$PREPARED_CONFIG" --train-output-root "$TRAIN_OUTPUT_ROOT" \

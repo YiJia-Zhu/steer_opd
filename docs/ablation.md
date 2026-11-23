@@ -32,7 +32,7 @@ bash scripts/run_dynamic_sv.sh --run --gpu-ids 4,5 --run-name opd_dynamic_st_see
 |---|---|---|
 | `vanilla` | 当前学生采样，原生 Qwen3.5-35B-A3B 教师评分，使用传统 OPD loss | `opd_n1024_vanilla_seed42_v1` |
 | `compassopd` | 同一原生教师和教师同家族参考 Qwen3.5-0.8B 对学生回答评分，使用教师与参考的 span 平均 logp 差，加上相对冻结初始学生的逐 token 锚定项，默认系数 0.5 | `opd_n1024_compassopd_seed42_v1` |
-| `sft` | 复用 step 1 正常结束且非空的教师回答，从初始 Qwen3-4B 全参数训练，只在教师回答与结尾 EOS 上计算交叉熵 | `sft_n1024_seed42_v1` |
+| `sft` | 复用 step 1 正常结束且最终答案通过判分的教师回答，从初始 Qwen3-4B 全参数训练，只在教师回答与结尾 EOS 上计算交叉熵 | `sft_n1024_correct_seed42_v1` |
 | `sft_opd` | 从 SFT step 32 开始，用当前学生采样和原生教师评分做标准 OPD | `opd_from_sft32_seed42_v1` |
 
 OPD 基线的评分请求均传入 `steering=False`。CompassOPD 复用项目按论文实现的 loss 和文本对齐，在本项目共同的初始学生上比较。参考模型和锚定系数分别由 `REFERENCE_MODEL`、`ANCHOR_COEF` 设置。[目标函数](Steering_OPD_完整研究方案.md#94-后续训练loss默认传统opd可选steercompassopd)
@@ -55,9 +55,23 @@ METHODS=sft bash scripts/baselines.sh --check
 
 CompassOPD 论文先在 OpenThoughts-114k 上用强教师替换原答案，只保留正常结束且非空的生成。SFT checkpoint 单独接受评测，也作为标准 OPD 和 CompassOPD 的共同起点。后续蒸馏用另一套题源，Qwen3-4B 用 DAPO-Math，Granite4.1-3B 和 OLMo-3-7B 用 DeepScaleR-Preview。[论文 §5.1、附录 A.2–A.3](../ref/2609.10154v1_compass_opd.pdf)
 
-仓库里的 `METHODS=sft` 是独立的本地对照，题源仍为 step 0 的 OpenThoughts3-1.2M 数学 1024 题，监督文本来自已提交的 step 1 冻结教师回答。默认 974 条符合论文过滤条件，另 50 条达到生成上限。学生使用与 rollout 相同的非 thinking 题面模板，教师回答用学生 tokenizer 编码，保留 `</think>` 前后的原始回答内容。可通过 `SFT_TEACHER_DIR` 选择同一冻结题池的其他已提交教师生成，通过 `SFT_RUN_NAME` 设置运行名。
+`METHODS=sft` 复用 step 0 冻结的 1024 道数学题和 step 1 提交的教师回答。CPU 准备先筛正常结束且非空的回答，再用 Math-Verify 核对最后一个完整非空的 `\boxed{...}` 与同题参考答案。通过判分的完整轨迹和末尾 EOS 用作监督。计划记录参考表 SHA256 和各项筛选计数。[参考答案表](../ref/sources/sft_math_reference_answers.json)
 
-默认用 VERL FSDP 全参数训练一轮，AdamW 学习率 `2e-5`、weight decay `1e-6`、cosine 调度和 10% warmup，总序列上限 32768 token。每步最多 32 条，默认末批 14 条，共 31 次更新。指定 `SFT_TOTAL_STEPS=32` 会把这 14 条分成 8 条和 6 条两个批次，974 条仍各使用一次。先评测初始学生，训练后逐个评测已保存 checkpoint。默认评测 step 0、每 16 步及末步，每次生成的 530 条完整回答与准确率一并保存。SFT 的保存及评测间隔用 `SAVE_EVERY` 设置。
+参考表按完整题面的 SHA256 绑定 OpenMathInstruct-2 的 `expected_answer`。原始数学题沿用数据集标准答案，增强题采用数据集的多数投票参考答案。可用 `SFT_REFERENCE_ANSWERS` 指定同格式参考表，用 `SFT_TEACHER_DIR` 指定同一题池的其他已提交教师生成。
+
+默认用 VERL FSDP 全参数训练一轮，AdamW 学习率 `2e-5`、weight decay `1e-6`、cosine 调度和 10% warmup，总序列上限 32768 token。每步最多 32 条，默认步数按筛选后的样本数确定。`SFT_TOTAL_STEPS=32` 可指定一轮分成 32 次更新。默认评测 step 0、每 16 步及末步，每次保存 530 条完整回答和准确率。SFT 的保存及评测间隔用 `SAVE_EVERY` 设置。
+
+### SFT 独立扩充至 4096 题
+
+`scripts/prepare_sft_expansion.py` 冻结 `n4096_sft_seed42_v1`，将原 1024 题按原顺序放在开头，再从本地 OpenThoughts3 数学行选 3072 道有明确参考答案的题。按题面去重，排除 MATH-500 和 AIME2025 的相同题面，并用师生 tokenizer 核对 prompt 不超过 1024 token。OPD 继续引用原 `training_input_data_dir`。
+
+CPU 准备生成参考答案和新增教师请求。显式 `--run` 通过 GPU 验收后，复用原 1024 题的教师轨迹，为新增 3072 题生成轨迹，再用 Math-Verify 筛最终答案。通过的完整轨迹与 EOS 训练一轮，学习率 `2e-5`，全局 batch size 32。训练步数由实际保留条数确定，新训练名为 `sft_n4096_correct_seed42_v1`。
+
+```bash
+source scripts/runtime_env.sh
+CUDA_VISIBLE_DEVICES='' "$STEER_OPD_PYTHON" scripts/prepare_sft_expansion.py
+"$STEER_OPD_PYTHON" scripts/prepare_sft_expansion.py --run --gpu-ids 6,7
+```
 
 ### SFT 后的标准 OPD
 

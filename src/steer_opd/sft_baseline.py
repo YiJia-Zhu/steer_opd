@@ -1,11 +1,13 @@
 """Teacher-trajectory SFT using the pinned VERL trainer and the frozen math pool."""
 import argparse
 import fcntl
+import hashlib
 from itertools import islice
 import json
 import math
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile, TemporaryDirectory
@@ -14,6 +16,7 @@ import uuid
 from steer_opd.checkpoint_identity import checkpoint_content_id
 from steer_opd.direction_bank import file_sha256
 from steer_opd.evaluation_text import FORMAT, response_path, responses_complete, save_responses
+from steer_opd.execution_policy import POLICY_KEYS, require_execution_allowed
 from steer_opd.experiment_runtime import StageCheckpoint, child_environment, configure_seed
 from steer_opd.generation_policy import DEFAULT_MAX_GENERATION_LENGTH, DEFAULT_PRESENCE_PENALTY, presence_penalty
 from steer_opd.math_data import prompt_ids
@@ -35,6 +38,9 @@ DEFAULT_TEACHER_DIR = (
     'outputs/step_1_rollout/ablation/' + PAIR
     + 'n1024_slerp0.1_S26_T29_seed42_trainall_Tgen16384_Sgen16384_Ttemp1_Tp1_pp2_v1_st_global_all_full_v3/teacher'
 )
+DEFAULT_REFERENCE_ANSWERS = 'ref/sources/sft_math_reference_answers.json'
+DEFAULT_RUN_NAME = 'sft_n1024_correct_seed42_v1'
+EXPANDED_RUN_NAME = 'sft_n4096_correct_seed42_v1'
 MAX_LENGTH = 32768
 ENTRY = 'steer_opd.sft_baseline'
 
@@ -69,6 +75,50 @@ def teacher_answers(directory, questions, teacher, content_id):
     if not answers:
         raise ValueError('SFT has no normally terminated, non-empty teacher responses')
     return answers, record['hash']
+
+
+def final_boxed_answer(text):
+    """Extract the last requested answer, preserving nested LaTeX groups."""
+    _, marker, tail = text.rpartition(r'\boxed')
+    tail = tail.lstrip()
+    if not marker or not tail.startswith('{'):
+        return None
+    depth = 0
+    for match in re.finditer(r'\\[\\{}]|[{}]', tail):
+        brace = match.group()
+        if brace == '{':
+            depth += 1
+        elif brace == '}':
+            depth -= 1
+            if depth == 0:
+                return marker + tail[:match.end()] if tail[1:match.start()].strip() else None
+    return None
+
+
+def filter_correct_teacher_answers(answers, questions, references):
+    from verl.utils.reward_score.math_verify import compute_score
+
+    matched = {
+        qid: references.get(hashlib.sha256(question.encode()).hexdigest())
+        for qid, question in questions.items()
+    }
+    counts = {'referenced_questions': sum(gold is not None for gold in matched.values()),
+              'normal_nonempty': len(answers), 'missing_reference': 0, 'missing_final_box': 0,
+              'rejected_by_grader': 0}
+    retained = {}
+    for qid, text in answers.items():
+        gold = matched[qid]
+        if gold is None:
+            counts['missing_reference'] += 1
+            continue
+        answer = final_boxed_answer(text)
+        if answer is None:
+            counts['missing_final_box'] += 1
+        elif compute_score(answer, gold, timeout=10.) == 1.0:
+            retained[qid] = text
+        else:
+            counts['rejected_by_grader'] += 1
+    return retained, {**counts, 'accepted': len(retained)}
 
 
 def encode_example(tokenizer, qid, question, text):
@@ -112,35 +162,92 @@ def build_plan(args):
     if args.train_output_root:
         experiment['train_output_root'] = args.train_output_root
     source = project(experiment.get('training_input_data_dir') or experiment['input_data_dir'])
-    questions_path = source / 'questions_source.json'
-    original = read_json(questions_path)
-    questions = {row['id']: row['question'] for row in original}
-    if len(original) != 1024 or len(questions) != 1024:
+    base_path = source / 'questions_source.json'
+    base = read_json(base_path)
+    base_questions = {row['id']: row['question'] for row in base}
+    if len(base) != 1024 or len(base_questions) != 1024:
         raise ValueError('Use the complete frozen 1024-question training pool')
+    original = base
+    paths = [base_path]
+    manifest = None
+    if args.data_dir:
+        data_dir = project(args.data_dir)
+        manifest_path = data_dir / 'sampling_manifest.json'
+        manifest = read_json(manifest_path)
+        original = read_json(data_dir / 'questions_source.json')
+        if (manifest.get('schema') != 'sft_question_expansion_v1'
+                or manifest['base_source_sha256'] != file_sha256(base_path)
+                or manifest['questions'] != 4096 or len(original) != 4096 or original[:len(base)] != base
+                or any(file_sha256(project(path)) != sha for path, sha in manifest['files'].items())):
+            raise ValueError('Expected a verified 4,096-question SFT expansion of the frozen OPD pool')
+        paths.extend([manifest_path, *(project(path) for path in manifest['files'])])
+    questions = {row['id']: row['question'] for row in original}
+    if len(questions) != len(original):
+        raise ValueError('Duplicate SFT question IDs')
     benchmarks, evaluation = benchmark_rows(original)
-    folder = project(args.teacher_dir)
+    if manifest:
+        evaluation.update(sv_question_count=len(base), sft_question_count=len(original),
+                          exact_question_overlap_with_sft_questions=0)
+    folder = project(args.teacher_dir or DEFAULT_TEACHER_DIR)
     teacher = experiment['teacher']
     teacher_id = checkpoint_content_id(ROOT / teacher)
-    answers, teacher_job = teacher_answers(folder, questions, teacher, teacher_id)
+    answers, teacher_job = teacher_answers(folder, base_questions, teacher, teacher_id)
+    teacher_source = {'directory': str(folder.relative_to(ROOT)), 'job_hash': teacher_job,
+                      'model_content_id': teacher_id, 'filter': 'normally_terminated_nonempty_correct_final_answer'}
+    paths.extend([folder / 'stage_input.json', folder / 'complete.json'])
+    if manifest:
+        added_dir = project(manifest['teacher_sources']['added'])
+        if not (added_dir / 'complete.json').is_file():
+            raise FileNotFoundError(f'Generate the 3,072 added SFT teacher responses first: {added_dir}')
+        held_job = read_json(project(manifest['teacher_job']))
+        added_job = read_json(added_dir / 'job.json')['job']
+        if (digest(held_job) != manifest['teacher_job_hash']
+                or not added_job.get('gpu_acceptance_receipt')
+                or {k: v for k, v in added_job.items() if k not in POLICY_KEYS}
+                != {k: v for k, v in held_job.items() if k not in POLICY_KEYS}):
+            raise ValueError('Added teacher responses use a different generation request')
+        require_execution_allowed(added_job)
+        added_questions = {row['id']: row['question'] for row in original[len(base):]}
+        added_answers, added_job_hash = teacher_answers(added_dir, added_questions, teacher, teacher_id)
+        answers.update(added_answers)
+        teacher_source['added'] = {'directory': str(added_dir.relative_to(ROOT)), 'job_hash': added_job_hash}
+        paths.extend([added_dir / 'stage_input.json', added_dir / 'complete.json'])
+    reference_path = project(args.reference_answers or (manifest and manifest['reference_answers'])
+                             or DEFAULT_REFERENCE_ANSWERS)
+    reference_bytes = reference_path.read_bytes()
+    reference = json.loads(reference_bytes)
+    labels = reference.get('answers') if isinstance(reference, dict) else None
+    if (not isinstance(labels, dict) or not labels or reference.get('schema') != 'sft_math_reference_answers_v1'
+            or any(not re.fullmatch(r'[a-f0-9]{64}', key)
+                                 or not isinstance(answer, str) or not answer.strip()
+                                 for key, answer in labels.items())):
+        raise ValueError(f'Invalid SFT reference answers: {reference_path}')
+    answers, filter_counts = filter_correct_teacher_answers(answers, questions, labels)
+    if not answers:
+        raise ValueError(f'No teacher answers passed SFT correctness screening: {filter_counts}')
     student = experiment['student']
     tokenizer = AutoTokenizer.from_pretrained(ROOT / experiment['tokenizer_paths']['student'], local_files_only=True)
     rows = [encode_example(tokenizer, qid, questions[qid], text) for qid, text in answers.items()]
     batches = one_epoch_batches(len(rows), args.batch_size, len(pool), args.total_steps)
     steps = len(batches)
-    paths = [questions_path, folder / 'stage_input.json', folder / 'complete.json']
     inputs = {str(path.relative_to(ROOT)): file_sha256(path) for path in paths} | evaluation['sources']
+    reference_name = str(reference_path.relative_to(ROOT))
+    inputs[reference_name] = hashlib.sha256(reference_bytes).hexdigest()
     files = (
         Path(__file__).resolve(), ROOT / 'src/steer_opd/evaluation_text.py', ROOT / 'src/steer_opd/math_data.py',
         ROOT / 'src/steer_opd/training/benchmarks.py', ROOT / 'src/steer_opd/training/retention.py',
         ROOT / 'src/steer_opd/training/verl_reward.py', ROOT / 'src/steer_opd/generation_policy.py',
     )
+    run_name = args.run_name or (EXPANDED_RUN_NAME if manifest else DEFAULT_RUN_NAME)
     plan = {
-        'schema': 'steer_sft_baseline_v1', 'baseline_method': 'sft', 'reference': 'arXiv:2609.10154v1 Appendix A.2',
-        'output': str(training_output_dir(experiment, args.run_name, PAIR)),
+        'schema': 'steer_sft_baseline_v2', 'baseline_method': 'sft', 'reference': 'arXiv:2609.10154v1 Appendix A.2',
+        'output': str(training_output_dir(experiment, run_name, PAIR)),
         'student': student, 'student_checkpoint_content_id': checkpoint_content_id(ROOT / student),
         'student_tokenizer': experiment['tokenizer_paths']['student'],
-        'teacher_source': {'directory': str(folder.relative_to(ROOT)), 'job_hash': teacher_job,
-                           'model_content_id': teacher_id, 'filter': 'normally_terminated_nonempty'},
+        'teacher_source': teacher_source,
+        'correctness_filter': {'references': reference_name, 'grader': 'pinned_verl.math_verify_last_box',
+                               'selected_question_ids_sha256': digest(list(answers)),
+                               **filter_counts},
         'training_questions': len(questions), 'sft_examples': len(rows),
         'max_observed_length': max(len(row['input_ids']) for row in rows),
         'excluded_examples': len(questions) - len(rows),
@@ -153,7 +260,7 @@ def build_plan(args):
         'evaluation_response_format': FORMAT,
         'settings': {'gpu_pool': list(pool), 'train_batch_size': args.batch_size, 'total_steps': steps,
                      'batch_sizes': batches,
-                     'save_freq': args.save_freq, 'gpu_wait_seconds': args.wait_seconds, 'run_name': args.run_name,
+                     'save_freq': args.save_freq, 'gpu_wait_seconds': args.wait_seconds, 'run_name': run_name,
                      'epochs': 1, 'learning_rate': 2e-5, 'weight_decay': 1e-6, 'warmup_ratio': .1,
                      'scheduler': 'cosine', 'max_length': MAX_LENGTH,
                      'presence_penalty': presence_penalty({'presence_penalty': args.presence_penalty})},
@@ -413,8 +520,11 @@ def main():
     parser.add_argument('--step', type=int, help=argparse.SUPPRESS)
     parser.add_argument('--model', type=Path, help=argparse.SUPPRESS)
     parser.add_argument('--config', default='configs/ablation.json')
-    parser.add_argument('--teacher-dir', default=DEFAULT_TEACHER_DIR)
-    parser.add_argument('--run-name', default='sft_n1024_seed42_v1')
+    parser.add_argument('--data-dir', help='Frozen SFT-only expansion prepared by scripts/prepare_sft_expansion.py')
+    parser.add_argument('--teacher-dir')
+    parser.add_argument('--reference-answers',
+                        help='Project JSON with reference answers keyed by the full question SHA256')
+    parser.add_argument('--run-name')
     parser.add_argument('--train-output-root')
     parser.add_argument('--gpu-ids', default='2,3')
     parser.add_argument('--wait-seconds', type=int, default=3600)
@@ -437,8 +547,8 @@ def main():
         else:
             execute(plan, frozen, admission)
         return
-    plan, rows, benchmarks = build_plan(args)
     activate_verl()
+    plan, rows, benchmarks = build_plan(args)
     config = sft_config(plan)
     print(json.dumps(plan, ensure_ascii=False, indent=2), flush=True)
     if not (args.prepare or args.run):
@@ -453,7 +563,7 @@ def main():
             steps = plan['evaluation']['steps']
             if (latest is not None and latest.name == f'global_step_{steps[-1]}'
                     and all(evaluation_complete(plan, step) for step in steps)):
-                print(f'SFT baseline already complete: {args.run_name}', flush=True)
+                print(f"SFT baseline already complete: {plan['settings']['run_name']}", flush=True)
                 return
             require_training_space(run, (48 if latest else 96) * 1024**3)
             session = run / 'shared_gpu_admission' / ('launch_' + uuid.uuid4().hex[:12])
