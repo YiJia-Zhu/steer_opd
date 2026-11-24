@@ -14,7 +14,7 @@ def benchmark_rows(training_questions):
         ('AIME2025','AIME2025/aime2025-I.jsonl','question',15),
         ('AIME2025','AIME2025/aime2025-II.jsonl','question',15),
     ]:
-        path=ROOT/'assets/data'/relative
+        path=ROOT/'assets/datasets'/relative
         rows=[json.loads(line) for line in path.read_text().splitlines() if line.strip()]
         if len(rows)!=expected:raise ValueError(f'Incomplete benchmark: {relative}')
         sources[str(path.relative_to(ROOT))]=file_sha256(path)

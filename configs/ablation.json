@@ -14,7 +14,7 @@
   "run_dir": "outputs/step_3_overlap/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n1000_slerp0.1_layer26_seed42_v1",
   "question_count": 1000,
   "base_question_source": "outputs/step_0_data/ablation/T_Qwen3.5-35B-A3B_S_Qwen3-4B/OpenThoughts3-1.2M/shared/n100_slerp0.1_layer26_seed42_v1/questions_source.json",
-  "local_dataset": "assets/data/OpenThoughts3-1.2M/data",
+  "local_dataset": "assets/datasets/OpenThoughts3-1.2M/data",
   "dataset_revision": "61bcf9d4eb38b30295efc2021227a63cc5bb34c8",
   "seed": 42,
   "enable_thinking": false,

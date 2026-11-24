@@ -38,8 +38,10 @@ dist/
 htmlcov/
 
 # 共享模型/数据的本地链接或下载目录；来源清单仍保留
-/assets/models/
-/assets/datasets/
+/assets/models/*
+!/assets/models/.gitkeep
+/assets/datasets/*
+!/assets/datasets/.gitkeep
 /assets/cache/
 
 # 第三方嵌套 Git checkout，避免被误加为不完整的子模块。

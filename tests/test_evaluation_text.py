@@ -61,6 +61,9 @@ def test_real_verl_validation_saves_every_unpadded_answer_once(tmp_path, monkeyp
     src = Path(subprocess.check_output([sys.executable, str(ROOT / 'scripts/prepare_training_runtime.py'),
                                         *variant], text=True).strip())
     reward = runtime_module(src, 'verl_reward')
+    if variant:
+        name = 'actor_linear_backward'
+        monkeypatch.setitem(sys.modules, f'steer_opd.training.{name}', runtime_module(src, name))
     # Get the project's actual trainer without starting a Ray worker or loading model weights.
     actor = runtime_module(src, 'verl_trainer').task_runner_class()
     run_method = inspect.unwrap(actor.__ray_metadata__.modified_class.run)

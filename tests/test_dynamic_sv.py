@@ -10,6 +10,7 @@ from types import ModuleType, SimpleNamespace as NS
 
 import pytest
 import torch
+from safetensors.torch import save_file
 
 from steer_opd.resumable_core import ROOT
 from test_scoring_request_arrays import packet
@@ -160,8 +161,18 @@ def test_request_binds_dynamic_sv_to_the_current_step(dynamic_src, tmp_path):
 
 
 @pytest.mark.parametrize('reference_override, expected_limit', [(None, 2048), (4096, 4096)])
-def test_dynamic_preview_uses_step_zero_and_online_teacher_references(dynamic_src, reference_override, expected_limit):
-    command = [sys.executable, '-m', 'steer_opd.training.verl_entry', '--check']
+def test_dynamic_preview_uses_step_zero_and_online_teacher_references(
+        dynamic_src, reference_override, expected_limit, tmp_path):
+    config = json.loads((ROOT / 'configs/ablation.json').read_text())
+    for role in ('student', 'teacher'):
+        model = tmp_path / role
+        model.mkdir()
+        save_file({'weight': torch.zeros(1)}, model / 'model.safetensors')
+        config[role] = str(model)
+    config_path = tmp_path / 'ablation.json'
+    config_path.write_text(json.dumps(config))
+    command = [sys.executable, '-m', 'steer_opd.training.verl_entry', '--check',
+               '--config', str(config_path), '--train-output-root', str(tmp_path / 'outputs')]
     if reference_override is not None:
         command += ['--reference-max-tokens', str(reference_override)]
     output = subprocess.check_output(command, cwd=ROOT, text=True,
@@ -178,5 +189,5 @@ def test_dynamic_preview_uses_step_zero_and_online_teacher_references(dynamic_sr
     assert (plan['settings']['max_response_length'], plan['settings']['sv_max_context_len']) == (16384, 2048)
     assert plan['settings']['sv_bank'] is None and plan['assets']['sv_bank_sha256'] is None
     assert (plan['settings']['train_batch_size'], plan['settings']['rollout_n']) == (32, 4)
-    assert all(p.startswith(('outputs/step_0_data/', 'assets/data/')) for p in plan['input_sha256'])
+    assert all(p.startswith(('outputs/step_0_data/', 'assets/datasets/')) for p in plan['input_sha256'])
     assert plan['evaluation_response_format']

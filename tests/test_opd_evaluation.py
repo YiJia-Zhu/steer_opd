@@ -47,7 +47,7 @@ def test_existing_math_verifier_extracts_boxed_gold_and_rejects_empty_answer():
 
 
 def test_local_aime_has30_gold_questions():
-    questions, sources = aime_questions(ROOT / "assets/data/AIME2025")
+    questions, sources = aime_questions(ROOT / "assets/datasets/AIME2025")
     assert len(questions) == 30 and len(sources) == 2
 
 

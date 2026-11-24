@@ -3,6 +3,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+from os.path import relpath
 from pathlib import Path
 import shutil
 import subprocess
@@ -50,9 +51,11 @@ def prepare(*, baseline=False, dynamic_sv=False):
         for patch in patches:
             subprocess.run(['patch', '--batch', '--forward', '--fuzz=0', '--no-backup-if-mismatch',
                             '-s', '-p1', '-i', str(patch)], cwd=build, check=True)
+        # Compute links at their published depth under the cache.
+        published_package = cache / build.name / package.relative_to(build)
         for source in PACKAGE.glob('*.py'):
             if source.name not in private_modules:
-                (package / source.name).symlink_to(source)
+                (package / source.name).symlink_to(relpath(source, published_package))
 
         files = contents(build)
         identity = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()

@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 
 from steer_opd.resumable_core import ROOT, digest, read_json
@@ -222,9 +223,8 @@ def verl_overrides(plan):
         'ray_kwargs.ray_init.num_cpus':32,
         'ray_kwargs.ray_init.include_dashboard':False,
         'ray_kwargs.ray_init.object_store_memory':2*1024**3,
-        # Keep Unix socket paths below Linux's 107-byte limit, within the
-        # existing shorter project alias rather than an external temp folder.
-        'ray_kwargs.ray_init._temp_dir':'/home/zhenning/data/working_tmp/steer_opd/r',
+        # The launcher uses a short project-local path for Unix sockets.
+        'ray_kwargs.ray_init._temp_dir':os.environ.get('RAY_TMPDIR', str(ROOT/'r')),
         'ray_kwargs.ray_init.runtime_env.env_vars.TENSORBOARD_DIR':str(root/'logs/tensorboard/train'),
     }
     if s['monitor_evaluation']:

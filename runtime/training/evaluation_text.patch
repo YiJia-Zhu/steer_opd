@@ -33,7 +33,7 @@
 +    os.environ['PYTHONPATH']=os.pathsep.join([str(source),str(Path(__file__).resolve().parents[2]),os.environ.get('PYTHONPATH','')])
      return source
  
-@@ -120,4 +120,28 @@
+@@ -120,4 +120,30 @@
  
  
 +def use_frozen_runtime(path):
@@ -56,22 +56,25 @@
 +    if (frozen['binding'] != digest({k:v for k,v in frozen.items() if k != 'binding'})
 +            or hashlib.sha256(entry.read_bytes()).hexdigest() != frozen['implementation_sha256'][entries[0]]):
 +        raise ValueError('Frozen training plan or entry point changed')
++    if not (src / 'steer_opd/__init__.py').is_file():
++        raise FileNotFoundError(f'Frozen training package source links do not resolve: {src}')
 +    env = {**os.environ, 'PYTHONPATH': os.pathsep.join([str(src), os.environ.get('PYTHONPATH','')])}
 +    os.execve(sys.executable, [sys.executable, '-m', 'steer_opd.training.verl_entry', *sys.argv[1:]], env)
 +
 +
  def validate_plan(plan):
      if plan['binding']!=digest({k:v for k,v in plan.items() if k!='binding'}):
-@@ -232,4 +256,5 @@
+@@ -232,4 +258,5 @@
      args=parser.parse_args()
      if args.execute_prepared:
 +        use_frozen_runtime(args.execute_prepared)
          plan=read_json(args.execute_prepared)
          if args.acceptance_run:validate_acceptance_plan(plan)
-@@ -275,4 +300,5 @@
+@@ -275,4 +302,6 @@
      if args.train_output_root:experiment['train_output_root']=args.train_output_root
      plan=build_verl_plan(experiment,settings,loss)
-+    use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
++    if args.prepare or args.run or args.acceptance_run:
++        use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
      if args.acceptance_run:plan['run_purpose']='two_step_gpu_acceptance'
      else:plan['run_purpose']='formal_training'
 --- a/src/steer_opd/training/verl_plan.py

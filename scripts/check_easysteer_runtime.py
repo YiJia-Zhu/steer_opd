@@ -61,7 +61,7 @@ def main():
         'steering_engine_enabled':True,'worker_start_method':'spawn',
         'slerp_registry_and_norm':True,'gpu_started':False,'cuda_home':str(cuda),
         'versions':{p:metadata.version(p) for p in ['vllm','easysteer','torch','transformers']}}
-    output = ROOT/'audit/dual_overlap_implementation_20261114/runtime_cpu_check.json'
+    output = ROOT/'.runtime/easysteer_runtime_cpu_check.json'
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(checks,indent=2)+'\n')
     print(checks)

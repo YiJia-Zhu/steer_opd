@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# Source from the project root. Do not alter shared asset directories.
-STEER_OPD_ROOT=/home/zhenning/data/working_tmp/steer_opd
-# Isolate the validated experiment dependencies from the shared Conda environment.
-if [[ -x "${STEER_OPD_ROOT}/.venv-opd/bin/python" ]]; then
-    STEER_OPD_RUNTIME_PREFIX="${STEER_OPD_ROOT}/.venv-opd"
-else
-    STEER_OPD_RUNTIME_PREFIX=/home/zhenning/data/miniconda3/envs/verl
+# Resolve paths relative to this script so a moved checkout works from any directory.
+STEER_OPD_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd) || return 1
+export STEER_OPD_PYTHON="${STEER_OPD_PYTHON:-${STEER_OPD_ROOT}/.venv-opd/bin/python}"
+if [[ ! -x "$STEER_OPD_PYTHON" ]]; then
+    printf 'Cannot use Python at %s. Repair .venv-opd or set STEER_OPD_PYTHON to a working environment.\n' "$STEER_OPD_PYTHON" >&2
+    return 1
 fi
-export STEER_OPD_PYTHON="${STEER_OPD_RUNTIME_PREFIX}/bin/python"
+STEER_OPD_RUNTIME_PREFIX=$(cd -- "$(dirname -- "$STEER_OPD_PYTHON")/.." && pwd) || return 1
 export PYTHONPATH="${STEER_OPD_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONHASHSEED=42
@@ -21,7 +20,7 @@ export TORCH_EXTENSIONS_DIR="${STEER_OPD_ROOT}/.cache/torch_extensions"
 export FLASHINFER_WORKSPACE_BASE="${STEER_OPD_ROOT}"
 export TRITON_CACHE_DIR="${STEER_OPD_ROOT}/.cache/triton"
 export CUDA_CACHE_PATH="${STEER_OPD_ROOT}/.cache/cuda"
-# Match the pinned torch/vLLM cu130 build; the shell's shared default is CUDA12.8.
+# Match the pinned torch/vLLM cu130 build when the host has a different toolkit.
 export CUDA_HOME="${STEER_OPD_RUNTIME_PREFIX}/lib/python3.12/site-packages/nvidia/cu13"
 if [[ -n "${STEER_OPD_CUDA_HOME:-}" ]]; then
     CUDA_HOME="$STEER_OPD_CUDA_HOME"
@@ -35,7 +34,7 @@ export PATH="${STEER_OPD_RUNTIME_PREFIX}/bin:${CUDA_HOME}/bin:${PATH}"
 export PIP_CACHE_DIR="${STEER_OPD_ROOT}/.cache/pip"
 export UV_CACHE_DIR="${STEER_OPD_ROOT}/.cache/uv"
 export TMPDIR="${STEER_OPD_ROOT}/.runtime/tmp"
-export RAY_TMPDIR="${STEER_OPD_ROOT}/.runtime/ray"
+export RAY_TMPDIR="${STEER_OPD_ROOT}/r"
 export WANDB_MODE=disabled
 export HF_HUB_OFFLINE=1
 export HF_DATASETS_OFFLINE=1

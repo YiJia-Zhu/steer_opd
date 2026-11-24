@@ -85,17 +85,18 @@
 +        run_name=args.run_name or f'verl_{args.loss}_dynamic_sv_T{args.teacher_layer}_{args.operator}{args.alpha:g}_pp{args.presence_penalty:g}_len{DEFAULT_MAX_GENERATION_LENGTH}_Tref{args.reference_max_tokens}_seed42_shared2_{"acceptance_minimal_v1" if args.acceptance_run else "formal_minimal_v1"}')
      if args.sv_bank:settings=replace(settings,sv_bank=args.sv_bank)
      loss=TrainingLossConfig(loss_type=args.loss,anchor_coef=args.anchor_coef,reference_model=args.reference_model)
-@@ -300,5 +306,11 @@
+@@ -302,6 +308,11 @@
      if args.train_output_root:experiment['train_output_root']=args.train_output_root
      plan=build_verl_plan(experiment,settings,loss)
--    use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
+-    if args.prepare or args.run or args.acceptance_run:
+-        use_frozen_runtime(ROOT / plan['output'] / 'metadata/plan.json')
 +    frozen = ROOT / plan['output'] / 'metadata/plan.json'
-+    if frozen.is_file():
++    if (args.prepare or args.run or args.acceptance_run) and frozen.is_file():
 +        previous = read_json(frozen)
 +        fields = ('sv_protocol', 'sv_reference_sampling')
 +        if any(previous.get(field) != plan[field] for field in fields):
 +            raise ValueError('Use a separate run name when changing the dynamic SV protocol or reference sampling')
-+    use_frozen_runtime(frozen)
++        use_frozen_runtime(frozen)
      if args.acceptance_run:plan['run_purpose']='two_step_gpu_acceptance'
      else:plan['run_purpose']='formal_training'
 --- a/src/steer_opd/training/scoring.py

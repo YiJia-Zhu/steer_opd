@@ -8,6 +8,12 @@
 - [当前配置模板](configs/ablation.json)与[输出结构](输出结构.md)：配置入口、阶段目录及SHA复用规则。
 - [TODO](TODO.md)：保留的任务检查记录。
 
+## 环境安装
+
+项目使用 Python 3.12 和两套独立虚拟环境。`.venv-opd` 用于 veRL 训练，`.venv-easysteer` 用于激活提取和教师评分。GPU 运行使用 CUDA 13.0。全新安装、服务器迁移和 CPU 验收步骤见 [安装与迁移说明](INSTALL.md)。
+
+## 实验入口
+
 手动CPU预览使用`bash scripts/run_ablation.sh --check`；它不启动模型。GPU运行需使用对应的显式运行入口和独立配置，模板`execution_hold`保留。新参数不能覆盖已完成身份，既有模型／数据资产只读；当前流程和历史结果不在本页重复维护。
 
 动态 SV 用 `bash scripts/run_dynamic_sv.sh --check` 预览。训练直接读 step 0 冻结题集。每步生成 32 题 × 4 条学生回答和 32 条教师参考，由同一个教师读取两组文本，提取 S−T 后沿原学生回答注入评分。[动态 SV 入口](scripts/run_dynamic_sv.sh) · [方向定义](docs/ablation.md#动态-sv)

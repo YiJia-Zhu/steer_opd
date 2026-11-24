@@ -23,6 +23,10 @@ esac
 
 research_commit=$(git rev-parse --verify refs/heads/main)
 printf '完整版 main %.12s\n' "$research_commit"
+if ! git cat-file -e "$research_commit:INSTALL.md" 2>/dev/null; then
+    printf '%s\n' '本地 main 尚未包含 INSTALL.md。请先将安装文档和需要发布的改动提交到 main。' >&2
+    exit 1
+fi
 
 if [[ -z "${GIT_SSH_COMMAND:-}" ]]; then
     publisher_ssh_command=$(git config --get core.sshCommand || true)
@@ -35,6 +39,14 @@ fi
 mkdir -p -- "$project_root/.runtime"
 publication_work=$(mktemp -d "$project_root/.runtime/runner-update.XXXXXXXX")
 trap 'rm -rf -- "$publication_work"' EXIT
+runner_archive="$publication_work/runner.tar"
+mapfile -t asset_placeholders < <(git ls-tree -r --name-only "$research_commit" -- \
+    assets/datasets/.gitkeep assets/models/.gitkeep)
+git archive --format=tar --output="$runner_archive" "$research_commit" -- \
+    .gitignore INSTALL.md src scripts runtime configs assets/metadata/Qwen3.5-35B-A3B \
+    ref/easysteer_runtime/manifest.json ref/implementation_sources/rethinking_comparison.json \
+    "${asset_placeholders[@]}"
+
 runner_checkout="$publication_work/runner"
 runner_clone_url="$runner_remote"
 if [[ "$publication_mode" == --check ]]; then
@@ -42,15 +54,13 @@ if [[ "$publication_mode" == --check ]]; then
 fi
 git clone --quiet --single-branch --branch main "$runner_clone_url" "$runner_checkout"
 git -C "$runner_checkout" rm -r -q -- .
-git archive "$research_commit" -- \
-    .gitignore src scripts runtime configs assets/metadata/Qwen3.5-35B-A3B \
-    ref/easysteer_runtime/manifest.json ref/implementation_sources/rethinking_comparison.json |
-    tar -x -C "$runner_checkout" \
-        --exclude='scripts/migrate_to_186.sh' \
-        --exclude='scripts/backup_static_sv.sh' \
-        --exclude='scripts/migrate_ablation_outputs.py' \
-        --exclude='scripts/register_ablation_artifacts.py' \
-        --exclude='scripts/validate_package.py'
+tar -xf "$runner_archive" -C "$runner_checkout" \
+    --exclude='scripts/migrate_to_186.sh' \
+    --exclude='scripts/backup_static_sv.sh' \
+    --exclude='scripts/migrate_ablation_outputs.py' \
+    --exclude='scripts/register_ablation_artifacts.py' \
+    --exclude='scripts/validate_package.py'
+mv -- "$runner_checkout/INSTALL.md" "$runner_checkout/README.md"
 
 git -C "$runner_checkout" add -A
 python3 - "$runner_checkout" <<'PY'
@@ -68,7 +78,8 @@ credential_pattern = re.compile(
 )
 paths = [root / item.decode() for item in listing.split(b'\0') if item]
 for path in paths:
-    blocked = path.is_symlink() or path.suffix.lower() in sensitive_suffixes or path.name.startswith('.env')
+    blocked_suffix = path.suffix.lower() in sensitive_suffixes and path != root / 'README.md'
+    blocked = path.is_symlink() or blocked_suffix or path.name.startswith('.env')
     if blocked or credential_pattern.search(path.read_bytes()):
         raise SystemExit(f'公开版含需要审查的文件 {path.relative_to(root)}')
 print(f'公开版预览 {len(paths)} 个文件')
