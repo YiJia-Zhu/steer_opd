@@ -22,30 +22,7 @@ case "$(git remote get-url --push origin)" in
 esac
 
 research_commit=$(git rev-parse --verify refs/heads/main)
-research_visibility=$(python3 - <<'PY'
-import json
-from urllib.error import HTTPError
-from urllib.request import Request, urlopen
-
-request = Request(
-    'https://api.github.com/repos/YiJia-Zhu/steer_opd',
-    headers={'Accept': 'application/vnd.github+json',
-             'Cache-Control': 'no-cache', 'User-Agent': 'Steer-OPD-publisher'},
-)
-try:
-    with urlopen(request, timeout=12) as response:
-        print(json.load(response)['visibility'])
-except HTTPError as error:
-    if error.code != 404:
-        raise
-    print('restricted')
-PY
-)
-printf '完整版 main %.12s，GitHub 可见性 %s\n' "$research_commit" "$research_visibility"
-if [[ "$publication_mode" == --push && "$research_visibility" != restricted ]]; then
-    printf '%s\n' '请先在 GitHub 把完整版 steer_opd 设为 Private，再更新两个仓库。' >&2
-    exit 1
-fi
+printf '完整版 main %.12s\n' "$research_commit"
 
 if [[ -z "${GIT_SSH_COMMAND:-}" ]]; then
     publisher_ssh_command=$(git config --get core.sshCommand || true)
